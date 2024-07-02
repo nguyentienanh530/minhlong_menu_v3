@@ -18,7 +18,7 @@ class AppAsset {
   static const String setting = 'assets/svg/settings.svg';
   static const String handPlatter = 'assets/svg/hand-platter.svg';
   static const String backgroundLogin = 'assets/image/background_login.jpg';
-  static const String logo = 'assets/image/icon_splash.png';
+  static const String logoSplash = 'assets/image/icon_splash.png';
   static const String logout = 'assets/svg/logout.svg';
   static const String lock = 'assets/svg/lock.svg';
   static const String print = 'assets/svg/print.svg';
@@ -28,4 +28,5 @@ class AppAsset {
   static const String food = 'assets/svg/food.svg';
   static const String category = 'assets/svg/category.svg';
   static const String banner = 'assets/svg/banner.svg';
+  static const String logo = 'assets/image/logo.png';
 }

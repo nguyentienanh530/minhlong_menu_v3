@@ -60,22 +60,19 @@
 // }
 
 import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/data/dto/login_dto.dart';
-
-import '../../../../../common/network/api_base.dart';
 import '../../../../../core/api_config.dart';
 import '../../../../../core/app_datasource.dart';
 import '../../model/access_token.dart';
 
-class AuthApi extends ApiBase {
+class AuthApi {
   AuthApi({required this.dio});
 
   final Dio dio;
 
   Future<AccessToken> login(LoginDto login) async {
-    final response = await dioClient.dio!.post(
+    final response = await dio.post(
       ApiConfig.login,
       data: login.toJson(),
     );
@@ -86,7 +83,7 @@ class AuthApi extends ApiBase {
   Future<bool> logout() async {
     var isLogOut = false;
     try {
-      final response = await dioClient.dio!.post(ApiConfig.logout);
+      final response = await dio.post(ApiConfig.logout);
       if (response.statusCode == HttpStatus.ok) {
         isLogOut = true;
       }
@@ -99,7 +96,7 @@ class AuthApi extends ApiBase {
   Future<AccessToken?> refreshToken({required String refreshToken}) async {
     try {
       AccessToken accessToken = AccessToken(accessToken: '', refreshToken: '');
-      final response = await dioClient.dio!
+      final response = await dio
           .post(ApiConfig.refreshToken, data: {'refresh_token': refreshToken});
 
       if (response.statusCode == HttpStatus.ok) {

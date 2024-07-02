@@ -1,254 +1,154 @@
-import 'package:easy_sidemenu/easy_sidemenu.dart';
-import 'package:flutter/material.dart';
+part of '../screens/home_view.dart';
 
-class SideMenuWidget extends StatelessWidget {
-  SideMenuWidget({super.key});
-  PageController pageController = PageController();
-  SideMenuController sideMenu = SideMenuController();
-  @override
-  Widget build(BuildContext context) {
-    // return Scaffold(
-    //   appBar: AppBar(
-    //     title: const Text('widget.title'),
-    //     centerTitle: true,
-    //   ),
-    //   body:
-    // );
+extension _BuildSideMenuWidget on HomeViewState {
+  Widget _buildSideMenuWidget({SideMenuDisplayMode? displayMode}) => Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          SideMenu(
+            controller: _sideMenuCtrl,
+            style: SideMenuStyle(
+              showTooltip: true,
+              displayMode: displayMode ?? SideMenuDisplayMode.auto,
+              // showHamburger: true,
+              backgroundColor: AppColors.white,
+              hoverColor: AppColors.themeColor.withOpacity(0.3),
+              itemOuterPadding: const EdgeInsets.all(2),
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        SideMenu(
-          controller: sideMenu,
-          style: SideMenuStyle(
-            // showTooltip: false,
-            displayMode: SideMenuDisplayMode.auto,
-            showHamburger: true,
-            hoverColor: Colors.blue[100],
-            selectedHoverColor: Colors.blue[100],
-            selectedColor: Colors.lightBlue,
-            selectedTitleTextStyle: const TextStyle(color: Colors.white),
-            selectedIconColor: Colors.white,
-            // decoration: BoxDecoration(
-            //   borderRadius: BorderRadius.all(Radius.circular(10)),
-            // ),
-            // backgroundColor: Colors.grey[200]
-          ),
-          title: Column(
-            children: [
-              ConstrainedBox(
-                constraints: const BoxConstraints(
-                  maxHeight: 150,
-                  maxWidth: 150,
-                ),
-                child: Image.asset(
-                  'assets/images/easy_sidemenu.png',
-                ),
-              ),
-              const Divider(
-                indent: 8.0,
-                endIndent: 8.0,
-              ),
-            ],
-          ),
-          footer: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              decoration: BoxDecoration(
-                  color: Colors.lightBlue[50],
-                  borderRadius: BorderRadius.circular(12)),
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
-                child: Text(
-                  'mohada',
-                  style: TextStyle(fontSize: 15, color: Colors.grey[800]),
-                ),
-              ),
+              selectedColor: AppColors.themeColor,
+              selectedTitleTextStyle: kBodyStyle.copyWith(
+                  color: AppColors.white,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 16),
+              unselectedTitleTextStyle:
+                  kBodyStyle.copyWith(color: AppColors.secondTextColor),
+              selectedIconColor: Colors.white,
+              unselectedIconColor: AppColors.secondTextColor,
+              // decoration: const BoxDecoration(
+              //   borderRadius: BorderRadius.all(Radius.circular(10)),
+              // ),
+              // backgroundColor: Colors.grey[200]
             ),
-          ),
-          items: [
-            SideMenuItem(
-              title: 'Dashboard',
-              onTap: (index, _) {
-                sideMenu.changePage(index);
-              },
-              icon: const Icon(Icons.home),
-              badgeContent: const Text(
-                '3',
-                style: TextStyle(color: Colors.white),
-              ),
-              tooltipContent: "This is a tooltip for Dashboard item",
-            ),
-            SideMenuItem(
-              title: 'Users',
-              onTap: (index, _) {
-                sideMenu.changePage(index);
-              },
-              icon: const Icon(Icons.supervisor_account),
-            ),
-            SideMenuExpansionItem(
-              title: "Expansion Item",
-              icon: const Icon(Icons.kitchen),
+            title: Column(
               children: [
-                SideMenuItem(
-                  title: 'Expansion Item 1',
-                  onTap: (index, _) {
-                    sideMenu.changePage(index);
-                  },
-                  icon: const Icon(Icons.home),
-                  badgeContent: const Text(
-                    '3',
-                    style: TextStyle(color: Colors.white),
+                ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    maxHeight: 134,
+                    maxWidth: 200,
                   ),
-                  tooltipContent: "Expansion Item 1",
+                  child: Image.asset(
+                    AppAsset.logo,
+                    fit: BoxFit.cover,
+                  ),
                 ),
-                SideMenuItem(
-                  title: 'Expansion Item 2',
-                  onTap: (index, _) {
-                    sideMenu.changePage(index);
-                  },
-                  icon: const Icon(Icons.supervisor_account),
-                )
+                const Divider(
+                  color: AppColors.secondTextColor,
+                  indent: 8.0,
+                  endIndent: 8.0,
+                ),
               ],
             ),
-            SideMenuItem(
-              title: 'Files',
-              onTap: (index, _) {
-                sideMenu.changePage(index);
-              },
-              icon: const Icon(Icons.file_copy_rounded),
-              trailing: Container(
-                  decoration: const BoxDecoration(
-                      color: Colors.amber,
-                      borderRadius: BorderRadius.all(Radius.circular(6))),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 6.0, vertical: 3),
-                    child: Text(
-                      'New',
-                      style: TextStyle(fontSize: 11, color: Colors.grey[800]),
-                    ),
-                  )),
-            ),
-            SideMenuItem(
-              title: 'Download',
-              onTap: (index, _) {
-                sideMenu.changePage(index);
-              },
-              icon: const Icon(Icons.download),
-            ),
-            SideMenuItem(
-              builder: (context, displayMode) {
-                return const Divider(
-                  endIndent: 8,
-                  indent: 8,
-                );
-              },
-            ),
-            SideMenuItem(
-              title: 'Settings',
-              onTap: (index, _) {
-                sideMenu.changePage(index);
-              },
-              icon: const Icon(Icons.settings),
-            ),
-            // SideMenuItem(
-            //   onTap:(index, _){
-            //     sideMenu.changePage(index);
-            //   },
-            //   icon: const Icon(Icons.image_rounded),
-            // ),
-            // SideMenuItem(
-            //   title: 'Only Title',
-            //   onTap:(index, _){
-            //     sideMenu.changePage(index);
-            //   },
-            // ),
-            const SideMenuItem(
-              title: 'Exit',
-              icon: Icon(Icons.exit_to_app),
-            ),
-          ],
-        ),
-        const VerticalDivider(
-          width: 0,
-        ),
-        Expanded(
-          child: PageView(
-            controller: pageController,
-            children: [
-              Container(
-                color: Colors.white,
-                child: const Center(
-                  child: Text(
-                    'Dashboard',
-                    style: TextStyle(fontSize: 35),
-                  ),
-                ),
+            items: [
+              ..._listIconMenu.map((item) {
+                return _buildSideMenuItem(
+                    title: item['title'] as String,
+                    icon: item['icon'] as IconData,
+                    onTap: (index, _) {
+                      _sideMenuCtrl.changePage(index);
+                      context.go(item['route'] as String);
+                    });
+              }),
+              SideMenuItem(
+                builder: (context, displayMode) {
+                  return const Divider(
+                    endIndent: 8,
+                    indent: 8,
+                    color: AppColors.secondTextColor,
+                  );
+                },
               ),
-              Container(
-                color: Colors.white,
-                child: const Center(
-                  child: Text(
-                    'Users',
-                    style: TextStyle(fontSize: 35),
-                  ),
+              // SideMenuItem(
+              //   title: 'Cài đặt',
+              //   onTap: (index, _) {
+              //     _sideMenuCtrl.changePage(index);
+              //   },
+              //   icon: const Icon(
+              //     Icons.settings,
+              //     color: AppColors.secondTextColor,
+              //   ),
+              // ),
+              SideMenuItem(
+                title: 'Đăng xuất',
+                icon: const Icon(
+                  Icons.exit_to_app,
+                  color: AppColors.secondTextColor,
                 ),
-              ),
-              Container(
-                color: Colors.white,
-                child: const Center(
-                  child: Text(
-                    'Expansion Item 1',
-                    style: TextStyle(fontSize: 35),
-                  ),
-                ),
-              ),
-              Container(
-                color: Colors.white,
-                child: const Center(
-                  child: Text(
-                    'Expansion Item 2',
-                    style: TextStyle(fontSize: 35),
-                  ),
-                ),
-              ),
-              Container(
-                color: Colors.white,
-                child: const Center(
-                  child: Text(
-                    'Files',
-                    style: TextStyle(fontSize: 35),
-                  ),
-                ),
-              ),
-              Container(
-                color: Colors.white,
-                child: const Center(
-                  child: Text(
-                    'Download',
-                    style: TextStyle(fontSize: 35),
-                  ),
-                ),
-              ),
-
-              // this is for SideMenuItem with builder (divider)
-              const SizedBox.shrink(),
-
-              Container(
-                color: Colors.white,
-                child: const Center(
-                  child: Text(
-                    'Settings',
-                    style: TextStyle(fontSize: 35),
-                  ),
-                ),
+                onTap: (index, _) {
+                  _showDialogLogout();
+                },
               ),
             ],
+            footer: Padding(
+              padding: const EdgeInsets.all(16),
+              child: SizedBox(
+                height: 100,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Divider(indent: 8.0, endIndent: 8.0),
+                    Expanded(
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          'Minh Long Technology',
+                          style: kSubHeadingStyle.copyWith(
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          '079.99.09.487',
+                          style: kBodyStyle.copyWith(
+                            color: AppColors.secondTextColor,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          'Tổ 21 Finom - Hiệp Thạnh - Đức Trọng - Lâm Đồng',
+                          textAlign: TextAlign.center,
+                          style: kCaptionStyle.copyWith(
+                            color: AppColors.secondTextColor,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
-        ),
-      ],
+        ],
+      );
+
+  SideMenuItem _buildSideMenuItem({
+    required String title,
+    required IconData icon,
+    required Function(int, SideMenuController)? onTap,
+  }) {
+    return SideMenuItem(
+      title: title,
+      onTap: onTap,
+      icon: Icon(icon, color: AppColors.secondTextColor),
+      tooltipContent: title,
     );
   }
 }

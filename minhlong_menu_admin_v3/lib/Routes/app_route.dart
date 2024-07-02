@@ -1,9 +1,17 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/bloc/auth_bloc.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/view/screens/forgot_password_screen.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/view/screens/login_screen.dart';
+import 'package:minhlong_menu_admin_v3/features/banner/view/screens/banner_screen.dart';
+import 'package:minhlong_menu_admin_v3/features/category/view/screens/category_screen.dart';
+import 'package:minhlong_menu_admin_v3/features/dashboard/view/screens/dashboard_screen.dart';
+import 'package:minhlong_menu_admin_v3/features/dinner_table/view/screens/dinner_table_screen.dart';
+import 'package:minhlong_menu_admin_v3/features/food/view/screens/food_screen.dart';
 import 'package:minhlong_menu_admin_v3/features/home/view/screens/home_screen.dart';
+import 'package:minhlong_menu_admin_v3/features/order/view/screens/order_screen.dart';
+import 'package:minhlong_menu_admin_v3/features/setting/view/screens/setting_screen.dart';
 
 class AppRoute {
   AppRoute._();
@@ -14,42 +22,154 @@ class AppRoute {
   static const String resetPassword = '/reset-password';
   static const String dashboard = '/dashboard';
   static const String foods = '/foods';
-  static const String tables = '/tables';
+  static const String dinnerTables = '/dinner-tables';
   static const String categories = '/categories';
   static const String banners = '/banners';
-  static const String setting = '/setting';
+  static const String settings = '/settings';
+  static const String orders = '/orders';
 
   static const publicRoute = [login, forgotPassword, signUp];
 
   static GoRouter routes = GoRouter(
-      initialLocation: home,
-      redirect: (context, state) {
-        if (publicRoute.contains(state.fullPath)) {
-          return null;
-        }
-        if (context.read<AuthBloc>().state is AuthAuthenticateSuccess) {
-          return null;
-        }
-        return login;
-      },
-      routes: [
-        GoRoute(
-          path: home,
-          builder: (context, state) {
-            return const HomeScreen();
+    initialLocation: dashboard,
+    redirect: (context, state) {
+      if (publicRoute.contains(state.fullPath)) {
+        return null;
+      }
+      if (context.read<AuthBloc>().state is AuthAuthenticateSuccess) {
+        return null;
+      }
+      return login;
+    },
+    routes: [
+      // GoRoute(
+      //   path: home,
+      //   pageBuilder: (context, state) {
+      //     return buildPageWithDefaultTransition(
+      //       context: context,
+      //       state: state,
+      //       child: const HomeScreen(child: SizedBox()),
+      //     );
+      //   },
+      // ),
+      GoRoute(
+        path: forgotPassword,
+        pageBuilder: (context, state) {
+          return buildPageWithDefaultTransition(
+            context: context,
+            state: state,
+            child: const ForgotPasswordScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        path: login,
+        pageBuilder: (context, state) {
+          return buildPageWithDefaultTransition(
+            context: context,
+            state: state,
+            child: const LoginScreen(),
+          );
+        },
+      ),
+      ShellRoute(
+          pageBuilder: (context, state, child) {
+            return buildPageWithDefaultTransition(
+              context: context,
+              state: state,
+              child: HomeScreen(
+                child: child,
+              ),
+            );
           },
-        ),
-        GoRoute(
-          path: forgotPassword,
-          builder: (context, state) {
-            return const ForgotPasswordScreen();
-          },
-        ),
-        GoRoute(
-          path: login,
-          builder: (context, state) {
-            return const LoginScreen();
-          },
-        ),
-      ]);
+          routes: [
+            GoRoute(
+              path: dashboard,
+              pageBuilder: (context, state) {
+                return buildPageWithDefaultTransition(
+                  context: context,
+                  state: state,
+                  child: const DashboardScreen(),
+                );
+              },
+            ),
+            GoRoute(
+              path: foods,
+              pageBuilder: (context, state) {
+                return buildPageWithDefaultTransition(
+                  context: context,
+                  state: state,
+                  child: const FoodScreen(),
+                );
+              },
+            ),
+            GoRoute(
+              path: orders,
+              pageBuilder: (context, state) {
+                return buildPageWithDefaultTransition(
+                  context: context,
+                  state: state,
+                  child: const OrderScreen(),
+                );
+              },
+            ),
+            GoRoute(
+              path: dinnerTables,
+              pageBuilder: (context, state) {
+                return buildPageWithDefaultTransition(
+                  context: context,
+                  state: state,
+                  child: const DinnerTableScreen(),
+                );
+              },
+            ),
+            GoRoute(
+              path: categories,
+              pageBuilder: (context, state) {
+                return buildPageWithDefaultTransition(
+                  context: context,
+                  state: state,
+                  child: const CategoryScreen(),
+                );
+              },
+            ),
+            GoRoute(
+              path: banners,
+              pageBuilder: (context, state) {
+                return buildPageWithDefaultTransition(
+                  context: context,
+                  state: state,
+                  child: const BannerScreen(),
+                );
+              },
+            ),
+            GoRoute(
+              path: settings,
+              pageBuilder: (context, state) {
+                return buildPageWithDefaultTransition(
+                  context: context,
+                  state: state,
+                  child: const SettingScreen(),
+                );
+              },
+            )
+          ])
+    ],
+  );
+}
+
+CustomTransitionPage buildPageWithDefaultTransition<T>({
+  required BuildContext context,
+  required GoRouterState state,
+  required Widget child,
+}) {
+  return CustomTransitionPage<T>(
+    key: state.pageKey,
+    child: child,
+    transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+        FadeTransition(
+      opacity: animation,
+      child: child,
+    ),
+  );
 }

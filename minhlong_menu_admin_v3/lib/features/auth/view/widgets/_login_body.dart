@@ -10,7 +10,7 @@ extension _LoginBody on _LoginScreenState {
               context.read<AuthBloc>().add(AuthAuthenticateStarted());
               break;
             case AuthAuthenticateSuccess():
-              context.go(AppRoute.home);
+              context.go(AppRoute.dashboard);
               break;
             default:
           }
