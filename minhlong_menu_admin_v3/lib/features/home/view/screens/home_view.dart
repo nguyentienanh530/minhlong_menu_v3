@@ -1,14 +1,16 @@
-import 'dart:convert';
-import 'dart:developer';
 import 'package:easy_sidemenu/easy_sidemenu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:minhlong_menu_admin_v3/core/api_config.dart';
-import 'package:minhlong_menu_admin_v3/features/order/cubit/order_socket_cubit.dart';
-import 'package:minhlong_menu_admin_v3/features/web_socket_client/cubit/web_socket_client_cubit.dart';
-import 'package:responsive_framework/responsive_framework.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:minhlong_menu_admin_v3/core/extensions.dart';
+import 'package:minhlong_menu_admin_v3/features/banner/view/screens/banner_screen.dart';
+import 'package:minhlong_menu_admin_v3/features/category/view/screens/category_screen.dart';
+import 'package:minhlong_menu_admin_v3/features/dashboard/view/screens/dashboard_screen.dart';
+import 'package:minhlong_menu_admin_v3/features/dinner_table/view/screens/dinner_table_screen.dart';
+import 'package:minhlong_menu_admin_v3/features/food/view/screens/food_screen.dart';
+import 'package:minhlong_menu_admin_v3/features/order/view/screens/order_screen.dart';
+import 'package:minhlong_menu_admin_v3/features/setting/view/screens/setting_screen.dart';
 import '../../../../Routes/app_route.dart';
 import '../../../../common/dialog/app_dialog.dart';
 import '../../../../common/widget/error_dialog.dart';
@@ -17,15 +19,10 @@ import '../../../../core/app_colors.dart';
 import '../../../../core/app_const.dart';
 import '../../../../core/app_style.dart';
 import '../../../auth/bloc/auth_bloc.dart';
-import '../../../dinner_table/cubit/dinner_table_cubit.dart';
-import '../../../dinner_table/data/model/table_model.dart';
-import '../../../order/data/model/order_model.dart';
 part '../widgets/side_menu.dart';
 
 class HomeView extends StatefulWidget {
-  const HomeView({super.key, required this.child, required this.index});
-  final Widget child;
-  final int index;
+  const HomeView({super.key});
 
   @override
   State<HomeView> createState() => HomeViewState();
@@ -33,13 +30,21 @@ class HomeView extends StatefulWidget {
 
 class HomeViewState extends State<HomeView>
     with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
-  // final PageController _pageCtrl = PageController();
+  final PageController _pageCtrl = PageController();
 
   final SideMenuController _sideMenuCtrl = SideMenuController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final WebSocketChannel _channel = WebSocketChannel.connect(
-    Uri.parse(ApiConfig.webSocketUrl),
-  );
+  final _pageIndex = ValueNotifier(0);
+
+  final _listPage = <Widget>[
+    const DashboardScreen(),
+    const OrderScreen(),
+    const FoodScreen(),
+    const DinnerTableScreen(),
+    const CategoryScreen(),
+    const BannerScreen(),
+    const SettingScreen(),
+  ];
 
   final _listIconMenu = [
     {
@@ -83,70 +88,20 @@ class HomeViewState extends State<HomeView>
   @override
   void initState() {
     _title.value = _listIconMenu[0]['title'].toString();
-
-    _channel.ready.then((value) {
-      context.read<WebSocketClientCubit>().init(_channel);
-      _handleDataSocket(widget.index);
-
-      context.read<WebSocketClientCubit>().send('tables', 0);
-      context.read<WebSocketClientCubit>().send('orders', 0);
-    });
     _sideMenuCtrl.addListener((index) {
-      // _pageCtrl.jumpToPage(index);
+      _pageIndex.value = index;
+      // _pageCtrl.animateToPage(index,
+      //     duration: const Duration(milliseconds: 300),
+      // curve: Curves.easeInBack);
+      _pageCtrl.jumpToPage(index);
       _title.value = _listIconMenu[index]['title'].toString();
     });
     super.initState();
   }
 
-  void _handleDataSocket(int tableIndexSelected) {
-    _channel.stream.listen(
-      (event) {
-        Map<String, dynamic> data = jsonDecode(event);
-
-        switch (data['event']) {
-          case 'tables-ws':
-            var res = jsonDecode(data['payload']);
-            context.read<DinnerTableCubit>().setTableList(
-                List<TableModel>.from(res.map((x) => TableModel.fromJson(x))));
-
-            break;
-          case 'orders-ws':
-            var res = jsonDecode(data['payload']);
-
-            var orderList = <OrderModel>[];
-            var orders =
-                List<OrderModel>.from(res.map((x) => OrderModel.fromJson(x)));
-
-            if (tableIndexSelected != 0) {
-              for (var order in orders) {
-                if (order.tableId == tableIndexSelected) {
-                  orderList.add(order);
-                }
-              }
-            } else {
-              orderList = orders;
-            }
-            context.read<OrderSocketCubit>().setOrderList(orderList);
-            break;
-          default:
-            log('event: $event');
-            break;
-        }
-      },
-      onDone: () {
-        log('Connection closed');
-      },
-      onError: (error) {
-        log('Error: $error');
-      },
-    );
-
-    // if (!mounted) return;
-  }
-
   @override
   void dispose() {
-    // _pageCtrl.dispose();
+    _pageCtrl.dispose();
     _sideMenuCtrl.dispose();
     super.dispose();
   }
@@ -155,9 +110,7 @@ class HomeViewState extends State<HomeView>
   Widget build(BuildContext context) {
     super.build(context);
 
-    return ResponsiveBreakpoints.of(context).isMobile
-        ? _buildMobileScreen()
-        : _buildDesktopWidget();
+    return _buildDesktopWidget();
   }
 
   Scaffold _buildDesktopWidget() {
@@ -190,12 +143,21 @@ class HomeViewState extends State<HomeView>
         },
         child: Row(
           children: [
-            _buildSideMenuWidget(),
+            context.isMobile ? const SizedBox() : _buildSideMenuWidget(),
             Expanded(
               child: Column(
                 children: [
                   _buildAppBar(),
-                  Expanded(child: widget.child),
+                  Expanded(
+                      child: ValueListenableBuilder(
+                    valueListenable: _pageIndex,
+                    builder: (context, value, child) => IndexedStack(
+                      index: _pageIndex.value,
+                      children: _listPage,
+                    ),
+                  )
+                      // PageView(controller: _pageCtrl, children: _listPage)
+                      ),
                 ],
               ),
             ),
@@ -262,7 +224,7 @@ class HomeViewState extends State<HomeView>
         child: Row(
           children: [
             Expanded(
-              child: widget.child,
+              child: PageView(controller: _pageCtrl, children: _listPage),
             ),
           ],
         ),
@@ -274,17 +236,20 @@ class HomeViewState extends State<HomeView>
     return AppBar(
       elevation: 0,
       backgroundColor: AppColors.background,
-      toolbarHeight: ResponsiveBreakpoints.of(context).isMobile ? null : 115,
+      toolbarHeight: context.isMobile ? null : 115,
+      leading: context.isMobile
+          ? Container(
+              constraints: const BoxConstraints(maxHeight: 40, maxWidth: 40),
+              child: const Card(child: Icon(Icons.menu)))
+          : null,
       title: ValueListenableBuilder(
           valueListenable: _title,
           builder: (context, value, child) {
             return Text(value,
                 style: kHeadingStyle.copyWith(
-                    fontWeight: FontWeight.w700,
-                    fontSize:
-                        ResponsiveBreakpoints.of(context).isMobile ? 24 : 36));
+                    fontWeight: FontWeight.w700, fontSize: 36.sp));
           }),
-      actions: ResponsiveBreakpoints.of(context).isMobile
+      actions: context.isMobile
           ? [
               _buildAvatar(),
               const SizedBox(

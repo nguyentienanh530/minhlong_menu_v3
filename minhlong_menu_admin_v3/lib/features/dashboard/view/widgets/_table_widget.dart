@@ -1,6 +1,6 @@
 part of '../screens/dashboard_screen.dart';
 
-extension _TableWidget on _DashboardScreenState {
+extension _TableWidget on _DashboardViewState {
   Widget _buildTableWidget(
       {required int index, required List<TableModel> dinnerTable}) {
     return Wrap(
@@ -35,7 +35,7 @@ extension _TableWidget on _DashboardScreenState {
                   hoverColor: AppColors.transparent,
                   onTap: () {
                     context.read<TableIndexSelectedCubit>().changeIndex(e.id);
-                    context.read<WebSocketClientCubit>().send('orders', e.id);
+                    Ultils.sendSocket(_channel, 'orders', e.id);
                   },
                   child: Card(
                     elevation: 4,
@@ -69,7 +69,6 @@ extension _TableWidget on _DashboardScreenState {
             )
             .toList());
   }
-}
 
 // class TableWidget extends _DashboardScreenState {
 //   TableWidget({super.key});
@@ -149,3 +148,4 @@ extension _TableWidget on _DashboardScreenState {
 //     });
 //   }
 // }
+}

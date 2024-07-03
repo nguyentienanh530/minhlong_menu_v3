@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:minhlong_menu_admin_v3/Routes/app_route.dart';
 import 'package:minhlong_menu_admin_v3/common/network/dio_client.dart';
@@ -10,7 +11,6 @@ import 'package:minhlong_menu_admin_v3/features/auth/data/provider/remote/auth_a
 import 'package:minhlong_menu_admin_v3/features/auth/data/respositories/auth_repository.dart';
 import 'package:minhlong_menu_admin_v3/features/home/cubit/table_index_selected_cubit.dart';
 import 'package:minhlong_menu_admin_v3/features/order/cubit/order_socket_cubit.dart';
-import 'package:responsive_framework/responsive_framework.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'bloc_observer.dart';
@@ -79,30 +79,32 @@ class _AppContentState extends State<AppContent> {
     if (state is AuthInitial) {
       return Container();
     }
-    return MaterialApp.router(
-      debugShowCheckedModeBanner: false,
-      routerConfig: AppRoute.routes,
-      scrollBehavior: MyCustomScrollBehavior(),
-      theme: ThemeData(
-        fontFamily: GoogleFonts.roboto().fontFamily,
-        scaffoldBackgroundColor: AppColors.background,
-        textTheme: const TextTheme(
-            displaySmall: TextStyle(color: AppColors.white),
-            displayLarge: TextStyle(color: AppColors.white),
-            displayMedium: TextStyle(color: AppColors.white)),
-        colorScheme: ColorScheme.fromSwatch(
-          primarySwatch: MaterialColor(
-            AppColors.themeColor.value,
-            getSwatch(AppColors.themeColor),
+    return ScreenUtilInit(
+      designSize: const Size(360, 690),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      // Use builder only if you need to use library outside ScreenUtilInit context
+      builder: (_, child) {
+        return MaterialApp.router(
+          debugShowCheckedModeBanner: false,
+          routerConfig: AppRoute.routes,
+          scrollBehavior: MyCustomScrollBehavior(),
+          theme: ThemeData(
+            fontFamily: GoogleFonts.roboto().fontFamily,
+            scaffoldBackgroundColor: AppColors.background,
+            textTheme: const TextTheme(
+                displaySmall: TextStyle(color: AppColors.white),
+                displayLarge: TextStyle(color: AppColors.white),
+                displayMedium: TextStyle(color: AppColors.white)),
+            colorScheme: ColorScheme.fromSwatch(
+              primarySwatch: MaterialColor(
+                AppColors.themeColor.value,
+                getSwatch(AppColors.themeColor),
+              ),
+            ),
           ),
-        ),
-      ),
-      builder: (context, child) => ResponsiveBreakpoints.builder(breakpoints: [
-        const Breakpoint(start: 0, end: 450, name: MOBILE),
-        const Breakpoint(start: 451, end: 800, name: TABLET),
-        const Breakpoint(start: 801, end: 1920, name: DESKTOP),
-        const Breakpoint(start: 1921, end: double.infinity, name: '4K'),
-      ], child: child!),
+        );
+      },
     );
   }
 

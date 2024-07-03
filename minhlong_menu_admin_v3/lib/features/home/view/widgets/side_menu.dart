@@ -54,7 +54,7 @@ extension _BuildSideMenuWidget on HomeViewState {
                     icon: item['icon'] as IconData,
                     onTap: (index, _) {
                       _sideMenuCtrl.changePage(index);
-                      context.go(item['route'] as String);
+                      // context.go(item['route'] as String);
                     });
               }),
               SideMenuItem(

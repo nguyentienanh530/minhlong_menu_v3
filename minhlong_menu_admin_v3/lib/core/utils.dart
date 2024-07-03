@@ -1,8 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 class Ultils {
   Future<dynamic> pickImage() async {
@@ -31,5 +34,19 @@ class Ultils {
   static String currencyFormat(double double) {
     final oCcy = NumberFormat("###,###,###", "vi");
     return oCcy.format(double);
+  }
+
+  static void sendSocket(
+      WebSocketChannel channel, String event, dynamic payload) {
+    if (channel.closeCode != null) {
+      debugPrint('Not connected');
+      return;
+    }
+
+    Map<String, dynamic> data = {
+      'event': event,
+      'payload': payload,
+    };
+    channel.sink.add(jsonEncode(data));
   }
 }

@@ -1,6 +1,6 @@
 part of '../screens/dashboard_screen.dart';
 
-extension _OrdersOnTableWidget on _DashboardScreenState {
+extension _OrdersOnTableWidget on _DashboardViewState {
   Widget _buildOrdersOnTable(List<OrderModel> orderList) {
     return StaggeredGrid.count(
         crossAxisCount: _gridCount(),
@@ -8,9 +8,9 @@ extension _OrdersOnTableWidget on _DashboardScreenState {
   }
 
   int _gridCount() {
-    if (ResponsiveBreakpoints.of(context).isMobile) {
+    if (context.isMobile) {
       return 2;
-    } else if (ResponsiveBreakpoints.of(context).isTablet) {
+    } else if (context.isTablet) {
       return 3;
     } else {
       return 4;
