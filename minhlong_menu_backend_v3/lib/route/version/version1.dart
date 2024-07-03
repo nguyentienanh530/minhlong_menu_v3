@@ -60,10 +60,10 @@ class Version1 implements Route {
     //======= Banner route =======
     Router.group(
       () {
-        Router.get('/banners', () => bannerController.index());
+        Router.get('/banners', bannerController.index);
         Router.delete("/{id}", bannerController.destroy);
       },
-      // prefix: '',
+      // prefix: '/banners',
       // middleware: [AuthenticateMiddleware()],
     );
 
