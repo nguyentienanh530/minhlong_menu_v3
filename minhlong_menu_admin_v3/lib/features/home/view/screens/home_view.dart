@@ -16,7 +16,6 @@ import '../../../../common/dialog/app_dialog.dart';
 import '../../../../common/widget/error_dialog.dart';
 import '../../../../core/app_asset.dart';
 import '../../../../core/app_colors.dart';
-import '../../../../core/app_const.dart';
 import '../../../../core/app_style.dart';
 import '../../../auth/bloc/auth_bloc.dart';
 part '../widgets/side_menu.dart';
@@ -92,8 +91,8 @@ class HomeViewState extends State<HomeView>
       _pageIndex.value = index;
       // _pageCtrl.animateToPage(index,
       //     duration: const Duration(milliseconds: 300),
-      // curve: Curves.easeInBack);
-      _pageCtrl.jumpToPage(index);
+      //     curve: Curves.easeInBack);
+      // _pageCtrl.jumpToPage(index);
       _title.value = _listIconMenu[index]['title'].toString();
     });
     super.initState();
@@ -115,6 +114,11 @@ class HomeViewState extends State<HomeView>
 
   Scaffold _buildDesktopWidget() {
     return Scaffold(
+      appBar: context.isMobile ? _buildAppBar() : null,
+      key: _scaffoldKey,
+      drawer: context.isMobile
+          ? _buildSideMenuWidget(displayMode: SideMenuDisplayMode.open)
+          : null,
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
           switch (state) {
@@ -143,21 +147,25 @@ class HomeViewState extends State<HomeView>
         },
         child: Row(
           children: [
-            context.isMobile ? const SizedBox() : _buildSideMenuWidget(),
+            context.isMobile
+                ? const SizedBox()
+                : _buildSideMenuWidget(
+                    displayMode: context.isTablet
+                        ? SideMenuDisplayMode.compact
+                        : SideMenuDisplayMode.open),
             Expanded(
               child: Column(
                 children: [
-                  _buildAppBar(),
+                  context.isMobile ? const SizedBox() : _buildHeader(),
                   Expanded(
-                      child: ValueListenableBuilder(
-                    valueListenable: _pageIndex,
-                    builder: (context, value, child) => IndexedStack(
-                      index: _pageIndex.value,
-                      children: _listPage,
-                    ),
-                  )
-                      // PageView(controller: _pageCtrl, children: _listPage)
+                    child: ValueListenableBuilder(
+                      valueListenable: _pageIndex,
+                      builder: (context, value, child) => IndexedStack(
+                        index: _pageIndex.value,
+                        children: _listPage,
                       ),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -181,122 +189,84 @@ class HomeViewState extends State<HomeView>
         });
   }
 
-  _buildMobileScreen() {
-    return Scaffold(
-      key: _scaffoldKey,
-      drawer: _buildSideMenuWidget(displayMode: SideMenuDisplayMode.open),
-      appBar: _buildAppBar(),
+  _buildAppBar() {
+    return AppBar(
+        backgroundColor: AppColors.background,
+        toolbarHeight: context.isMobile ? null : 115.h,
+        leading: context.isMobile
+            ? Card(
+                child: InkWell(
+                    onTap: () => _scaffoldKey.currentState?.openDrawer(),
+                    child: const Icon(Icons.menu)))
+            : null,
+        title: ValueListenableBuilder(
+            valueListenable: _title,
+            builder: (context, value, child) {
+              return Text(value,
+                  style: kHeadingStyle.copyWith(
+                      fontWeight: FontWeight.w700, fontSize: 25));
+            }),
+        actions: [
+          16.horizontalSpace,
+          context.isMobile
+              ? const SizedBox()
+              : Text(
+                  'Xin chèo, Nguyen Tien Anh',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: kSubHeadingStyle.copyWith(
+                      fontWeight: FontWeight.w700, fontSize: 20),
+                ),
+          16.horizontalSpace,
+          _buildAvatar(),
+          16.horizontalSpace,
+        ]);
+  }
 
-      //  AppBar(
-      //   leading: IconButton(
-      //     icon: const Icon(Icons.menu),
-      //     onPressed: () {
-      //       _scaffoldKey.currentState!.openDrawer();
-      //     },
-      //   ),
-      // ),
-      body: BlocListener<AuthBloc, AuthState>(
-        listener: (context, state) {
-          switch (state) {
-            case AuthLogoutSuccess():
-              context.read<AuthBloc>().add(AuthEventStarted());
-              context.pushReplacement(AppRoute.login);
-
-              break;
-            case AuthLogoutFailure(message: final msg):
-              showDialog(
-                context: context,
-                builder: (context) {
-                  return ErrorDialog(
-                    title: msg,
-                    onRetryText: 'Thử lại',
-                    onRetryPressed: () {
-                      context.pop();
-                      context.read<AuthBloc>().add(AuthLogoutStarted());
-                    },
-                  );
-                },
-              );
-              break;
-            default:
-          }
-        },
-        child: Row(
-          children: [
-            Expanded(
-              child: PageView(controller: _pageCtrl, children: _listPage),
-            ),
-          ],
-        ),
+  Widget _buildHeader() {
+    return SizedBox(
+      height: 115.h,
+      width: double.infinity,
+      child: Row(
+        children: [
+          30.horizontalSpace,
+          ValueListenableBuilder(
+              valueListenable: _title,
+              builder: (context, value, child) {
+                return Text(value,
+                    style: kHeadingStyle.copyWith(
+                        fontWeight: FontWeight.w700,
+                        fontSize: context.isMobile ? 25 : 36));
+              }),
+          const Spacer(),
+          Text(
+            'Xin chèo, Nguyen Tien Anh',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: kSubHeadingStyle.copyWith(
+                fontWeight: FontWeight.w700, fontSize: 22.sp),
+          ),
+          16.horizontalSpace,
+          _buildAvatar(),
+          30.horizontalSpace,
+        ],
       ),
     );
   }
 
-  _buildAppBar() {
-    return AppBar(
-      elevation: 0,
-      backgroundColor: AppColors.background,
-      toolbarHeight: context.isMobile ? null : 115,
-      leading: context.isMobile
-          ? Container(
-              constraints: const BoxConstraints(maxHeight: 40, maxWidth: 40),
-              child: const Card(child: Icon(Icons.menu)))
-          : null,
-      title: ValueListenableBuilder(
-          valueListenable: _title,
-          builder: (context, value, child) {
-            return Text(value,
-                style: kHeadingStyle.copyWith(
-                    fontWeight: FontWeight.w700, fontSize: 36.sp));
-          }),
-      actions: context.isMobile
-          ? [
-              _buildAvatar(),
-              const SizedBox(
-                width: defaultPadding,
-              ),
-            ]
-          : [
-              Container(
-                constraints: const BoxConstraints(maxWidth: 200),
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(
-                    'Xin chèo, Nguyen Tien Anh',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: kSubHeadingStyle.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(
-                width: defaultPadding,
-              ),
-              _buildAvatar(),
-              const SizedBox(
-                width: defaultPadding,
-              ),
-            ],
-    );
-  }
-
   Widget _buildAvatar() {
-    return FittedBox(
-      child: Container(
-        margin: const EdgeInsets.only(left: 10),
-        constraints: const BoxConstraints(
-          maxHeight: 45,
-          maxWidth: 45,
-        ),
-        decoration:
-            const BoxDecoration(color: AppColors.white, shape: BoxShape.circle),
-        child: Center(
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(50),
-            child: Image.asset(AppAsset.logo),
-          ),
+    return Container(
+      margin: const EdgeInsets.only(left: 10),
+      constraints: BoxConstraints(
+        maxHeight: 50.h,
+        maxWidth: 50.h,
+      ),
+      decoration:
+          const BoxDecoration(color: AppColors.white, shape: BoxShape.circle),
+      child: Center(
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(50),
+          child: Image.asset(AppAsset.logo),
         ),
       ),
     );

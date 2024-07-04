@@ -10,7 +10,7 @@ extension _LoginBody on _LoginScreenState {
               context.read<AuthBloc>().add(AuthAuthenticateStarted());
               break;
             case AuthAuthenticateSuccess():
-              context.go(AppRoute.dashboard);
+              context.go(AppRoute.home);
               break;
             default:
           }
@@ -38,24 +38,23 @@ extension _LoginBody on _LoginScreenState {
       child: FittedBox(
         child: Container(
           constraints: const BoxConstraints(maxWidth: 360),
-          padding: const EdgeInsets.symmetric(horizontal: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 44),
           margin: const EdgeInsets.symmetric(horizontal: 10),
           child: Form(
             key: _formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(height: 40),
                 const Center(child: _Wellcome()),
-                const SizedBox(height: 44),
+                44.verticalSpace,
                 _PhoneNumber(
                     emailcontroller: _emailCtrl,
                     onSubmit: (p0) {
                       _handleLoginSubmited();
                     }),
-                const SizedBox(height: 36),
+                36.verticalSpace,
                 _buildPassword(),
-                const SizedBox(height: 20),
+                20.verticalSpace,
                 const SizedBox(
                   width: 360,
                   child: Row(
@@ -63,11 +62,11 @@ extension _LoginBody on _LoginScreenState {
                       children: [_ButtonForgotPassword()]),
                 ),
                 _buildValidPassword(),
-                const SizedBox(height: 20),
+                20.verticalSpace,
                 _ButtonLogin(onTap: () {
                   _handleLoginSubmited();
                 }),
-                const SizedBox(height: 40),
+                40.verticalSpace,
               ]
                   .animate(interval: 50.ms)
                   .slideX(

@@ -3,13 +3,19 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:minhlong_menu_admin_v3/common/network/dio_client.dart';
+import 'package:minhlong_menu_admin_v3/common/widget/error_widget.dart';
 import 'package:minhlong_menu_admin_v3/core/extensions.dart';
 import 'package:badges/badges.dart' as badges;
+import 'package:minhlong_menu_admin_v3/features/dashboard/bloc/info_bloc.dart';
+import 'package:minhlong_menu_admin_v3/features/dashboard/data/model/info_model.dart';
+import 'package:minhlong_menu_admin_v3/features/dashboard/data/provider/info_api.dart';
+import 'package:minhlong_menu_admin_v3/features/dashboard/data/respositories/info_respository.dart';
 import 'package:minhlong_menu_admin_v3/features/dinner_table/data/model/table_model.dart';
 import 'package:minhlong_menu_admin_v3/features/home/cubit/table_index_selected_cubit.dart';
 import 'package:minhlong_menu_admin_v3/features/order/cubit/order_socket_cubit.dart';
-import 'package:minhlong_menu_admin_v3/features/web_socket_client/cubit/web_socket_client_cubit.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import '../../../../common/widget/common_icon_button.dart';
 import '../../../../core/api_config.dart';
@@ -22,22 +28,30 @@ import '../../../order/data/model/order_model.dart';
 
 part '../widgets/_table_widget.dart';
 part '../widgets/_orders_on_table_widget.dart';
+part '../widgets/_info_widget.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => TableIndexSelectedCubit(),
-        ),
-        BlocProvider(
-          create: (context) => DinnerTableCubit(),
-        )
-      ],
-      child: const DashboardView(),
+    return RepositoryProvider(
+      create: (context) => InfoRespository(InfoApi(DioClient().dio!)),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => TableIndexSelectedCubit(),
+          ),
+          BlocProvider(
+            create: (context) => DinnerTableCubit(),
+          ),
+          BlocProvider(
+            create: (context) => InfoBloc(context.read<InfoRespository>())
+              ..add(InfoFetchStarted()),
+          )
+        ],
+        child: const DashboardView(),
+      ),
     );
   }
 }
@@ -127,34 +141,43 @@ class _DashboardViewState extends State<DashboardView>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return _buildDesktopScreen();
-  }
-
-  Widget _buildMobileScreen() {
-    return const SizedBox();
-  }
-
-  Widget _buildTabletScreen() {
-    return const SizedBox();
-  }
-
-  Widget _buildDesktopScreen() {
     return Scaffold(
       body: BlocBuilder<TableIndexSelectedCubit, int>(
         builder: (context, state) {
           final dinnerTable = context.watch<DinnerTableCubit>().state;
           final orders = context.watch<OrderSocketCubit>().state;
 
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: defaultPadding),
-              _buildTableWidget(index: state, dinnerTable: dinnerTable),
-              Expanded(
-                child:
-                    SingleChildScrollView(child: _buildOrdersOnTable(orders)),
-              ),
-            ],
+          return Padding(
+            padding: const EdgeInsets.all(30).r,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildTableWidget(index: state, dinnerTable: dinnerTable),
+                const SizedBox(height: defaultPadding),
+                Expanded(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                          child: SingleChildScrollView(
+                              child: _buildOrdersOnTable(orders))),
+                      context.isDesktop
+                          ? Container(
+                              padding: const EdgeInsets.only(left: 30).r,
+                              width: 450.w,
+                              height: double.infinity,
+                              child: Column(
+                                children: [
+                                  _buildInfoWidget(),
+                                ],
+                              ),
+                            )
+                          : Container(),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           );
         },
       ),

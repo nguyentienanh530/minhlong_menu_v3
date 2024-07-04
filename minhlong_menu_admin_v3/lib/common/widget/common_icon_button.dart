@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../core/app_colors.dart';
 
@@ -16,8 +17,8 @@ class CommonIconButton extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         child: Container(
-          height: 30,
-          width: 30,
+          height: 40.h,
+          width: 40.h,
           padding: const EdgeInsets.all(1),
           decoration: BoxDecoration(
               color: color?.withOpacity(0.2) ??
@@ -25,7 +26,7 @@ class CommonIconButton extends StatelessWidget {
               borderRadius: BorderRadius.circular(5),
               border: Border.all(color: color ?? AppColors.themeColor)),
           child: Icon(icon ?? Icons.remove_red_eye,
-              color: color ?? AppColors.themeColor, size: 20),
+              color: color ?? AppColors.themeColor, size: 25.sp),
         ),
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../core/app_colors.dart';
 import '../../core/app_const.dart';
 import '../../core/app_style.dart';
@@ -36,7 +37,6 @@ class CommonTextField extends StatelessWidget {
     return TextFormField(
         controller: controller!,
         validator: validator,
-        // expands: true,
         onFieldSubmitted: onFieldSubmitted,
         textAlignVertical: TextAlignVertical.center,
         key: key,
@@ -49,23 +49,23 @@ class CommonTextField extends StatelessWidget {
         obscureText: obscureText ?? false,
         onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
         decoration: InputDecoration(
-            isDense: true,
+            // isDense: true,
             focusedErrorBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(textFieldBorderRadius),
+                borderRadius: BorderRadius.circular(textFieldBorderRadius).r,
                 borderSide: const BorderSide(color: AppColors.red)),
             errorBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(textFieldBorderRadius),
+                borderRadius: BorderRadius.circular(textFieldBorderRadius).r,
                 borderSide: const BorderSide(color: AppColors.red)),
             enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(textFieldBorderRadius),
+                borderRadius: BorderRadius.circular(textFieldBorderRadius).r,
                 borderSide: const BorderSide(color: AppColors.lavender)),
             suffixIcon: suffixIcon,
             prefixIcon: prefixIcon,
             focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(textFieldBorderRadius),
+                borderRadius: BorderRadius.circular(textFieldBorderRadius).r,
                 borderSide: const BorderSide(color: AppColors.lavender)),
             errorText: errorText,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 10.0),
+            contentPadding: const EdgeInsets.all(16).r,
             // filled: true,
             hintText: hintText,
             labelText: labelText ?? '',

@@ -1,3 +1,4 @@
+import 'package:minhlong_menu_backend_v3/app/http/controllers/api/v1/info_controller.dart';
 import 'package:vania/vania.dart';
 import '../../app/http/controllers/api/v1/auth_controller.dart';
 import '../../app/http/controllers/api/v1/banner_controller.dart';
@@ -74,5 +75,8 @@ class Version1 implements Route {
       Router.get('orders-completed', orderController.getOrderCountSuccess);
       Router.get('orders-chart', orderController.getOrdersDataChart);
     }, prefix: '/orders');
+
+    //======= Info route =======
+    Router.get('/info', infoController.index);
   }
 }

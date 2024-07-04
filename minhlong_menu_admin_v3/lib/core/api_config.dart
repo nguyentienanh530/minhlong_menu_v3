@@ -45,4 +45,7 @@ class ApiConfig {
   static const String createOrder = '/orders/create-order';
   static const String orderCompleted = '/orders/orders-completed';
   static const String ordersChart = '/orders/orders-chart';
+
+  //===== Info =====
+  static const String info = '/info';
 }

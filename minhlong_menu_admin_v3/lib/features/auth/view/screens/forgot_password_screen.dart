@@ -110,7 +110,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                   shadowColor: Colors.transparent,
                                   backgroundColor: AppColors.themeColor),
                               onPressed: () => _handleForgotPassword(),
-                              child: const Text('Đặt lại mật khẩu',
+                              child: Text('Đặt lại mật khẩu',
                                   style: kButtonWhiteStyle),
                             )),
                         const SizedBox(height: defaultPadding),
@@ -270,7 +270,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   Widget _buildHaveAccount() {
     return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-      const Text('Đã có tài khoản,', style: kButtonWhiteStyle),
+      Text('Đã có tài khoản,', style: kButtonWhiteStyle),
       const SizedBox(width: defaultPadding / 2),
       GestureDetector(
           onTap: () => context.go(AppRoute.login),

@@ -80,7 +80,7 @@ class _AppContentState extends State<AppContent> {
       return Container();
     }
     return ScreenUtilInit(
-      designSize: const Size(360, 690),
+      designSize: const Size(1920, 1024),
       minTextAdapt: true,
       splitScreenMode: true,
       // Use builder only if you need to use library outside ScreenUtilInit context
