@@ -2,61 +2,118 @@ part of '../screens/order_screen.dart';
 
 extension _HeaderWidget on _OrderScreenState {
   Widget get _headerWidget => SizedBox(
-        height: 78.h,
+        // height: 80.h,
         width: double.infinity,
-        child: Column(
-          children: [
-            Row(
-              children: [
-                _buildButtonSelectTypeOrderWidget(
-                    title: 'Đơn hiện tại', onTap: () {}),
-                10.horizontalSpace,
-                _buildButtonSelectTypeOrderWidget(
-                    title: 'Lịch sử đơn hàng', onTap: () {}),
-                const Spacer(),
-                Container(
-                  height: 40.h,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: defaultPadding),
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8).r,
-                    color: AppColors.white,
+        child: context.isMobile
+            ? Column(
+                children: [
+                  Row(
+                    children: [
+                      _buildButtonSelectTypeOrderWidget(
+                          title: 'Đơn hiện tại', onTap: () {}),
+                      10.horizontalSpace,
+                      _buildButtonSelectTypeOrderWidget(
+                          title: 'Lịch sử đơn hàng', onTap: () {}),
+                    ],
                   ),
-                  child: DropdownButton(
-                    padding: const EdgeInsets.all(0),
-                    value: '10',
-                    icon: const Icon(Icons.arrow_drop_down),
-                    borderRadius: BorderRadius.circular(defaultBorderRadius).r,
-                    underline: const SizedBox(),
-                    style: const TextStyle(color: AppColors.secondTextColor),
-                    dropdownColor: AppColors.white,
-                    items: _itemsDropdown,
-                    onChanged: (value) {},
+                  10.verticalSpace,
+                  Row(
+                    children: [
+                      Container(
+                        height: 40.h,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: defaultPadding),
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8).r,
+                          color: AppColors.white,
+                        ),
+                        child: DropdownButton(
+                          padding: const EdgeInsets.all(0),
+                          value: '10',
+                          icon: const Icon(Icons.arrow_drop_down),
+                          borderRadius:
+                              BorderRadius.circular(defaultBorderRadius).r,
+                          underline: const SizedBox(),
+                          style:
+                              const TextStyle(color: AppColors.secondTextColor),
+                          dropdownColor: AppColors.white,
+                          items: _itemsDropdown,
+                          onChanged: (value) {},
+                        ),
+                      ),
+                      20.horizontalSpace,
+                      InkWell(
+                        onTap: () {},
+                        child: Container(
+                          height: 40.h,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: defaultPadding),
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8).r,
+                            color: AppColors.red,
+                          ),
+                          child: const Text(
+                            'Thêm mới',
+                            style: kButtonWhiteStyle,
+                          ),
+                        ),
+                      )
+                    ],
                   ),
-                ),
-                20.horizontalSpace,
-                InkWell(
-                  onTap: () {},
-                  child: Container(
+                ],
+              )
+            : Row(
+                children: [
+                  _buildButtonSelectTypeOrderWidget(
+                      title: 'Đơn hiện tại', onTap: () {}),
+                  10.horizontalSpace,
+                  _buildButtonSelectTypeOrderWidget(
+                      title: 'Lịch sử đơn hàng', onTap: () {}),
+                  const Spacer(),
+                  Container(
                     height: 40.h,
                     padding:
                         const EdgeInsets.symmetric(horizontal: defaultPadding),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8).r,
-                      color: AppColors.red,
+                      color: AppColors.white,
                     ),
-                    child: const Text(
-                      'Thêm mới',
-                      style: kButtonWhiteStyle,
+                    child: DropdownButton(
+                      padding: const EdgeInsets.all(0),
+                      value: '10',
+                      icon: const Icon(Icons.arrow_drop_down),
+                      borderRadius:
+                          BorderRadius.circular(defaultBorderRadius).r,
+                      underline: const SizedBox(),
+                      style: const TextStyle(color: AppColors.secondTextColor),
+                      dropdownColor: AppColors.white,
+                      items: _itemsDropdown,
+                      onChanged: (value) {},
                     ),
                   ),
-                )
-              ],
-            ),
-          ],
-        ),
+                  20.horizontalSpace,
+                  InkWell(
+                    onTap: () {},
+                    child: Container(
+                      height: 40.h,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: defaultPadding),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8).r,
+                        color: AppColors.red,
+                      ),
+                      child: const Text(
+                        'Thêm mới',
+                        style: kButtonWhiteStyle,
+                      ),
+                    ),
+                  )
+                ],
+              ),
       );
 
   Widget _buildButtonSelectTypeOrderWidget({

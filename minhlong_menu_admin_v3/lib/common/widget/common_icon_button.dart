@@ -26,7 +26,7 @@ class CommonIconButton extends StatelessWidget {
               borderRadius: BorderRadius.circular(5),
               border: Border.all(color: color ?? AppColors.themeColor)),
           child: Icon(icon ?? Icons.remove_red_eye,
-              color: color ?? AppColors.themeColor, size: 25.sp),
+              color: color ?? AppColors.themeColor, size: 25),
         ),
       ),
     );
