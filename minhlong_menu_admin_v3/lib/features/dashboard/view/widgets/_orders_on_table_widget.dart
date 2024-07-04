@@ -1,7 +1,7 @@
 part of '../screens/dashboard_screen.dart';
 
 extension _OrdersOnTableWidget on _DashboardViewState {
-  Widget _buildOrdersOnTable(List<OrderModel> orderList) {
+  Widget _buildOrdersOnTable(List<OrderItem> orderList) {
     return StaggeredGrid.count(
         crossAxisCount: _gridCount(),
         children: orderList.map((e) => _buildItem(e)).toList());
@@ -17,7 +17,7 @@ extension _OrdersOnTableWidget on _DashboardViewState {
     }
   }
 
-  Widget _buildItem(OrderModel order) {
+  Widget _buildItem(OrderItem order) {
     return FittedBox(
       child: Card(
         elevation: 4,
@@ -45,7 +45,7 @@ extension _OrdersOnTableWidget on _DashboardViewState {
     );
   }
 
-  Widget _buildFooter(BuildContext context, OrderModel order) {
+  Widget _buildFooter(BuildContext context, OrderItem order) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -95,7 +95,7 @@ extension _OrdersOnTableWidget on _DashboardViewState {
     );
   }
 
-  Widget _buildHeader(BuildContext context, OrderModel order) {
+  Widget _buildHeader(BuildContext context, OrderItem order) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -117,7 +117,7 @@ extension _OrdersOnTableWidget on _DashboardViewState {
     );
   }
 
-  Widget _buildBody(BuildContext context, OrderModel order) {
+  Widget _buildBody(BuildContext context, OrderItem order) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: order.foodOrders

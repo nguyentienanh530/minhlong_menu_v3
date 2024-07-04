@@ -24,7 +24,7 @@ import '../../../../core/app_const.dart';
 import '../../../../core/app_style.dart';
 import '../../../../core/utils.dart';
 import '../../../dinner_table/cubit/dinner_table_cubit.dart';
-import '../../../order/data/model/order_model.dart';
+import '../../../order/data/model/order_item.dart';
 
 part '../widgets/_table_widget.dart';
 part '../widgets/_orders_on_table_widget.dart';
@@ -107,9 +107,9 @@ class _DashboardViewState extends State<DashboardView>
           case 'orders-ws':
             var res = jsonDecode(data['payload']);
 
-            var orderList = <OrderModel>[];
+            var orderList = <OrderItem>[];
             var orders =
-                List<OrderModel>.from(res.map((x) => OrderModel.fromJson(x)));
+                List<OrderItem>.from(res.map((x) => OrderItem.fromJson(x)));
 
             if (tableIndexSelected != 0) {
               for (var order in orders) {

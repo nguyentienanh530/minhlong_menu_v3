@@ -9,8 +9,8 @@ final class OrderFetchNewOrdersInProgress extends OrderState {}
 final class OrderFetchNewOrdersEmpty extends OrderState {}
 
 final class OrderFetchNewOrdersSuccess extends OrderState {
-  final List<OrderModel> orderList;
-  OrderFetchNewOrdersSuccess(this.orderList);
+  final OrderModel orders;
+  OrderFetchNewOrdersSuccess(this.orders);
 }
 
 final class OrderFetchNewOrdersFailure extends OrderState {

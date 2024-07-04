@@ -1,8 +1,9 @@
 import 'package:bloc/bloc.dart';
-import 'package:minhlong_menu_admin_v3/features/order/data/model/order_model.dart';
 
-class OrderSocketCubit extends Cubit<List<OrderModel>> {
-  OrderSocketCubit() : super(<OrderModel>[]);
+import '../data/model/order_item.dart';
 
-  void setOrderList(List<OrderModel> list) => emit(list);
+class OrderSocketCubit extends Cubit<List<OrderItem>> {
+  OrderSocketCubit() : super(<OrderItem>[]);
+
+  void setOrderList(List<OrderItem> list) => emit(list);
 }

@@ -70,9 +70,9 @@ class Version1 implements Route {
 
     //======= Order route =======
     Router.group(() {
+      Router.get('new-orders', orderController.getNewOrders);
       Router.post('create-order', orderController.create);
       Router.get('new-orders-by-table', orderController.getNewOrdersByTable);
-      Router.get('orders-completed', orderController.getOrderCountSuccess);
       Router.get('orders-chart', orderController.getOrdersDataChart);
     }, prefix: '/orders');
 

@@ -1,7 +1,7 @@
 part of '../screens/order_screen.dart';
 
-extension _HeaderWidget on _OrderScreenState {
-  Widget get _headerWidget => SizedBox(
+extension _OrderHeaderWidget on _OrderScreenState {
+  Widget get _orderHeaderWidget => SizedBox(
         // height: 80.h,
         width: double.infinity,
         child: context.isMobile

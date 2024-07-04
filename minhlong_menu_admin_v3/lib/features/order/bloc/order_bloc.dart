@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:minhlong_menu_admin_v3/features/order/data/respositories/order_repository.dart';
 
+import '../data/model/order_item.dart';
 import '../data/model/order_model.dart';
 
 part 'order_event.dart';
@@ -20,10 +21,13 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
   FutureOr<void> _orderFetchNewOrdersStarted(
       OrderFetchNewOrdersStarted event, Emitter<OrderState> emit) async {
     emit(OrderFetchNewOrdersInProgress());
-    final result = await _orderRespository.getNewOrders();
+    final result = await _orderRespository.getNewOrders(
+      page: event.page,
+      limit: event.limit,
+    );
     result.when(
       success: (orderList) {
-        if (orderList.isEmpty) {
+        if (orderList.orderItems.isEmpty) {
           emit(OrderFetchNewOrdersEmpty());
         }
         emit(OrderFetchNewOrdersSuccess(orderList));

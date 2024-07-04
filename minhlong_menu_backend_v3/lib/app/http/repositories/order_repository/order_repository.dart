@@ -2,15 +2,6 @@ import 'dart:async';
 import '../../../models/order.dart';
 
 class OrderRepository {
-  Future getNewOrders() async {
-    var orders = await Order()
-        .query()
-        .where('status', '=', 'new')
-        .orderBy('created_at', 'desc')
-        .get();
-    return orders;
-  }
-
   Future getOrderSuccess() async {
     var orders = await Order()
         .query()
@@ -79,7 +70,7 @@ class OrderRepository {
     }
   }
 
-  Future getAllNewOrders() async {
+  Future getNewOrders() async {
     return await Order()
         .query()
         .select([

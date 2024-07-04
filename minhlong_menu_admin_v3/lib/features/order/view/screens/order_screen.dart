@@ -11,12 +11,14 @@ import 'package:minhlong_menu_admin_v3/core/app_style.dart';
 import 'package:minhlong_menu_admin_v3/core/extensions.dart';
 import 'package:minhlong_menu_admin_v3/core/utils.dart';
 import 'package:minhlong_menu_admin_v3/features/order/data/provider/order_api.dart';
+import 'package:number_paginator/number_paginator.dart';
 
 import '../../bloc/order_bloc.dart';
+import '../../data/model/order_item.dart';
 import '../../data/model/order_model.dart';
 import '../../data/respositories/order_repository.dart';
-part '../widgets/_header_widget.dart';
-part '../widgets/_body_widget.dart';
+part '../widgets/_order_header_widget.dart';
+part '../widgets/_order_body_widget.dart';
 
 class OrderScreen extends StatefulWidget {
   const OrderScreen({super.key});
@@ -26,6 +28,8 @@ class OrderScreen extends StatefulWidget {
 }
 
 class _OrderScreenState extends State<OrderScreen> {
+  final NumberPaginatorController _numberPaginatorcontroller =
+      NumberPaginatorController();
   final List<DropdownMenuItem<String>> _itemsDropdown = [
     const DropdownMenuItem(value: '10', child: Text('10')),
     const DropdownMenuItem(value: '20', child: Text('20')),
@@ -40,6 +44,13 @@ class _OrderScreenState extends State<OrderScreen> {
   ];
 
   final _listTitleTable = ['STT', 'Ngày', 'Tổng món', 'Tổng tiền', 'Hành động'];
+
+  @override
+  void dispose() {
+    _numberPaginatorcontroller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return RepositoryProvider(
@@ -47,15 +58,15 @@ class _OrderScreenState extends State<OrderScreen> {
           OrderRepository(orderApi: OrderApi(DioClient().dio!)),
       child: BlocProvider(
         create: (context) => OrderBloc(context.read<OrderRepository>())
-          ..add(OrderFetchNewOrdersStarted()),
+          ..add(OrderFetchNewOrdersStarted(page: 1, limit: 10)),
         child: Scaffold(
           body: Padding(
             padding: const EdgeInsets.all(30).r,
             child: Column(
               children: [
-                _headerWidget,
+                _orderHeaderWidget,
                 30.verticalSpace,
-                Expanded(child: _bodyWidget())
+                Expanded(child: _orderBodyWidget())
               ],
             ),
           ),

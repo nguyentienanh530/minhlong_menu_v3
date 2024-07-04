@@ -1,35 +1,27 @@
 part of '../screens/order_screen.dart';
 
-extension _BodyWidget on _OrderScreenState {
-  Widget _bodyWidget() {
+extension _OrderBodyWidget on _OrderScreenState {
+  Widget _orderBodyWidget() {
     return Container(
-      constraints: const BoxConstraints(maxWidth: 1707),
-      child: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        scrollDirection: Axis.horizontal,
-        child: Container(
-          padding: const EdgeInsets.all(5).r,
-          decoration: BoxDecoration(
-            color: AppColors.white,
-            borderRadius: BorderRadius.circular(defaultBorderRadius).r,
-          ),
-          child: Builder(builder: (context) {
-            var newOrdersState = context.watch<OrderBloc>().state;
-            return (switch (newOrdersState) {
-              OrderFetchNewOrdersSuccess() =>
-                _tableWidget(newOrdersState.orderList),
-              OrderFetchNewOrdersFailure() =>
-                ErrWidget(error: newOrdersState.message),
-              OrderFetchNewOrdersInProgress() => const Loading(),
-              _ => const SizedBox.shrink(),
-            });
-          }),
-        ),
+      padding: const EdgeInsets.all(5).r,
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(defaultBorderRadius).r,
       ),
+      child: Builder(builder: (context) {
+        var newOrdersState = context.watch<OrderBloc>().state;
+        return (switch (newOrdersState) {
+          OrderFetchNewOrdersSuccess() => _tableWidget(newOrdersState.orders),
+          OrderFetchNewOrdersFailure() =>
+            ErrWidget(error: newOrdersState.message),
+          OrderFetchNewOrdersInProgress() => const Loading(),
+          _ => const SizedBox.shrink(),
+        });
+      }),
     );
   }
 
-  Widget _tableWidget(List<OrderModel> orders) {
+  Widget _tableWidget(OrderModel orders) {
     return Column(
       children: [
         Container(
@@ -64,13 +56,62 @@ extension _BodyWidget on _OrderScreenState {
                 5: FixedColumnWidth(64),
               },
                   defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                  children: orders
+                  children: orders.orderItems
                       .asMap()
                       .map((index, value) =>
                           MapEntry(index, _buildRowTable(index, value)))
                       .values
                       .toList())),
         ),
+        Container(
+          width: double.infinity,
+          height: 71.h,
+          alignment: Alignment.center,
+          padding: const EdgeInsets.all(10).r,
+          child: Row(
+            children: [
+              Expanded(
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    'Hiển thị 1 đến 10 trong số 100 đơn',
+                    style:
+                        kBodyStyle.copyWith(color: AppColors.secondTextColor),
+                  ),
+                ),
+              ),
+              const Spacer(),
+              SizedBox(
+                width: 250,
+                child: NumberPaginator(
+                  initialPage: 4,
+                  controller: _numberPaginatorcontroller,
+                  // by default, the paginator shows numbers as center content
+                  numberPages: orders.totalPage,
+                  onPageChange: (int index) {
+                    // _currentPage = index;
+                  },
+                  config: NumberPaginatorUIConfig(
+                      buttonShape: RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.circular(textFieldBorderRadius),
+                      ),
+                      buttonPadding: const EdgeInsets.symmetric(
+                        horizontal: -10,
+                      ),
+                      buttonTextStyle: kBodyStyle,
+                      buttonSelectedForegroundColor: AppColors.white,
+                      buttonUnselectedForegroundColor:
+                          AppColors.secondTextColor,
+                      buttonUnselectedBackgroundColor:
+                          AppColors.black.withOpacity(0.1),
+                      buttonSelectedBackgroundColor: AppColors.red,
+                      mainAxisAlignment: MainAxisAlignment.center),
+                ),
+              ),
+            ],
+          ),
+        )
       ],
     );
   }
@@ -89,7 +130,7 @@ extension _BodyWidget on _OrderScreenState {
     );
   }
 
-  TableRow _buildRowTable(int index, OrderModel order) {
+  TableRow _buildRowTable(int index, OrderItem orderItem) {
     return TableRow(
       decoration: BoxDecoration(
         color:
@@ -108,7 +149,7 @@ extension _BodyWidget on _OrderScreenState {
           height: 70.h,
           alignment: Alignment.center,
           child: Text(
-            Ultils().formatDateToString(order.createdAt, isShort: true),
+            Ultils().formatDateToString(orderItem.createdAt, isShort: true),
             style: kBodyStyle.copyWith(color: AppColors.secondTextColor),
           ),
         ),
@@ -116,7 +157,7 @@ extension _BodyWidget on _OrderScreenState {
           height: 70.h,
           alignment: Alignment.center,
           child: Text(
-            order.foodOrders.length.toString(),
+            orderItem.foodOrders.length.toString(),
             style: kBodyStyle.copyWith(color: AppColors.secondTextColor),
           ),
         ),
@@ -124,7 +165,7 @@ extension _BodyWidget on _OrderScreenState {
           height: 70.h,
           alignment: Alignment.center,
           child: Text(
-            Ultils.currencyFormat(order.totalPrice),
+            Ultils.currencyFormat(orderItem.totalPrice),
             style: kBodyStyle.copyWith(color: AppColors.secondTextColor),
           ),
         ),

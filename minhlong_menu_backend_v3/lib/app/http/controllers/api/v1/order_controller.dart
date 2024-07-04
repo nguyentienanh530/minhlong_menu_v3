@@ -127,6 +127,63 @@ class OrderController extends Controller {
     }
   }
 
+  Future<Response> getNewOrders(Request request) async {
+    try {
+      int page = request.input('page');
+      int limit = request.input('limit');
+
+      var orders = await _orderRepository.getNewOrders();
+
+      final int totalItems = orders.length;
+      final int totalPages = (totalItems / limit).ceil();
+      final int startIndex = (page - 1) * limit;
+      final int endIndex = startIndex + limit;
+
+      List<Map<String, dynamic>> formattedOrders = [];
+
+      var groupedOrders = groupOrdersById(orders);
+
+      groupedOrders.forEach((id, ordersList) {
+        Map<String, dynamic> orderMap = {
+          'id': id,
+          'status': ordersList.first['status'],
+          'total_price': ordersList.first['total_price'],
+          'payed_at': ordersList.first['payed_at'],
+          'created_at': ordersList.first['created_at'],
+          'updated_at': ordersList.first['updated_at'],
+          'foods': ordersList.map((order) {
+            return {
+              'name': order['name'],
+              'quantity': order['quantity'],
+              'price': order['price'],
+              'note': order['note'],
+              'total_amount': order['total_amount'],
+              'photo_gallery': order['photo_gallery'],
+            };
+          }).toList(),
+        };
+
+        formattedOrders.add(orderMap);
+      });
+
+      List<Map<String, dynamic>> pageData = formattedOrders.sublist(
+          startIndex, endIndex < totalItems ? endIndex : totalItems);
+
+      return AppResponse().ok(statusCode: HttpStatus.ok, data: {
+        'page': page,
+        'limit': limit,
+        'total_page': totalPages,
+        'total_item': totalItems,
+        'data': pageData
+      });
+    } catch (e) {
+      print('error: $e');
+      return AppResponse().error(
+          statusCode: HttpStatus.internalServerError,
+          message: 'connection error');
+    }
+  }
+
   Map<int, List<dynamic>> groupOrdersById(List<dynamic> orders) {
     Map<int, List<dynamic>> groupedOrders = {};
     for (var order in orders) {
@@ -147,22 +204,6 @@ class OrderController extends Controller {
         statusCode: HttpStatus.ok,
         data: orders,
       );
-    } catch (e) {
-      return AppResponse().error(
-        statusCode: HttpStatus.internalServerError,
-        message: 'connection error',
-      );
-    }
-  }
-
-  Future<Response> getOrderCountSuccess() async {
-    try {
-      var data = await _orderRepository.getOrderSuccess();
-      if (data != null) {
-        return AppResponse().ok(statusCode: HttpStatus.ok, data: data.length);
-      } else {
-        return AppResponse().ok(statusCode: HttpStatus.ok, data: 0);
-      }
     } catch (e) {
       return AppResponse().error(
         statusCode: HttpStatus.internalServerError,
