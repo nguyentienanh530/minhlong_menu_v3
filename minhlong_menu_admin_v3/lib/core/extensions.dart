@@ -16,6 +16,10 @@ extension BuildContextExtensions on BuildContext {
       sizeDevice.shortestSide >= 600 && sizeDevice.width < 1100;
   bool get isDesktop => sizeDevice.width >= 1100;
   bool get is4k => sizeDevice.width >= 1920;
+  bool get isPortrait =>
+      Orientation.portrait == MediaQuery.of(this).orientation;
+  bool get isLandscape =>
+      Orientation.landscape == MediaQuery.of(this).orientation;
 }
 
 void pop(BuildContext context, int returnedLevel) {

@@ -20,12 +20,8 @@ OrderModel _$OrderModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$OrderModel {
-  int get page => throw _privateConstructorUsedError;
-  int get limit => throw _privateConstructorUsedError;
-  @JsonKey(name: 'total_page')
-  int get totalPage => throw _privateConstructorUsedError;
-  @JsonKey(name: 'total_item')
-  int get totalItem => throw _privateConstructorUsedError;
+  @JsonKey(name: 'pagination')
+  PaginationModel? get paginationModel => throw _privateConstructorUsedError;
   @JsonKey(name: 'data')
   List<OrderItem> get orderItems => throw _privateConstructorUsedError;
 
@@ -42,11 +38,10 @@ abstract class $OrderModelCopyWith<$Res> {
       _$OrderModelCopyWithImpl<$Res, OrderModel>;
   @useResult
   $Res call(
-      {int page,
-      int limit,
-      @JsonKey(name: 'total_page') int totalPage,
-      @JsonKey(name: 'total_item') int totalItem,
+      {@JsonKey(name: 'pagination') PaginationModel? paginationModel,
       @JsonKey(name: 'data') List<OrderItem> orderItems});
+
+  $PaginationModelCopyWith<$Res>? get paginationModel;
 }
 
 /// @nodoc
@@ -62,34 +57,31 @@ class _$OrderModelCopyWithImpl<$Res, $Val extends OrderModel>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? page = null,
-    Object? limit = null,
-    Object? totalPage = null,
-    Object? totalItem = null,
+    Object? paginationModel = freezed,
     Object? orderItems = null,
   }) {
     return _then(_value.copyWith(
-      page: null == page
-          ? _value.page
-          : page // ignore: cast_nullable_to_non_nullable
-              as int,
-      limit: null == limit
-          ? _value.limit
-          : limit // ignore: cast_nullable_to_non_nullable
-              as int,
-      totalPage: null == totalPage
-          ? _value.totalPage
-          : totalPage // ignore: cast_nullable_to_non_nullable
-              as int,
-      totalItem: null == totalItem
-          ? _value.totalItem
-          : totalItem // ignore: cast_nullable_to_non_nullable
-              as int,
+      paginationModel: freezed == paginationModel
+          ? _value.paginationModel
+          : paginationModel // ignore: cast_nullable_to_non_nullable
+              as PaginationModel?,
       orderItems: null == orderItems
           ? _value.orderItems
           : orderItems // ignore: cast_nullable_to_non_nullable
               as List<OrderItem>,
     ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $PaginationModelCopyWith<$Res>? get paginationModel {
+    if (_value.paginationModel == null) {
+      return null;
+    }
+
+    return $PaginationModelCopyWith<$Res>(_value.paginationModel!, (value) {
+      return _then(_value.copyWith(paginationModel: value) as $Val);
+    });
   }
 }
 
@@ -102,11 +94,11 @@ abstract class _$$OrderModelImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {int page,
-      int limit,
-      @JsonKey(name: 'total_page') int totalPage,
-      @JsonKey(name: 'total_item') int totalItem,
+      {@JsonKey(name: 'pagination') PaginationModel? paginationModel,
       @JsonKey(name: 'data') List<OrderItem> orderItems});
+
+  @override
+  $PaginationModelCopyWith<$Res>? get paginationModel;
 }
 
 /// @nodoc
@@ -120,29 +112,14 @@ class __$$OrderModelImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? page = null,
-    Object? limit = null,
-    Object? totalPage = null,
-    Object? totalItem = null,
+    Object? paginationModel = freezed,
     Object? orderItems = null,
   }) {
     return _then(_$OrderModelImpl(
-      page: null == page
-          ? _value.page
-          : page // ignore: cast_nullable_to_non_nullable
-              as int,
-      limit: null == limit
-          ? _value.limit
-          : limit // ignore: cast_nullable_to_non_nullable
-              as int,
-      totalPage: null == totalPage
-          ? _value.totalPage
-          : totalPage // ignore: cast_nullable_to_non_nullable
-              as int,
-      totalItem: null == totalItem
-          ? _value.totalItem
-          : totalItem // ignore: cast_nullable_to_non_nullable
-              as int,
+      paginationModel: freezed == paginationModel
+          ? _value.paginationModel
+          : paginationModel // ignore: cast_nullable_to_non_nullable
+              as PaginationModel?,
       orderItems: null == orderItems
           ? _value._orderItems
           : orderItems // ignore: cast_nullable_to_non_nullable
@@ -155,10 +132,7 @@ class __$$OrderModelImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$OrderModelImpl implements _OrderModel {
   _$OrderModelImpl(
-      {this.page = 0,
-      this.limit = 0,
-      @JsonKey(name: 'total_page') this.totalPage = 0,
-      @JsonKey(name: 'total_item') this.totalItem = 0,
+      {@JsonKey(name: 'pagination') this.paginationModel,
       @JsonKey(name: 'data')
       final List<OrderItem> orderItems = const <OrderItem>[]})
       : _orderItems = orderItems;
@@ -167,17 +141,8 @@ class _$OrderModelImpl implements _OrderModel {
       _$$OrderModelImplFromJson(json);
 
   @override
-  @JsonKey()
-  final int page;
-  @override
-  @JsonKey()
-  final int limit;
-  @override
-  @JsonKey(name: 'total_page')
-  final int totalPage;
-  @override
-  @JsonKey(name: 'total_item')
-  final int totalItem;
+  @JsonKey(name: 'pagination')
+  final PaginationModel? paginationModel;
   final List<OrderItem> _orderItems;
   @override
   @JsonKey(name: 'data')
@@ -189,7 +154,7 @@ class _$OrderModelImpl implements _OrderModel {
 
   @override
   String toString() {
-    return 'OrderModel(page: $page, limit: $limit, totalPage: $totalPage, totalItem: $totalItem, orderItems: $orderItems)';
+    return 'OrderModel(paginationModel: $paginationModel, orderItems: $orderItems)';
   }
 
   @override
@@ -197,20 +162,16 @@ class _$OrderModelImpl implements _OrderModel {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$OrderModelImpl &&
-            (identical(other.page, page) || other.page == page) &&
-            (identical(other.limit, limit) || other.limit == limit) &&
-            (identical(other.totalPage, totalPage) ||
-                other.totalPage == totalPage) &&
-            (identical(other.totalItem, totalItem) ||
-                other.totalItem == totalItem) &&
+            (identical(other.paginationModel, paginationModel) ||
+                other.paginationModel == paginationModel) &&
             const DeepCollectionEquality()
                 .equals(other._orderItems, _orderItems));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, page, limit, totalPage,
-      totalItem, const DeepCollectionEquality().hash(_orderItems));
+  int get hashCode => Object.hash(runtimeType, paginationModel,
+      const DeepCollectionEquality().hash(_orderItems));
 
   @JsonKey(ignore: true)
   @override
@@ -228,10 +189,7 @@ class _$OrderModelImpl implements _OrderModel {
 
 abstract class _OrderModel implements OrderModel {
   factory _OrderModel(
-          {final int page,
-          final int limit,
-          @JsonKey(name: 'total_page') final int totalPage,
-          @JsonKey(name: 'total_item') final int totalItem,
+          {@JsonKey(name: 'pagination') final PaginationModel? paginationModel,
           @JsonKey(name: 'data') final List<OrderItem> orderItems}) =
       _$OrderModelImpl;
 
@@ -239,15 +197,8 @@ abstract class _OrderModel implements OrderModel {
       _$OrderModelImpl.fromJson;
 
   @override
-  int get page;
-  @override
-  int get limit;
-  @override
-  @JsonKey(name: 'total_page')
-  int get totalPage;
-  @override
-  @JsonKey(name: 'total_item')
-  int get totalItem;
+  @JsonKey(name: 'pagination')
+  PaginationModel? get paginationModel;
   @override
   @JsonKey(name: 'data')
   List<OrderItem> get orderItems;

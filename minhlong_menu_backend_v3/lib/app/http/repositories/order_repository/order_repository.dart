@@ -70,7 +70,7 @@ class OrderRepository {
     }
   }
 
-  Future getNewOrders() async {
+  Future getOrders(String status) async {
     return await Order()
         .query()
         .select([
@@ -90,7 +90,7 @@ class OrderRepository {
         ])
         .join('order_detail', 'order.id', '=', 'order_detail.order_id')
         .join('food', 'food.id', '=', 'order_detail.food_id')
-        .where('status', '=', 'new')
+        .where('status', '=', status)
         .get();
   }
 }

@@ -1,6 +1,6 @@
 part of '../screens/order_screen.dart';
 
-extension _OrderBodyWidget on _OrderScreenState {
+extension _OrderBodyWidget on _OrderViewState {
   Widget _orderBodyWidget() {
     return Container(
       padding: const EdgeInsets.all(5).r,
@@ -8,35 +8,25 @@ extension _OrderBodyWidget on _OrderScreenState {
         color: AppColors.white,
         borderRadius: BorderRadius.circular(defaultBorderRadius).r,
       ),
-      child: Builder(builder: (context) {
-        var newOrdersState = context.watch<OrderBloc>().state;
-        return (switch (newOrdersState) {
-          OrderFetchNewOrdersSuccess() => _tableWidget(newOrdersState.orders),
-          OrderFetchNewOrdersFailure() =>
-            ErrWidget(error: newOrdersState.message),
-          OrderFetchNewOrdersInProgress() => const Loading(),
-          _ => const SizedBox.shrink(),
-        });
-      }),
+      child: _tableWidget(),
     );
   }
 
-  Widget _tableWidget(OrderModel orders) {
+  Widget _tableWidget() {
     return Column(
       children: [
         Container(
           width: double.infinity,
-          height: 71.h,
+          height: 71,
           alignment: Alignment.center,
           child: Table(
-            // border: TableBorder.all(),
-
             columnWidths: const <int, TableColumnWidth>{
               0: FixedColumnWidth(100),
               1: FlexColumnWidth(),
               2: FlexColumnWidth(),
               3: FlexColumnWidth(),
-              5: FixedColumnWidth(64),
+              4: FlexColumnWidth(),
+              5: FixedColumnWidth(80),
             },
             defaultVerticalAlignment: TableCellVerticalAlignment.middle,
             children: <TableRow>[
@@ -45,75 +35,123 @@ extension _OrderBodyWidget on _OrderScreenState {
           ),
         ),
         Expanded(
-          child: SingleChildScrollView(
-              child: Table(
-                  // border: TableBorder.all(),
-                  columnWidths: const <int, TableColumnWidth>{
-                0: FixedColumnWidth(100),
-                1: FlexColumnWidth(),
-                2: FlexColumnWidth(),
-                3: FlexColumnWidth(),
-                5: FixedColumnWidth(64),
-              },
-                  defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                  children: orders.orderItems
-                      .asMap()
-                      .map((index, value) =>
-                          MapEntry(index, _buildRowTable(index, value)))
-                      .values
-                      .toList())),
-        ),
-        Container(
-          width: double.infinity,
-          height: 71.h,
-          alignment: Alignment.center,
-          padding: const EdgeInsets.all(10).r,
-          child: Row(
-            children: [
-              Expanded(
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
+          child: Builder(builder: (context) {
+            var newOrdersState = context.watch<OrderBloc>().state;
+            switch (newOrdersState) {
+              case OrderFetchNewOrdersSuccess():
+                context
+                    .read<PaginationCubit>()
+                    .setPagination(newOrdersState.orders.paginationModel!);
+                return SingleChildScrollView(
+                    child: _buildWidgetSuccess(newOrdersState.orders));
+
+              case OrderFetchNewOrdersFailure():
+                return ErrWidget(error: newOrdersState.message);
+
+              case OrderFetchNewOrdersInProgress():
+                return const Loading();
+
+              case OrderFetchNewOrdersEmpty():
+                return Center(
                   child: Text(
-                    'Hiển thị 1 đến 10 trong số 100 đơn',
+                    'Không có dữ liệu',
                     style:
                         kBodyStyle.copyWith(color: AppColors.secondTextColor),
                   ),
-                ),
-              ),
-              const Spacer(),
-              SizedBox(
-                width: 250,
-                child: NumberPaginator(
-                  initialPage: 4,
-                  controller: _numberPaginatorcontroller,
-                  // by default, the paginator shows numbers as center content
-                  numberPages: orders.totalPage,
-                  onPageChange: (int index) {
-                    // _currentPage = index;
-                  },
-                  config: NumberPaginatorUIConfig(
-                      buttonShape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(textFieldBorderRadius),
-                      ),
-                      buttonPadding: const EdgeInsets.symmetric(
-                        horizontal: -10,
-                      ),
-                      buttonTextStyle: kBodyStyle,
-                      buttonSelectedForegroundColor: AppColors.white,
-                      buttonUnselectedForegroundColor:
-                          AppColors.secondTextColor,
-                      buttonUnselectedBackgroundColor:
-                          AppColors.black.withOpacity(0.1),
-                      buttonSelectedBackgroundColor: AppColors.red,
-                      mainAxisAlignment: MainAxisAlignment.center),
-                ),
-              ),
-            ],
-          ),
-        )
+                );
+
+              default:
+                return const SizedBox();
+            }
+          }),
+        ),
+        _buildBottomWidget()
+
+        // _buildBottomWidget(_orderModel.value)
       ],
     );
+  }
+
+  Widget _buildBottomWidget() {
+    return Builder(builder: (context) {
+      var pagination = context.watch<PaginationCubit>().state;
+      return Container(
+        width: double.infinity,
+        height: 71,
+        padding: const EdgeInsets.all(10).r,
+        child: Row(
+          children: [
+            context.isMobile
+                ? const SizedBox()
+                : Expanded(
+                    child: FittedBox(
+                      alignment: Alignment.centerLeft,
+                      fit: BoxFit.scaleDown,
+                      child: ValueListenableBuilder<OrderModel>(
+                        valueListenable: _orderModel,
+                        builder: (context, order, child) {
+                          return ValueListenableBuilder(
+                              valueListenable: _limit,
+                              builder: (context, limit, child) => Text(
+                                    'Hiển thị 1 đến $limit trong số ${pagination.totalItem} đơn',
+                                    style: kBodyStyle.copyWith(
+                                        color: AppColors.secondTextColor),
+                                  ));
+                        },
+                      ),
+                    ),
+                  ),
+            context.isDesktop ? const Spacer() : const SizedBox(),
+            Expanded(
+              child: ValueListenableBuilder(
+                valueListenable: _curentPage,
+                builder: (context, value, child) {
+                  return Container(
+                    alignment: Alignment.centerRight,
+                    child: NumberPagination(
+                      onPageChanged: (int pageNumber) {
+                        _curentPage.value = pageNumber;
+
+                        _fetchData(
+                            status: _listStatus[_tabController.index],
+                            page: pageNumber,
+                            limit: _limit.value);
+                      },
+                      fontSize: 16,
+                      buttonElevation: 10,
+                      buttonRadius: textFieldBorderRadius,
+                      pageTotal: pagination.totalPage,
+                      pageInit: _curentPage.value,
+                      colorPrimary: AppColors.themeColor,
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      );
+    });
+  }
+
+  Widget _buildWidgetSuccess(OrderModel orders) {
+    return Table(
+        // border: TableBorder.all(),
+        columnWidths: const <int, TableColumnWidth>{
+          0: FixedColumnWidth(100),
+          1: FlexColumnWidth(),
+          2: FlexColumnWidth(),
+          3: FlexColumnWidth(),
+          4: FlexColumnWidth(),
+          5: FixedColumnWidth(80),
+        },
+        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+        children: orders.orderItems
+            .asMap()
+            .map(
+                (index, value) => MapEntry(index, _buildRowTable(index, value)))
+            .values
+            .toList());
   }
 
   TableRow _buildRowTitle() {
@@ -138,10 +176,10 @@ extension _OrderBodyWidget on _OrderScreenState {
       ),
       children: <Widget>[
         Container(
-          height: 70.h,
+          height: 70,
           alignment: Alignment.center,
           child: Text(
-            '${index + 1}',
+            '${orderItem.id}',
             style: kBodyStyle.copyWith(color: AppColors.secondTextColor),
           ),
         ),
@@ -172,8 +210,18 @@ extension _OrderBodyWidget on _OrderScreenState {
         Container(
           height: 70.h,
           alignment: Alignment.center,
+          child: Text(
+            _handleStatus(orderItem.status),
+            style: kBodyStyle.copyWith(color: _handleColor(orderItem.status)),
+          ),
+        ),
+        Container(
+          height: 70.h,
+          alignment: Alignment.center,
           child: CommonIconButton(
-            onTap: () {},
+            onTap: () {
+              _showDetailDialog(orderItem);
+            },
             icon: Icons.remove_red_eye,
             color: AppColors.islamicGreen,
             tooltip: 'Xem đơn hàng',

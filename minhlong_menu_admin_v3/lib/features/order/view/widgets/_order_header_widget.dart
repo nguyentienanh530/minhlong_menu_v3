@@ -1,138 +1,105 @@
 part of '../screens/order_screen.dart';
 
-extension _OrderHeaderWidget on _OrderScreenState {
+extension _OrderHeaderWidget on _OrderViewState {
   Widget get _orderHeaderWidget => SizedBox(
         // height: 80.h,
         width: double.infinity,
         child: context.isMobile
             ? Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
-                      _buildButtonSelectTypeOrderWidget(
-                          title: 'Đơn hiện tại', onTap: () {}),
-                      10.horizontalSpace,
-                      _buildButtonSelectTypeOrderWidget(
-                          title: 'Lịch sử đơn hàng', onTap: () {}),
-                    ],
-                  ),
-                  10.verticalSpace,
-                  Row(
-                    children: [
-                      Container(
-                        height: 40.h,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: defaultPadding),
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8).r,
-                          color: AppColors.white,
-                        ),
-                        child: DropdownButton(
-                          padding: const EdgeInsets.all(0),
-                          value: '10',
-                          icon: const Icon(Icons.arrow_drop_down),
-                          borderRadius:
-                              BorderRadius.circular(defaultBorderRadius).r,
-                          underline: const SizedBox(),
-                          style:
-                              const TextStyle(color: AppColors.secondTextColor),
-                          dropdownColor: AppColors.white,
-                          items: _itemsDropdown,
-                          onChanged: (value) {},
-                        ),
-                      ),
-                      20.horizontalSpace,
-                      InkWell(
-                        onTap: () {},
-                        child: Container(
-                          height: 40.h,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: defaultPadding),
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8).r,
-                            color: AppColors.red,
-                          ),
-                          child: const Text(
-                            'Thêm mới',
-                            style: kButtonWhiteStyle,
-                          ),
+                      Expanded(
+                        child: SizedBox(
+                          height: 40,
+                          child: _buildTabbarWidget(),
                         ),
                       )
                     ],
                   ),
+                  10.verticalSpace,
+                  _buildDropdown(),
                 ],
               )
             : Row(
                 children: [
-                  _buildButtonSelectTypeOrderWidget(
-                      title: 'Đơn hiện tại', onTap: () {}),
-                  10.horizontalSpace,
-                  _buildButtonSelectTypeOrderWidget(
-                      title: 'Lịch sử đơn hàng', onTap: () {}),
-                  const Spacer(),
-                  Container(
-                    height: 40.h,
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: defaultPadding),
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8).r,
-                      color: AppColors.white,
-                    ),
-                    child: DropdownButton(
-                      padding: const EdgeInsets.all(0),
-                      value: '10',
-                      icon: const Icon(Icons.arrow_drop_down),
-                      borderRadius:
-                          BorderRadius.circular(defaultBorderRadius).r,
-                      underline: const SizedBox(),
-                      style: const TextStyle(color: AppColors.secondTextColor),
-                      dropdownColor: AppColors.white,
-                      items: _itemsDropdown,
-                      onChanged: (value) {},
-                    ),
+                  Expanded(
+                    child: _buildTabbarWidget(),
                   ),
-                  20.horizontalSpace,
-                  InkWell(
-                    onTap: () {},
-                    child: Container(
-                      height: 40.h,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: defaultPadding),
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8).r,
-                        color: AppColors.red,
-                      ),
-                      child: const Text(
-                        'Thêm mới',
-                        style: kButtonWhiteStyle,
-                      ),
-                    ),
-                  )
+                  10.horizontalSpace,
+                  _buildDropdown()
                 ],
               ),
       );
 
-  Widget _buildButtonSelectTypeOrderWidget({
-    required String? title,
-    required VoidCallback? onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
+  Widget _buildTabbarWidget() {
+    return Container(
+      height: 35,
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(textFieldBorderRadius).r,
+          color: AppColors.white),
+      child: TabBar(
+        isScrollable: context.isMobile ? true : false,
+        controller: _tabController,
+        splashFactory: InkSplash.splashFactory,
+        labelStyle: kBodyStyle.copyWith(color: AppColors.white),
+        indicatorSize: TabBarIndicatorSize.tab,
+        indicator: BoxDecoration(
+            borderRadius: BorderRadius.circular(textFieldBorderRadius),
+            color: AppColors.themeColor),
+        unselectedLabelStyle:
+            kBodyStyle.copyWith(color: AppColors.secondTextColor),
+        splashBorderRadius: BorderRadius.circular(textFieldBorderRadius),
+        onTap: (value) {
+          _fetchData(
+              status: _listStatus[_tabController.index],
+              page: 1,
+              limit: _limit.value);
+        },
+        tabs: const [
+          Tab(text: 'Hiện tại'),
+          Tab(text: 'Đang làm'),
+          Tab(text: 'Hoàn thành'),
+          Tab(text: 'Bị hủy'),
+          Tab(text: 'Đã xóa')
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDropdown() {
+    return Container(
+        height: 35,
+        width: 100,
         padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
         alignment: Alignment.center,
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8).r, color: AppColors.white),
-        height: 40.h,
-        child: Text(
-          title ?? '',
-          style: kBodyStyle.copyWith(color: AppColors.secondTextColor),
+          borderRadius: BorderRadius.circular(8).r,
+          color: AppColors.white,
         ),
-      ),
-    );
+        child: ValueListenableBuilder(
+          valueListenable: _limit,
+          builder: (context, limit, child) {
+            return DropdownButton(
+              padding: const EdgeInsets.all(0),
+              value: limit.toString(),
+              icon: const Icon(Icons.arrow_drop_down),
+              borderRadius: BorderRadius.circular(defaultBorderRadius).r,
+              underline: const SizedBox(),
+              style: const TextStyle(color: AppColors.secondTextColor),
+              dropdownColor: AppColors.white,
+              items: _itemsDropdown,
+              onChanged: (value) {
+                _limit.value = int.parse(value.toString());
+                _fetchData(
+                    status: _listStatus[_tabController.index],
+                    page: 1,
+                    limit: limit);
+              },
+            );
+          },
+        ));
   }
 }

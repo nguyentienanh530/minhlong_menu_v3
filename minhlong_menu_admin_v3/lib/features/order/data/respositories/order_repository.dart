@@ -7,10 +7,11 @@ class OrderRepository {
 
   OrderRepository({required OrderApi orderApi}) : _orderApi = orderApi;
 
-  Future<Result<OrderModel>> getNewOrders(
-      {required int page, required int limit}) async {
+  Future<Result<OrderModel>> getOrders(
+      {required String status, required int page, required int limit}) async {
     try {
-      final orderList = await _orderApi.getOrders(page: page, limit: limit);
+      final orderList =
+          await _orderApi.getOrders(page: page, limit: limit, status: status);
       return Result.success(orderList);
     } catch (e) {
       return Result.failure(e.toString());

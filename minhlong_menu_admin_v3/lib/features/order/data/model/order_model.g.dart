@@ -8,10 +8,10 @@ part of 'order_model.dart';
 
 _$OrderModelImpl _$$OrderModelImplFromJson(Map<String, dynamic> json) =>
     _$OrderModelImpl(
-      page: (json['page'] as num?)?.toInt() ?? 0,
-      limit: (json['limit'] as num?)?.toInt() ?? 0,
-      totalPage: (json['total_page'] as num?)?.toInt() ?? 0,
-      totalItem: (json['total_item'] as num?)?.toInt() ?? 0,
+      paginationModel: json['pagination'] == null
+          ? null
+          : PaginationModel.fromJson(
+              json['pagination'] as Map<String, dynamic>),
       orderItems: (json['data'] as List<dynamic>?)
               ?.map((e) => OrderItem.fromJson(e as Map<String, dynamic>))
               .toList() ??
@@ -20,9 +20,6 @@ _$OrderModelImpl _$$OrderModelImplFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$$OrderModelImplToJson(_$OrderModelImpl instance) =>
     <String, dynamic>{
-      'page': instance.page,
-      'limit': instance.limit,
-      'total_page': instance.totalPage,
-      'total_item': instance.totalItem,
+      'pagination': instance.paginationModel,
       'data': instance.orderItems,
     };

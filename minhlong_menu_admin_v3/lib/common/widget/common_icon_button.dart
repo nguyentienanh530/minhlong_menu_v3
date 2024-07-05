@@ -19,14 +19,18 @@ class CommonIconButton extends StatelessWidget {
         child: Container(
           height: 40.h,
           width: 40.h,
-          padding: const EdgeInsets.all(1),
+          padding: const EdgeInsets.all(4),
           decoration: BoxDecoration(
               color: color?.withOpacity(0.2) ??
                   AppColors.themeColor.withOpacity(0.2),
               borderRadius: BorderRadius.circular(5),
               border: Border.all(color: color ?? AppColors.themeColor)),
-          child: Icon(icon ?? Icons.remove_red_eye,
-              color: color ?? AppColors.themeColor, size: 25),
+          child: FittedBox(
+            child: Icon(
+              icon ?? Icons.remove_red_eye,
+              color: color ?? AppColors.themeColor,
+            ),
+          ),
         ),
       ),
     );

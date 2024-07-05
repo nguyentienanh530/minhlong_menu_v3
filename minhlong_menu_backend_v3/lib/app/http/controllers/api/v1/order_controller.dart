@@ -127,17 +127,15 @@ class OrderController extends Controller {
     }
   }
 
-  Future<Response> getNewOrders(Request request) async {
+  Future<dynamic> getOrders(Request request) async {
     try {
-      int page = request.input('page');
-      int limit = request.input('limit');
+      String status = request.input('status') ?? 'new';
+      int page =
+          request.input('page') ?? 1; // Default to page 1 if input is null
+      int limit =
+          request.input('limit') ?? 10; // Default limit to 10 if input is null
 
-      var orders = await _orderRepository.getNewOrders();
-
-      final int totalItems = orders.length;
-      final int totalPages = (totalItems / limit).ceil();
-      final int startIndex = (page - 1) * limit;
-      final int endIndex = startIndex + limit;
+      var orders = await _orderRepository.getOrders(status);
 
       List<Map<String, dynamic>> formattedOrders = [];
 
@@ -166,15 +164,25 @@ class OrderController extends Controller {
         formattedOrders.add(orderMap);
       });
 
-      List<Map<String, dynamic>> pageData = formattedOrders.sublist(
-          startIndex, endIndex < totalItems ? endIndex : totalItems);
+      final int totalItems = formattedOrders.length;
+      final int totalPages = (totalItems / limit).ceil();
+      final int startIndex = (page - 1) * limit;
+      final int endIndex = startIndex + limit;
+
+      List<Map<String, dynamic>> pageData = [];
+      if (startIndex < totalItems) {
+        pageData = formattedOrders.sublist(
+            startIndex, endIndex < totalItems ? endIndex : totalItems);
+      }
 
       return AppResponse().ok(statusCode: HttpStatus.ok, data: {
-        'page': page,
-        'limit': limit,
-        'total_page': totalPages,
-        'total_item': totalItems,
-        'data': pageData
+        'pagination': {
+          'page': page,
+          'limit': limit,
+          'total_page': totalPages,
+          'total_item': totalItems,
+        },
+        'data': pageData,
       });
     } catch (e) {
       print('error: $e');
