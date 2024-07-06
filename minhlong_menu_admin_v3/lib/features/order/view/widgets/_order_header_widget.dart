@@ -59,11 +59,10 @@ extension _OrderHeaderWidget on _OrderViewState {
               limit: _limit.value);
         },
         tabs: const [
-          Tab(text: 'Hiện tại'),
+          Tab(text: 'Mới'),
           Tab(text: 'Đang làm'),
           Tab(text: 'Hoàn thành'),
           Tab(text: 'Bị hủy'),
-          Tab(text: 'Đã xóa')
         ],
       ),
     );
@@ -90,13 +89,14 @@ extension _OrderHeaderWidget on _OrderViewState {
               underline: const SizedBox(),
               style: const TextStyle(color: AppColors.secondTextColor),
               dropdownColor: AppColors.white,
-              items: _itemsDropdown,
+              items: itemsDropdown,
               onChanged: (value) {
                 _limit.value = int.parse(value.toString());
                 _fetchData(
-                    status: _listStatus[_tabController.index],
-                    page: 1,
-                    limit: limit);
+                  status: _listStatus[_tabController.index],
+                  page: 1,
+                  limit: limit,
+                );
               },
             );
           },

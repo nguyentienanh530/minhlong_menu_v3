@@ -8,7 +8,7 @@ import 'package:minhlong_menu_admin_v3/common/network/dio_client.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/bloc/auth_bloc.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/data/auth_local_datasource/auth_local_datasource.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/data/provider/remote/auth_api.dart';
-import 'package:minhlong_menu_admin_v3/features/auth/data/respositories/auth_repository.dart';
+import 'package:minhlong_menu_admin_v3/features/auth/data/repositories/auth_repository.dart';
 import 'package:minhlong_menu_admin_v3/features/home/cubit/table_index_selected_cubit.dart';
 import 'package:minhlong_menu_admin_v3/features/order/cubit/order_socket_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';

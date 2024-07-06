@@ -22,10 +22,16 @@ class Ultils {
     return imageFile;
   }
 
-  String formatDateToString(String date, {bool isShort = false}) {
+  static String formatDateToString(String date,
+      {bool isShort = false, bool isTime = false}) {
     DateTime dateTime = DateTime.parse(date);
     if (isShort) {
       final formattedDate = DateFormat('dd-MM-yyyy');
+      return formattedDate.format(dateTime);
+    }
+
+    if (isTime) {
+      final formattedDate = DateFormat('HH:mm - dd/MM/yyyy');
       return formattedDate.format(dateTime);
     }
     return 'Ngày ${dateTime.day} tháng ${dateTime.month} năm ${dateTime.year}';

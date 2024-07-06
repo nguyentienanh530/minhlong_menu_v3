@@ -14,6 +14,7 @@ extension _OrderDetailDialog on _OrderViewState {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              _buildTimeOrderDialog(orderItem),
               10.verticalSpace,
               Expanded(child: _buildBodyDialog(orderItem)),
               _buildBottomDialog(orderItem)
@@ -78,44 +79,132 @@ extension _OrderDetailDialog on _OrderViewState {
               ],
             ),
             20.verticalSpace,
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Container(
-                    height: 35,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                        borderRadius:
-                            BorderRadius.circular(textFieldBorderRadius).r,
-                        color: AppColors.red),
-                    child: Text(
-                      'Huỷ đơn',
-                      style:
-                          kBodyWhiteStyle.copyWith(fontWeight: FontWeight.w700),
-                    ),
-                  ),
-                ),
-                10.horizontalSpace,
-                Expanded(
-                  child: Container(
-                    height: 35,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                        borderRadius:
-                            BorderRadius.circular(textFieldBorderRadius).r,
-                        color: AppColors.blue),
-                    child: Text(
-                      'Xác nhận',
-                      style:
-                          kBodyWhiteStyle.copyWith(fontWeight: FontWeight.w700),
-                    ),
-                  ),
-                ),
-              ],
-            )
+            _buildActionButton(orderItem)
           ]),
         ));
+  }
+
+  Widget _buildActionButton(OrderItem orderItem) {
+    switch (orderItem.status) {
+      case 'new':
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: _buttonAction(
+                title: 'Huỷ đơn',
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AppDialog(
+                      title: 'Huỷ đơn',
+                      description: 'Bạn có muốn huỷ đơn ${orderItem.id}?',
+                      confirmText: 'Xác nhận',
+                      onTap: () {
+                        orderItem = orderItem.copyWith(status: 'cancel');
+
+                        _handleUpdateOrder(orderItem);
+                      },
+                    ),
+                  );
+                },
+                color: AppColors.red,
+              ),
+            ),
+            10.horizontalSpace,
+            Expanded(
+              child: _buttonAction(
+                title: 'Xác nhận',
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AppDialog(
+                      title: 'Xác nhận đơn',
+                      description: 'Chuyển đơn ${orderItem.id} sang đang làm',
+                      confirmText: 'Chuyển sang làm',
+                      onTap: () {
+                        orderItem = orderItem.copyWith(status: 'processing');
+                        _handleUpdateOrder(orderItem);
+                      },
+                    ),
+                  );
+                },
+                color: AppColors.blue,
+              ),
+            ),
+          ],
+        );
+
+      case 'processing':
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: _buttonAction(
+                title: 'Hủy đơn',
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AppDialog(
+                      title: 'Huỷ đơn',
+                      description: 'Bạn có muốn huỷ đơn ${orderItem.id}?',
+                      confirmText: 'Xác nhận',
+                      onTap: () {
+                        orderItem = orderItem.copyWith(status: 'cancel');
+
+                        _handleUpdateOrder(orderItem);
+                      },
+                    ),
+                  );
+                },
+                color: AppColors.red,
+              ),
+            ),
+            10.horizontalSpace,
+            Expanded(
+              child: _buttonAction(
+                title: 'Hoàn thành',
+                onTap: () {
+                  // _showOrderCancelDialog(orderItem);
+                },
+                color: AppColors.blue,
+              ),
+            ),
+          ],
+        );
+
+      case 'completed':
+        return const SizedBox();
+      // return _buttonAction(
+      //   title: 'Xóa đơn',
+      //   onTap: () {
+      //     // _showOrderCancelDialog(orderItem);
+      //   },
+      //   color: AppColors.blue,
+      // );
+      default:
+        return const SizedBox();
+    }
+  }
+
+  _buttonAction(
+      {required String title,
+      required Function() onTap,
+      required Color color}) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        height: 35,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(textFieldBorderRadius).r,
+            color: color),
+        child: Text(
+          title,
+          style: kBodyWhiteStyle.copyWith(fontWeight: FontWeight.w700),
+        ),
+      ),
+    );
   }
 
   _buildBodyDialog(OrderItem orderItem) {
@@ -200,6 +289,48 @@ extension _OrderDetailDialog on _OrderViewState {
           ),
         ),
       ],
+    );
+  }
+
+  _buildTimeOrderDialog(OrderItem orderItem) {
+    return Column(
+      children: [
+        _buildItemTimeOrder(
+            title: 'Thời gian đặt:',
+            value:
+                Ultils.formatDateToString(orderItem.createdAt!, isTime: true)),
+        _buildItemTimeOrder(
+            title: 'Thời gian thanh toán:',
+            value: orderItem.payedAt == null
+                ? 'Chưa thanh toán'
+                : Ultils.formatDateToString(orderItem.payedAt!, isTime: true)),
+      ],
+    );
+  }
+
+  _buildItemTimeOrder({
+    String? title,
+    String? value,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            title ?? '',
+            style: kBodyStyle.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          Text(
+            value!,
+            style: kBodyStyle.copyWith(
+              color: AppColors.secondTextColor,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

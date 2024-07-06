@@ -9,6 +9,11 @@ class FoodRepository {
     return foods;
   }
 
+  Future get() async {
+    var foods = await Food().query().get();
+    return foods;
+  }
+
   Future getPopularFoods() async {
     var foods = await Food()
         .query()

@@ -11,9 +11,10 @@ class OrderItem with _$OrderItem {
     @Default('') String status,
     @Default(0) @JsonKey(name: 'table_id') int tableId,
     @Default(0) @JsonKey(name: 'total_price') double totalPrice,
-    @Default('') @JsonKey(name: 'payed_at') String payedAt,
-    @Default('') @JsonKey(name: 'created_at') String createdAt,
-    @Default('') @JsonKey(name: 'updated_at') String updatedAt,
+    @JsonKey(name: 'payed_at') String? payedAt,
+    @JsonKey(name: 'created_at') String? createdAt,
+    @JsonKey(name: 'updated_at') String? updatedAt,
+    @JsonKey(name: 'deleted_at') String? deletedAt,
     @Default(<FoodOrderModel>[])
     @JsonKey(name: 'foods')
     List<FoodOrderModel> foodOrders,

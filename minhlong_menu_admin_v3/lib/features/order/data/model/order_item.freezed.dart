@@ -27,11 +27,13 @@ mixin _$OrderItem {
   @JsonKey(name: 'total_price')
   double get totalPrice => throw _privateConstructorUsedError;
   @JsonKey(name: 'payed_at')
-  String get payedAt => throw _privateConstructorUsedError;
+  String? get payedAt => throw _privateConstructorUsedError;
   @JsonKey(name: 'created_at')
-  String get createdAt => throw _privateConstructorUsedError;
+  String? get createdAt => throw _privateConstructorUsedError;
   @JsonKey(name: 'updated_at')
-  String get updatedAt => throw _privateConstructorUsedError;
+  String? get updatedAt => throw _privateConstructorUsedError;
+  @JsonKey(name: 'deleted_at')
+  String? get deletedAt => throw _privateConstructorUsedError;
   @JsonKey(name: 'foods')
   List<FoodOrderModel> get foodOrders => throw _privateConstructorUsedError;
 
@@ -51,9 +53,10 @@ abstract class $OrderItemCopyWith<$Res> {
       String status,
       @JsonKey(name: 'table_id') int tableId,
       @JsonKey(name: 'total_price') double totalPrice,
-      @JsonKey(name: 'payed_at') String payedAt,
-      @JsonKey(name: 'created_at') String createdAt,
-      @JsonKey(name: 'updated_at') String updatedAt,
+      @JsonKey(name: 'payed_at') String? payedAt,
+      @JsonKey(name: 'created_at') String? createdAt,
+      @JsonKey(name: 'updated_at') String? updatedAt,
+      @JsonKey(name: 'deleted_at') String? deletedAt,
       @JsonKey(name: 'foods') List<FoodOrderModel> foodOrders});
 }
 
@@ -74,9 +77,10 @@ class _$OrderItemCopyWithImpl<$Res, $Val extends OrderItem>
     Object? status = null,
     Object? tableId = null,
     Object? totalPrice = null,
-    Object? payedAt = null,
-    Object? createdAt = null,
-    Object? updatedAt = null,
+    Object? payedAt = freezed,
+    Object? createdAt = freezed,
+    Object? updatedAt = freezed,
+    Object? deletedAt = freezed,
     Object? foodOrders = null,
   }) {
     return _then(_value.copyWith(
@@ -96,18 +100,22 @@ class _$OrderItemCopyWithImpl<$Res, $Val extends OrderItem>
           ? _value.totalPrice
           : totalPrice // ignore: cast_nullable_to_non_nullable
               as double,
-      payedAt: null == payedAt
+      payedAt: freezed == payedAt
           ? _value.payedAt
           : payedAt // ignore: cast_nullable_to_non_nullable
-              as String,
-      createdAt: null == createdAt
+              as String?,
+      createdAt: freezed == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
-              as String,
-      updatedAt: null == updatedAt
+              as String?,
+      updatedAt: freezed == updatedAt
           ? _value.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
+      deletedAt: freezed == deletedAt
+          ? _value.deletedAt
+          : deletedAt // ignore: cast_nullable_to_non_nullable
+              as String?,
       foodOrders: null == foodOrders
           ? _value.foodOrders
           : foodOrders // ignore: cast_nullable_to_non_nullable
@@ -129,9 +137,10 @@ abstract class _$$OrderItemImplCopyWith<$Res>
       String status,
       @JsonKey(name: 'table_id') int tableId,
       @JsonKey(name: 'total_price') double totalPrice,
-      @JsonKey(name: 'payed_at') String payedAt,
-      @JsonKey(name: 'created_at') String createdAt,
-      @JsonKey(name: 'updated_at') String updatedAt,
+      @JsonKey(name: 'payed_at') String? payedAt,
+      @JsonKey(name: 'created_at') String? createdAt,
+      @JsonKey(name: 'updated_at') String? updatedAt,
+      @JsonKey(name: 'deleted_at') String? deletedAt,
       @JsonKey(name: 'foods') List<FoodOrderModel> foodOrders});
 }
 
@@ -150,9 +159,10 @@ class __$$OrderItemImplCopyWithImpl<$Res>
     Object? status = null,
     Object? tableId = null,
     Object? totalPrice = null,
-    Object? payedAt = null,
-    Object? createdAt = null,
-    Object? updatedAt = null,
+    Object? payedAt = freezed,
+    Object? createdAt = freezed,
+    Object? updatedAt = freezed,
+    Object? deletedAt = freezed,
     Object? foodOrders = null,
   }) {
     return _then(_$OrderItemImpl(
@@ -172,18 +182,22 @@ class __$$OrderItemImplCopyWithImpl<$Res>
           ? _value.totalPrice
           : totalPrice // ignore: cast_nullable_to_non_nullable
               as double,
-      payedAt: null == payedAt
+      payedAt: freezed == payedAt
           ? _value.payedAt
           : payedAt // ignore: cast_nullable_to_non_nullable
-              as String,
-      createdAt: null == createdAt
+              as String?,
+      createdAt: freezed == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
-              as String,
-      updatedAt: null == updatedAt
+              as String?,
+      updatedAt: freezed == updatedAt
           ? _value.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
+      deletedAt: freezed == deletedAt
+          ? _value.deletedAt
+          : deletedAt // ignore: cast_nullable_to_non_nullable
+              as String?,
       foodOrders: null == foodOrders
           ? _value._foodOrders
           : foodOrders // ignore: cast_nullable_to_non_nullable
@@ -200,9 +214,10 @@ class _$OrderItemImpl implements _OrderItem {
       this.status = '',
       @JsonKey(name: 'table_id') this.tableId = 0,
       @JsonKey(name: 'total_price') this.totalPrice = 0,
-      @JsonKey(name: 'payed_at') this.payedAt = '',
-      @JsonKey(name: 'created_at') this.createdAt = '',
-      @JsonKey(name: 'updated_at') this.updatedAt = '',
+      @JsonKey(name: 'payed_at') this.payedAt,
+      @JsonKey(name: 'created_at') this.createdAt,
+      @JsonKey(name: 'updated_at') this.updatedAt,
+      @JsonKey(name: 'deleted_at') this.deletedAt,
       @JsonKey(name: 'foods')
       final List<FoodOrderModel> foodOrders = const <FoodOrderModel>[]})
       : _foodOrders = foodOrders;
@@ -224,13 +239,16 @@ class _$OrderItemImpl implements _OrderItem {
   final double totalPrice;
   @override
   @JsonKey(name: 'payed_at')
-  final String payedAt;
+  final String? payedAt;
   @override
   @JsonKey(name: 'created_at')
-  final String createdAt;
+  final String? createdAt;
   @override
   @JsonKey(name: 'updated_at')
-  final String updatedAt;
+  final String? updatedAt;
+  @override
+  @JsonKey(name: 'deleted_at')
+  final String? deletedAt;
   final List<FoodOrderModel> _foodOrders;
   @override
   @JsonKey(name: 'foods')
@@ -242,7 +260,7 @@ class _$OrderItemImpl implements _OrderItem {
 
   @override
   String toString() {
-    return 'OrderItem(id: $id, status: $status, tableId: $tableId, totalPrice: $totalPrice, payedAt: $payedAt, createdAt: $createdAt, updatedAt: $updatedAt, foodOrders: $foodOrders)';
+    return 'OrderItem(id: $id, status: $status, tableId: $tableId, totalPrice: $totalPrice, payedAt: $payedAt, createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt, foodOrders: $foodOrders)';
   }
 
   @override
@@ -260,6 +278,8 @@ class _$OrderItemImpl implements _OrderItem {
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
                 other.updatedAt == updatedAt) &&
+            (identical(other.deletedAt, deletedAt) ||
+                other.deletedAt == deletedAt) &&
             const DeepCollectionEquality()
                 .equals(other._foodOrders, _foodOrders));
   }
@@ -275,6 +295,7 @@ class _$OrderItemImpl implements _OrderItem {
       payedAt,
       createdAt,
       updatedAt,
+      deletedAt,
       const DeepCollectionEquality().hash(_foodOrders));
 
   @JsonKey(ignore: true)
@@ -297,9 +318,10 @@ abstract class _OrderItem implements OrderItem {
           final String status,
           @JsonKey(name: 'table_id') final int tableId,
           @JsonKey(name: 'total_price') final double totalPrice,
-          @JsonKey(name: 'payed_at') final String payedAt,
-          @JsonKey(name: 'created_at') final String createdAt,
-          @JsonKey(name: 'updated_at') final String updatedAt,
+          @JsonKey(name: 'payed_at') final String? payedAt,
+          @JsonKey(name: 'created_at') final String? createdAt,
+          @JsonKey(name: 'updated_at') final String? updatedAt,
+          @JsonKey(name: 'deleted_at') final String? deletedAt,
           @JsonKey(name: 'foods') final List<FoodOrderModel> foodOrders}) =
       _$OrderItemImpl;
 
@@ -318,13 +340,16 @@ abstract class _OrderItem implements OrderItem {
   double get totalPrice;
   @override
   @JsonKey(name: 'payed_at')
-  String get payedAt;
+  String? get payedAt;
   @override
   @JsonKey(name: 'created_at')
-  String get createdAt;
+  String? get createdAt;
   @override
   @JsonKey(name: 'updated_at')
-  String get updatedAt;
+  String? get updatedAt;
+  @override
+  @JsonKey(name: 'deleted_at')
+  String? get deletedAt;
   @override
   @JsonKey(name: 'foods')
   List<FoodOrderModel> get foodOrders;

@@ -17,3 +17,23 @@ final class OrderFetchNewOrdersFailure extends OrderState {
   final String message;
   OrderFetchNewOrdersFailure(this.message);
 }
+
+//===== update order =====
+final class OrderUpdateInProgress extends OrderState {}
+
+final class OrderUpdateSuccess extends OrderState {}
+
+final class OrderUpdateFailure extends OrderState {
+  final String message;
+  OrderUpdateFailure(this.message);
+}
+
+//===== delete order =====
+final class OrderDeleteInProgress extends OrderState {}
+
+final class OrderDeleteSuccess extends OrderState {}
+
+final class OrderDeleteFailure extends OrderState {
+  final String message;
+  OrderDeleteFailure(this.message);
+}

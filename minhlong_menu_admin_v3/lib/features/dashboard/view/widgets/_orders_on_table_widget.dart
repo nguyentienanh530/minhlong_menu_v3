@@ -106,7 +106,8 @@ extension _OrdersOnTableWidget on _DashboardViewState {
           ),
         ),
         Text(
-          Ultils().formatDateToString(order.createdAt),
+          Ultils.formatDateToString(
+              order.createdAt ?? DateTime.now().toString()),
           style: kCaptionStyle.copyWith(
             fontSize: 10,
             color: AppColors.secondTextColor,

@@ -21,7 +21,7 @@ class ProgressDialog extends StatelessWidget {
     return AlertDialog(
       backgroundColor: AppColors.white,
       title: isProgressed
-          ? Text("Vui lòng đợi...", style: kHeadingStyle)
+          ? const Text("Vui lòng đợi...", style: kHeadingStyle)
           : const Icon(Icons.check_circle_outline_rounded,
               color: AppColors.themeColor, size: 100),
       content: Column(
@@ -43,7 +43,7 @@ class ProgressDialog extends StatelessWidget {
                       foregroundColor: AppColors.white,
                     ),
                     onPressed: onPressed,
-                    child: Text("Xác nhận", style: kButtonWhiteStyle),
+                    child: const Text("Xác nhận", style: kButtonWhiteStyle),
                   ),
           )
         ],

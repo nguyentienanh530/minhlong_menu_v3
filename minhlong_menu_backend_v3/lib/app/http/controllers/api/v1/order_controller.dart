@@ -130,10 +130,8 @@ class OrderController extends Controller {
   Future<dynamic> getOrders(Request request) async {
     try {
       String status = request.input('status') ?? 'new';
-      int page =
-          request.input('page') ?? 1; // Default to page 1 if input is null
-      int limit =
-          request.input('limit') ?? 10; // Default limit to 10 if input is null
+      int page = request.input('page') ?? 1;
+      int limit = request.input('limit') ?? 10;
 
       var orders = await _orderRepository.getOrders(status);
 
@@ -147,6 +145,7 @@ class OrderController extends Controller {
           'status': ordersList.first['status'],
           'total_price': ordersList.first['total_price'],
           'payed_at': ordersList.first['payed_at'],
+          'table_id': ordersList.first['table_id'],
           'created_at': ordersList.first['created_at'],
           'updated_at': ordersList.first['updated_at'],
           'foods': ordersList.map((order) {
@@ -204,7 +203,7 @@ class OrderController extends Controller {
   }
 
   Future<Response> getOrdersDataChart(Request request) async {
-    Map<String, dynamic> data = request.all();
+    // Map<String, dynamic> data = request.all();
     try {
       // var orders = await _orderRepository.getOrdersDataChart(data);
       var orders = [];
@@ -233,11 +232,61 @@ class OrderController extends Controller {
   }
 
   Future<Response> update(Request request, int id) async {
-    return Response.json({});
+    try {
+      var order = await _orderRepository.find(id);
+      if (order == null) {
+        return AppResponse().error(
+          statusCode: HttpStatus.notFound,
+          message: 'order not found',
+        );
+      }
+      var orderUpdate = {
+        'status': request.input('status') ?? order['status'],
+        'total_price': request.input('total_price') ?? order['total_price'],
+        'payed_at': request.input('payed_at') ?? order['payed_at'],
+        'table_id': request.input('table_id') ?? order['table_id'],
+        'created_at': request.input('created_at') ?? order['created_at'],
+        'updated_at': request.input('updated_at') ?? order['updated_at'],
+        'deleted_at': request.input('deleted_at') ?? order['deleted_at'],
+      };
+
+      // print(orderUpdate);
+      await _orderRepository.update(id, orderUpdate);
+
+      return AppResponse().ok(
+        statusCode: HttpStatus.ok,
+        message: 'updated successfully',
+        data: true,
+      );
+    } catch (e) {
+      return AppResponse().error(
+        statusCode: HttpStatus.internalServerError,
+        message: 'connection error',
+      );
+    }
   }
 
   Future<Response> destroy(int id) async {
-    return Response.json({});
+    try {
+      var order = await _orderRepository.find(id);
+      if (order == null) {
+        return AppResponse().error(
+          statusCode: HttpStatus.notFound,
+          message: 'order not found',
+        );
+      }
+      await _orderRepository.delete(id);
+      return AppResponse().ok(
+        statusCode: HttpStatus.ok,
+        message: 'deleted successfully',
+        data: true,
+      );
+    } catch (e) {
+      return AppResponse().error(
+        statusCode: HttpStatus.internalServerError,
+        message: 'connection error',
+      );
+    }
   }
 }
 

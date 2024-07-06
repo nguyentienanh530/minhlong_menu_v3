@@ -11,14 +11,6 @@ class OrderRepository {
     return orders;
   }
 
-  // Future getOrdersOnDate(Map<String, dynamic> params) async {
-  //   var startDate = params['start_date'];
-  //   var endDate = params['end_date'];
-
-  //   var orders = await Order().query().
-
-  // }
-
   Future getNewOrdersByTable(int tableID) async {
     if (tableID == 0) {
       return await Order()
@@ -76,6 +68,7 @@ class OrderRepository {
         .select([
           'order.id',
           'order.status',
+          'order.table_id',
           'order_detail.quantity',
           'order_detail.price',
           'order_detail.quantity',
@@ -92,5 +85,18 @@ class OrderRepository {
         .join('food', 'food.id', '=', 'order_detail.food_id')
         .where('status', '=', status)
         .get();
+  }
+
+  Future update(int id, Map<String, dynamic> orderDataUpdate) async {
+    print(orderDataUpdate);
+    return await Order().query().where('id', '=', id).update(orderDataUpdate);
+  }
+
+  Future find(int id) async {
+    return await Order().query().where('id', '=', id).first();
+  }
+
+  Future delete(int id) async {
+    return await Order().query().where('id', '=', id).delete();
   }
 }

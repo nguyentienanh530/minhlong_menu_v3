@@ -50,7 +50,7 @@ class Version1 implements Route {
 
     //======= Food route ======
     Router.group(() {
-      Router.get("", foodController.getFoods);
+      Router.get("", foodController.index);
       Router.get("new-foods", foodController.getNewFoods);
       Router.get("popular-foods", foodController.getPopularFoods);
       Router.get("category/{id}", foodController.getFoodsOnCategory);
@@ -74,6 +74,8 @@ class Version1 implements Route {
       Router.post('create-order', orderController.create);
       Router.get('new-orders-by-table', orderController.getNewOrdersByTable);
       Router.get('orders-chart', orderController.getOrdersDataChart);
+      Router.patch('{id}', orderController.update);
+      Router.delete('{id}', orderController.destroy);
     }, prefix: '/orders');
 
     //======= Info route =======

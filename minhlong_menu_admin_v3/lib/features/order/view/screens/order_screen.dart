@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
+import 'package:minhlong_menu_admin_v3/common/dialog/app_dialog.dart';
 import 'package:minhlong_menu_admin_v3/common/network/dio_client.dart';
+import 'package:minhlong_menu_admin_v3/common/snackbar/overlay_snackbar.dart';
 import 'package:minhlong_menu_admin_v3/common/widget/common_icon_button.dart';
 import 'package:minhlong_menu_admin_v3/common/widget/error_widget.dart';
 import 'package:minhlong_menu_admin_v3/common/widget/loading.dart';
@@ -15,13 +18,14 @@ import 'package:minhlong_menu_admin_v3/features/order/data/model/food_order_mode
 import 'package:minhlong_menu_admin_v3/features/order/data/provider/order_api.dart';
 import 'package:number_pagination/number_pagination.dart';
 
+import '../../../../common/widget/loading_widget.dart';
 import '../../bloc/order_bloc.dart';
 import '../../data/model/order_item.dart';
 import '../../data/model/order_model.dart';
-import '../../data/respositories/order_repository.dart';
+import '../../data/repositories/order_repository.dart';
 part '../widgets/_order_header_widget.dart';
 part '../widgets/_order_body_widget.dart';
-part '../widgets/_order_detail_dialog.dart';
+part '../dialogs/_order_detail_dialog.dart';
 
 class OrderScreen extends StatelessWidget {
   const OrderScreen({super.key});
@@ -35,8 +39,13 @@ class OrderScreen extends StatelessWidget {
         providers: [
           BlocProvider(
             create: (context) => OrderBloc(context.read<OrderRepository>())
-              ..add(OrderFetchNewOrdersStarted(
-                  status: 'new', page: 1, limit: 10)),
+              ..add(
+                OrderFetchNewOrdersStarted(
+                  status: 'new',
+                  page: 1,
+                  limit: 10,
+                ),
+              ),
           ),
           BlocProvider(
             create: (context) => PaginationCubit(),
@@ -56,18 +65,6 @@ class OrderView extends StatefulWidget {
 }
 
 class _OrderViewState extends State<OrderView> with TickerProviderStateMixin {
-  final List<DropdownMenuItem<String>> _itemsDropdown = [
-    const DropdownMenuItem(value: '10', child: Text('10')),
-    const DropdownMenuItem(value: '20', child: Text('20')),
-    const DropdownMenuItem(value: '30', child: Text('30')),
-    const DropdownMenuItem(value: '40', child: Text('40')),
-    const DropdownMenuItem(value: '50', child: Text('50')),
-    const DropdownMenuItem(value: '60', child: Text('60')),
-    const DropdownMenuItem(value: '70', child: Text('70')),
-    const DropdownMenuItem(value: '80', child: Text('80')),
-    const DropdownMenuItem(value: '90', child: Text('90')),
-    const DropdownMenuItem(value: '100', child: Text('100')),
-  ];
   final _orderModel = ValueNotifier(OrderModel());
   final _listTitleTable = [
     'ID',
@@ -80,12 +77,12 @@ class _OrderViewState extends State<OrderView> with TickerProviderStateMixin {
   final _curentPage = ValueNotifier(1);
   final _limit = ValueNotifier(10);
   late final TabController _tabController;
-  final _listStatus = ['new', 'processing', 'completed', 'cancel', 'deleted'];
+  final _listStatus = ['new', 'processing', 'completed', 'cancel'];
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 5, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
   }
 
   @override
@@ -93,12 +90,71 @@ class _OrderViewState extends State<OrderView> with TickerProviderStateMixin {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(30).r,
-        child: Column(
-          children: [
-            _orderHeaderWidget,
-            30.verticalSpace,
-            Expanded(child: _orderBodyWidget())
-          ],
+        child: BlocListener<OrderBloc, OrderState>(
+          listener: (context, state) {
+            if (state is OrderUpdateInProgress ||
+                state is OrderDeleteInProgress) {
+              _showLoadingDialog(context);
+            }
+
+            if (state is OrderUpdateSuccess) {
+              pop(context, 2);
+              _fetchData(
+                  status: _listStatus[_tabController.index],
+                  page: _curentPage.value,
+                  limit: _limit.value);
+              showOverlaySnackbar(context, 'Cập nhật thành công');
+            }
+            if (state is OrderDeleteSuccess) {
+              pop(context, 2);
+              _fetchData(
+                  status: _listStatus[_tabController.index],
+                  page: _curentPage.value,
+                  limit: _limit.value);
+
+              showOverlaySnackbar(context, 'Xóa thành công');
+            }
+
+            if (state is OrderUpdateFailure) {
+              pop(context, 2);
+              showOverlaySnackbar(context, 'Có lỗi xảy ra',
+                  type: OverlaySnackbarType.error);
+              _fetchData(
+                  status: _listStatus[_tabController.index],
+                  page: _curentPage.value,
+                  limit: _limit.value);
+            }
+
+            if (state is OrderDeleteFailure) {
+              pop(context, 2);
+              showOverlaySnackbar(context, 'Có lỗi xảy ra',
+                  type: OverlaySnackbarType.error);
+              _fetchData(
+                  status: _listStatus[_tabController.index],
+                  page: _curentPage.value,
+                  limit: _limit.value);
+            }
+          },
+          child: Column(
+            children: [
+              _orderHeaderWidget,
+              30.verticalSpace,
+              Expanded(child: _orderBodyWidget())
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<dynamic> _showLoadingDialog(BuildContext context) {
+    return showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) => const AlertDialog(
+        backgroundColor: Colors.transparent,
+        content: LoadingWidget(
+          title: 'Đang xử lý...',
         ),
       ),
     );
@@ -120,8 +176,7 @@ class _OrderViewState extends State<OrderView> with TickerProviderStateMixin {
         return 'Hoàn thành';
       case 'cancel':
         return 'Đã huỷ';
-      case 'deleted':
-        return 'Đã xóa';
+
       default:
         return 'Đã đặt';
     }
@@ -137,8 +192,7 @@ class _OrderViewState extends State<OrderView> with TickerProviderStateMixin {
         return AppColors.islamicGreen;
       case 'cancel':
         return AppColors.red;
-      case 'deleted':
-        return AppColors.red;
+
       default:
         return AppColors.black;
     }
@@ -149,5 +203,14 @@ class _OrderViewState extends State<OrderView> with TickerProviderStateMixin {
       context: context,
       builder: (context) => _orderDetailDialog(orderItem),
     );
+  }
+
+  void _handleUpdateOrder(OrderItem orderItem) {
+    context.read<OrderBloc>().add(OrderUpdated(order: orderItem));
+    context.pop();
+  }
+
+  _handleDeleteOrder({required int orderID}) {
+    context.read<OrderBloc>().add(OrderDeleted(id: orderID));
   }
 }

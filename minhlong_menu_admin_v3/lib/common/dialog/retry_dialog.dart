@@ -9,9 +9,11 @@ class RetryDialog extends StatelessWidget {
     super.key,
     required this.title,
     required this.onRetryPressed,
+    this.onRetryText,
   });
 
   final String title;
+  final String? onRetryText;
   final VoidCallback onRetryPressed;
 
   @override
@@ -43,20 +45,20 @@ class RetryDialog extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              OutlinedButton(
-                style: OutlinedButton.styleFrom(
-                  side: const BorderSide(color: AppColors.themeColor),
-                ),
-                onPressed: () => Navigator.pop(context),
-                child: const Text("Hủy"),
-              ),
+              // OutlinedButton(
+              //   style: OutlinedButton.styleFrom(
+              //     side: const BorderSide(color: AppColors.themeColor),
+              //   ),
+              //   onPressed: () => Navigator.pop(context),
+              //   child: const Text("Hủy"),
+              // ),
               const SizedBox(width: 15),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.themeColor,
                     foregroundColor: AppColors.white),
                 onPressed: onRetryPressed,
-                child: const Text("Thử lại"),
+                child: Text(onRetryText ?? "Thử lại", style: kButtonWhiteStyle),
               ),
             ],
           )

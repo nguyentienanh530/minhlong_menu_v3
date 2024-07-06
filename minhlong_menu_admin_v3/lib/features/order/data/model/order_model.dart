@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'order_item.dart';
-import 'pagination_model.dart';
+import '../../../../common/model/pagination_model.dart';
 
 part 'order_model.freezed.dart';
 part 'order_model.g.dart';

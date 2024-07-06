@@ -21,12 +21,12 @@ extension _OrderBodyWidget on _OrderViewState {
           alignment: Alignment.center,
           child: Table(
             columnWidths: const <int, TableColumnWidth>{
-              0: FixedColumnWidth(100),
+              0: FixedColumnWidth(50),
               1: FlexColumnWidth(),
               2: FlexColumnWidth(),
               3: FlexColumnWidth(),
               4: FlexColumnWidth(),
-              5: FixedColumnWidth(80),
+              5: FixedColumnWidth(100),
             },
             defaultVerticalAlignment: TableCellVerticalAlignment.middle,
             children: <TableRow>[
@@ -73,77 +73,79 @@ extension _OrderBodyWidget on _OrderViewState {
   }
 
   Widget _buildBottomWidget() {
-    return Builder(builder: (context) {
-      var pagination = context.watch<PaginationCubit>().state;
-      return Container(
-        width: double.infinity,
-        height: 71,
-        padding: const EdgeInsets.all(10).r,
-        child: Row(
-          children: [
-            context.isMobile
-                ? const SizedBox()
-                : Expanded(
-                    child: FittedBox(
-                      alignment: Alignment.centerLeft,
-                      fit: BoxFit.scaleDown,
-                      child: ValueListenableBuilder<OrderModel>(
-                        valueListenable: _orderModel,
-                        builder: (context, order, child) {
-                          return ValueListenableBuilder(
-                              valueListenable: _limit,
-                              builder: (context, limit, child) => Text(
-                                    'Hiển thị 1 đến $limit trong số ${pagination.totalItem} đơn',
-                                    style: kBodyStyle.copyWith(
-                                        color: AppColors.secondTextColor),
-                                  ));
-                        },
+    return Builder(
+      builder: (context) {
+        var pagination = context.watch<PaginationCubit>().state;
+        return Container(
+          width: double.infinity,
+          height: 71,
+          padding: const EdgeInsets.all(10).r,
+          child: Row(
+            children: [
+              context.isMobile
+                  ? const SizedBox()
+                  : Expanded(
+                      child: FittedBox(
+                        alignment: Alignment.centerLeft,
+                        fit: BoxFit.scaleDown,
+                        child: ValueListenableBuilder<OrderModel>(
+                          valueListenable: _orderModel,
+                          builder: (context, order, child) {
+                            return ValueListenableBuilder(
+                                valueListenable: _limit,
+                                builder: (context, limit, child) => Text(
+                                      'Hiển thị 1 đến $limit trong số ${pagination.totalItem} đơn',
+                                      style: kBodyStyle.copyWith(
+                                          color: AppColors.secondTextColor),
+                                    ));
+                          },
+                        ),
                       ),
                     ),
-                  ),
-            context.isDesktop ? const Spacer() : const SizedBox(),
-            Expanded(
-              child: ValueListenableBuilder(
-                valueListenable: _curentPage,
-                builder: (context, value, child) {
-                  return Container(
-                    alignment: Alignment.centerRight,
-                    child: NumberPagination(
-                      onPageChanged: (int pageNumber) {
-                        _curentPage.value = pageNumber;
+              context.isDesktop ? const Spacer() : const SizedBox(),
+              Expanded(
+                child: ValueListenableBuilder(
+                  valueListenable: _curentPage,
+                  builder: (context, value, child) {
+                    return Container(
+                      alignment: Alignment.centerRight,
+                      child: NumberPagination(
+                        onPageChanged: (int pageNumber) {
+                          _curentPage.value = pageNumber;
 
-                        _fetchData(
-                            status: _listStatus[_tabController.index],
-                            page: pageNumber,
-                            limit: _limit.value);
-                      },
-                      fontSize: 16,
-                      buttonElevation: 10,
-                      buttonRadius: textFieldBorderRadius,
-                      pageTotal: pagination.totalPage,
-                      pageInit: _curentPage.value,
-                      colorPrimary: AppColors.themeColor,
-                    ),
-                  );
-                },
+                          _fetchData(
+                              status: _listStatus[_tabController.index],
+                              page: pageNumber,
+                              limit: _limit.value);
+                        },
+                        fontSize: 16,
+                        buttonElevation: 10,
+                        buttonRadius: textFieldBorderRadius,
+                        pageTotal: pagination.totalPage,
+                        pageInit: _curentPage.value,
+                        colorPrimary: AppColors.themeColor,
+                      ),
+                    );
+                  },
+                ),
               ),
-            ),
-          ],
-        ),
-      );
-    });
+            ],
+          ),
+        );
+      },
+    );
   }
 
   Widget _buildWidgetSuccess(OrderModel orders) {
     return Table(
         // border: TableBorder.all(),
         columnWidths: const <int, TableColumnWidth>{
-          0: FixedColumnWidth(100),
+          0: FixedColumnWidth(50),
           1: FlexColumnWidth(),
           2: FlexColumnWidth(),
           3: FlexColumnWidth(),
           4: FlexColumnWidth(),
-          5: FixedColumnWidth(80),
+          5: FixedColumnWidth(100),
         },
         defaultVerticalAlignment: TableCellVerticalAlignment.middle,
         children: orders.orderItems
@@ -187,7 +189,7 @@ extension _OrderBodyWidget on _OrderViewState {
           height: 70.h,
           alignment: Alignment.center,
           child: Text(
-            Ultils().formatDateToString(orderItem.createdAt, isShort: true),
+            Ultils.formatDateToString(orderItem.createdAt!, isShort: true),
             style: kBodyStyle.copyWith(color: AppColors.secondTextColor),
           ),
         ),
@@ -215,19 +217,105 @@ extension _OrderBodyWidget on _OrderViewState {
             style: kBodyStyle.copyWith(color: _handleColor(orderItem.status)),
           ),
         ),
-        Container(
+        _actionWidget(orderItem),
+      ],
+    );
+  }
+
+  Widget _actionWidget(OrderItem orderItem) {
+    switch (orderItem.status) {
+      case 'new':
+        return Container(
           height: 70.h,
           alignment: Alignment.center,
           child: CommonIconButton(
             onTap: () {
               _showDetailDialog(orderItem);
             },
-            icon: Icons.remove_red_eye,
-            color: AppColors.islamicGreen,
+            icon: Icons.mode_edit_outline_outlined,
+            color: AppColors.sun,
             tooltip: 'Xem đơn hàng',
           ),
-        ),
-      ],
-    );
+        );
+      case 'processing':
+        return Container(
+          height: 70.h,
+          alignment: Alignment.center,
+          child: CommonIconButton(
+            onTap: () {
+              _showDetailDialog(orderItem);
+            },
+            icon: Icons.mode_edit_outline_outlined,
+            color: AppColors.sun,
+            tooltip: 'Xem đơn hàng',
+          ),
+        );
+      case 'completed':
+        return Row(
+          children: [
+            Container(
+              height: 70.h,
+              alignment: Alignment.center,
+              child: CommonIconButton(
+                onTap: () {
+                  _showDetailDialog(orderItem);
+                },
+                icon: Icons.remove_red_eye,
+                color: AppColors.islamicGreen,
+                tooltip: 'Xem đơn hàng',
+              ),
+            ),
+            10.horizontalSpace,
+            Container(
+              height: 70.h,
+              alignment: Alignment.center,
+              child: CommonIconButton(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AppDialog(
+                      title: 'Xóa đơn',
+                      description: 'Bạn có muốn xóa đơn ${orderItem.id}?',
+                      confirmText: 'Xác nhận',
+                      onTap: () {
+                        _handleDeleteOrder(orderID: orderItem.id);
+                      },
+                    ),
+                  );
+                },
+                icon: Icons.delete_outline,
+                color: AppColors.red,
+                tooltip: 'Xóa đơn',
+              ),
+            ),
+          ],
+        );
+
+      case 'cancel':
+        return Container(
+          height: 70.h,
+          alignment: Alignment.center,
+          child: CommonIconButton(
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (context) => AppDialog(
+                  title: 'Xóa đơn',
+                  description: 'Bạn có muốn xóa đơn ${orderItem.id}?',
+                  confirmText: 'Xác nhận',
+                  onTap: () {
+                    _handleDeleteOrder(orderID: orderItem.id);
+                  },
+                ),
+              );
+            },
+            icon: Icons.delete_outline,
+            color: AppColors.red,
+            tooltip: 'Xóa đơn',
+          ),
+        );
+      default:
+        return const SizedBox();
+    }
   }
 }

@@ -7,6 +7,7 @@ class AppColors {
   static const black = Color(0xff000000);
   static const red = Color(0xffEF233C);
   static const blue = Color.fromARGB(255, 32, 196, 233);
+  static const yellow = Color(0xffe6f542);
   static const transparent = Color(0x00000000);
   static const titleText = Color(0xff202020);
   static const neroDark = Color(0xff202020);
