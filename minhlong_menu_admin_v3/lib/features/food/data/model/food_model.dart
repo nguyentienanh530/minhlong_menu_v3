@@ -9,7 +9,7 @@ part 'food_model.g.dart';
 class FoodModel with _$FoodModel {
   factory FoodModel({
     @JsonKey(name: 'pagination') final PaginationModel? paginationModel,
-    @Default(<FoodItem>[]) @JsonKey(name: 'data') List<FoodItem> orderItems,
+    @Default(<FoodItem>[]) @JsonKey(name: 'data') List<FoodItem> foodItems,
   }) = _FoodModel;
 
   factory FoodModel.fromJson(Map<String, dynamic> json) =>

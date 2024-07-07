@@ -7,6 +7,8 @@ final class FoodInitial extends FoodState {}
 
 final class FoodFetchInProgress extends FoodState {}
 
+final class FoodFetchEmpty extends FoodState{}
+
 final class FoodFetchSuccess extends FoodState {
   final FoodModel foodModel;
 

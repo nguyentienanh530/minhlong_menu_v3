@@ -23,7 +23,7 @@ mixin _$FoodModel {
   @JsonKey(name: 'pagination')
   PaginationModel? get paginationModel => throw _privateConstructorUsedError;
   @JsonKey(name: 'data')
-  List<FoodItem> get orderItems => throw _privateConstructorUsedError;
+  List<FoodItem> get foodItems => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -38,7 +38,7 @@ abstract class $FoodModelCopyWith<$Res> {
   @useResult
   $Res call(
       {@JsonKey(name: 'pagination') PaginationModel? paginationModel,
-      @JsonKey(name: 'data') List<FoodItem> orderItems});
+      @JsonKey(name: 'data') List<FoodItem> foodItems});
 
   $PaginationModelCopyWith<$Res>? get paginationModel;
 }
@@ -57,16 +57,16 @@ class _$FoodModelCopyWithImpl<$Res, $Val extends FoodModel>
   @override
   $Res call({
     Object? paginationModel = freezed,
-    Object? orderItems = null,
+    Object? foodItems = null,
   }) {
     return _then(_value.copyWith(
       paginationModel: freezed == paginationModel
           ? _value.paginationModel
           : paginationModel // ignore: cast_nullable_to_non_nullable
               as PaginationModel?,
-      orderItems: null == orderItems
-          ? _value.orderItems
-          : orderItems // ignore: cast_nullable_to_non_nullable
+      foodItems: null == foodItems
+          ? _value.foodItems
+          : foodItems // ignore: cast_nullable_to_non_nullable
               as List<FoodItem>,
     ) as $Val);
   }
@@ -94,7 +94,7 @@ abstract class _$$FoodModelImplCopyWith<$Res>
   @useResult
   $Res call(
       {@JsonKey(name: 'pagination') PaginationModel? paginationModel,
-      @JsonKey(name: 'data') List<FoodItem> orderItems});
+      @JsonKey(name: 'data') List<FoodItem> foodItems});
 
   @override
   $PaginationModelCopyWith<$Res>? get paginationModel;
@@ -112,16 +112,16 @@ class __$$FoodModelImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? paginationModel = freezed,
-    Object? orderItems = null,
+    Object? foodItems = null,
   }) {
     return _then(_$FoodModelImpl(
       paginationModel: freezed == paginationModel
           ? _value.paginationModel
           : paginationModel // ignore: cast_nullable_to_non_nullable
               as PaginationModel?,
-      orderItems: null == orderItems
-          ? _value._orderItems
-          : orderItems // ignore: cast_nullable_to_non_nullable
+      foodItems: null == foodItems
+          ? _value._foodItems
+          : foodItems // ignore: cast_nullable_to_non_nullable
               as List<FoodItem>,
     ));
   }
@@ -133,8 +133,8 @@ class _$FoodModelImpl implements _FoodModel {
   _$FoodModelImpl(
       {@JsonKey(name: 'pagination') this.paginationModel,
       @JsonKey(name: 'data')
-      final List<FoodItem> orderItems = const <FoodItem>[]})
-      : _orderItems = orderItems;
+      final List<FoodItem> foodItems = const <FoodItem>[]})
+      : _foodItems = foodItems;
 
   factory _$FoodModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$FoodModelImplFromJson(json);
@@ -142,18 +142,18 @@ class _$FoodModelImpl implements _FoodModel {
   @override
   @JsonKey(name: 'pagination')
   final PaginationModel? paginationModel;
-  final List<FoodItem> _orderItems;
+  final List<FoodItem> _foodItems;
   @override
   @JsonKey(name: 'data')
-  List<FoodItem> get orderItems {
-    if (_orderItems is EqualUnmodifiableListView) return _orderItems;
+  List<FoodItem> get foodItems {
+    if (_foodItems is EqualUnmodifiableListView) return _foodItems;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_orderItems);
+    return EqualUnmodifiableListView(_foodItems);
   }
 
   @override
   String toString() {
-    return 'FoodModel(paginationModel: $paginationModel, orderItems: $orderItems)';
+    return 'FoodModel(paginationModel: $paginationModel, foodItems: $foodItems)';
   }
 
   @override
@@ -164,13 +164,13 @@ class _$FoodModelImpl implements _FoodModel {
             (identical(other.paginationModel, paginationModel) ||
                 other.paginationModel == paginationModel) &&
             const DeepCollectionEquality()
-                .equals(other._orderItems, _orderItems));
+                .equals(other._foodItems, _foodItems));
   }
 
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, paginationModel,
-      const DeepCollectionEquality().hash(_orderItems));
+      const DeepCollectionEquality().hash(_foodItems));
 
   @JsonKey(ignore: true)
   @override
@@ -188,9 +188,8 @@ class _$FoodModelImpl implements _FoodModel {
 
 abstract class _FoodModel implements FoodModel {
   factory _FoodModel(
-          {@JsonKey(name: 'pagination') final PaginationModel? paginationModel,
-          @JsonKey(name: 'data') final List<FoodItem> orderItems}) =
-      _$FoodModelImpl;
+      {@JsonKey(name: 'pagination') final PaginationModel? paginationModel,
+      @JsonKey(name: 'data') final List<FoodItem> foodItems}) = _$FoodModelImpl;
 
   factory _FoodModel.fromJson(Map<String, dynamic> json) =
       _$FoodModelImpl.fromJson;
@@ -200,7 +199,7 @@ abstract class _FoodModel implements FoodModel {
   PaginationModel? get paginationModel;
   @override
   @JsonKey(name: 'data')
-  List<FoodItem> get orderItems;
+  List<FoodItem> get foodItems;
   @override
   @JsonKey(ignore: true)
   _$$FoodModelImplCopyWith<_$FoodModelImpl> get copyWith =>

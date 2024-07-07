@@ -1,20 +1,51 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:minhlong_menu_admin_v3/common/network/dio_client.dart';
+import 'package:minhlong_menu_admin_v3/common/widget/common_text_field.dart';
+import 'package:minhlong_menu_admin_v3/core/api_config.dart';
 import 'package:minhlong_menu_admin_v3/core/app_style.dart';
 import 'package:minhlong_menu_admin_v3/core/extensions.dart';
+import 'package:minhlong_menu_admin_v3/features/food/bloc/food_bloc.dart';
+import 'package:minhlong_menu_admin_v3/features/food/data/model/food_item.dart';
+import 'package:minhlong_menu_admin_v3/features/food/data/model/food_model.dart';
+import 'package:minhlong_menu_admin_v3/features/food/data/provider/food_api.dart';
+import 'package:number_pagination/number_pagination.dart';
 
+import '../../../../common/widget/common_icon_button.dart';
+import '../../../../common/widget/error_widget.dart';
+import '../../../../common/widget/loading.dart';
 import '../../../../core/app_colors.dart';
 import '../../../../core/app_const.dart';
+import '../../../../core/utils.dart';
+import '../../../order/cubit/pagination_cubit.dart';
+import '../../data/repositories/food_repository.dart';
 
 part '../widgets/_food_header_widget.dart';
-// part '../widgets/_food_body_widget.dart';
+part '../widgets/_food_body_widget.dart';
+part '../dialogs/_food_create_or_update_dialog.dart';
 
 class FoodScreen extends StatelessWidget {
   const FoodScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const FoodView();
+    return RepositoryProvider(
+      create: (context) => FoodRepository(FoodApi(DioClient().dio!)),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => FoodBloc(context.read<FoodRepository>())
+              ..add(FoodFetched(page: 1, limit: 10)),
+          ),
+          BlocProvider(
+            create: (context) => PaginationCubit(),
+          ),
+        ],
+        child: const FoodView(),
+      ),
+    );
   }
 }
 
@@ -26,12 +57,51 @@ class FoodView extends StatefulWidget {
 }
 
 class _FoodViewState extends State<FoodView> {
-  // final _curentPage = ValueNotifier(1);
+  final _listTitleTable = [
+    'Hình ảnh',
+    'Tên món ăn',
+    'Danh mục',
+    'Giá bán',
+    'Ẩn/Hiện thị',
+    'Hành động'
+  ];
+  final _curentPage = ValueNotifier(1);
   final _limit = ValueNotifier(10);
+  final _foodModel = ValueNotifier(FoodModel());
+  final _nameFoodController = TextEditingController();
+  final _priceFoodController = TextEditingController();
+  // final _statusFoodController = TextEditingController();
+  final _descriptionFoodController = TextEditingController();
+  final _discountFoodController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
+  void _fetchData(
+      {required String status, required int page, required int limit}) {
+    context.read<FoodBloc>().add(FoodFetched(page: page, limit: limit));
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _nameFoodController.dispose();
+    _priceFoodController.dispose();
+    _descriptionFoodController.dispose();
+    _discountFoodController.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [_foodHeaderWidget],
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.all(30).r,
+        child: Column(
+          children: [
+            _foodHeaderWidget,
+            20.verticalSpace,
+            Expanded(child: _foodBodyWidget())
+          ],
+        ),
+      ),
     );
   }
 }

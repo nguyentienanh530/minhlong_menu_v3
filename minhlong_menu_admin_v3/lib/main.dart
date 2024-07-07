@@ -92,10 +92,10 @@ class _AppContentState extends State<AppContent> {
           theme: ThemeData(
             fontFamily: GoogleFonts.roboto().fontFamily,
             scaffoldBackgroundColor: AppColors.background,
-            textTheme: const TextTheme(
-                displaySmall: TextStyle(color: AppColors.white),
-                displayLarge: TextStyle(color: AppColors.white),
-                displayMedium: TextStyle(color: AppColors.white)),
+            // textTheme: const TextTheme(
+            //     displaySmall: TextStyle(color: AppColors.white),
+            //     displayLarge: TextStyle(color: AppColors.white),
+            //     displayMedium: TextStyle(color: AppColors.white)),
             colorScheme: ColorScheme.fromSwatch(
               primarySwatch: MaterialColor(
                 AppColors.themeColor.value,

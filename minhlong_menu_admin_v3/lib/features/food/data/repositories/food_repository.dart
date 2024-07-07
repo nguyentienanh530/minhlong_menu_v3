@@ -7,9 +7,9 @@ class FoodRepository {
 
   FoodRepository(FoodApi foodApi) : _foodApi = foodApi;
 
-  Future<Result<FoodModel>> getFoods() async {
+  Future<Result<FoodModel>> getFoods({required int page, limit}) async {
     try {
-      var response = await _foodApi.getFoods();
+      var response = await _foodApi.getFoods(page: page, limit: limit);
       return Result.success(response);
     } catch (e) {
       return Result.failure(e.toString());

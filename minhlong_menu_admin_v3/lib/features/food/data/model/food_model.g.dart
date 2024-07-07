@@ -12,7 +12,7 @@ _$FoodModelImpl _$$FoodModelImplFromJson(Map<String, dynamic> json) =>
           ? null
           : PaginationModel.fromJson(
               json['pagination'] as Map<String, dynamic>),
-      orderItems: (json['data'] as List<dynamic>?)
+      foodItems: (json['data'] as List<dynamic>?)
               ?.map((e) => FoodItem.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const <FoodItem>[],
@@ -21,5 +21,5 @@ _$FoodModelImpl _$$FoodModelImplFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$$FoodModelImplToJson(_$FoodModelImpl instance) =>
     <String, dynamic>{
       'pagination': instance.paginationModel,
-      'data': instance.orderItems,
+      'data': instance.foodItems,
     };
