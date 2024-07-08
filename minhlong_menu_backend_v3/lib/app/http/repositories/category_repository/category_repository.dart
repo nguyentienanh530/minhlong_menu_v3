@@ -4,4 +4,8 @@ class CategoryRepository {
   Future getCategoryQuantity() async {
     return await Category().query().count();
   }
+
+  Future get() {
+    return Category().query().get();
+  }
 }

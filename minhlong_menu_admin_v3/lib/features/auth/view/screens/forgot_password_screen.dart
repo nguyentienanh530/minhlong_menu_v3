@@ -110,7 +110,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                   shadowColor: Colors.transparent,
                                   backgroundColor: AppColors.themeColor),
                               onPressed: () => _handleForgotPassword(),
-                              child: Text('Đặt lại mật khẩu',
+                              child: const Text('Đặt lại mật khẩu',
                                   style: kButtonWhiteStyle),
                             )),
                         const SizedBox(height: defaultPadding),
@@ -142,6 +142,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         width: 360,
         child: CommonTextField(
           controller: _phoneController,
+          style: kBodyWhiteStyle,
           onChanged: (p0) {},
           keyboardType: TextInputType.phone,
           maxLines: 1,
@@ -163,6 +164,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       builder: (context, value, child) => SizedBox(
             width: 360,
             child: CommonTextField(
+              style: kBodyWhiteStyle,
               controller: _passwordController,
               onChanged: (p0) {},
               keyboardType: TextInputType.visiblePassword,
@@ -197,6 +199,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         builder: (context, value, child) => SizedBox(
           width: 360,
           child: CommonTextField(
+            style: kBodyWhiteStyle,
             controller: _confirmPasswordController,
             onChanged: (p0) {},
             keyboardType: TextInputType.visiblePassword,
@@ -270,7 +273,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   Widget _buildHaveAccount() {
     return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-      Text('Đã có tài khoản,', style: kButtonWhiteStyle),
+      const Text('Đã có tài khoản,', style: kButtonWhiteStyle),
       const SizedBox(width: defaultPadding / 2),
       GestureDetector(
           onTap: () => context.go(AppRoute.login),

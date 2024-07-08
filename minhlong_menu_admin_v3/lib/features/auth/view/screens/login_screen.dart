@@ -69,6 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
         builder: (context, value, child) {
           return CommonTextField(
               maxLines: 1,
+              style: kBodyWhiteStyle,
               controller: _passwordCtrl,
               onFieldSubmitted: (p0) {
                 _handleLoginSubmited();
@@ -207,6 +208,7 @@ class _PhoneNumber extends StatelessWidget {
           Icons.phone_android_outlined,
           color: AppColors.white.withOpacity(0.5),
         ),
+        style: kBodyWhiteStyle,
         onFieldSubmitted: onSubmit,
         onChanged: (value) => emailcontroller.text = value);
   }

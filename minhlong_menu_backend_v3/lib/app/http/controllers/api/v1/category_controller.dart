@@ -2,14 +2,20 @@ import 'dart:io';
 
 import 'package:minhlong_menu_backend_v3/app/http/helper/app_response.dart';
 import 'package:minhlong_menu_backend_v3/app/http/repositories/category_repository/category_repository.dart';
-import 'package:minhlong_menu_backend_v3/app/models/category.dart';
+
 import 'package:vania/vania.dart';
 
 class CategoryController extends Controller {
   final CategoryRepository _categoryRepository = CategoryRepository();
   Future<Response> index() async {
-    var category = await Category().query().get();
-    return AppResponse().ok(statusCode: HttpStatus.ok, data: category);
+    try {
+      var category = await _categoryRepository.get();
+      return AppResponse().ok(statusCode: HttpStatus.ok, data: category);
+    } catch (e) {
+      return AppResponse().error(
+          statusCode: HttpStatus.internalServerError,
+          message: 'connection error');
+    }
   }
 
   Future<Response> getCategoryQuantity() async {

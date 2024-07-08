@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:minhlong_menu_admin_v3/common/network/dio_client.dart';
-import 'package:minhlong_menu_admin_v3/common/widget/common_text_field.dart';
 import 'package:minhlong_menu_admin_v3/core/api_config.dart';
 import 'package:minhlong_menu_admin_v3/core/app_style.dart';
 import 'package:minhlong_menu_admin_v3/core/extensions.dart';
@@ -21,10 +20,10 @@ import '../../../../core/app_const.dart';
 import '../../../../core/utils.dart';
 import '../../../order/cubit/pagination_cubit.dart';
 import '../../data/repositories/food_repository.dart';
+import '../dialogs/create_or_update_food_dialog.dart';
 
 part '../widgets/_food_header_widget.dart';
 part '../widgets/_food_body_widget.dart';
-part '../dialogs/_food_create_or_update_dialog.dart';
 
 class FoodScreen extends StatelessWidget {
   const FoodScreen({super.key});
@@ -68,25 +67,10 @@ class _FoodViewState extends State<FoodView> {
   final _curentPage = ValueNotifier(1);
   final _limit = ValueNotifier(10);
   final _foodModel = ValueNotifier(FoodModel());
-  final _nameFoodController = TextEditingController();
-  final _priceFoodController = TextEditingController();
-  // final _statusFoodController = TextEditingController();
-  final _descriptionFoodController = TextEditingController();
-  final _discountFoodController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
 
   void _fetchData(
       {required String status, required int page, required int limit}) {
     context.read<FoodBloc>().add(FoodFetched(page: page, limit: limit));
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _nameFoodController.dispose();
-    _priceFoodController.dispose();
-    _descriptionFoodController.dispose();
-    _discountFoodController.dispose();
   }
 
   @override

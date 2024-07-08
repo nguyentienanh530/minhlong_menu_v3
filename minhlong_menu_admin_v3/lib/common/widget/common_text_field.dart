@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../core/app_colors.dart';
 import '../../core/app_const.dart';
@@ -19,7 +20,10 @@ class CommonTextField extends StatelessWidget {
       this.labelText,
       this.maxLines,
       this.onFieldSubmitted,
-      this.filled});
+      this.filled,
+      this.enabled,
+      this.inputFormatters,
+      this.style});
   final String? errorText;
   final TextInputType? keyboardType;
   final Function(String) onChanged;
@@ -33,6 +37,9 @@ class CommonTextField extends StatelessWidget {
   final String? labelText;
   final Function(String)? onFieldSubmitted;
   final bool? filled;
+  final bool? enabled;
+  final List<TextInputFormatter>? inputFormatters;
+  final TextStyle? style;
 
   @override
   Widget build(BuildContext context) {
@@ -43,11 +50,13 @@ class CommonTextField extends StatelessWidget {
         textAlignVertical: TextAlignVertical.center,
         key: key,
         maxLines: maxLines,
-        style: kBodyWhiteStyle,
+        style: style ?? kBodyStyle,
         textAlign: TextAlign.start,
         keyboardType: keyboardType ?? TextInputType.text,
         autocorrect: false,
         autofocus: false,
+        inputFormatters: inputFormatters,
+        enabled: enabled ?? true,
         obscureText: obscureText ?? false,
         onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
         decoration: InputDecoration(
@@ -59,6 +68,9 @@ class CommonTextField extends StatelessWidget {
                 borderRadius: BorderRadius.circular(textFieldBorderRadius).r,
                 borderSide: const BorderSide(color: AppColors.red)),
             enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(textFieldBorderRadius).r,
+                borderSide: const BorderSide(color: AppColors.lavender)),
+            disabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(textFieldBorderRadius).r,
                 borderSide: const BorderSide(color: AppColors.lavender)),
             suffixIcon: suffixIcon,

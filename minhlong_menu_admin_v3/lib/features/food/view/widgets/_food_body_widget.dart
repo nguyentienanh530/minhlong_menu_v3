@@ -264,4 +264,15 @@ extension _FoodBodyWidget on _FoodViewState {
       ],
     );
   }
+
+  void _showCreateOrUpdateDialog(FoodItem? foodItem) {
+    showDialog(
+        context: context,
+        builder: (context) => const Dialog(
+              backgroundColor: AppColors.background,
+              child: CreateOrUpdateFoodDialog(
+                mode: FoodScreenMode.update,
+              ),
+            ));
+  }
 }
