@@ -1,7 +1,3 @@
-import 'package:flutter/material.dart';
-
-import 'app_style.dart';
-
 class AppRes {
   static double foodPrice(
       {required bool isDiscount,

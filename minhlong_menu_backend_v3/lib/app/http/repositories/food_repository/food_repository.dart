@@ -46,4 +46,12 @@ class FoodRepository {
     var quantity = await Food().query().count();
     return quantity;
   }
+
+  Future update({required int id, required Map<String, dynamic> data}) async {
+    return await Food().query().where('id', '=', id).update(data);
+  }
+
+  Future find({required int id}) async {
+    return await Food().query().where('id', '=', id).first();
+  }
 }

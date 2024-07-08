@@ -23,7 +23,7 @@ extension _FoodHeaderWidget on _FoodViewState {
                           child: _buildButtonAddFood(),
                         )
                       ],
-                    )
+                    ),
                   ],
                 ),
               )
@@ -111,17 +111,22 @@ extension _FoodHeaderWidget on _FoodViewState {
   }
 
   _buildButtonAddFood() {
-    return Container(
-      height: 35,
-      width: 130.h,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8).r,
-        color: AppColors.themeColor,
-      ),
-      child: Text(
-        'Thêm',
-        style: kBodyStyle.copyWith(color: AppColors.white),
+    return InkWell(
+      onTap: () {
+        _showCreateOrUpdateDialog(mode: FoodScreenMode.create);
+      },
+      child: Container(
+        height: 35,
+        width: 130.h,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8).r,
+          color: AppColors.themeColor,
+        ),
+        child: Text(
+          'Thêm',
+          style: kBodyStyle.copyWith(color: AppColors.white),
+        ),
       ),
     );
   }

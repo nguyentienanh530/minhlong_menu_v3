@@ -229,7 +229,8 @@ extension _FoodBodyWidget on _FoodViewState {
               alignment: Alignment.center,
               child: CommonIconButton(
                 onTap: () {
-                  _showCreateOrUpdateDialog(foodItem);
+                  _showCreateOrUpdateDialog(
+                      mode: FoodScreenMode.update, foodItem: foodItem);
                 },
                 icon: Icons.edit,
                 color: AppColors.sun,
@@ -265,13 +266,15 @@ extension _FoodBodyWidget on _FoodViewState {
     );
   }
 
-  void _showCreateOrUpdateDialog(FoodItem? foodItem) {
+  void _showCreateOrUpdateDialog(
+      {required FoodScreenMode mode, FoodItem? foodItem}) {
     showDialog(
         context: context,
-        builder: (context) => const Dialog(
+        builder: (context) => Dialog(
               backgroundColor: AppColors.background,
               child: CreateOrUpdateFoodDialog(
-                mode: FoodScreenMode.update,
+                mode: mode,
+                foodItem: foodItem,
               ),
             ));
   }

@@ -88,7 +88,6 @@ class OrderRepository {
   }
 
   Future update(int id, Map<String, dynamic> orderDataUpdate) async {
-    print(orderDataUpdate);
     return await Order().query().where('id', '=', id).update(orderDataUpdate);
   }
 

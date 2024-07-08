@@ -116,7 +116,36 @@ class FoodController extends Controller {
   }
 
   Future<Response> update(Request request, int id) async {
-    return Response.json({});
+    try {
+      var food = await _foodRepository.find(id: id);
+
+      if (food == null) {
+        return AppResponse().error(
+          statusCode: HttpStatus.notFound,
+          message: 'food not found',
+        );
+      }
+      var foodUpdate = {
+        'name': request.input('name') ?? food['name'],
+        'category_id': request.input('category_id') ?? food['category_id'],
+        'order_count': request.input('order_count') ?? food['order_count'],
+        'description': request.input('description') ?? food['description'],
+        'discount': request.input('discount') ?? food['discount'],
+        'is_discount': request.input('is_discount') ?? food['is_discount'],
+        'is_show': request.input('is_show') ?? food['is_show'],
+        'price': request.input('price') ?? food['price'],
+        'created_at': request.input('created_at') ?? food['created_at'],
+        'updated_at': request.input('updated_at') ?? food['updated_at'],
+        'photo_gallery':
+            request.input('photo_gallery') ?? food['photo_gallery'],
+      };
+      await food.update(foodUpdate);
+      return AppResponse().ok(statusCode: HttpStatus.ok, data: {'food': food});
+    } catch (e) {
+      return AppResponse().error(
+          statusCode: HttpStatus.internalServerError,
+          message: 'connection error');
+    }
   }
 
   Future<Response> destroy(int id) async {

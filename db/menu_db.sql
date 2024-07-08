@@ -448,7 +448,7 @@ ALTER TABLE `category`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT for table `food`
+-- AUTO_INCREMENT fmenu_dbor table `food`
 --
 ALTER TABLE `food`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
@@ -483,7 +483,7 @@ ALTER TABLE `table`
 ALTER TABLE `user`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
---
+--bannercategory
 -- Constraints for dumped tables
 --
 
@@ -510,3 +510,4 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+mmenu_dbmysqlmenu_dbmenu_dbmenu_dbenu_dbmenu_dbmenu_dbmenu_db

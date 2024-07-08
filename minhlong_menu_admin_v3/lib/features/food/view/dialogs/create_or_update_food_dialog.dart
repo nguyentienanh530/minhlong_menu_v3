@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:minhlong_menu_admin_v3/features/food/data/model/food_item.dart';
 
 import '../../../../common/network/dio_client.dart';
 import '../../../../common/widget/common_text_field.dart';
@@ -20,8 +21,10 @@ enum FoodScreenMode { create, update }
 enum FoodDiscountType { apply, doNotApply }
 
 class CreateOrUpdateFoodDialog extends StatefulWidget {
-  const CreateOrUpdateFoodDialog({super.key, required this.mode});
+  const CreateOrUpdateFoodDialog(
+      {super.key, required this.mode, this.foodItem});
   final FoodScreenMode mode;
+  final FoodItem? foodItem;
 
   @override
   State<CreateOrUpdateFoodDialog> createState() =>
