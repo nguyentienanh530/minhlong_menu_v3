@@ -54,4 +54,8 @@ class FoodRepository {
   Future find({required int id}) async {
     return await Food().query().where('id', '=', id).first();
   }
+
+  Future create({required Map<String, dynamic> data}) async {
+    return await Food().query().insertGetId(data);
+  }
 }

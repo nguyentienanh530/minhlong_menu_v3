@@ -99,8 +99,34 @@ class FoodController extends Controller {
     }
   }
 
-  Future<Response> create() async {
-    return Response.json({});
+  Future<Response> create(Request request) async {
+    try {
+      var foodData = {
+        'name': request.input('name'),
+        'category_id': request.input('category_id'),
+        'order_count': request.input('order_count'),
+        'description': request.input('description'),
+        'discount': request.input('discount'),
+        'is_discount': request.input('is_discount'),
+        'is_show': request.input('is_show'),
+        'price': request.input('price'),
+        'photo_gallery': request.input('photo_gallery'),
+      };
+      var foodID = await _foodRepository.create(data: foodData);
+      if (foodID != null) {
+        return AppResponse().ok(data: foodID, statusCode: HttpStatus.ok);
+      }
+
+      return AppResponse().error(
+        statusCode: HttpStatus.internalServerError,
+        message: 'connection error',
+      );
+    } catch (e) {
+      return AppResponse().error(
+        statusCode: HttpStatus.internalServerError,
+        message: 'connection error',
+      );
+    }
   }
 
   Future<Response> store(Request request) async {

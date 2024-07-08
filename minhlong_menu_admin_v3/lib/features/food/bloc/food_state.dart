@@ -7,7 +7,7 @@ final class FoodInitial extends FoodState {}
 
 final class FoodFetchInProgress extends FoodState {}
 
-final class FoodFetchEmpty extends FoodState{}
+final class FoodFetchEmpty extends FoodState {}
 
 final class FoodFetchSuccess extends FoodState {
   final FoodModel foodModel;
@@ -19,4 +19,18 @@ final class FoodFetchFailure extends FoodState {
   final String message;
 
   FoodFetchFailure(this.message);
+}
+
+final class FoodCreateInProgress extends FoodState {}
+
+final class FoodCreateSuccess extends FoodState {
+  final int id;
+
+  FoodCreateSuccess(this.id);
+}
+
+final class FoodCreateFailure extends FoodState {
+  final String message;
+
+  FoodCreateFailure(this.message);
 }

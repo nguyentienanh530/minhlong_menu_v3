@@ -6,6 +6,7 @@ import '../../app/http/controllers/api/v1/category_controller.dart';
 import '../../app/http/controllers/api/v1/food_controller.dart';
 import '../../app/http/controllers/api/v1/order_controller.dart';
 import '../../app/http/controllers/api/v1/table_controller.dart';
+import '../../app/http/controllers/api/v1/upload_image_controller.dart';
 import '../../app/http/controllers/api/v1/user_controller.dart';
 import '../../app/http/middleware/authenticate.dart';
 
@@ -56,6 +57,7 @@ class Version1 implements Route {
       Router.get("category/{id}", foodController.getFoodsOnCategory);
       Router.get("quantity", foodController.getQuantityOfFood);
       Router.delete("/{id}", foodController.destroy);
+      Router.post('', foodController.create);
     }, prefix: '/foods');
 
     //======= Banner route =======
@@ -80,5 +82,8 @@ class Version1 implements Route {
 
     //======= Info route =======
     Router.get('/info', infoController.index);
+
+    //======= Upload image =======
+    Router.post('/upload-image', uploadImageController.updateImage);
   }
 }

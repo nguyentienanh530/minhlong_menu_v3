@@ -9,7 +9,7 @@ class CommonTextField extends StatelessWidget {
   const CommonTextField(
       {super.key,
       this.errorText,
-      required this.onChanged,
+      this.onChanged,
       this.hintText,
       this.keyboardType,
       this.obscureText,
@@ -26,7 +26,7 @@ class CommonTextField extends StatelessWidget {
       this.style});
   final String? errorText;
   final TextInputType? keyboardType;
-  final Function(String) onChanged;
+  final Function(String)? onChanged;
   final String? hintText;
   final bool? obscureText;
   final Widget? suffixIcon;

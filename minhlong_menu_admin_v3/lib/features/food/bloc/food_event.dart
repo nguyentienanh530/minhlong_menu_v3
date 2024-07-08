@@ -9,3 +9,8 @@ final class FoodFetched extends FoodEvent {
 
   FoodFetched({required this.page, required this.limit});
 }
+
+final class FoodCreated extends FoodEvent {
+  final FoodItem food;
+  FoodCreated({required this.food});
+}

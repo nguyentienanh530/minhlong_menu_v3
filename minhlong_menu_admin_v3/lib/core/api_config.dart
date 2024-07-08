@@ -49,4 +49,7 @@ class ApiConfig {
 
   //===== Info =====
   static const String info = '/info';
+
+  //===== Upload image =====
+  static const String uploadImage = '/upload-image';
 }

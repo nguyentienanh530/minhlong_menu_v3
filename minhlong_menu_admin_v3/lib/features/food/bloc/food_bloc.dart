@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:minhlong_menu_admin_v3/features/food/data/repositories/food_repository.dart';
 
+import '../data/model/food_item.dart';
 import '../data/model/food_model.dart';
 
 part 'food_event.dart';
@@ -16,6 +17,7 @@ class FoodBloc extends Bloc<FoodEvent, FoodState> {
       : _foodRepository = foodRepository,
         super(FoodInitial()) {
     on<FoodFetched>(_onFoodFetched);
+    on<FoodCreated>(_onFoodCreated);
   }
 
   final FoodRepository _foodRepository;
@@ -32,6 +34,16 @@ class FoodBloc extends Bloc<FoodEvent, FoodState> {
       }
     }, failure: (err) {
       emit(FoodFetchFailure(err.toString()));
+    });
+  }
+
+  FutureOr<void> _onFoodCreated(FoodCreated event, Emit emit) async {
+    emit(FoodCreateInProgress());
+    var result = await _foodRepository.createFood(food: event.food);
+    result.when(success: (success) {
+      emit(FoodCreateSuccess(success));
+    }, failure: (message) {
+      emit(FoodCreateFailure(message));
     });
   }
 }

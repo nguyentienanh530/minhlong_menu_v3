@@ -1,8 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:minhlong_menu_admin_v3/core/utils.dart';
 import 'package:minhlong_menu_admin_v3/features/food/data/model/food_item.dart';
+import 'package:minhlong_menu_admin_v3/features/food/data/provider/food_api.dart';
+import 'package:minhlong_menu_admin_v3/features/food/data/repositories/food_repository.dart';
 
 import '../../../../common/network/dio_client.dart';
 import '../../../../common/widget/common_text_field.dart';
@@ -15,6 +20,7 @@ import '../../../category/bloc/category_bloc.dart';
 import '../../../category/data/model/category_model.dart';
 import '../../../category/data/provider/category_api.dart';
 import '../../../category/data/repositories/category_repository.dart';
+import '../../bloc/food_bloc.dart';
 
 enum FoodScreenMode { create, update }
 
@@ -41,6 +47,10 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
   final _categoryValueNotifier = ValueNotifier('');
   final _applyforDiscount = ValueNotifier(FoodDiscountType.doNotApply);
   late FoodScreenMode _mode;
+  final _imageFile1 = ValueNotifier(File(''));
+  final _imageFile2 = ValueNotifier(File(''));
+  final _imageFile3 = ValueNotifier(File(''));
+  final _imageFile4 = ValueNotifier(File(''));
 
   @override
   void initState() {
@@ -62,46 +72,56 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
     return RepositoryProvider(
       create: (context) =>
           CategoryRepository(categoryApi: CategoryApi(dio: DioClient().dio!)),
-      child: BlocProvider(
-        create: (context) =>
-            CategoryBloc(categoryRepository: context.read<CategoryRepository>())
-              ..add(CategoryFetched()),
-        child: SizedBox(
-          width: 500,
-          child: SingleChildScrollView(
-            child: Form(
-              key: _formKey,
-              child: Builder(
-                builder: (context) {
-                  var categoryState = context.watch<CategoryBloc>().state;
-                  return (switch (categoryState) {
-                    CategoryFetchInProgress() => const Loading(),
-                    CategoryFetchFailure(message: final msg) =>
-                      ErrWidget(error: msg),
-                    CategoryFetchSuccess() => Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 52, horizontal: 20),
-                        child: Column(
-                          children: [
-                            Text(
-                                _mode == FoodScreenMode.create
-                                    ? 'Thêm món mới'.toUpperCase()
-                                    : 'Chỉnh sửa'.toUpperCase(),
-                                style: kHeadingStyle.copyWith(
-                                    color: AppColors.secondTextColor,
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 40)),
-                            _buildBodyCreateOrUpdateFoodDialog(
-                                categoryState.categories),
-                            20.verticalSpace,
-                            _buildButtonCreateOrUpdateFood(),
-                            20.verticalSpace,
-                          ],
+      child: RepositoryProvider(
+        create: (context) => FoodRepository(FoodApi(DioClient().dio!)),
+        child: MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) => CategoryBloc(
+                  categoryRepository: context.read<CategoryRepository>())
+                ..add(CategoryFetched()),
+            ),
+            BlocProvider(
+              create: (context) => FoodBloc(context.read<FoodRepository>()),
+            ),
+          ],
+          child: SizedBox(
+            width: 500,
+            child: SingleChildScrollView(
+              child: Form(
+                key: _formKey,
+                child: Builder(
+                  builder: (context) {
+                    var categoryState = context.watch<CategoryBloc>().state;
+                    return (switch (categoryState) {
+                      CategoryFetchInProgress() => const Loading(),
+                      CategoryFetchFailure(message: final msg) =>
+                        ErrWidget(error: msg),
+                      CategoryFetchSuccess() => Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 52, horizontal: 20),
+                          child: Column(
+                            children: [
+                              Text(
+                                  _mode == FoodScreenMode.create
+                                      ? 'Thêm món mới'.toUpperCase()
+                                      : 'Chỉnh sửa'.toUpperCase(),
+                                  style: kHeadingStyle.copyWith(
+                                      color: AppColors.secondTextColor,
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 40)),
+                              _buildBodyCreateOrUpdateFoodDialog(
+                                  categoryState.categories),
+                              20.verticalSpace,
+                              _buildButtonCreateOrUpdateFood(),
+                              20.verticalSpace,
+                            ],
+                          ),
                         ),
-                      ),
-                    _ => const SizedBox.shrink()
-                  });
-                },
+                      _ => const SizedBox.shrink()
+                    });
+                  },
+                ),
               ),
             ),
           ),
@@ -217,7 +237,6 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
             enabled: value == FoodDiscountType.apply ? true : false,
             hintText: 'Khuyến mãi',
             filled: true,
-            onChanged: (String) {},
             validator: (textFieldvalue) {
               if (textFieldvalue == null || textFieldvalue.isEmpty) {
                 return 'Khuyến mãi không hợp lệ';
@@ -245,7 +264,6 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
       controller: _nameFoodController,
       hintText: 'Tên món ăn',
       filled: true,
-      onChanged: (String) {},
       validator: (value) {
         if (value == null || value.isEmpty) {
           return 'Tên món không được để trống';
@@ -266,7 +284,6 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
       controller: _descriptionFoodController,
       hintText: 'Mô tả món ăn',
       filled: true,
-      onChanged: (String) {},
       validator: (value) {
         if (value == null || value.isEmpty) {
           return 'Một môn không được này';
@@ -287,22 +304,51 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
       height: 100.h,
       child: Row(
         children: [
-          _buildItemImage(),
-          _buildItemImage(),
-          _buildItemImage(),
-          _buildItemImage()
+          _buildItemImage(imageFile: _imageFile1),
+          _buildItemImage(imageFile: _imageFile2),
+          _buildItemImage(imageFile: _imageFile3),
+          _buildItemImage(imageFile: _imageFile4),
         ],
       ),
     );
   }
 
-  _buildItemImage() {
-    return const Expanded(
-        child: Card(
-      child: Center(
-          child: Icon(Icons.add_photo_alternate_outlined,
-              color: AppColors.secondTextColor, size: 20)),
-    ));
+  _buildItemImage({required ValueNotifier imageFile}) {
+    return ValueListenableBuilder(
+      valueListenable: imageFile,
+      builder: (context, value, child) {
+        return Expanded(
+          child: InkWell(
+            onTap: () async => await Ultils.pickImage().then((value) {
+              if (value == null) {
+                return;
+              }
+              imageFile.value = value;
+            }),
+            child: Container(
+              clipBehavior: Clip.hardEdge,
+              decoration: BoxDecoration(
+                color: AppColors.white,
+                borderRadius: BorderRadius.circular(defaultBorderRadius).r,
+                border: Border.all(color: AppColors.lavender),
+              ),
+              child: imageFile.value.path.isEmpty
+                  ? const Center(
+                      child: Icon(
+                        Icons.add_photo_alternate_outlined,
+                        color: AppColors.secondTextColor,
+                        size: 20,
+                      ),
+                    )
+                  : Image.file(
+                      imageFile.value,
+                      fit: BoxFit.cover,
+                    ),
+            ),
+          ),
+        );
+      },
+    );
   }
 
   _buildPriceFoodTextField() {
@@ -310,7 +356,6 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
       controller: _priceFoodController,
       hintText: 'Giá',
       filled: true,
-      onChanged: (String) {},
       validator: (value) {
         if (value == null || value.isEmpty) {
           return 'Giá món không được này';
@@ -351,52 +396,52 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
 
   Widget _buildDropDownCategory(List<CategoryModel> categories) {
     return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          borderRadius: BorderRadius.circular(textFieldBorderRadius).r,
-          border: Border.all(color: AppColors.lavender),
-        ),
-        child: Row(
-          children: [
-            const Icon(
-              Icons.category_outlined,
-              size: 20,
-              color: AppColors.secondTextColor,
-            ),
-            10.horizontalSpace,
-            ValueListenableBuilder(
-                valueListenable: _categoryValueNotifier,
-                builder: (context, value, child) {
-                  return Expanded(
-                    child: DropdownButton<String>(
-                      isExpanded: true,
-                      hint: Text('Danh mục',
-                          style: kBodyStyle.copyWith(
-                              color: AppColors.secondTextColor)),
-                      padding: const EdgeInsets.all(0),
-                      value: _categoryValueNotifier.value,
-                      icon: const Icon(Icons.arrow_drop_down_rounded),
-                      borderRadius:
-                          BorderRadius.circular(defaultBorderRadius).r,
-                      underline: const SizedBox(),
-                      style:
-                          kBodyStyle.copyWith(color: AppColors.secondTextColor),
-                      dropdownColor: AppColors.white,
-                      // value: _categoryId,
-                      items: categories.map((category) {
-                        return DropdownMenuItem(
-                          value: category.name,
-                          child: Text(category.name),
-                        );
-                      }).toList(),
-                      onChanged: (value) {
-                        _categoryValueNotifier.value = value!;
-                      },
-                    ),
-                  );
-                })
-          ],
-        ));
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(textFieldBorderRadius).r,
+        border: Border.all(color: AppColors.lavender),
+      ),
+      child: Row(
+        children: [
+          const Icon(
+            Icons.category_outlined,
+            size: 20,
+            color: AppColors.secondTextColor,
+          ),
+          10.horizontalSpace,
+          ValueListenableBuilder(
+            valueListenable: _categoryValueNotifier,
+            builder: (context, value, child) {
+              return Expanded(
+                child: DropdownButton<String>(
+                  isExpanded: true,
+                  hint: Text('Danh mục',
+                      style: kBodyStyle.copyWith(
+                          color: AppColors.secondTextColor)),
+                  padding: const EdgeInsets.all(0),
+                  value: _categoryValueNotifier.value,
+                  icon: const Icon(Icons.arrow_drop_down_rounded),
+                  borderRadius: BorderRadius.circular(defaultBorderRadius).r,
+                  underline: const SizedBox(),
+                  style: kBodyStyle.copyWith(color: AppColors.secondTextColor),
+                  dropdownColor: AppColors.white,
+                  // value: _categoryId,
+                  items: categories.map((category) {
+                    return DropdownMenuItem(
+                      value: category.name,
+                      child: Text(category.name),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    _categoryValueNotifier.value = value!;
+                  },
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
   }
 }
