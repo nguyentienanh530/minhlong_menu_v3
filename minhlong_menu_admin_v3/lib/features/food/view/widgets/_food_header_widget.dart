@@ -65,11 +65,10 @@ extension _FoodHeaderWidget on _FoodViewState {
               items: itemsDropdown,
               onChanged: (value) {
                 _limit.value = int.parse(value.toString());
-                // _fetchData(
-                //   status: _listStatus[_tabController.index],
-                //   page: 1,
-                //   limit: limit,
-                // );
+                _fetchData(
+                  page: 1,
+                  limit: _limit.value,
+                );
               },
             );
           },
@@ -77,42 +76,90 @@ extension _FoodHeaderWidget on _FoodViewState {
   }
 
   Widget _buildSearch() {
+    // return Container(
+    //   height: 35,
+    //   width: 400.h,
+    //   alignment: Alignment.center,
+    //   decoration: BoxDecoration(
+    //     borderRadius: BorderRadius.circular(8).r,
+    //     color: AppColors.white,
+    //   ),
+    //   child: TextField(
+    //     // controller: _searchController,
+    //     onChanged: (value) {
+    //       // _fetchData(
+    //       //   status: _listStatus[_tabController.index],
+    //       //   page: 1,
+    //       //   limit: _limit.value,
+    //       //   search: value
+    //       // );
+    //     },
+    //     style: kBodyStyle,
+    //     decoration: InputDecoration(
+    //       floatingLabelAlignment: FloatingLabelAlignment.center,
+    //       isDense: true,
+    //       contentPadding: const EdgeInsets.all(10),
+    //       border: InputBorder.none,
+    //       hintText: 'Tìm kiếm',
+    //       hintStyle: kBodyStyle.copyWith(color: AppColors.secondTextColor),
+    //       prefixIcon:
+    //           const Icon(Icons.search, color: AppColors.secondTextColor),
+    //     ),
+    //   ),
+    // );
+
     return Container(
       height: 35,
       width: 400.h,
       alignment: Alignment.center,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8).r,
-        color: AppColors.white,
-      ),
-      child: TextField(
-        // controller: _searchController,
-        onChanged: (value) {
-          // _fetchData(
-          //   status: _listStatus[_tabController.index],
-          //   page: 1,
-          //   limit: _limit.value,
-          //   search: value
-          // );
+      // decoration: BoxDecoration(
+      //   borderRadius: BorderRadius.circular(8).r,
+      //   color: AppColors.white,
+      // ),
+      child: SearchAnchor(
+        isFullScreen: false,
+        builder: (context, controller) {
+          return SearchBar(
+              controller: controller,
+              hintText: 'Tìm kiếm',
+              hintStyle: WidgetStatePropertyAll(
+                  kCaptionStyle.copyWith(color: AppColors.secondTextColor)),
+              shape: WidgetStatePropertyAll(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(textFieldBorderRadius).r,
+                ),
+              ),
+              leading:
+                  const Icon(Icons.search, color: AppColors.secondTextColor),
+              onTap: () {
+                controller.openView();
+              },
+              onChanged: (value) {
+                print('changed $value');
+                controller.openView();
+              });
         },
-        style: kBodyStyle,
-        decoration: InputDecoration(
-          floatingLabelAlignment: FloatingLabelAlignment.center,
-          isDense: true,
-          contentPadding: const EdgeInsets.all(10),
-          border: InputBorder.none,
-          hintText: 'Tìm kiếm',
-          hintStyle: kBodyStyle.copyWith(color: AppColors.secondTextColor),
-          prefixIcon:
-              const Icon(Icons.search, color: AppColors.secondTextColor),
-        ),
+        suggestionsBuilder:
+            (BuildContext context, SearchController controller) {
+          return List<ListTile>.generate(5, (int index) {
+            final String item = 'item $index';
+            return ListTile(
+              title: Text(item),
+              onTap: () {
+                setState(() {
+                  controller.closeView(item);
+                });
+              },
+            );
+          });
+        },
       ),
     );
   }
 
   _buildButtonAddFood() {
     return InkWell(
-      onTap: () {
+      onTap: () async {
         _showCreateOrUpdateDialog(mode: FoodScreenMode.create);
       },
       child: Container(

@@ -26,10 +26,10 @@ class Ultils {
     return imageFile;
   }
 
-  Future<String?> uploadImage(
+  static Future<String?> uploadImage(
       {required File file,
       required String path,
-      required ValueNotifier loading}) async {
+      required ValueNotifier<double> loading}) async {
     // final Response response = await dioClient.dio!
     //     .post(ApiConfig.uploadAvatar, data: {'avatar': file});
     var filePath = file.path.split('/').last;
@@ -38,7 +38,7 @@ class Ultils {
       "image": await MultipartFile.fromFile(file.path, filename: filePath),
     });
     final response = await DioClient().dio!.post(
-      ApiConfig.uploadAvatar,
+      ApiConfig.uploadImage,
       data: formData,
       queryParameters: {'path': path},
       onSendProgress: (count, total) {
@@ -48,7 +48,8 @@ class Ultils {
     if (response.statusCode != 200) {
       return null;
     }
-    return response.data['data'];
+
+    return response.data['image'];
   }
 
   static String formatDateToString(String date,

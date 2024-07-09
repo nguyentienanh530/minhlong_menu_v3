@@ -26,7 +26,7 @@ class ImageNotFound extends StatelessWidget {
           ':-('.toUpperCase(),
           style: kSubHeadingStyle.copyWith(
             color: tintcolor ?? AppColors.smokeWhite1,
-            fontSize: 50,
+            fontSize: 30,
           ),
         ),
       ),

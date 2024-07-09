@@ -100,6 +100,7 @@ class FoodController extends Controller {
   }
 
   Future<Response> create(Request request) async {
+    print('request: ${request.all()}');
     try {
       var foodData = {
         'name': request.input('name'),
@@ -107,11 +108,19 @@ class FoodController extends Controller {
         'order_count': request.input('order_count'),
         'description': request.input('description'),
         'discount': request.input('discount'),
-        'is_discount': request.input('is_discount'),
-        'is_show': request.input('is_show'),
+        'is_discount':
+            bool.parse(request.input('is_discount') ?? 'false') == true ? 1 : 0,
+        'is_show':
+            bool.parse(request.input('is_show') ?? 'false') == true ? 1 : 0,
         'price': request.input('price'),
-        'photo_gallery': request.input('photo_gallery'),
+        'image1': request.input('image1'),
+        'image2': request.input('image2'),
+        'image3': request.input('image3'),
+        'image4': request.input('image4'),
       };
+      print('is_discount ${request.input('is_discount')}');
+      print('is_show ${request.input('is_show')}');
+      print('foodData: $foodData');
       var foodID = await _foodRepository.create(data: foodData);
       if (foodID != null) {
         return AppResponse().ok(data: foodID, statusCode: HttpStatus.ok);
@@ -122,6 +131,7 @@ class FoodController extends Controller {
         message: 'connection error',
       );
     } catch (e) {
+      print('error: $e');
       return AppResponse().error(
         statusCode: HttpStatus.internalServerError,
         message: 'connection error',
@@ -157,17 +167,26 @@ class FoodController extends Controller {
         'order_count': request.input('order_count') ?? food['order_count'],
         'description': request.input('description') ?? food['description'],
         'discount': request.input('discount') ?? food['discount'],
-        'is_discount': request.input('is_discount') ?? food['is_discount'],
-        'is_show': request.input('is_show') ?? food['is_show'],
+        'is_discount': request.input('is_discount') == null
+            ? food['is_discount']
+            : bool.parse(request.input('is_discount')) == true
+                ? 1
+                : 0,
+        'is_show': request.input('is_show') == null
+            ? food['is_show']
+            : bool.parse(request.input('is_show')) == true
+                ? 1
+                : 0,
         'price': request.input('price') ?? food['price'],
-        'created_at': request.input('created_at') ?? food['created_at'],
-        'updated_at': request.input('updated_at') ?? food['updated_at'],
-        'photo_gallery':
-            request.input('photo_gallery') ?? food['photo_gallery'],
+        'image1': request.input('image1') ?? food['image1'],
+        'image2': request.input('image2') ?? food['image2'],
+        'image3': request.input('image3') ?? food['image3'],
+        'image4': request.input('image4') ?? food['image4'],
       };
-      await food.update(foodUpdate);
-      return AppResponse().ok(statusCode: HttpStatus.ok, data: {'food': food});
+      await _foodRepository.update(id: id, data: foodUpdate);
+      return AppResponse().ok(statusCode: HttpStatus.ok, data: true);
     } catch (e) {
+      print('error: $e');
       return AppResponse().error(
           statusCode: HttpStatus.internalServerError,
           message: 'connection error');
@@ -175,7 +194,23 @@ class FoodController extends Controller {
   }
 
   Future<Response> destroy(int id) async {
-    return Response.json({});
+    try {
+      var food = await _foodRepository.find(id: id);
+
+      if (food == null) {
+        return AppResponse().error(
+          statusCode: HttpStatus.notFound,
+          message: 'food not found',
+        );
+      }
+      await _foodRepository.delete(id: id);
+      return AppResponse().ok(statusCode: HttpStatus.ok, data: true);
+    } catch (e) {
+      return AppResponse().error(
+        statusCode: HttpStatus.internalServerError,
+        message: 'connection error',
+      );
+    }
   }
 
   Future<Response> search(Request request) async {
@@ -183,23 +218,15 @@ class FoodController extends Controller {
   }
 
   Future<Response> index(Request request) async {
+    int page = request.input('page') ?? 1;
+    int limit = request.input('limit') ?? 10;
     try {
-      int page = request.input('page') ?? 1;
-      int limit = request.input('limit') ?? 10;
-
-      List<Map<String, dynamic>> foods = await _foodRepository.get();
-
-      final int totalItems = foods.length;
+      final int totalItems = await _foodRepository.foodCount();
       final int totalPages = (totalItems / limit).ceil();
       final int startIndex = (page - 1) * limit;
-      final int endIndex = startIndex + limit;
 
-      List<Map<String, dynamic>> pageData = [];
-      if (startIndex < totalItems) {
-        pageData = foods.sublist(
-            startIndex, endIndex < totalItems ? endIndex : totalItems);
-      }
-
+      List<Map<String, dynamic>> foods =
+          await _foodRepository.get(startIndex: startIndex, limit: limit);
       return AppResponse().ok(statusCode: HttpStatus.ok, data: {
         'pagination': {
           'page': page,
@@ -207,7 +234,7 @@ class FoodController extends Controller {
           'total_page': totalPages,
           'total_item': totalItems,
         },
-        'data': pageData,
+        'data': foods,
       });
     } catch (e) {
       print('error: $e');

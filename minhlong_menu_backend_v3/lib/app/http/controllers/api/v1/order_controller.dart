@@ -259,6 +259,7 @@ class OrderController extends Controller {
         data: true,
       );
     } catch (e) {
+      print('error: $e');
       return AppResponse().error(
         statusCode: HttpStatus.internalServerError,
         message: 'connection error',

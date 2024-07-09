@@ -17,8 +17,6 @@ import 'package:minhlong_menu_admin_v3/features/order/cubit/pagination_cubit.dar
 import 'package:minhlong_menu_admin_v3/features/order/data/model/food_order_model.dart';
 import 'package:minhlong_menu_admin_v3/features/order/data/provider/order_api.dart';
 import 'package:number_pagination/number_pagination.dart';
-
-import '../../../../common/widget/loading_widget.dart';
 import '../../bloc/order_bloc.dart';
 import '../../data/model/order_item.dart';
 import '../../data/model/order_model.dart';
@@ -94,7 +92,7 @@ class _OrderViewState extends State<OrderView> with TickerProviderStateMixin {
           listener: (context, state) {
             if (state is OrderUpdateInProgress ||
                 state is OrderDeleteInProgress) {
-              _showLoadingDialog(context);
+              AppDialog.showLoadingDialog(context);
             }
 
             if (state is OrderUpdateSuccess) {
@@ -103,7 +101,7 @@ class _OrderViewState extends State<OrderView> with TickerProviderStateMixin {
                   status: _listStatus[_tabController.index],
                   page: _curentPage.value,
                   limit: _limit.value);
-              showOverlaySnackbar(context, 'Cập nhật thành công');
+              OverlaySnackbar.show(context, 'Cập nhật thành công');
             }
             if (state is OrderDeleteSuccess) {
               pop(context, 2);
@@ -112,12 +110,12 @@ class _OrderViewState extends State<OrderView> with TickerProviderStateMixin {
                   page: _curentPage.value,
                   limit: _limit.value);
 
-              showOverlaySnackbar(context, 'Xóa thành công');
+              OverlaySnackbar.show(context, 'Xóa thành công');
             }
 
             if (state is OrderUpdateFailure) {
               pop(context, 2);
-              showOverlaySnackbar(context, 'Có lỗi xảy ra',
+              OverlaySnackbar.show(context, 'Có lỗi xảy ra',
                   type: OverlaySnackbarType.error);
               _fetchData(
                   status: _listStatus[_tabController.index],
@@ -127,7 +125,7 @@ class _OrderViewState extends State<OrderView> with TickerProviderStateMixin {
 
             if (state is OrderDeleteFailure) {
               pop(context, 2);
-              showOverlaySnackbar(context, 'Có lỗi xảy ra',
+              OverlaySnackbar.show(context, 'Có lỗi xảy ra',
                   type: OverlaySnackbarType.error);
               _fetchData(
                   status: _listStatus[_tabController.index],
@@ -142,19 +140,6 @@ class _OrderViewState extends State<OrderView> with TickerProviderStateMixin {
               Expanded(child: _orderBodyWidget())
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  Future<dynamic> _showLoadingDialog(BuildContext context) {
-    return showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (context) => const AlertDialog(
-        backgroundColor: Colors.transparent,
-        content: LoadingWidget(
-          title: 'Đang xử lý...',
         ),
       ),
     );

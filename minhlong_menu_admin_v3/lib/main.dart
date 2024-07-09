@@ -9,12 +9,15 @@ import 'package:minhlong_menu_admin_v3/features/auth/bloc/auth_bloc.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/data/auth_local_datasource/auth_local_datasource.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/data/provider/remote/auth_api.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/data/repositories/auth_repository.dart';
+import 'package:minhlong_menu_admin_v3/features/food/bloc/food_bloc.dart';
+import 'package:minhlong_menu_admin_v3/features/food/data/provider/food_api.dart';
 import 'package:minhlong_menu_admin_v3/features/home/cubit/table_index_selected_cubit.dart';
 import 'package:minhlong_menu_admin_v3/features/order/cubit/order_socket_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'bloc_observer.dart';
 import 'core/app_colors.dart';
+import 'features/food/data/repositories/food_repository.dart';
 import 'features/web_socket_client/cubit/web_socket_client_cubit.dart';
 
 void main() async {
@@ -31,11 +34,18 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RepositoryProvider(
-      create: (context) => AuthRepository(
-        authApi: AuthApi(dio: DioClient().dio!),
-        authLocalDatasource: AuthLocalDatasource(sf),
-      ),
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider(
+          create: (context) => AuthRepository(
+            authApi: AuthApi(dio: DioClient().dio!),
+            authLocalDatasource: AuthLocalDatasource(sf),
+          ),
+        ),
+        RepositoryProvider(
+          create: (context) => FoodRepository(FoodApi(DioClient().dio!)),
+        ),
+      ],
       child: MultiBlocProvider(
         providers: [
           BlocProvider(
@@ -49,6 +59,9 @@ class MainApp extends StatelessWidget {
           ),
           BlocProvider(
             create: (context) => OrderSocketCubit(),
+          ),
+          BlocProvider(
+            create: (context) => FoodBloc(context.read<FoodRepository>()),
           ),
         ],
         child: const AppContent(),
@@ -90,6 +103,7 @@ class _AppContentState extends State<AppContent> {
           routerConfig: AppRoute.routes,
           scrollBehavior: MyCustomScrollBehavior(),
           theme: ThemeData(
+            useMaterial3: true,
             fontFamily: GoogleFonts.roboto().fontFamily,
             scaffoldBackgroundColor: AppColors.background,
             // textTheme: const TextTheme(

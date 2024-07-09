@@ -58,6 +58,7 @@ class Version1 implements Route {
       Router.get("quantity", foodController.getQuantityOfFood);
       Router.delete("/{id}", foodController.destroy);
       Router.post('', foodController.create);
+      Router.patch('{id}', foodController.update);
     }, prefix: '/foods');
 
     //======= Banner route =======

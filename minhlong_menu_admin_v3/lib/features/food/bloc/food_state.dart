@@ -34,3 +34,23 @@ final class FoodCreateFailure extends FoodState {
 
   FoodCreateFailure(this.message);
 }
+
+final class FoodUpdateInProgress extends FoodState {}
+
+final class FoodUpdateSuccess extends FoodState {}
+
+final class FoodUpdateFailure extends FoodState {
+  final String message;
+
+  FoodUpdateFailure(this.message);
+}
+
+final class FoodDeleteInProgress extends FoodState {}
+
+final class FoodDeleteSuccess extends FoodState {}
+
+final class FoodDeleteFailure extends FoodState {
+  final String message;
+
+  FoodDeleteFailure(this.message);
+}

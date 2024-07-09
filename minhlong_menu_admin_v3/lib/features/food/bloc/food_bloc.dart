@@ -18,6 +18,8 @@ class FoodBloc extends Bloc<FoodEvent, FoodState> {
         super(FoodInitial()) {
     on<FoodFetched>(_onFoodFetched);
     on<FoodCreated>(_onFoodCreated);
+    on<FoodUpdated>(_onFoodUpdated);
+    on<FoodDeleted>(_onFoodDeleted);
   }
 
   final FoodRepository _foodRepository;
@@ -44,6 +46,26 @@ class FoodBloc extends Bloc<FoodEvent, FoodState> {
       emit(FoodCreateSuccess(success));
     }, failure: (message) {
       emit(FoodCreateFailure(message));
+    });
+  }
+
+  FutureOr<void> _onFoodUpdated(FoodUpdated event, Emit emit) async {
+    emit(FoodUpdateInProgress());
+    var result = await _foodRepository.updateFood(food: event.food);
+    result.when(success: (success) {
+      emit(FoodUpdateSuccess());
+    }, failure: (message) {
+      emit(FoodUpdateFailure(message));
+    });
+  }
+
+  FutureOr<void> _onFoodDeleted(FoodDeleted event, Emit emit) async {
+    emit(FoodDeleteInProgress());
+    var result = await _foodRepository.deleteFood(id: event.id);
+    result.when(success: (success) {
+      emit(FoodDeleteSuccess());
+    }, failure: (message) {
+      emit(FoodDeleteFailure(message));
     });
   }
 }

@@ -28,15 +28,21 @@ mixin _$FoodItem {
   int get orderCount => throw _privateConstructorUsedError;
   String get description => throw _privateConstructorUsedError;
   int? get discount => throw _privateConstructorUsedError;
+  @JsonKey(name: 'is_discount')
   bool? get isDiscount => throw _privateConstructorUsedError;
+  @JsonKey(name: 'is_show')
   bool? get isShow => throw _privateConstructorUsedError;
   double? get price => throw _privateConstructorUsedError;
   @JsonKey(name: 'created_at')
   String? get createdAt => throw _privateConstructorUsedError;
   @JsonKey(name: 'updated_at')
   String? get updatedAt => throw _privateConstructorUsedError;
-  @JsonKey(name: 'photo_gallery', fromJson: stringToList)
-  List<dynamic> get photoGallery => throw _privateConstructorUsedError;
+  String? get image1 => throw _privateConstructorUsedError;
+  String? get image2 => throw _privateConstructorUsedError;
+  String? get image3 => throw _privateConstructorUsedError;
+  String? get image4 => throw _privateConstructorUsedError;
+  @JsonKey(name: 'category_name')
+  String get categoryName => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -56,13 +62,16 @@ abstract class $FoodItemCopyWith<$Res> {
       @JsonKey(name: 'order_count') int orderCount,
       String description,
       int? discount,
-      bool? isDiscount,
-      bool? isShow,
+      @JsonKey(name: 'is_discount') bool? isDiscount,
+      @JsonKey(name: 'is_show') bool? isShow,
       double? price,
       @JsonKey(name: 'created_at') String? createdAt,
       @JsonKey(name: 'updated_at') String? updatedAt,
-      @JsonKey(name: 'photo_gallery', fromJson: stringToList)
-      List<dynamic> photoGallery});
+      String? image1,
+      String? image2,
+      String? image3,
+      String? image4,
+      @JsonKey(name: 'category_name') String categoryName});
 }
 
 /// @nodoc
@@ -89,7 +98,11 @@ class _$FoodItemCopyWithImpl<$Res, $Val extends FoodItem>
     Object? price = freezed,
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
-    Object? photoGallery = null,
+    Object? image1 = freezed,
+    Object? image2 = freezed,
+    Object? image3 = freezed,
+    Object? image4 = freezed,
+    Object? categoryName = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -136,10 +149,26 @@ class _$FoodItemCopyWithImpl<$Res, $Val extends FoodItem>
           ? _value.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
               as String?,
-      photoGallery: null == photoGallery
-          ? _value.photoGallery
-          : photoGallery // ignore: cast_nullable_to_non_nullable
-              as List<dynamic>,
+      image1: freezed == image1
+          ? _value.image1
+          : image1 // ignore: cast_nullable_to_non_nullable
+              as String?,
+      image2: freezed == image2
+          ? _value.image2
+          : image2 // ignore: cast_nullable_to_non_nullable
+              as String?,
+      image3: freezed == image3
+          ? _value.image3
+          : image3 // ignore: cast_nullable_to_non_nullable
+              as String?,
+      image4: freezed == image4
+          ? _value.image4
+          : image4 // ignore: cast_nullable_to_non_nullable
+              as String?,
+      categoryName: null == categoryName
+          ? _value.categoryName
+          : categoryName // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 }
@@ -159,13 +188,16 @@ abstract class _$$FoodItemImplCopyWith<$Res>
       @JsonKey(name: 'order_count') int orderCount,
       String description,
       int? discount,
-      bool? isDiscount,
-      bool? isShow,
+      @JsonKey(name: 'is_discount') bool? isDiscount,
+      @JsonKey(name: 'is_show') bool? isShow,
       double? price,
       @JsonKey(name: 'created_at') String? createdAt,
       @JsonKey(name: 'updated_at') String? updatedAt,
-      @JsonKey(name: 'photo_gallery', fromJson: stringToList)
-      List<dynamic> photoGallery});
+      String? image1,
+      String? image2,
+      String? image3,
+      String? image4,
+      @JsonKey(name: 'category_name') String categoryName});
 }
 
 /// @nodoc
@@ -190,7 +222,11 @@ class __$$FoodItemImplCopyWithImpl<$Res>
     Object? price = freezed,
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
-    Object? photoGallery = null,
+    Object? image1 = freezed,
+    Object? image2 = freezed,
+    Object? image3 = freezed,
+    Object? image4 = freezed,
+    Object? categoryName = null,
   }) {
     return _then(_$FoodItemImpl(
       id: null == id
@@ -237,10 +273,26 @@ class __$$FoodItemImplCopyWithImpl<$Res>
           ? _value.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
               as String?,
-      photoGallery: null == photoGallery
-          ? _value._photoGallery
-          : photoGallery // ignore: cast_nullable_to_non_nullable
-              as List<dynamic>,
+      image1: freezed == image1
+          ? _value.image1
+          : image1 // ignore: cast_nullable_to_non_nullable
+              as String?,
+      image2: freezed == image2
+          ? _value.image2
+          : image2 // ignore: cast_nullable_to_non_nullable
+              as String?,
+      image3: freezed == image3
+          ? _value.image3
+          : image3 // ignore: cast_nullable_to_non_nullable
+              as String?,
+      image4: freezed == image4
+          ? _value.image4
+          : image4 // ignore: cast_nullable_to_non_nullable
+              as String?,
+      categoryName: null == categoryName
+          ? _value.categoryName
+          : categoryName // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -255,14 +307,16 @@ class _$FoodItemImpl implements _FoodItem {
       @JsonKey(name: 'order_count') this.orderCount = 0,
       this.description = '',
       this.discount = 0,
-      this.isDiscount = false,
-      this.isShow = true,
+      @JsonKey(name: 'is_discount') this.isDiscount = false,
+      @JsonKey(name: 'is_show') this.isShow = true,
       this.price = 0,
-      @JsonKey(name: 'created_at') this.createdAt = '',
-      @JsonKey(name: 'updated_at') this.updatedAt = '',
-      @JsonKey(name: 'photo_gallery', fromJson: stringToList)
-      final List<dynamic> photoGallery = const <String>[]})
-      : _photoGallery = photoGallery;
+      @JsonKey(name: 'created_at') this.createdAt,
+      @JsonKey(name: 'updated_at') this.updatedAt,
+      this.image1,
+      this.image2,
+      this.image3,
+      this.image4,
+      @JsonKey(name: 'category_name') this.categoryName = ''});
 
   factory _$FoodItemImpl.fromJson(Map<String, dynamic> json) =>
       _$$FoodItemImplFromJson(json);
@@ -286,10 +340,10 @@ class _$FoodItemImpl implements _FoodItem {
   @JsonKey()
   final int? discount;
   @override
-  @JsonKey()
+  @JsonKey(name: 'is_discount')
   final bool? isDiscount;
   @override
-  @JsonKey()
+  @JsonKey(name: 'is_show')
   final bool? isShow;
   @override
   @JsonKey()
@@ -300,18 +354,21 @@ class _$FoodItemImpl implements _FoodItem {
   @override
   @JsonKey(name: 'updated_at')
   final String? updatedAt;
-  final List<dynamic> _photoGallery;
   @override
-  @JsonKey(name: 'photo_gallery', fromJson: stringToList)
-  List<dynamic> get photoGallery {
-    if (_photoGallery is EqualUnmodifiableListView) return _photoGallery;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_photoGallery);
-  }
+  final String? image1;
+  @override
+  final String? image2;
+  @override
+  final String? image3;
+  @override
+  final String? image4;
+  @override
+  @JsonKey(name: 'category_name')
+  final String categoryName;
 
   @override
   String toString() {
-    return 'FoodItem(id: $id, name: $name, categoryID: $categoryID, orderCount: $orderCount, description: $description, discount: $discount, isDiscount: $isDiscount, isShow: $isShow, price: $price, createdAt: $createdAt, updatedAt: $updatedAt, photoGallery: $photoGallery)';
+    return 'FoodItem(id: $id, name: $name, categoryID: $categoryID, orderCount: $orderCount, description: $description, discount: $discount, isDiscount: $isDiscount, isShow: $isShow, price: $price, createdAt: $createdAt, updatedAt: $updatedAt, image1: $image1, image2: $image2, image3: $image3, image4: $image4, categoryName: $categoryName)';
   }
 
   @override
@@ -337,8 +394,12 @@ class _$FoodItemImpl implements _FoodItem {
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
                 other.updatedAt == updatedAt) &&
-            const DeepCollectionEquality()
-                .equals(other._photoGallery, _photoGallery));
+            (identical(other.image1, image1) || other.image1 == image1) &&
+            (identical(other.image2, image2) || other.image2 == image2) &&
+            (identical(other.image3, image3) || other.image3 == image3) &&
+            (identical(other.image4, image4) || other.image4 == image4) &&
+            (identical(other.categoryName, categoryName) ||
+                other.categoryName == categoryName));
   }
 
   @JsonKey(ignore: true)
@@ -356,7 +417,11 @@ class _$FoodItemImpl implements _FoodItem {
       price,
       createdAt,
       updatedAt,
-      const DeepCollectionEquality().hash(_photoGallery));
+      image1,
+      image2,
+      image3,
+      image4,
+      categoryName);
 
   @JsonKey(ignore: true)
   @override
@@ -374,19 +439,23 @@ class _$FoodItemImpl implements _FoodItem {
 
 abstract class _FoodItem implements FoodItem {
   factory _FoodItem(
-      {final int id,
-      final String name,
-      @JsonKey(name: 'category_id') final int categoryID,
-      @JsonKey(name: 'order_count') final int orderCount,
-      final String description,
-      final int? discount,
-      final bool? isDiscount,
-      final bool? isShow,
-      final double? price,
-      @JsonKey(name: 'created_at') final String? createdAt,
-      @JsonKey(name: 'updated_at') final String? updatedAt,
-      @JsonKey(name: 'photo_gallery', fromJson: stringToList)
-      final List<dynamic> photoGallery}) = _$FoodItemImpl;
+          {final int id,
+          final String name,
+          @JsonKey(name: 'category_id') final int categoryID,
+          @JsonKey(name: 'order_count') final int orderCount,
+          final String description,
+          final int? discount,
+          @JsonKey(name: 'is_discount') final bool? isDiscount,
+          @JsonKey(name: 'is_show') final bool? isShow,
+          final double? price,
+          @JsonKey(name: 'created_at') final String? createdAt,
+          @JsonKey(name: 'updated_at') final String? updatedAt,
+          final String? image1,
+          final String? image2,
+          final String? image3,
+          final String? image4,
+          @JsonKey(name: 'category_name') final String categoryName}) =
+      _$FoodItemImpl;
 
   factory _FoodItem.fromJson(Map<String, dynamic> json) =
       _$FoodItemImpl.fromJson;
@@ -406,8 +475,10 @@ abstract class _FoodItem implements FoodItem {
   @override
   int? get discount;
   @override
+  @JsonKey(name: 'is_discount')
   bool? get isDiscount;
   @override
+  @JsonKey(name: 'is_show')
   bool? get isShow;
   @override
   double? get price;
@@ -418,8 +489,16 @@ abstract class _FoodItem implements FoodItem {
   @JsonKey(name: 'updated_at')
   String? get updatedAt;
   @override
-  @JsonKey(name: 'photo_gallery', fromJson: stringToList)
-  List<dynamic> get photoGallery;
+  String? get image1;
+  @override
+  String? get image2;
+  @override
+  String? get image3;
+  @override
+  String? get image4;
+  @override
+  @JsonKey(name: 'category_name')
+  String get categoryName;
   @override
   @JsonKey(ignore: true)
   _$$FoodItemImplCopyWith<_$FoodItemImpl> get copyWith =>

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/app_colors.dart';
 import '../../core/app_const.dart';
 import '../../core/app_style.dart';
+import '../widget/loading_widget.dart';
 
 class AppDialog extends StatelessWidget {
   const AppDialog({
@@ -104,6 +105,19 @@ class AppDialog extends StatelessWidget {
             ),
           )
         ],
+      ),
+    );
+  }
+
+  static Future<dynamic> showLoadingDialog(BuildContext context) {
+    return showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) => const AlertDialog(
+        backgroundColor: Colors.transparent,
+        content: LoadingWidget(
+          title: 'Đang xử lý...',
+        ),
       ),
     );
   }

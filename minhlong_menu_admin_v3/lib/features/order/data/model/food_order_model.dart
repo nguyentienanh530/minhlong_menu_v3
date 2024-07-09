@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:freezed_annotation/freezed_annotation.dart';
 part 'food_order_model.freezed.dart';
 part 'food_order_model.g.dart';
@@ -12,9 +11,10 @@ List<dynamic> stringToList(String photoGallery) {
 class FoodOrderModel with _$FoodOrderModel {
   factory FoodOrderModel({
     @Default('') String name,
-    @Default([])
-    @JsonKey(name: 'photo_gallery', fromJson: stringToList)
-    List photoGallery,
+    final String? image1,
+    final String? image2,
+    final String? image3,
+    final String? image4,
     @Default('') String note,
     @Default(0) double price,
     @Default(0) int quantity,

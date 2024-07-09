@@ -31,7 +31,10 @@ class OrderWebSocketController extends Controller {
             'price': order['price'],
             'note': order['note'],
             'total_amount': order['total_amount'],
-            'photo_gallery': order['photo_gallery'],
+            'image1': order['image1'],
+            'image2': order['image2'],
+            'image3': order['image3'],
+            'image4': order['image4'],
           };
         }).toList(),
       };

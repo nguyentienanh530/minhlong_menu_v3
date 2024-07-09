@@ -26,7 +26,8 @@ extension _FoodBodyWidget on _FoodViewState {
               2: FlexColumnWidth(),
               3: FlexColumnWidth(),
               4: FlexColumnWidth(),
-              5: FixedColumnWidth(100),
+              5: FlexColumnWidth(),
+              6: FixedColumnWidth(100),
             },
             defaultVerticalAlignment: TableCellVerticalAlignment.middle,
             children: <TableRow>[
@@ -35,35 +36,52 @@ extension _FoodBodyWidget on _FoodViewState {
           ),
         ),
         Expanded(
-          child: Builder(builder: (context) {
-            var foodsState = context.watch<FoodBloc>().state;
-            switch (foodsState) {
-              case FoodFetchSuccess():
-                context
-                    .read<PaginationCubit>()
-                    .setPagination(foodsState.foodModel.paginationModel!);
-                return SingleChildScrollView(
-                    child: _buildWidgetSuccess(foodsState.foodModel));
+          child: BlocListener<FoodBloc, FoodState>(
+            listener: (context, state) {
+              if (state is FoodDeleteInProgress) {
+                AppDialog.showLoadingDialog(context);
+              }
+              if (state is FoodDeleteSuccess) {
+                Navigator.pop(context);
+                OverlaySnackbar.show(context, 'Xoá thành công');
+                _fetchData(page: _curentPage.value, limit: _limit.value);
+              }
+              if (state is FoodDeleteFailure) {
+                Navigator.pop(context);
+                OverlaySnackbar.show(context, state.message,
+                    type: OverlaySnackbarType.error);
+              }
+            },
+            child: Builder(builder: (context) {
+              var foodsState = context.watch<FoodBloc>().state;
+              switch (foodsState) {
+                case FoodFetchSuccess():
+                  context
+                      .read<PaginationCubit>()
+                      .setPagination(foodsState.foodModel.paginationModel!);
+                  return SingleChildScrollView(
+                      child: _buildWidgetSuccess(foodsState.foodModel));
 
-              case FoodFetchFailure():
-                return ErrWidget(error: foodsState.message);
+                case FoodFetchFailure():
+                  return ErrWidget(error: foodsState.message);
 
-              case FoodFetchInProgress():
-                return const Loading();
+                case FoodFetchInProgress():
+                  return const Loading();
 
-              case FoodFetchEmpty():
-                return Center(
-                  child: Text(
-                    'Không có dữ liệu',
-                    style:
-                        kBodyStyle.copyWith(color: AppColors.secondTextColor),
-                  ),
-                );
+                case FoodFetchEmpty():
+                  return Center(
+                    child: Text(
+                      'Không có dữ liệu',
+                      style:
+                          kBodyStyle.copyWith(color: AppColors.secondTextColor),
+                    ),
+                  );
 
-              default:
-                return const SizedBox();
-            }
-          }),
+                default:
+                  return const SizedBox();
+              }
+            }),
+          ),
         ),
 
         _buildBottomWidget()
@@ -93,12 +111,14 @@ extension _FoodBodyWidget on _FoodViewState {
                           valueListenable: _foodModel,
                           builder: (context, order, child) {
                             return ValueListenableBuilder(
-                                valueListenable: _limit,
-                                builder: (context, limit, child) => Text(
-                                      'Hiển thị 1 đến $limit trong số ${pagination.totalItem} đơn',
-                                      style: kBodyStyle.copyWith(
-                                          color: AppColors.secondTextColor),
-                                    ));
+                              valueListenable: _limit,
+                              builder: (context, limit, child) => Text(
+                                'Hiển thị 1 đến $limit trong số ${pagination.totalItem} đơn',
+                                style: kBodyStyle.copyWith(
+                                  color: AppColors.secondTextColor,
+                                ),
+                              ),
+                            );
                           },
                         ),
                       ),
@@ -114,10 +134,7 @@ extension _FoodBodyWidget on _FoodViewState {
                         onPageChanged: (int pageNumber) {
                           _curentPage.value = pageNumber;
 
-                          // _fetchData(
-                          //     status: _listStatus[_tabController.index],
-                          //     page: pageNumber,
-                          //     limit: _limit.value);
+                          _fetchData(page: pageNumber, limit: _limit.value);
                         },
                         fontSize: 16,
                         buttonElevation: 10,
@@ -146,7 +163,8 @@ extension _FoodBodyWidget on _FoodViewState {
           2: FlexColumnWidth(),
           3: FlexColumnWidth(),
           4: FlexColumnWidth(),
-          5: FixedColumnWidth(100),
+          5: FlexColumnWidth(),
+          6: FixedColumnWidth(100),
         },
         defaultVerticalAlignment: TableCellVerticalAlignment.middle,
         children: food.foodItems
@@ -172,6 +190,7 @@ extension _FoodBodyWidget on _FoodViewState {
   }
 
   TableRow _buildRowTable(int index, FoodItem foodItem) {
+    final isShowFood = ValueNotifier(foodItem.isShow);
     return TableRow(
       decoration: BoxDecoration(
         color:
@@ -188,8 +207,9 @@ extension _FoodBodyWidget on _FoodViewState {
                 borderRadius: BorderRadius.circular(textFieldBorderRadius).r),
             clipBehavior: Clip.hardEdge,
             child: CachedNetworkImage(
-              imageUrl: '${ApiConfig.host}${foodItem.photoGallery[0]}',
+              imageUrl: '${ApiConfig.host}${foodItem.image1 ?? ''}',
               fit: BoxFit.cover,
+              errorWidget: errorBuilderForImage,
             ),
           ),
         ),
@@ -205,7 +225,7 @@ extension _FoodBodyWidget on _FoodViewState {
           height: 70.h,
           alignment: Alignment.center,
           child: Text(
-            foodItem.categoryID.toString(),
+            foodItem.categoryName,
             style: kBodyStyle.copyWith(color: AppColors.secondTextColor),
           ),
         ),
@@ -220,7 +240,39 @@ extension _FoodBodyWidget on _FoodViewState {
         Container(
           height: 70.h,
           alignment: Alignment.center,
-          child: Switch(value: foodItem.isShow ?? false, onChanged: (value) {}),
+          child: Text(
+            '${foodItem.discount ?? 0}%',
+            style: kBodyStyle.copyWith(color: AppColors.secondTextColor),
+          ),
+        ),
+        Container(
+          height: 70.h,
+          alignment: Alignment.center,
+          child: ValueListenableBuilder(
+            valueListenable: isShowFood,
+            builder: (context, value, child) {
+              return Switch(
+                  activeColor: AppColors.themeColor,
+                  inactiveThumbColor: AppColors.black.withOpacity(0.5),
+                  inactiveTrackColor:
+                      AppColors.secondTextColor.withOpacity(0.3),
+                  activeTrackColor: AppColors.themeColor.withOpacity(0.3),
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  dragStartBehavior: DragStartBehavior.start,
+                  hoverColor: AppColors.lavender,
+                  trackOutlineWidth: const WidgetStatePropertyAll(0),
+                  trackOutlineColor:
+                      const WidgetStatePropertyAll(AppColors.transparent),
+                  value: isShowFood.value ?? false,
+                  onChanged: (value) {
+                    isShowFood.value = value;
+                    FoodApi(DioClient().dio!).updateFood(
+                        food: foodItem.copyWith(
+                      isShow: value,
+                    ));
+                  });
+            },
+          ),
         ),
         Row(
           children: [
@@ -243,17 +295,17 @@ extension _FoodBodyWidget on _FoodViewState {
               alignment: Alignment.center,
               child: CommonIconButton(
                 onTap: () {
-                  // showDialog(
-                  //   context: context,
-                  //   builder: (context) => AppDialog(
-                  //     title: 'Xóa đơn',
-                  //     description: 'Bạn có muốn xóa đơn ${orderItem.id}?',
-                  //     confirmText: 'Xác nhận',
-                  //     onTap: () {
-                  //       // _handleDeleteOrder(orderID: orderItem.id);
-                  //     },
-                  //   ),
-                  // );
+                  showDialog(
+                    context: context,
+                    builder: (context) => AppDialog(
+                      title: 'Xóa món',
+                      description: 'Xóa món ${foodItem.name}?',
+                      confirmText: 'Xác nhận',
+                      onTap: () {
+                        _handleDeleteFood(orderID: foodItem.id);
+                      },
+                    ),
+                  );
                 },
                 icon: Icons.delete_outline,
                 color: AppColors.red,
@@ -267,8 +319,8 @@ extension _FoodBodyWidget on _FoodViewState {
   }
 
   void _showCreateOrUpdateDialog(
-      {required FoodScreenMode mode, FoodItem? foodItem}) {
-    showDialog(
+      {required FoodScreenMode mode, FoodItem? foodItem}) async {
+    await showDialog(
         context: context,
         builder: (context) => Dialog(
               backgroundColor: AppColors.background,
@@ -276,6 +328,19 @@ extension _FoodBodyWidget on _FoodViewState {
                 mode: mode,
                 foodItem: foodItem,
               ),
-            ));
+            )).then(
+      (value) {
+        if (value != null && value is bool) {
+          if (value) {
+            _fetchData(page: _curentPage.value, limit: _limit.value);
+          }
+        }
+      },
+    );
+  }
+
+  void _handleDeleteFood({required int orderID}) {
+    context.pop();
+    context.read<FoodBloc>().add(FoodDeleted(id: orderID));
   }
 }

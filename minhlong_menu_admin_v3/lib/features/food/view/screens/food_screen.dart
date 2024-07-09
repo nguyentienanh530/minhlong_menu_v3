@@ -1,8 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_admin_v3/common/network/dio_client.dart';
+import 'package:minhlong_menu_admin_v3/common/widget/error_build_image.dart';
 import 'package:minhlong_menu_admin_v3/core/api_config.dart';
 import 'package:minhlong_menu_admin_v3/core/app_style.dart';
 import 'package:minhlong_menu_admin_v3/core/extensions.dart';
@@ -12,6 +15,8 @@ import 'package:minhlong_menu_admin_v3/features/food/data/model/food_model.dart'
 import 'package:minhlong_menu_admin_v3/features/food/data/provider/food_api.dart';
 import 'package:number_pagination/number_pagination.dart';
 
+import '../../../../common/dialog/app_dialog.dart';
+import '../../../../common/snackbar/overlay_snackbar.dart';
 import '../../../../common/widget/common_icon_button.dart';
 import '../../../../common/widget/error_widget.dart';
 import '../../../../common/widget/loading.dart';
@@ -61,6 +66,7 @@ class _FoodViewState extends State<FoodView> {
     'Tên món ăn',
     'Danh mục',
     'Giá bán',
+    'Giảm giá(%)',
     'Ẩn/Hiện thị',
     'Hành động'
   ];
@@ -68,8 +74,7 @@ class _FoodViewState extends State<FoodView> {
   final _limit = ValueNotifier(10);
   final _foodModel = ValueNotifier(FoodModel());
 
-  void _fetchData(
-      {required String status, required int page, required int limit}) {
+  void _fetchData({required int page, required int limit}) {
     context.read<FoodBloc>().add(FoodFetched(page: page, limit: limit));
   }
 

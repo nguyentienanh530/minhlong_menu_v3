@@ -10,11 +10,14 @@ class CreateFoodTable extends Migration {
       bigInt('category_id', unsigned: true);
       bigInt('order_count', nullable: true);
       longText('description', nullable: true);
-      string('photo_gallery', nullable: true);
+      text('image1');
+      text('image2');
+      text('image3');
+      text('image4');
       integer('discount', nullable: true);
       addColumn('isDiscount', 'boolean');
       addColumn('isShow', 'boolean');
-      float('price', precision: 8, scale: 2);
+      float('price');
       timeStamps();
       foreign('category_id', 'category', 'id',
           constrained: true, onDelete: 'CASCADE');

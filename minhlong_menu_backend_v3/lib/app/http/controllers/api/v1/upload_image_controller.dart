@@ -10,8 +10,10 @@ class UploadImageController extends Controller {
     }, {
       'image.file': 'The avatar must be an image file.',
     });
+    print(request.all());
 
     RequestFile? image = request.file('image');
+
     String? path = request.input('path');
     try {
       String avatarPath = '';

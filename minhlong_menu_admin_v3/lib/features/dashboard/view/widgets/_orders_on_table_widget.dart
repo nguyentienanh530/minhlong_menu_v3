@@ -139,9 +139,10 @@ extension _OrdersOnTableWidget on _DashboardViewState {
                           decoration: const BoxDecoration(
                             shape: BoxShape.circle,
                           ),
-                          child: Image.network(
-                            '${ApiConfig.host}${e.photoGallery[0]}',
+                          child: CachedNetworkImage(
+                            imageUrl: '${ApiConfig.host}${e.image1 ?? ''}',
                             fit: BoxFit.cover,
+                            errorWidget: errorBuilderForImage,
                           ),
                         ),
                         const SizedBox(height: 10),

@@ -21,8 +21,10 @@ FoodOrderModel _$FoodOrderModelFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$FoodOrderModel {
   String get name => throw _privateConstructorUsedError;
-  @JsonKey(name: 'photo_gallery', fromJson: stringToList)
-  List<dynamic> get photoGallery => throw _privateConstructorUsedError;
+  String? get image1 => throw _privateConstructorUsedError;
+  String? get image2 => throw _privateConstructorUsedError;
+  String? get image3 => throw _privateConstructorUsedError;
+  String? get image4 => throw _privateConstructorUsedError;
   String get note => throw _privateConstructorUsedError;
   double get price => throw _privateConstructorUsedError;
   int get quantity => throw _privateConstructorUsedError;
@@ -43,8 +45,10 @@ abstract class $FoodOrderModelCopyWith<$Res> {
   @useResult
   $Res call(
       {String name,
-      @JsonKey(name: 'photo_gallery', fromJson: stringToList)
-      List<dynamic> photoGallery,
+      String? image1,
+      String? image2,
+      String? image3,
+      String? image4,
       String note,
       double price,
       int quantity,
@@ -65,7 +69,10 @@ class _$FoodOrderModelCopyWithImpl<$Res, $Val extends FoodOrderModel>
   @override
   $Res call({
     Object? name = null,
-    Object? photoGallery = null,
+    Object? image1 = freezed,
+    Object? image2 = freezed,
+    Object? image3 = freezed,
+    Object? image4 = freezed,
     Object? note = null,
     Object? price = null,
     Object? quantity = null,
@@ -76,10 +83,22 @@ class _$FoodOrderModelCopyWithImpl<$Res, $Val extends FoodOrderModel>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      photoGallery: null == photoGallery
-          ? _value.photoGallery
-          : photoGallery // ignore: cast_nullable_to_non_nullable
-              as List<dynamic>,
+      image1: freezed == image1
+          ? _value.image1
+          : image1 // ignore: cast_nullable_to_non_nullable
+              as String?,
+      image2: freezed == image2
+          ? _value.image2
+          : image2 // ignore: cast_nullable_to_non_nullable
+              as String?,
+      image3: freezed == image3
+          ? _value.image3
+          : image3 // ignore: cast_nullable_to_non_nullable
+              as String?,
+      image4: freezed == image4
+          ? _value.image4
+          : image4 // ignore: cast_nullable_to_non_nullable
+              as String?,
       note: null == note
           ? _value.note
           : note // ignore: cast_nullable_to_non_nullable
@@ -110,8 +129,10 @@ abstract class _$$FoodOrderModelImplCopyWith<$Res>
   @useResult
   $Res call(
       {String name,
-      @JsonKey(name: 'photo_gallery', fromJson: stringToList)
-      List<dynamic> photoGallery,
+      String? image1,
+      String? image2,
+      String? image3,
+      String? image4,
       String note,
       double price,
       int quantity,
@@ -130,7 +151,10 @@ class __$$FoodOrderModelImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? name = null,
-    Object? photoGallery = null,
+    Object? image1 = freezed,
+    Object? image2 = freezed,
+    Object? image3 = freezed,
+    Object? image4 = freezed,
     Object? note = null,
     Object? price = null,
     Object? quantity = null,
@@ -141,10 +165,22 @@ class __$$FoodOrderModelImplCopyWithImpl<$Res>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      photoGallery: null == photoGallery
-          ? _value._photoGallery
-          : photoGallery // ignore: cast_nullable_to_non_nullable
-              as List<dynamic>,
+      image1: freezed == image1
+          ? _value.image1
+          : image1 // ignore: cast_nullable_to_non_nullable
+              as String?,
+      image2: freezed == image2
+          ? _value.image2
+          : image2 // ignore: cast_nullable_to_non_nullable
+              as String?,
+      image3: freezed == image3
+          ? _value.image3
+          : image3 // ignore: cast_nullable_to_non_nullable
+              as String?,
+      image4: freezed == image4
+          ? _value.image4
+          : image4 // ignore: cast_nullable_to_non_nullable
+              as String?,
       note: null == note
           ? _value.note
           : note // ignore: cast_nullable_to_non_nullable
@@ -170,13 +206,14 @@ class __$$FoodOrderModelImplCopyWithImpl<$Res>
 class _$FoodOrderModelImpl implements _FoodOrderModel {
   _$FoodOrderModelImpl(
       {this.name = '',
-      @JsonKey(name: 'photo_gallery', fromJson: stringToList)
-      final List<dynamic> photoGallery = const [],
+      this.image1,
+      this.image2,
+      this.image3,
+      this.image4,
       this.note = '',
       this.price = 0,
       this.quantity = 0,
-      @JsonKey(name: 'total_amount') this.totalAmount = 0})
-      : _photoGallery = photoGallery;
+      @JsonKey(name: 'total_amount') this.totalAmount = 0});
 
   factory _$FoodOrderModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$FoodOrderModelImplFromJson(json);
@@ -184,15 +221,14 @@ class _$FoodOrderModelImpl implements _FoodOrderModel {
   @override
   @JsonKey()
   final String name;
-  final List<dynamic> _photoGallery;
   @override
-  @JsonKey(name: 'photo_gallery', fromJson: stringToList)
-  List<dynamic> get photoGallery {
-    if (_photoGallery is EqualUnmodifiableListView) return _photoGallery;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_photoGallery);
-  }
-
+  final String? image1;
+  @override
+  final String? image2;
+  @override
+  final String? image3;
+  @override
+  final String? image4;
   @override
   @JsonKey()
   final String note;
@@ -208,7 +244,7 @@ class _$FoodOrderModelImpl implements _FoodOrderModel {
 
   @override
   String toString() {
-    return 'FoodOrderModel(name: $name, photoGallery: $photoGallery, note: $note, price: $price, quantity: $quantity, totalAmount: $totalAmount)';
+    return 'FoodOrderModel(name: $name, image1: $image1, image2: $image2, image3: $image3, image4: $image4, note: $note, price: $price, quantity: $quantity, totalAmount: $totalAmount)';
   }
 
   @override
@@ -217,8 +253,10 @@ class _$FoodOrderModelImpl implements _FoodOrderModel {
         (other.runtimeType == runtimeType &&
             other is _$FoodOrderModelImpl &&
             (identical(other.name, name) || other.name == name) &&
-            const DeepCollectionEquality()
-                .equals(other._photoGallery, _photoGallery) &&
+            (identical(other.image1, image1) || other.image1 == image1) &&
+            (identical(other.image2, image2) || other.image2 == image2) &&
+            (identical(other.image3, image3) || other.image3 == image3) &&
+            (identical(other.image4, image4) || other.image4 == image4) &&
             (identical(other.note, note) || other.note == note) &&
             (identical(other.price, price) || other.price == price) &&
             (identical(other.quantity, quantity) ||
@@ -229,14 +267,8 @@ class _$FoodOrderModelImpl implements _FoodOrderModel {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      name,
-      const DeepCollectionEquality().hash(_photoGallery),
-      note,
-      price,
-      quantity,
-      totalAmount);
+  int get hashCode => Object.hash(runtimeType, name, image1, image2, image3,
+      image4, note, price, quantity, totalAmount);
 
   @JsonKey(ignore: true)
   @override
@@ -256,8 +288,10 @@ class _$FoodOrderModelImpl implements _FoodOrderModel {
 abstract class _FoodOrderModel implements FoodOrderModel {
   factory _FoodOrderModel(
           {final String name,
-          @JsonKey(name: 'photo_gallery', fromJson: stringToList)
-          final List<dynamic> photoGallery,
+          final String? image1,
+          final String? image2,
+          final String? image3,
+          final String? image4,
           final String note,
           final double price,
           final int quantity,
@@ -270,8 +304,13 @@ abstract class _FoodOrderModel implements FoodOrderModel {
   @override
   String get name;
   @override
-  @JsonKey(name: 'photo_gallery', fromJson: stringToList)
-  List<dynamic> get photoGallery;
+  String? get image1;
+  @override
+  String? get image2;
+  @override
+  String? get image3;
+  @override
+  String? get image4;
   @override
   String get note;
   @override
