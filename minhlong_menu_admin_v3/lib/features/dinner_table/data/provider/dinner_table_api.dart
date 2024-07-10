@@ -13,4 +13,9 @@ class DinnerTableApi {
     final response = await _dio.get(ApiConfig.tables);
     return TableModel.fromJson(response.data['data']);
   }
+
+  Future<bool> deleteTable({required int id}) async {
+    final response = await _dio.delete('${ApiConfig.tables}/$id');
+    return response.data['data'];
+  }
 }

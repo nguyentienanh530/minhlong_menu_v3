@@ -76,7 +76,8 @@ extension _HeaderDinnderTableWidget on _DinnerTableViewState {
   _buildButtonAddFood() {
     return InkWell(
       onTap: () async {
-        // _showCreateOrUpdateDialog(mode: FoodScreenMode.create);
+        _showCreateOrUpdateDinnerTableDialog(
+            mode: DinnerTableDialogAction.create);
       },
       child: Container(
         height: 35,
@@ -91,6 +92,27 @@ extension _HeaderDinnderTableWidget on _DinnerTableViewState {
           style: kBodyStyle.copyWith(color: AppColors.white),
         ),
       ),
+    );
+  }
+
+  Future<void> _showCreateOrUpdateDinnerTableDialog(
+      {required DinnerTableDialogAction mode, TableItem? tableItem}) async {
+    await showDialog(
+        context: context,
+        builder: (context) => Dialog(
+              backgroundColor: AppColors.background,
+              child: CreateOrUpdateDinnerTableDialog(
+                action: mode,
+                tableItem: tableItem,
+              ),
+            )).then(
+      (value) {
+        if (value != null && value is bool) {
+          if (value) {
+            _fetchDateDinnerTable(page: _curentPage.value, limit: _limit.value);
+          }
+        }
+      },
     );
   }
 }

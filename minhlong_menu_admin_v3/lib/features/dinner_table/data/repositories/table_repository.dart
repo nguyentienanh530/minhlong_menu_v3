@@ -4,10 +4,10 @@ import 'package:minhlong_menu_admin_v3/features/dinner_table/data/provider/dinne
 import '../../../../common/network/result.dart';
 import '../model/table_model.dart';
 
-class TableRepository {
+class DinnerTableRepository {
   final DinnerTableApi _dinnerTableApi;
 
-  TableRepository({required DinnerTableApi dinnerTableApi})
+  DinnerTableRepository({required DinnerTableApi dinnerTableApi})
       : _dinnerTableApi = dinnerTableApi;
 
   Future<Result<TableModel>> getDinnerTables(
@@ -18,6 +18,16 @@ class TableRepository {
       return Result.success(response);
     } catch (e) {
       Logger().e('get table error: $e');
+      return Result.failure(e.toString());
+    }
+  }
+
+  Future<Result<bool>> deleteTable({required int id}) async {
+    try {
+      final response = await _dinnerTableApi.deleteTable(id: id);
+      return Result.success(response);
+    } catch (e) {
+      Logger().e('delete table error: $e');
       return Result.failure(e.toString());
     }
   }

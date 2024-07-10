@@ -8,3 +8,8 @@ final class DinnerTableFetched extends DinnerTableEvent {
   final int limit;
   DinnerTableFetched({required this.page, required this.limit});
 }
+
+final class DinnerTableDeleted extends DinnerTableEvent {
+  final int id;
+  DinnerTableDeleted({required this.id});
+}
