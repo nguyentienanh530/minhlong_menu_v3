@@ -8,6 +8,7 @@ import '../../core/app_style.dart';
 class CommonLineText extends StatelessWidget {
   final String? title, value;
   final Color? color;
+  final int? maxLines;
   final TextStyle? titleStyle;
   final TextStyle? valueStyle;
 
@@ -19,7 +20,8 @@ class CommonLineText extends StatelessWidget {
       this.color,
       this.titleStyle,
       this.isDarkText = false,
-      this.valueStyle});
+      this.valueStyle,
+      this.maxLines});
   @override
   Widget build(BuildContext context) {
     return FittedBox(

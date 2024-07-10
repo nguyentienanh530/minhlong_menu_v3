@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_client_v3/common/widget/loading_widget.dart';
 
@@ -16,6 +17,7 @@ import '../../../../core/app_string.dart';
 import '../../../../core/app_style.dart';
 import '../../bloc/auth_bloc.dart';
 import '../../data/dto/login_dto.dart';
+
 part '../widgets/_login_body.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -49,12 +51,11 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          SizedBox.expand(
-            child: Image.asset(
-              AppAsset.backgroundLogin,
-              fit: BoxFit.cover,
-            ),
-          ),
+          SizedBox(
+              width: double.infinity,
+              height: 0.2.sh,
+              child: Image.asset(AppAsset.backgroundLogin,
+                  colorBlendMode: BlendMode.srcIn, fit: BoxFit.cover)),
           _buildBody(),
         ],
       ),
@@ -102,13 +103,13 @@ class _LoginScreenState extends State<LoginScreen> {
               obscureText: !value,
               prefixIcon: Icon(
                 Icons.lock_outline,
-                color: AppColors.white.withOpacity(0.5),
+                color: AppColors.black.withOpacity(0.9),
               ),
               suffixIcon: GestureDetector(
                   onTap: () => isShowPassword.value = !isShowPassword.value,
                   child: Icon(
                       !value ? Icons.visibility_off : Icons.remove_red_eye,
-                      color: AppColors.white.withOpacity(0.5))));
+                      color: AppColors.black.withOpacity(0.9))));
         });
   }
 
@@ -165,13 +166,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       size: 15,
                       color: value
                           ? AppColors.islamicGreen
-                          : AppColors.white.withOpacity(0.5)),
+                          : AppColors.black.withOpacity(0.5)),
                   const SizedBox(width: 8),
                   Text(label,
                       style: kCaptionStyle.copyWith(
                           color: value
                               ? AppColors.islamicGreen
-                              : AppColors.white.withOpacity(0.5)))
+                              : AppColors.black.withOpacity(0.5)))
                 ])));
   }
 }
@@ -181,9 +182,15 @@ class _Wellcome extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(AppString.welcomeBack.toUpperCase(),
-        style: kHeadingWhiteStyle.copyWith(
-            fontSize: 48, fontWeight: FontWeight.w700));
+    return SizedBox(
+      height: 52,
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Text(AppString.welcomeBack,
+            style: kHeadingStyle.copyWith(
+                fontSize: 48.sp, fontWeight: FontWeight.w700)),
+      ),
+    );
   }
 }
 
@@ -204,7 +211,7 @@ class _PhoneNumber extends StatelessWidget {
         },
         prefixIcon: Icon(
           Icons.phone_android_outlined,
-          color: AppColors.white.withOpacity(0.5),
+          color: AppColors.black.withOpacity(0.9),
         ),
         onFieldSubmitted: onSubmit,
         onChanged: (value) => emailcontroller.text = value);
@@ -224,9 +231,10 @@ class _ButtonLogin extends StatelessWidget {
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(textFieldBorderRadius)),
+                  borderRadius:
+                      BorderRadius.circular(textFieldBorderRadius * 10)),
               side: const BorderSide(color: AppColors.themeColor),
-              foregroundColor: AppColors.white,
+              foregroundColor: AppColors.black,
               elevation: 0,
               shadowColor: Colors.transparent,
               backgroundColor: AppColors.themeColor),
@@ -247,6 +255,6 @@ class _ButtonForgotPassword extends StatelessWidget {
           context.go(AppRoute.forgotPassword);
         },
         child: Text(AppString.forgotPassword,
-            style: kCaptionStyle.copyWith(color: AppColors.sun)));
+            style: kCaptionStyle.copyWith(color: AppColors.themeColor)));
   }
 }

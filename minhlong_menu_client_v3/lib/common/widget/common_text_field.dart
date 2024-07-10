@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../core/app_colors.dart';
 import '../../core/app_const.dart';
 import '../../core/app_style.dart';
@@ -17,7 +18,19 @@ class CommonTextField extends StatelessWidget {
       this.prefixIcon,
       this.labelText,
       this.maxLines,
-      this.onFieldSubmitted});
+      this.onFieldSubmitted,
+      this.focusedErrorBorder,
+      this.enabledBorder,
+      this.focusedBorder,
+      this.errorBorder,
+      this.filled,
+      this.hintStyle});
+  final TextStyle? hintStyle;
+  final bool? filled;
+  final InputBorder? focusedErrorBorder;
+  final InputBorder? enabledBorder;
+  final InputBorder? focusedBorder;
+  final InputBorder? errorBorder;
   final String? errorText;
   final TextInputType? keyboardType;
   final Function(String) onChanged;
@@ -41,7 +54,7 @@ class CommonTextField extends StatelessWidget {
         textAlignVertical: TextAlignVertical.center,
         key: key,
         maxLines: maxLines,
-        style: kBodyWhiteStyle,
+        style: kBodyStyle,
         textAlign: TextAlign.start,
         keyboardType: keyboardType ?? TextInputType.text,
         autocorrect: false,
@@ -50,28 +63,32 @@ class CommonTextField extends StatelessWidget {
         onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
         decoration: InputDecoration(
             isDense: true,
-            focusedErrorBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(textFieldBorderRadius),
-                borderSide: const BorderSide(color: AppColors.red)),
-            errorBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(textFieldBorderRadius),
-                borderSide: const BorderSide(color: AppColors.red)),
-            enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(textFieldBorderRadius),
-                borderSide: const BorderSide(color: AppColors.lavender)),
+            focusedErrorBorder: focusedErrorBorder ??
+                OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(textFieldBorderRadius),
+                    borderSide: const BorderSide(color: AppColors.black)),
+            errorBorder: errorBorder ??
+                OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(textFieldBorderRadius),
+                    borderSide: const BorderSide(color: AppColors.black)),
+            enabledBorder: enabledBorder ??
+                OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(textFieldBorderRadius),
+                    borderSide: const BorderSide(color: AppColors.black)),
             suffixIcon: suffixIcon,
             prefixIcon: prefixIcon,
-            focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(textFieldBorderRadius),
-                borderSide: const BorderSide(color: AppColors.lavender)),
+            focusedBorder: focusedBorder ??
+                OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(textFieldBorderRadius),
+                    borderSide: const BorderSide(color: AppColors.black)),
             errorText: errorText,
             contentPadding: const EdgeInsets.symmetric(horizontal: 10.0),
-            // filled: true,
+            filled: filled ?? false,
             hintText: hintText,
-            labelText: labelText ?? '',
-            errorStyle: kBodyStyle.copyWith(color: AppColors.red),
-            hintStyle: kBodyStyle,
-            labelStyle: kBodyWhiteStyle.copyWith(color: AppColors.white)),
+            labelText: labelText,
+            errorStyle: kBodyStyle.copyWith(color: AppColors.black),
+            hintStyle: hintStyle ?? kBodyStyle,
+            labelStyle: kBodyStyle),
         onChanged: onChanged);
   }
 }

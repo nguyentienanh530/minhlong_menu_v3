@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:minhlong_menu_client_v3/features/auth/bloc/auth_bloc.dart';
 import 'package:minhlong_menu_client_v3/features/auth/view/screens/forgot_password_screen.dart';
 import 'package:minhlong_menu_client_v3/features/auth/view/screens/login_screen.dart';
+import 'package:minhlong_menu_client_v3/features/category/view/screen/category_screen.dart';
 import 'package:minhlong_menu_client_v3/features/home/view/screens/home_screen.dart';
+import 'package:minhlong_menu_client_v3/features/profile/view/screen/profile_screen.dart';
+import 'package:minhlong_menu_client_v3/features/table/view/screen/table_screen.dart';
+
+import '../features/food/view/screen/food_details_view.dart';
 
 class AppRoute {
   AppRoute._();
@@ -15,25 +18,26 @@ class AppRoute {
   static const String resetPassword = '/reset-password';
   static const String dashboard = '/dashboard';
   static const String foods = '/foods';
+  static const String carts = '/carts';
+  static const String foodsDetails = '/foodsDetails';
   static const String dinnerTables = '/dinner-tables';
   static const String categories = '/categories';
   static const String banners = '/banners';
-  static const String settings = '/settings';
-  static const String orders = '/orders';
+  static const String profile = '/profile';
 
   static const publicRoute = [login, forgotPassword, signUp];
 
   static GoRouter routes = GoRouter(
-    initialLocation: dashboard,
-    redirect: (context, state) {
-      if (publicRoute.contains(state.fullPath)) {
-        return null;
-      }
-      if (context.read<AuthBloc>().state is AuthAuthenticateSuccess) {
-        return null;
-      }
-      return login;
-    },
+    initialLocation: home,
+    // redirect: (context, state) {
+    //   if (publicRoute.contains(state.fullPath)) {
+    //     return null;
+    //   }
+    //   if (context.read<AuthBloc>().state is AuthAuthenticateSuccess) {
+    //     return null;
+    //   }
+    //   return foods;
+    // },
     routes: [
       GoRoute(
         path: home,
@@ -41,7 +45,7 @@ class AppRoute {
           return buildPageWithDefaultTransition(
             context: context,
             state: state,
-            child: const HomeScreen(child: SizedBox()),
+            child: const HomeScreen(),
           );
         },
       ),
@@ -62,6 +66,66 @@ class AppRoute {
             context: context,
             state: state,
             child: const LoginScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        path: foods,
+        pageBuilder: (context, state) {
+          return buildPageWithDefaultTransition(
+            context: context,
+            state: state,
+            child: FoodDetailsView(),
+          );
+        },
+      ),
+      GoRoute(
+        path: foodsDetails,
+        pageBuilder: (context, state) {
+          return buildPageWithDefaultTransition(
+            context: context,
+            state: state,
+            child: FoodDetailsView(),
+          );
+        },
+      ),
+      GoRoute(
+        path: carts,
+        pageBuilder: (context, state) {
+          return buildPageWithDefaultTransition(
+            context: context,
+            state: state,
+            child: FoodDetailsView(),
+          );
+        },
+      ),
+      GoRoute(
+        path: categories,
+        pageBuilder: (context, state) {
+          return buildPageWithDefaultTransition(
+            context: context,
+            state: state,
+            child: CategoryScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        path: dinnerTables,
+        pageBuilder: (context, state) {
+          return buildPageWithDefaultTransition(
+            context: context,
+            state: state,
+            child: const TableScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        path: profile,
+        pageBuilder: (context, state) {
+          return buildPageWithDefaultTransition(
+            context: context,
+            state: state,
+            child: const ProfileScreen(),
           );
         },
       ),

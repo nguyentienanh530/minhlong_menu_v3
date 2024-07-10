@@ -10,6 +10,16 @@ extension BuildContextExtensions on BuildContext {
   // TextStyle? get titleStyleMedium => textTheme.titleMedium;
   // TextStyle? get titleStyleLarge => textTheme.titleLarge;
   // ColorScheme get colorScheme => _theme.colorScheme;
+  Size get sizeDevice => MediaQuery.sizeOf(this);
+  bool get isMobile => sizeDevice.width < 500;
+  bool get isTablet =>
+      sizeDevice.shortestSide >= 500 && sizeDevice.width < 1100;
+  bool get isDesktop => sizeDevice.shortestSide >= 1100;
+  bool get is4k => sizeDevice.shortestSide >= 1920;
+  bool get isPortrait =>
+      MediaQuery.of(this).orientation == Orientation.portrait;
+  bool get isLandscape =>
+      MediaQuery.of(this).orientation == Orientation.landscape;
 }
 
 void pop(BuildContext context, int returnedLevel) {

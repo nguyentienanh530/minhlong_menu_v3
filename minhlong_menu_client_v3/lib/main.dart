@@ -72,13 +72,14 @@ class _AppContentState extends State<AppContent> {
     }
 
     return ScreenUtilInit(
-      designSize: const Size(360, 690),
+      designSize: const Size(430, 932),
       minTextAdapt: true,
       splitScreenMode: true,
       // Use builder only if you need to use library outside ScreenUtilInit context
       builder: (_, child) {
         return MaterialApp.router(
           debugShowCheckedModeBanner: false,
+          // ignore: deprecated_member_use
           useInheritedMediaQuery: true,
           locale: DevicePreview.locale(context),
           builder: DevicePreview.appBuilder,
@@ -86,7 +87,7 @@ class _AppContentState extends State<AppContent> {
           scrollBehavior: MyCustomScrollBehavior(),
           theme: ThemeData(
             fontFamily: GoogleFonts.roboto().fontFamily,
-            scaffoldBackgroundColor: AppColors.background,
+            scaffoldBackgroundColor: AppColors.white,
             textTheme: const TextTheme(
                 displaySmall: TextStyle(color: AppColors.white),
                 displayLarge: TextStyle(color: AppColors.white),

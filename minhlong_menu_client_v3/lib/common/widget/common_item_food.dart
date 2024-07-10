@@ -1,189 +1,196 @@
-// import 'package:cached_network_image/cached_network_image.dart';
-// import 'package:flutter/material.dart';
-// import 'package:flutter_animate/flutter_animate.dart';
-// import 'package:get/get.dart';
-// import '../../core/api_config.dart';
-// import '../../core/app_colors.dart';
-// import '../../core/app_const.dart';
-// import '../../core/app_res.dart';
-// import '../../core/app_style.dart';
-// import '../../features/cart/view/widget/order_food_bottomsheet.dart';
-// import '../../features/food/data/model/food_model.dart';
-// import '../../features/food/view/screens/food_detail_screen.dart';
-// import 'error_build_image.dart';
-// import 'loading.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
+import 'package:minhlong_menu_client_v3/Routes/app_route.dart';
+import 'package:minhlong_menu_client_v3/core/extensions.dart';
 
-// class CommonItemFood extends StatelessWidget {
-//   const CommonItemFood({super.key, required this.foodModel});
-//   final FoodModel foodModel;
-//   @override
-//   Widget build(BuildContext context) {
-//     return _buildItem(context, foodModel);
-//   }
+import '../../core/app_colors.dart';
+import '../../core/app_const.dart';
+import '../../core/app_style.dart';
+import '../../core/utils.dart';
+import '../../features/food/data/model/food_model.dart';
 
-//   Widget _buildImage(FoodModel food, double height) {
-//     return Container(
-//         width: double.infinity,
-//         height: height,
-//         clipBehavior: Clip.hardEdge,
-//         decoration: BoxDecoration(
-//             borderRadius: BorderRadius.circular(defaultBorderRadius)),
-//         child: CachedNetworkImage(
-//             imageUrl: '${ApiConfig.host}${food.photoGallery.first}',
-//             placeholder: (context, url) => const Loading(),
-//             errorWidget: errorBuilderForImage,
-//             fit: BoxFit.cover));
-//   }
+class CommonItemFood extends StatelessWidget {
+  const CommonItemFood({super.key, required this.foodModel});
+  final FoodModel foodModel;
+  @override
+  Widget build(BuildContext context) {
+    return _buildFoodItem();
+  }
 
-//   Widget _buildPercentDiscount(BuildContext context, FoodModel food) {
-//     return Container(
-//         height: 30,
-//         width: 50,
-//         decoration: const BoxDecoration(
-//             color: AppColors.themeColor,
-//             borderRadius: BorderRadius.only(
-//                 bottomRight: Radius.circular(defaultBorderRadius),
-//                 topLeft: Radius.circular(defaultBorderRadius))),
-//         child: Center(
-//             child: Text("${food.discount}%",
-//                 style: kBodyStyle.copyWith(
-//                     color: AppColors.white, fontWeight: FontWeight.bold))));
-//   }
+  Widget _buildFoodItem() {
+    return LayoutBuilder(builder: (context, constraints) {
+      return InkWell(
+        onTap: () => context.push(AppRoute.foodsDetails),
+        child: AspectRatio(
+          aspectRatio: 9 / 7,
+          child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(defaultBorderRadius),
+            ),
+            child: Stack(
+              children: [
+                Column(
+                  children: [
+                    Container(
+                      height: 0.7 * constraints.maxHeight,
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(defaultBorderRadius),
+                            topLeft: Radius.circular(defaultBorderRadius)),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.only(
+                            topRight: Radius.circular(defaultBorderRadius),
+                            topLeft: Radius.circular(defaultBorderRadius)),
+                        child: CachedNetworkImage(
+                          imageUrl: foodModel.photoGallery[0],
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                        ),
+                      ),
+                    ),
+                    _buildNameFood(context, foodModel),
+                    _buildPrice(context, foodModel),
+                  ],
+                ),
+                foodModel.isDiscount
+                    ? Positioned(
+                        top: 0.62 * constraints.maxHeight,
+                        right: 5,
+                        child: _buildDiscountItem())
+                    : const SizedBox(),
+                Positioned(top: 5, right: 5, child: _addToCard()),
+              ],
+            ),
+          ),
+        ),
+      );
+    });
+  }
 
-//   Widget _buildTitle(BuildContext context, FoodModel food) {
-//     return Padding(
-//         padding: const EdgeInsets.all(defaultPadding / 2),
-//         child: FittedBox(
-//             alignment: Alignment.centerLeft,
-//             fit: BoxFit.scaleDown,
-//             child: Text(food.name,
-//                 overflow: TextOverflow.ellipsis,
-//                 style: kSubHeadingStyle.copyWith(color: AppColors.white))));
-//   }
+  Widget _addToCard() {
+    return const Card(
+      elevation: 4,
+      shadowColor: AppColors.themeColor,
+      shape: CircleBorder(),
+      color: AppColors.red,
+      child: SizedBox(
+          height: 35,
+          width: 35,
+          child: Icon(
+            Icons.add,
+            color: AppColors.white,
+            size: 30,
+          )),
+    );
+  }
 
-//   Widget _buildPriceDiscount(BuildContext context, FoodModel food) {
-//     double discountAmount = (food.price * food.discount.toDouble()) / 100;
-//     double discountedPrice = food.price - discountAmount;
-//     return Padding(
-//         padding: const EdgeInsets.all(defaultPadding / 2),
-//         child: !food.isDiscount
-//             ? FittedBox(
-//                 fit: BoxFit.scaleDown,
-//                 child: Text(
-//                     AppRes.currencyFormat(double.parse(food.price.toString())),
-//                     style: kBodyStyle.copyWith(color: AppColors.white)))
-//             : FittedBox(
-//                 fit: BoxFit.scaleDown,
-//                 child: Row(children: [
-//                   FittedBox(
-//                       fit: BoxFit.scaleDown,
-//                       child: Text(
-//                           AppRes.currencyFormat(
-//                               double.parse(food.price.toString())),
-//                           style: kBodyStyle.copyWith(
-//                               color: AppColors.white.withOpacity(0.8),
-//                               decoration: TextDecoration.lineThrough,
-//                               decorationThickness: 3.0,
-//                               decorationColor: Colors.red,
-//                               decorationStyle: TextDecorationStyle.solid))),
-//                   const SizedBox(width: 4),
-//                   FittedBox(
-//                       fit: BoxFit.scaleDown,
-//                       child: Text(
-//                           AppRes.currencyFormat(
-//                               double.parse(discountedPrice.toString())),
-//                           style: kBodyStyle.copyWith(color: AppColors.white)))
-//                 ])));
-//   }
+  Widget _buildDiscountItem() {
+    return Card(
+      color: AppColors.red,
+      elevation: 4,
+      shadowColor: AppColors.themeColor,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(defaultBorderRadius)),
+      ),
+      child: Container(
+        alignment: Alignment.center,
+        constraints: const BoxConstraints(maxWidth: 45, maxHeight: 25),
+        child: Text(
+          '${foodModel.discount}%',
+          style: kBodyWhiteStyle.copyWith(fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
+  }
 
-//   Widget _buildButtonCart(BuildContext context, FoodModel food) {
-//     return LayoutBuilder(builder: (context, constraints) {
-//       return GestureDetector(
-//           onTap: () {
-//             Get.bottomSheet(OrderFoodBottomSheet(foodModel: food),
-//                 isScrollControlled: true, persistent: false);
-//           },
-//           child: Container(
-//               height: constraints.maxHeight,
-//               width: constraints.maxHeight,
-//               alignment: Alignment.center,
-//               decoration: const BoxDecoration(
-//                   color: AppColors.themeColor,
-//                   borderRadius: BorderRadius.only(
-//                       topLeft: Radius.circular(defaultBorderRadius),
-//                       bottomRight: Radius.circular(defaultBorderRadius))),
-//               child: const Icon(Icons.add, size: 20, color: AppColors.white)));
-//     });
-//   }
+  Widget _buildNameFood(BuildContext context, FoodModel foodModel) {
+    return Expanded(
+      child: SizedBox(
+        width: double.infinity,
+        child: FittedBox(
+          alignment: Alignment.centerLeft,
+          child: Padding(
+            padding: const EdgeInsets.only(
+                right: defaultPadding,
+                left: defaultPadding,
+                top: defaultPadding / 3),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text(foodModel.name,
+                    textAlign: TextAlign.left,
+                    style: context.isTablet
+                        ? kBodyStyle.copyWith(
+                            fontWeight: FontWeight.bold, fontSize: 18.0)
+                        : kBodyStyle.copyWith(
+                            fontWeight: FontWeight.bold, fontSize: 14.0)),
+                2.horizontalSpace,
+                // const Icon(Icons.check_circle,
+                //     color: AppColors.islamicGreen, size: 14),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
-//   Widget _buildItem(BuildContext context, FoodModel foodModel) {
-//     return GestureDetector(
-//         onTap: () {
-//           Get.to(() => FoodDetailScreen(food: foodModel));
-//         },
-//         child: LayoutBuilder(
-//             builder: (context, constraints) => Card(
-//                   shadowColor: AppColors.lavender,
-//                   elevation: 4,
-//                   child: SizedBox(
-//                       width: (Get.width / 2) - 32,
-//                       child: Stack(
-//                         children: [
-//                           Stack(children: <Widget>[
-//                             _buildImage(foodModel, constraints.maxHeight),
-//                             foodModel.isDiscount == true
-//                                 ? _buildPercentDiscount(context, foodModel)
-//                                 : const SizedBox()
-//                           ]),
-//                           Column(
-//                               crossAxisAlignment: CrossAxisAlignment.stretch,
-//                               // mainAxisAlignment: MainAxisAlignment.spaceAround,
-//                               children: <Widget>[
-//                                 SizedBox(height: constraints.maxHeight * 0.7),
-//                                 Expanded(
-//                                     child: Container(
-//                                         decoration: BoxDecoration(
-//                                             color: AppColors.black
-//                                                 .withOpacity(0.75),
-//                                             borderRadius: const BorderRadius
-//                                                 .only(
-//                                                 bottomLeft: Radius.circular(
-//                                                     defaultBorderRadius),
-//                                                 bottomRight: Radius.circular(
-//                                                     defaultBorderRadius))),
-//                                         child: Column(
-//                                             mainAxisAlignment:
-//                                                 MainAxisAlignment.start,
-//                                             crossAxisAlignment:
-//                                                 CrossAxisAlignment.start,
-//                                             children: [
-//                                               Expanded(
-//                                                   child: _buildTitle(
-//                                                       context, foodModel)),
-//                                               Expanded(
-//                                                   child: Row(
-//                                                       mainAxisAlignment:
-//                                                           MainAxisAlignment
-//                                                               .spaceBetween,
-//                                                       children: [
-//                                                     _buildPriceDiscount(
-//                                                         context, foodModel),
-//                                                     _buildButtonCart(
-//                                                         context, foodModel)
-//                                                   ]))
-//                                             ])))
-//                               ]
-//                                   .animate(interval: 50.ms)
-//                                   .slideX(
-//                                       begin: -0.1,
-//                                       end: 0,
-//                                       curve: Curves.easeInOutCubic,
-//                                       duration: 500.ms)
-//                                   .fadeIn(
-//                                       curve: Curves.easeInOutCubic,
-//                                       duration: 500.ms)),
-//                         ],
-//                       )),
-//                 )));
-//   }
-// }
+  Widget _buildPrice(BuildContext context, FoodModel foodModel) {
+    double discountAmount =
+        (foodModel.price * foodModel.discount.toDouble()) / 100;
+    double discountedPrice = foodModel.price - discountAmount;
+    return !foodModel.isDiscount
+        ? Expanded(
+            child: SizedBox(
+              width: double.infinity,
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: defaultPadding),
+                  child: Text(
+                      '₫ ${Ultils.currencyFormat(double.parse(foodModel.price.toString()))}',
+                      style: kBodyStyle.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.themeColor)),
+                ),
+              ),
+            ),
+          )
+        : Expanded(
+            child: SizedBox(
+              width: double.infinity,
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: defaultPadding),
+                  child: Row(children: [
+                    Text(
+                        '₫ ${Ultils.currencyFormat(double.parse(foodModel.price.toString()))}',
+                        style: kBodyStyle.copyWith(
+                            color: AppColors.secondTextColor,
+                            fontSize: 12,
+                            decoration: TextDecoration.lineThrough,
+                            decorationThickness: 1,
+                            decorationColor: Colors.red,
+                            decorationStyle: TextDecorationStyle.solid)),
+                    3.horizontalSpace,
+                    Text(
+                        '₫ ${Ultils.currencyFormat(double.parse(discountedPrice.toString()))}',
+                        style: kBodyStyle.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.themeColor,
+                            fontSize: 12)),
+                  ]),
+                ),
+              ),
+            ),
+          );
+  }
+}
