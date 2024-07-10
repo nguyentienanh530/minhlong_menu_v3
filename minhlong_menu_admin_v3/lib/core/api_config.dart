@@ -34,6 +34,7 @@ class ApiConfig {
   static const String popularFoods = '/foods/popular-foods';
   static const String foodsOnCategory = '/foods/category/';
   static const String quantityOfFoods = '/foods/quantity';
+  static const String search = '/foods/search';
 
   //===== Table =====
   static const String tables = '/tables';

@@ -15,6 +15,7 @@ import 'package:minhlong_menu_admin_v3/features/dashboard/bloc/info_bloc.dart';
 import 'package:minhlong_menu_admin_v3/features/dashboard/data/model/info_model.dart';
 import 'package:minhlong_menu_admin_v3/features/dashboard/data/provider/info_api.dart';
 import 'package:minhlong_menu_admin_v3/features/dashboard/data/respositories/info_respository.dart';
+import 'package:minhlong_menu_admin_v3/features/dinner_table/data/model/table_item.dart';
 import 'package:minhlong_menu_admin_v3/features/dinner_table/data/model/table_model.dart';
 import 'package:minhlong_menu_admin_v3/features/home/cubit/table_index_selected_cubit.dart';
 import 'package:minhlong_menu_admin_v3/features/order/cubit/order_socket_cubit.dart';
@@ -103,7 +104,7 @@ class _DashboardViewState extends State<DashboardView>
           case 'tables-ws':
             var res = jsonDecode(data['payload']);
             context.read<DinnerTableCubit>().setTableList(
-                List<TableModel>.from(res.map((x) => TableModel.fromJson(x))));
+                List<TableItem>.from(res.map((x) => TableModel.fromJson(x))));
 
             break;
           case 'orders-ws':

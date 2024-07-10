@@ -45,7 +45,7 @@ extension _FoodHeaderWidget on _FoodViewState {
     return Container(
         height: 35,
         width: 100.h,
-        // padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
+        padding: const EdgeInsets.symmetric(horizontal: defaultPadding / 2),
         alignment: Alignment.center,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
@@ -56,6 +56,7 @@ extension _FoodHeaderWidget on _FoodViewState {
           builder: (context, limit, child) {
             return DropdownButton(
               padding: const EdgeInsets.all(0),
+              // isExpanded: true,
               value: limit.toString(),
               icon: const Icon(Icons.arrow_drop_down),
               borderRadius: BorderRadius.circular(defaultBorderRadius).r,
@@ -76,83 +77,40 @@ extension _FoodHeaderWidget on _FoodViewState {
   }
 
   Widget _buildSearch() {
-    // return Container(
-    //   height: 35,
-    //   width: 400.h,
-    //   alignment: Alignment.center,
-    //   decoration: BoxDecoration(
-    //     borderRadius: BorderRadius.circular(8).r,
-    //     color: AppColors.white,
-    //   ),
-    //   child: TextField(
-    //     // controller: _searchController,
-    //     onChanged: (value) {
-    //       // _fetchData(
-    //       //   status: _listStatus[_tabController.index],
-    //       //   page: 1,
-    //       //   limit: _limit.value,
-    //       //   search: value
-    //       // );
-    //     },
-    //     style: kBodyStyle,
-    //     decoration: InputDecoration(
-    //       floatingLabelAlignment: FloatingLabelAlignment.center,
-    //       isDense: true,
-    //       contentPadding: const EdgeInsets.all(10),
-    //       border: InputBorder.none,
-    //       hintText: 'Tìm kiếm',
-    //       hintStyle: kBodyStyle.copyWith(color: AppColors.secondTextColor),
-    //       prefixIcon:
-    //           const Icon(Icons.search, color: AppColors.secondTextColor),
-    //     ),
-    //   ),
-    // );
-
-    return Container(
-      height: 35,
+    return SizedBox(
+      key: AppKeys.searchKey,
+      height: 40,
       width: 400.h,
-      alignment: Alignment.center,
-      // decoration: BoxDecoration(
-      //   borderRadius: BorderRadius.circular(8).r,
-      //   color: AppColors.white,
-      // ),
-      child: SearchAnchor(
-        isFullScreen: false,
-        builder: (context, controller) {
-          return SearchBar(
-              controller: controller,
-              hintText: 'Tìm kiếm',
-              hintStyle: WidgetStatePropertyAll(
-                  kCaptionStyle.copyWith(color: AppColors.secondTextColor)),
-              shape: WidgetStatePropertyAll(
-                RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(textFieldBorderRadius).r,
-                ),
-              ),
-              leading:
-                  const Icon(Icons.search, color: AppColors.secondTextColor),
-              onTap: () {
-                controller.openView();
-              },
-              onChanged: (value) {
-                print('changed $value');
-                controller.openView();
-              });
-        },
-        suggestionsBuilder:
-            (BuildContext context, SearchController controller) {
-          return List<ListTile>.generate(5, (int index) {
-            final String item = 'item $index';
-            return ListTile(
-              title: Text(item),
-              onTap: () {
-                setState(() {
-                  controller.closeView(item);
-                });
-              },
-            );
-          });
-        },
+      child: CompositedTransformTarget(
+        link: _layerLink,
+        child: CommonTextField(
+          filled: true,
+          hintText: 'Tìm kiếm',
+          controller: _searchController,
+          focusNode: _focusSearch,
+          onChanged: (value) async {
+            _showOverlaySearch();
+            _searchController.text = value;
+            await Future.delayed(const Duration(milliseconds: 500), () {
+              context
+                  .read<SearchFoodBloc>()
+                  .add(SearchFoodStarted(query: _searchController.text));
+            });
+          },
+          prefixIcon:
+              const Icon(Icons.search, color: AppColors.secondTextColor),
+          suffixIcon: InkWell(
+            onTap: _searchController.text.isEmpty
+                ? null
+                : () {
+                    _searchController.clear();
+                    context.read<SearchFoodBloc>().add(SearchFoodReset());
+                  },
+            child: const SizedBox(
+              child: Icon(Icons.clear, color: AppColors.secondTextColor),
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -173,6 +131,103 @@ extension _FoodHeaderWidget on _FoodViewState {
         child: Text(
           'Thêm',
           style: kBodyStyle.copyWith(color: AppColors.white),
+        ),
+      ),
+    );
+  }
+
+  void _showOverlaySearch() {
+    final overlay = Overlay.of(context);
+    final renderBox =
+        AppKeys.searchKey.currentContext!.findRenderObject()! as RenderBox;
+    final size = renderBox.size;
+    _hideOverlaySearch();
+    assert(overlayEntry == null);
+    overlayEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        width: size.width,
+        child: CompositedTransformFollower(
+          showWhenUnlinked: false,
+          offset: Offset(0, size.height + 8),
+          link: _layerLink,
+          child: Material(
+            // adding transparent to apply custom border
+            color: Colors.transparent,
+            child: Card(
+              elevation: 30,
+              shadowColor: AppColors.lavender,
+              child: SizedBox(
+                height: 300,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Builder(
+                    builder: (context) {
+                      var searchState = context.watch<SearchFoodBloc>().state;
+                      return (switch (searchState) {
+                        FoodSearchInProgress() => const Loading(),
+                        FoodSearchSuccess() =>
+                          buildListFood(searchState.foodItems),
+                        FoodSearchFailure() => const SizedBox(),
+                        FoodSearchEmpty() => Center(
+                            child: Text('Không có dữ liệu',
+                                style: kBodyStyle.copyWith(
+                                    color: AppColors.secondTextColor))),
+                        _ => const SizedBox(),
+                      });
+                    },
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    overlay.insert(overlayEntry!);
+  }
+
+  void _hideOverlaySearch() {
+    overlayEntry?.remove();
+    overlayEntry?.dispose();
+    overlayEntry = null;
+
+    // _searchController.clear();
+    // context.read<SearchFoodBloc>().add(SearchFoodReset());
+  }
+
+  buildListFood(List<FoodItem> foodItems) {
+    return ListView.builder(
+      itemCount: foodItems.length,
+      itemBuilder: (context, index) {
+        return buildFoodItem(foodItems[index]);
+      },
+    );
+  }
+
+  buildFoodItem(FoodItem foodItem) {
+    return ListTile(
+      onTap: () async {
+        _hideOverlaySearch();
+
+        // _focusSearch.unfocus();
+        await _showCreateOrUpdateDialog(
+            mode: FoodScreenMode.update, foodItem: foodItem);
+      },
+      title: Text(
+        foodItem.name,
+        style: kBodyStyle,
+      ),
+      leading: SizedBox(
+        height: 35,
+        width: 35,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(8).r,
+          child: CachedNetworkImage(
+            imageUrl: '${ApiConfig.host}${foodItem.image1}',
+            errorWidget: errorBuilderForImage,
+            fit: BoxFit.cover,
+          ),
         ),
       ),
     );

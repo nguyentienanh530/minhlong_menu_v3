@@ -214,7 +214,18 @@ class FoodController extends Controller {
   }
 
   Future<Response> search(Request request) async {
-    return Response.json({});
+    try {
+      var query = request.input('query');
+      List<Map<String, dynamic>> foods =
+          await _foodRepository.search(query: query);
+      return AppResponse().ok(statusCode: HttpStatus.ok, data: foods);
+    } catch (e) {
+      print('error: $e');
+      return AppResponse().error(
+        statusCode: HttpStatus.internalServerError,
+        message: 'connection error',
+      );
+    }
   }
 
   Future<Response> index(Request request) async {

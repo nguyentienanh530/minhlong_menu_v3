@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:minhlong_menu_admin_v3/common/dialog/app_dialog.dart';
 import 'package:minhlong_menu_admin_v3/common/snackbar/overlay_snackbar.dart';
+import 'package:minhlong_menu_admin_v3/core/app_key.dart';
 import 'package:minhlong_menu_admin_v3/core/utils.dart';
 import 'package:minhlong_menu_admin_v3/features/food/data/model/food_item.dart';
 import '../../../../common/network/dio_client.dart';
@@ -23,7 +24,7 @@ import '../../../category/bloc/category_bloc.dart';
 import '../../../category/data/model/category_model.dart';
 import '../../../category/data/provider/category_api.dart';
 import '../../../category/data/repositories/category_repository.dart';
-import '../../bloc/food_bloc.dart';
+import '../../bloc/food_bloc/food_bloc.dart';
 
 enum FoodScreenMode { create, update }
 
@@ -46,7 +47,7 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
   // final _statusFoodController = TextEditingController();
   final _descriptionFoodController = TextEditingController();
   final _discountFoodController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
+  // final _formKey = GlobalKey<FormState>();
   final _categoryValueNotifier = ValueNotifier(CategoryModel());
   late FoodScreenMode _mode;
 
@@ -134,7 +135,7 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
             },
             child: SingleChildScrollView(
               child: Form(
-                key: _formKey,
+                key: AppKeys.createOrUpdateKey,
                 child: Builder(
                   builder: (context) {
                     var categoryState = context.watch<CategoryBloc>().state;
@@ -508,8 +509,8 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
   }
 
   void _handleCrteteOrUpdateFood() async {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
+    if (AppKeys.createOrUpdateKey.currentState!.validate()) {
+      AppKeys.createOrUpdateKey.currentState!.save();
       if (_imageFile1.value.path.isNotEmpty) {
         _image1 = await Ultils.uploadImage(
                 file: _imageFile1.value,

@@ -2,7 +2,7 @@ part of '../screens/dashboard_screen.dart';
 
 extension _TableWidget on _DashboardViewState {
   Widget _buildTableWidget(
-      {required int index, required List<TableModel> dinnerTable}) {
+      {required int index, required List<TableItem> dinnerTable}) {
     return Wrap(
         clipBehavior: Clip.hardEdge,
         alignment: WrapAlignment.start,

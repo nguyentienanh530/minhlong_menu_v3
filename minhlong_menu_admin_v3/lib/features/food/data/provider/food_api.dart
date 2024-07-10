@@ -36,4 +36,11 @@ class FoodApi {
     final response = await _dio.delete('${ApiConfig.foods}/$id');
     return response.data['data'] ?? false;
   }
+
+  Future<List<FoodItem>> search({required String query}) async {
+    final response =
+        await _dio.get(ApiConfig.search, queryParameters: {'query': query});
+    return (List<FoodItem>.from(
+        response.data['data'].map((x) => FoodItem.fromJson(x))));
+  }
 }

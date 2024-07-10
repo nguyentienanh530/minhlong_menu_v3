@@ -20,13 +20,10 @@ TableModel _$TableModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$TableModel {
-  int get id => throw _privateConstructorUsedError;
-  String get name => throw _privateConstructorUsedError;
-  int get seats => throw _privateConstructorUsedError;
-  @JsonKey(name: 'is_use')
-  bool? get isUse => throw _privateConstructorUsedError;
-  @JsonKey(name: 'order_count')
-  int? get orderCount => throw _privateConstructorUsedError;
+  @JsonKey(name: 'pagination')
+  PaginationModel? get paginationModel => throw _privateConstructorUsedError;
+  @JsonKey(name: 'data')
+  List<TableItem> get tableItems => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -41,11 +38,10 @@ abstract class $TableModelCopyWith<$Res> {
       _$TableModelCopyWithImpl<$Res, TableModel>;
   @useResult
   $Res call(
-      {int id,
-      String name,
-      int seats,
-      @JsonKey(name: 'is_use') bool? isUse,
-      @JsonKey(name: 'order_count') int? orderCount});
+      {@JsonKey(name: 'pagination') PaginationModel? paginationModel,
+      @JsonKey(name: 'data') List<TableItem> tableItems});
+
+  $PaginationModelCopyWith<$Res>? get paginationModel;
 }
 
 /// @nodoc
@@ -61,34 +57,31 @@ class _$TableModelCopyWithImpl<$Res, $Val extends TableModel>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
-    Object? name = null,
-    Object? seats = null,
-    Object? isUse = freezed,
-    Object? orderCount = freezed,
+    Object? paginationModel = freezed,
+    Object? tableItems = null,
   }) {
     return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      seats: null == seats
-          ? _value.seats
-          : seats // ignore: cast_nullable_to_non_nullable
-              as int,
-      isUse: freezed == isUse
-          ? _value.isUse
-          : isUse // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      orderCount: freezed == orderCount
-          ? _value.orderCount
-          : orderCount // ignore: cast_nullable_to_non_nullable
-              as int?,
+      paginationModel: freezed == paginationModel
+          ? _value.paginationModel
+          : paginationModel // ignore: cast_nullable_to_non_nullable
+              as PaginationModel?,
+      tableItems: null == tableItems
+          ? _value.tableItems
+          : tableItems // ignore: cast_nullable_to_non_nullable
+              as List<TableItem>,
     ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $PaginationModelCopyWith<$Res>? get paginationModel {
+    if (_value.paginationModel == null) {
+      return null;
+    }
+
+    return $PaginationModelCopyWith<$Res>(_value.paginationModel!, (value) {
+      return _then(_value.copyWith(paginationModel: value) as $Val);
+    });
   }
 }
 
@@ -101,11 +94,11 @@ abstract class _$$TableModelImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {int id,
-      String name,
-      int seats,
-      @JsonKey(name: 'is_use') bool? isUse,
-      @JsonKey(name: 'order_count') int? orderCount});
+      {@JsonKey(name: 'pagination') PaginationModel? paginationModel,
+      @JsonKey(name: 'data') List<TableItem> tableItems});
+
+  @override
+  $PaginationModelCopyWith<$Res>? get paginationModel;
 }
 
 /// @nodoc
@@ -119,33 +112,18 @@ class __$$TableModelImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
-    Object? name = null,
-    Object? seats = null,
-    Object? isUse = freezed,
-    Object? orderCount = freezed,
+    Object? paginationModel = freezed,
+    Object? tableItems = null,
   }) {
     return _then(_$TableModelImpl(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      seats: null == seats
-          ? _value.seats
-          : seats // ignore: cast_nullable_to_non_nullable
-              as int,
-      isUse: freezed == isUse
-          ? _value.isUse
-          : isUse // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      orderCount: freezed == orderCount
-          ? _value.orderCount
-          : orderCount // ignore: cast_nullable_to_non_nullable
-              as int?,
+      paginationModel: freezed == paginationModel
+          ? _value.paginationModel
+          : paginationModel // ignore: cast_nullable_to_non_nullable
+              as PaginationModel?,
+      tableItems: null == tableItems
+          ? _value._tableItems
+          : tableItems // ignore: cast_nullable_to_non_nullable
+              as List<TableItem>,
     ));
   }
 }
@@ -154,34 +132,29 @@ class __$$TableModelImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$TableModelImpl implements _TableModel {
   _$TableModelImpl(
-      {this.id = 0,
-      this.name = '',
-      this.seats = 0,
-      @JsonKey(name: 'is_use') this.isUse = false,
-      @JsonKey(name: 'order_count') this.orderCount = 0});
+      {@JsonKey(name: 'pagination') this.paginationModel,
+      @JsonKey(name: 'data')
+      final List<TableItem> tableItems = const <TableItem>[]})
+      : _tableItems = tableItems;
 
   factory _$TableModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$TableModelImplFromJson(json);
 
   @override
-  @JsonKey()
-  final int id;
+  @JsonKey(name: 'pagination')
+  final PaginationModel? paginationModel;
+  final List<TableItem> _tableItems;
   @override
-  @JsonKey()
-  final String name;
-  @override
-  @JsonKey()
-  final int seats;
-  @override
-  @JsonKey(name: 'is_use')
-  final bool? isUse;
-  @override
-  @JsonKey(name: 'order_count')
-  final int? orderCount;
+  @JsonKey(name: 'data')
+  List<TableItem> get tableItems {
+    if (_tableItems is EqualUnmodifiableListView) return _tableItems;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_tableItems);
+  }
 
   @override
   String toString() {
-    return 'TableModel(id: $id, name: $name, seats: $seats, isUse: $isUse, orderCount: $orderCount)';
+    return 'TableModel(paginationModel: $paginationModel, tableItems: $tableItems)';
   }
 
   @override
@@ -189,18 +162,16 @@ class _$TableModelImpl implements _TableModel {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$TableModelImpl &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.name, name) || other.name == name) &&
-            (identical(other.seats, seats) || other.seats == seats) &&
-            (identical(other.isUse, isUse) || other.isUse == isUse) &&
-            (identical(other.orderCount, orderCount) ||
-                other.orderCount == orderCount));
+            (identical(other.paginationModel, paginationModel) ||
+                other.paginationModel == paginationModel) &&
+            const DeepCollectionEquality()
+                .equals(other._tableItems, _tableItems));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, name, seats, isUse, orderCount);
+  int get hashCode => Object.hash(runtimeType, paginationModel,
+      const DeepCollectionEquality().hash(_tableItems));
 
   @JsonKey(ignore: true)
   @override
@@ -218,27 +189,19 @@ class _$TableModelImpl implements _TableModel {
 
 abstract class _TableModel implements TableModel {
   factory _TableModel(
-      {final int id,
-      final String name,
-      final int seats,
-      @JsonKey(name: 'is_use') final bool? isUse,
-      @JsonKey(name: 'order_count') final int? orderCount}) = _$TableModelImpl;
+          {@JsonKey(name: 'pagination') final PaginationModel? paginationModel,
+          @JsonKey(name: 'data') final List<TableItem> tableItems}) =
+      _$TableModelImpl;
 
   factory _TableModel.fromJson(Map<String, dynamic> json) =
       _$TableModelImpl.fromJson;
 
   @override
-  int get id;
+  @JsonKey(name: 'pagination')
+  PaginationModel? get paginationModel;
   @override
-  String get name;
-  @override
-  int get seats;
-  @override
-  @JsonKey(name: 'is_use')
-  bool? get isUse;
-  @override
-  @JsonKey(name: 'order_count')
-  int? get orderCount;
+  @JsonKey(name: 'data')
+  List<TableItem> get tableItems;
   @override
   @JsonKey(ignore: true)
   _$$TableModelImplCopyWith<_$TableModelImpl> get copyWith =>

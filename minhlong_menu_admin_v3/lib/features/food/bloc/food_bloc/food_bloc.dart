@@ -4,8 +4,8 @@ import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:minhlong_menu_admin_v3/features/food/data/repositories/food_repository.dart';
 
-import '../data/model/food_item.dart';
-import '../data/model/food_model.dart';
+import '../../data/model/food_item.dart';
+import '../../data/model/food_model.dart';
 
 part 'food_event.dart';
 part 'food_state.dart';

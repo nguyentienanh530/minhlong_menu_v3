@@ -18,7 +18,7 @@ class InfoController extends Controller {
       var categoryCount = await _categoryRepository.getCategoryQuantity();
       var orderCount = await _orderRepository.getOrderSuccess();
       var foodCount = await _foodRepository.getQuantityOfFood();
-      var tableCount = await _tableRepository.getTableQuantity();
+      var tableCount = await _tableRepository.getTableCount();
       return AppResponse().ok(
         statusCode: HttpStatus.ok,
         message: 'success',

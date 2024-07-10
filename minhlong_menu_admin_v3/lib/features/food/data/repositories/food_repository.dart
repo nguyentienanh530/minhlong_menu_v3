@@ -15,7 +15,7 @@ class FoodRepository {
       var response = await _foodApi.getFoods(page: page, limit: limit);
       return Result.success(response);
     } catch (e) {
-      Logger().e(e);
+      Logger().e('get food error: $e');
       return Result.failure(e.toString());
     }
   }
@@ -25,7 +25,7 @@ class FoodRepository {
       var response = await _foodApi.createFood(food: food);
       return Result.success(response);
     } catch (e) {
-      Logger().e(e);
+      Logger().e('create food error: $e');
       return Result.failure(e.toString());
     }
   }
@@ -35,7 +35,7 @@ class FoodRepository {
       var response = await _foodApi.updateFood(food: food);
       return Result.success(response);
     } catch (e) {
-      Logger().e(e);
+      Logger().e('update food error: $e');
       return Result.failure(e.toString());
     }
   }
@@ -45,7 +45,17 @@ class FoodRepository {
       var response = await _foodApi.deleteFood(id: id);
       return Result.success(response);
     } catch (e) {
-      Logger().e(e);
+      Logger().e('delete food error: $e');
+      return Result.failure(e.toString());
+    }
+  }
+
+  Future<Result<List<FoodItem>>> search({required String query}) async {
+    try {
+      var response = await _foodApi.search(query: query);
+      return Result.success(response);
+    } catch (e) {
+      Logger().e('search food error: $e');
       return Result.failure(e.toString());
     }
   }

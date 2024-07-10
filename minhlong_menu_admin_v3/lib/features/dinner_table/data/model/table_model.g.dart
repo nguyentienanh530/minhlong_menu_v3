@@ -8,18 +8,18 @@ part of 'table_model.dart';
 
 _$TableModelImpl _$$TableModelImplFromJson(Map<String, dynamic> json) =>
     _$TableModelImpl(
-      id: (json['id'] as num?)?.toInt() ?? 0,
-      name: json['name'] as String? ?? '',
-      seats: (json['seats'] as num?)?.toInt() ?? 0,
-      isUse: json['is_use'] as bool? ?? false,
-      orderCount: (json['order_count'] as num?)?.toInt() ?? 0,
+      paginationModel: json['pagination'] == null
+          ? null
+          : PaginationModel.fromJson(
+              json['pagination'] as Map<String, dynamic>),
+      tableItems: (json['data'] as List<dynamic>?)
+              ?.map((e) => TableItem.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const <TableItem>[],
     );
 
 Map<String, dynamic> _$$TableModelImplToJson(_$TableModelImpl instance) =>
     <String, dynamic>{
-      'id': instance.id,
-      'name': instance.name,
-      'seats': instance.seats,
-      'is_use': instance.isUse,
-      'order_count': instance.orderCount,
+      'pagination': instance.paginationModel,
+      'data': instance.tableItems,
     };

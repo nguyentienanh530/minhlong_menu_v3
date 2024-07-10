@@ -29,11 +29,11 @@ class HomeView extends StatefulWidget {
 
 class HomeViewState extends State<HomeView>
     with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
-  final PageController _pageCtrl = PageController();
+  final PageController _pageCtrl =
+      PageController(initialPage: 0, viewportFraction: 1, keepPage: true);
 
   final SideMenuController _sideMenuCtrl = SideMenuController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final _pageIndex = ValueNotifier(0);
 
   final _listPage = <Widget>[
     const DashboardScreen(),
@@ -88,11 +88,9 @@ class HomeViewState extends State<HomeView>
   void initState() {
     _title.value = _listIconMenu[0]['title'].toString();
     _sideMenuCtrl.addListener((index) {
-      _pageIndex.value = index;
-      // _pageCtrl.animateToPage(index,
-      //     duration: const Duration(milliseconds: 300),
-      //     curve: Curves.easeInBack);
-      // _pageCtrl.jumpToPage(index);
+      _pageCtrl.animateToPage(index,
+          duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+
       _title.value = _listIconMenu[index]['title'].toString();
     });
     super.initState();
@@ -157,13 +155,24 @@ class HomeViewState extends State<HomeView>
               child: Column(
                 children: [
                   context.isMobile ? const SizedBox() : _buildHeader(),
+                  // Expanded(
+                  //   child: ValueListenableBuilder(
+                  //     valueListenable: _pageIndex,
+                  //     builder: (context, value, child) => IndexedStack(
+                  //       index: _pageIndex.value,
+                  //       children: _listPage,
+                  //     ),
+                  //   ),
+                  // ),
+
                   Expanded(
-                    child: ValueListenableBuilder(
-                      valueListenable: _pageIndex,
-                      builder: (context, value, child) => IndexedStack(
-                        index: _pageIndex.value,
-                        children: _listPage,
-                      ),
+                    child: PageView.builder(
+                      itemCount: _listPage.length,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        return _listPage[index];
+                      },
+                      controller: _pageCtrl,
                     ),
                   ),
                 ],

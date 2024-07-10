@@ -23,7 +23,9 @@ class CommonTextField extends StatelessWidget {
       this.filled,
       this.enabled,
       this.inputFormatters,
-      this.style});
+      this.style,
+      this.focusNode,
+      this.readOnly});
   final String? errorText;
   final TextInputType? keyboardType;
   final Function(String)? onChanged;
@@ -40,6 +42,8 @@ class CommonTextField extends StatelessWidget {
   final bool? enabled;
   final List<TextInputFormatter>? inputFormatters;
   final TextStyle? style;
+  final FocusNode? focusNode;
+  final bool? readOnly;
 
   @override
   Widget build(BuildContext context) {
@@ -49,12 +53,14 @@ class CommonTextField extends StatelessWidget {
         onFieldSubmitted: onFieldSubmitted,
         textAlignVertical: TextAlignVertical.center,
         key: key,
+        readOnly: readOnly ?? false,
         maxLines: maxLines,
         style: style ?? kBodyStyle,
         textAlign: TextAlign.start,
         keyboardType: keyboardType ?? TextInputType.text,
         autocorrect: false,
         autofocus: false,
+        focusNode: focusNode,
         inputFormatters: inputFormatters,
         enabled: enabled ?? true,
         obscureText: obscureText ?? false,
@@ -79,10 +85,11 @@ class CommonTextField extends StatelessWidget {
                 borderRadius: BorderRadius.circular(textFieldBorderRadius).r,
                 borderSide: const BorderSide(color: AppColors.lavender)),
             errorText: errorText,
-            contentPadding: const EdgeInsets.all(16).r,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16).r,
             filled: filled ?? false,
             hintText: hintText,
             labelText: labelText,
+            floatingLabelBehavior: FloatingLabelBehavior.always,
             errorStyle: kBodyStyle.copyWith(color: AppColors.red),
             hintStyle: kBodyStyle.copyWith(color: AppColors.secondTextColor),
             labelStyle: kBodyWhiteStyle.copyWith(color: AppColors.white)),

@@ -59,6 +59,7 @@ class Version1 implements Route {
       Router.delete("/{id}", foodController.destroy);
       Router.post('', foodController.create);
       Router.patch('{id}', foodController.update);
+      Router.get('search', foodController.search);
     }, prefix: '/foods');
 
     //======= Banner route =======

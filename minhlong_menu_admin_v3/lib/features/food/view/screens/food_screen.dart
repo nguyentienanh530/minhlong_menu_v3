@@ -5,11 +5,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_admin_v3/common/network/dio_client.dart';
+import 'package:minhlong_menu_admin_v3/common/widget/common_text_field.dart';
 import 'package:minhlong_menu_admin_v3/common/widget/error_build_image.dart';
 import 'package:minhlong_menu_admin_v3/core/api_config.dart';
+import 'package:minhlong_menu_admin_v3/core/app_key.dart';
 import 'package:minhlong_menu_admin_v3/core/app_style.dart';
 import 'package:minhlong_menu_admin_v3/core/extensions.dart';
-import 'package:minhlong_menu_admin_v3/features/food/bloc/food_bloc.dart';
+import 'package:minhlong_menu_admin_v3/features/food/bloc/food_bloc/food_bloc.dart';
 import 'package:minhlong_menu_admin_v3/features/food/data/model/food_item.dart';
 import 'package:minhlong_menu_admin_v3/features/food/data/model/food_model.dart';
 import 'package:minhlong_menu_admin_v3/features/food/data/provider/food_api.dart';
@@ -24,6 +26,7 @@ import '../../../../core/app_colors.dart';
 import '../../../../core/app_const.dart';
 import '../../../../core/utils.dart';
 import '../../../order/cubit/pagination_cubit.dart';
+import '../../bloc/search_food_bloc/search_food_bloc.dart';
 import '../../data/repositories/food_repository.dart';
 import '../dialogs/create_or_update_food_dialog.dart';
 
@@ -35,20 +38,17 @@ class FoodScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RepositoryProvider(
-      create: (context) => FoodRepository(FoodApi(DioClient().dio!)),
-      child: MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (context) => FoodBloc(context.read<FoodRepository>())
-              ..add(FoodFetched(page: 1, limit: 10)),
-          ),
-          BlocProvider(
-            create: (context) => PaginationCubit(),
-          ),
-        ],
-        child: const FoodView(),
-      ),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => FoodBloc(context.read<FoodRepository>())
+            ..add(FoodFetched(page: 1, limit: 10)),
+        ),
+        BlocProvider(
+          create: (context) => PaginationCubit(),
+        ),
+      ],
+      child: const FoodView(),
     );
   }
 }
@@ -60,7 +60,8 @@ class FoodView extends StatefulWidget {
   State<FoodView> createState() => _FoodViewState();
 }
 
-class _FoodViewState extends State<FoodView> {
+class _FoodViewState extends State<FoodView>
+    with AutomaticKeepAliveClientMixin {
   final _listTitleTable = [
     'Hình ảnh',
     'Tên món ăn',
@@ -73,6 +74,23 @@ class _FoodViewState extends State<FoodView> {
   final _curentPage = ValueNotifier(1);
   final _limit = ValueNotifier(10);
   final _foodModel = ValueNotifier(FoodModel());
+  late TextEditingController _searchController;
+  final _focusSearch = FocusNode();
+  OverlayEntry? overlayEntry;
+  final _layerLink = LayerLink();
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _searchController.dispose();
+    _hideOverlaySearch();
+  }
 
   void _fetchData({required int page, required int limit}) {
     context.read<FoodBloc>().add(FoodFetched(page: page, limit: limit));
@@ -80,17 +98,27 @@ class _FoodViewState extends State<FoodView> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(30).r,
-        child: Column(
-          children: [
-            _foodHeaderWidget,
-            20.verticalSpace,
-            Expanded(child: _foodBodyWidget())
-          ],
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).requestFocus(FocusNode());
+          _hideOverlaySearch();
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(30).r,
+          child: Column(
+            children: [
+              _foodHeaderWidget,
+              20.verticalSpace,
+              Expanded(child: _foodBodyWidget())
+            ],
+          ),
         ),
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

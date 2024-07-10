@@ -5,15 +5,29 @@ import '../../../repositories/table_repository/table_repository.dart';
 
 class TableController extends Controller {
   final TableRepository _tableRepository = TableRepository();
-  Future<Response> index() async {
+  Future<Response> index(Request request) async {
+    int page = request.input('page') ?? 1;
+    int limit = request.input('limit') ?? 10;
     try {
-      var tables = await _tableRepository.getTables();
+      final int totalItems = await _tableRepository.getTableCount();
+      final int totalPages = (totalItems / limit).ceil();
+      final int startIndex = (page - 1) * limit;
+      var tables =
+          await _tableRepository.get(startIndex: startIndex, limit: limit);
       if (tables == null) {
         return AppResponse()
             .error(statusCode: HttpStatus.notFound, message: 'table not found');
       }
 
-      return AppResponse().ok(data: tables, statusCode: HttpStatus.ok);
+      return AppResponse().ok(data: {
+        'pagination': {
+          'page': page,
+          'limit': limit,
+          'total_page': totalPages,
+          'total_item': totalItems,
+        },
+        'data': tables
+      }, statusCode: HttpStatus.ok);
     } catch (e) {
       return AppResponse().error(
           statusCode: HttpStatus.internalServerError,
@@ -34,7 +48,7 @@ class TableController extends Controller {
 
   Future<Response> getTableQuantity() async {
     try {
-      var quantity = await _tableRepository.getTableQuantity();
+      var quantity = await _tableRepository.getTableCount();
       return AppResponse().ok(data: quantity, statusCode: HttpStatus.ok);
     } catch (e) {
       return AppResponse().error(

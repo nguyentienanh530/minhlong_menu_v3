@@ -9,7 +9,8 @@ import 'package:minhlong_menu_admin_v3/features/auth/bloc/auth_bloc.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/data/auth_local_datasource/auth_local_datasource.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/data/provider/remote/auth_api.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/data/repositories/auth_repository.dart';
-import 'package:minhlong_menu_admin_v3/features/food/bloc/food_bloc.dart';
+import 'package:minhlong_menu_admin_v3/features/food/bloc/food_bloc/food_bloc.dart';
+import 'package:minhlong_menu_admin_v3/features/food/bloc/search_food_bloc/search_food_bloc.dart';
 import 'package:minhlong_menu_admin_v3/features/food/data/provider/food_api.dart';
 import 'package:minhlong_menu_admin_v3/features/home/cubit/table_index_selected_cubit.dart';
 import 'package:minhlong_menu_admin_v3/features/order/cubit/order_socket_cubit.dart';
@@ -63,6 +64,11 @@ class MainApp extends StatelessWidget {
           BlocProvider(
             create: (context) => FoodBloc(context.read<FoodRepository>()),
           ),
+          BlocProvider(
+            create: (context) => SearchFoodBloc(
+              context.read<FoodRepository>(),
+            ),
+          ),
         ],
         child: const AppContent(),
       ),
@@ -99,6 +105,7 @@ class _AppContentState extends State<AppContent> {
       // Use builder only if you need to use library outside ScreenUtilInit context
       builder: (_, child) {
         return MaterialApp.router(
+          title: 'Minh Long Menu',
           debugShowCheckedModeBanner: false,
           routerConfig: AppRoute.routes,
           scrollBehavior: MyCustomScrollBehavior(),

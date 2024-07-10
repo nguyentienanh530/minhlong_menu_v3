@@ -1,22 +1,16 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:minhlong_menu_admin_v3/core/api_config.dart';
 
 import '../model/table_model.dart';
 
 class DinnerTableApi {
-  DinnerTableApi(this.dio);
+  DinnerTableApi(Dio dio) : _dio = dio;
 
-  final Dio dio;
+  final Dio _dio;
 
-  Future<List<TableModel>> getTableList() async {
-    final response = await dio.get(ApiConfig.tables);
-    final List<TableModel> dataList = List<TableModel>.from(
-      json.decode(json.encode(response.data['data'])).map(
-            (item) => TableModel.fromJson(item),
-          ),
-    );
-    return dataList;
+  Future<TableModel> getDinnerTables(
+      {required int page, required int limit}) async {
+    final response = await _dio.get(ApiConfig.tables);
+    return TableModel.fromJson(response.data['data']);
   }
 }

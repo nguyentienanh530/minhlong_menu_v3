@@ -62,7 +62,8 @@ class OrderView extends StatefulWidget {
   State<OrderView> createState() => _OrderViewState();
 }
 
-class _OrderViewState extends State<OrderView> with TickerProviderStateMixin {
+class _OrderViewState extends State<OrderView>
+    with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   final _orderModel = ValueNotifier(OrderModel());
   final _listTitleTable = [
     'ID',
@@ -85,6 +86,7 @@ class _OrderViewState extends State<OrderView> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(30).r,
@@ -198,4 +200,7 @@ class _OrderViewState extends State<OrderView> with TickerProviderStateMixin {
   _handleDeleteOrder({required int orderID}) {
     context.read<OrderBloc>().add(OrderDeleted(id: orderID));
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

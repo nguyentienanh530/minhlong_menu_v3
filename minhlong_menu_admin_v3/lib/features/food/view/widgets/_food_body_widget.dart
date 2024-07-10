@@ -113,7 +113,7 @@ extension _FoodBodyWidget on _FoodViewState {
                             return ValueListenableBuilder(
                               valueListenable: _limit,
                               builder: (context, limit, child) => Text(
-                                'Hiển thị 1 đến $limit trong số ${pagination.totalItem} đơn',
+                                'Hiển thị 1 đến $limit trong số ${pagination.totalItem} món',
                                 style: kBodyStyle.copyWith(
                                   color: AppColors.secondTextColor,
                                 ),
@@ -318,7 +318,7 @@ extension _FoodBodyWidget on _FoodViewState {
     );
   }
 
-  void _showCreateOrUpdateDialog(
+  Future<void> _showCreateOrUpdateDialog(
       {required FoodScreenMode mode, FoodItem? foodItem}) async {
     await showDialog(
         context: context,

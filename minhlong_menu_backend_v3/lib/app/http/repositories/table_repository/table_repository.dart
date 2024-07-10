@@ -5,7 +5,11 @@ class TableRepository {
     return await Table().query().get();
   }
 
-  Future getTableQuantity() async {
+  Future get({required int startIndex, required int limit}) async {
+    return await Table().query().offset(startIndex).limit(limit).get();
+  }
+
+  Future getTableCount() async {
     return await Table().query().count();
   }
 }

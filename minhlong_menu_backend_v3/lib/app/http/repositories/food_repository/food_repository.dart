@@ -73,4 +73,10 @@ class FoodRepository {
   Future delete({required int id}) async {
     return await Food().query().where('id', '=', id).delete();
   }
+
+  Future search({required String query}) async {
+    var foods =
+        await Food().query().limit(10).where('name', 'like', '%$query%').get();
+    return foods;
+  }
 }
