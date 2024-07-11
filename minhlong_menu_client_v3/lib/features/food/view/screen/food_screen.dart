@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../Routes/app_route.dart';
-import '../../../category/data/category_model.dart';
+import '../../../category/data/model/category_model.dart';
 import '../../data/model/food_model.dart';
 
 enum ModeScreen { foodsOnCategory, newsFoods, popularFoods }

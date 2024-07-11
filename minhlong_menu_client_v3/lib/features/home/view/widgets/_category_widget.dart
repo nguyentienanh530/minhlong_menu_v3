@@ -4,13 +4,27 @@ extension _CategoryWidget on _HomeViewState {
   Widget categoryListView() {
     return AspectRatio(
       aspectRatio: 3 / 1,
-      child: ListView(
-          scrollDirection: Axis.horizontal,
-          children: List.generate(10, (index) => _buildCategoryItem())),
+      child: BlocBuilder<CategoryBloc, CategoryState>(
+        builder: (context, state) {
+          return (switch (state) {
+            CategoryFetchInProgress() => const Loading(),
+            CategoryFetchSuccess() => ListView(
+                scrollDirection: Axis.horizontal,
+                children: state.categories
+                    .map(
+                      (e) => _buildCategoryItem(e),
+                    )
+                    .toList()),
+            CategoryFetchFailure() => ErrWidget(error: state.message),
+            CategoryFetchEmpty() => const EmptyWidget(),
+            _ => const SizedBox(),
+          });
+        },
+      ),
     );
   }
 
-  Widget _buildCategoryItem() {
+  Widget _buildCategoryItem(CategoryModel categoryModel) {
     return LayoutBuilder(
       builder: (context, constraints) {
         return AspectRatio(
@@ -36,7 +50,7 @@ extension _CategoryWidget on _HomeViewState {
                       color: AppColors.white,
                     ),
                     child: CachedNetworkImage(
-                      imageUrl: categoryModel.image,
+                      imageUrl: '${ApiConfig.host}${categoryModel.image}',
                       fit: BoxFit.cover,
                       placeholder: (context, url) => const Loading(),
                       errorWidget: errorBuilderForImage,

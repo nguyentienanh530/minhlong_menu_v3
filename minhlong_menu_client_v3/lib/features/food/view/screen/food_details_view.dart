@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_client_v3/common/widget/cart_button.dart';
 import 'package:minhlong_menu_client_v3/common/widget/common_line_text.dart';
 import 'package:minhlong_menu_client_v3/common/widget/common_text_field.dart';
@@ -19,7 +18,7 @@ import '../../data/model/food_model.dart';
 class FoodDetailsView extends StatelessWidget {
   @override
   FoodDetailsView({super.key});
-  FoodModel foodModel = FoodModel(
+  final FoodModel foodModel = FoodModel(
     id: 1,
     name: 'Bánh mì',
     categoryID: 1,
@@ -45,20 +44,10 @@ class FoodDetailsView extends StatelessWidget {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            expandedHeight: 0.3 * context.sizeDevice.height,
-            // title: Center(
-            //   child: CommonLineText(
-            //     title: AppString.infoFood,
-            //     titleStyle: kHeadingStyle.copyWith(fontWeight: FontWeight.bold),
-            //   ),
-            // ),
+            expandedHeight: 0.5 * context.sizeDevice.height,
             backgroundColor: AppColors.white,
-            pinned: context.isPortrait ? true : false,
-            leading: BackButton(
-              onPressed: () {
-                context.pop();
-              },
-            ),
+            pinned: true,
+            stretch: true,
             actions: [
               CartButton(
                 onPressed: () {},
@@ -66,11 +55,7 @@ class FoodDetailsView extends StatelessWidget {
                 colorIcon: AppColors.themeColor,
               )
             ],
-            flexibleSpace: FlexibleSpaceBar(
-                background: Padding(
-              padding: const EdgeInsets.all(defaultPadding),
-              child: _buildDetailsImage(),
-            )),
+            flexibleSpace: FlexibleSpaceBar(background: _buildDetailsImage()),
           ),
           SliverToBoxAdapter(
             child: Padding(
@@ -106,15 +91,10 @@ class FoodDetailsView extends StatelessWidget {
   Widget _buildDetailsImage() {
     return CarouselSlider.builder(
       itemBuilder: (context, index, realIndex) {
-        return Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(defaultBorderRadius),
-              // shape: BoxShape.circle,
-            ),
-            child: ClipRRect(
-                borderRadius: BorderRadius.circular(defaultBorderRadius),
-                child: CachedNetworkImage(
-                    imageUrl: foodModel.photoGallery[index])));
+        return CachedNetworkImage(
+          imageUrl: foodModel.photoGallery[index],
+          fit: BoxFit.cover,
+        );
       },
       options: CarouselOptions(
         reverse: false,

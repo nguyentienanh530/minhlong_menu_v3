@@ -21,7 +21,10 @@ void main() async {
   Bloc.observer = const AppBlocObserver();
   final sf = await SharedPreferences.getInstance();
   runApp(DevicePreview(
-      enabled: !kReleaseMode, builder: (context) => MainApp(sf: sf)));
+
+      // enabled: !kReleaseMode,
+      enabled: false,
+      builder: (context) => MainApp(sf: sf)));
 }
 
 class MainApp extends StatelessWidget {

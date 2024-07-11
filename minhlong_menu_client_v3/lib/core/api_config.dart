@@ -1,8 +1,8 @@
 class ApiConfig {
   ApiConfig._();
 
-  static const String baseUrl = "http://192.168.1.196:80/api/v1";
-  static const String host = "http://192.168.1.196:80";
+  static const String baseUrl = "http://127.0.0.1:8080/api/v1";
+  static const String host = "http://127.0.0.1:8080";
   // static const String  = "http://192.168.1.196:80";
   static const Duration receiveTimeout = Duration(milliseconds: 15000);
   static const Duration connectionTimeout = Duration(milliseconds: 15000);
