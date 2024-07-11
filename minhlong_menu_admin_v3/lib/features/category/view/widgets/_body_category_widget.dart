@@ -1,7 +1,7 @@
-part of '../screens/dinner_table_screen.dart';
+part of '../screens/category_screen.dart';
 
-extension _FoodBodyWidget on _DinnerTableViewState {
-  Widget _bodyDinnerTableWidget() {
+extension _FoodBodyWidget on _CategoryViewState {
+  Widget _bodyCategoryWidget() {
     return Container(
       padding: const EdgeInsets.all(5).r,
       decoration: BoxDecoration(
@@ -25,7 +25,6 @@ extension _FoodBodyWidget on _DinnerTableViewState {
               1: FlexColumnWidth(),
               2: FlexColumnWidth(),
               3: FlexColumnWidth(),
-              4: FlexColumnWidth(),
             },
             defaultVerticalAlignment: TableCellVerticalAlignment.middle,
             children: <TableRow>[
@@ -34,39 +33,38 @@ extension _FoodBodyWidget on _DinnerTableViewState {
           ),
         ),
         Expanded(
-          child: BlocListener<DinnerTableBloc, DinnerTableState>(
+          child: BlocListener<CategoryBloc, CategoryState>(
             listener: (context, state) {
-              if (state is DinnerTableDeleteInProgress) {
+              if (state is CategoryDeleteInProgress) {
                 AppDialog.showLoadingDialog(context);
               }
-              if (state is DinnerTableDeleteSuccess) {
+              if (state is CategoryDeleteSuccess) {
                 Navigator.pop(context);
                 OverlaySnackbar.show(context, 'Xoá thành công');
-                _fetchDateDinnerTable(
-                    page: _curentPage.value, limit: _limit.value);
+                _fetchCategory(page: _curentPage.value, limit: _limit.value);
               }
-              if (state is DinnerTableFailure) {
+              if (state is CategoryDeleteFailure) {
                 Navigator.pop(context);
                 OverlaySnackbar.show(context, state.message,
                     type: OverlaySnackbarType.error);
               }
             },
             child: Builder(builder: (context) {
-              var dinnerTableState = context.watch<DinnerTableBloc>().state;
-              switch (dinnerTableState) {
-                case DinnerTableSuccess():
+              var categoryState = context.watch<CategoryBloc>().state;
+              switch (categoryState) {
+                case CategoryFetchSuccess():
                   context.read<PaginationCubit>().setPagination(
-                      dinnerTableState.tableModel.paginationModel!);
+                      categoryState.categoryModel.paginationModel!);
                   return SingleChildScrollView(
-                      child: _buildWidgetSuccess(dinnerTableState.tableModel));
+                      child: _buildWidgetSuccess(categoryState.categoryModel));
 
-                case DinnerTableFailure():
-                  return ErrWidget(error: dinnerTableState.message);
+                case CategoryFetchFailure():
+                  return ErrWidget(error: categoryState.message);
 
-                case DinnerTableInprogress():
+                case CategoryFetchInProgress():
                   return const Loading();
 
-                case DinnerTableEmpty():
+                case CategoryFetchEmpty():
                   return Center(
                     child: Text(
                       'Không có dữ liệu',
@@ -105,8 +103,8 @@ extension _FoodBodyWidget on _DinnerTableViewState {
                       child: FittedBox(
                         alignment: Alignment.centerLeft,
                         fit: BoxFit.scaleDown,
-                        child: ValueListenableBuilder<TableModel>(
-                          valueListenable: _dinnerTableValueNotifier,
+                        child: ValueListenableBuilder<CategoryModel>(
+                          valueListenable: _categoryValueNotifier,
                           builder: (context, order, child) {
                             return ValueListenableBuilder(
                               valueListenable: _limit,
@@ -131,8 +129,7 @@ extension _FoodBodyWidget on _DinnerTableViewState {
                       child: NumberPagination(
                         onPageChanged: (int pageNumber) {
                           _curentPage.value = pageNumber;
-                          _fetchDateDinnerTable(
-                              limit: _limit.value, page: pageNumber);
+                          _fetchCategory(limit: _limit.value, page: pageNumber);
                         },
                         fontSize: 16,
                         buttonElevation: 10,
@@ -152,7 +149,7 @@ extension _FoodBodyWidget on _DinnerTableViewState {
     );
   }
 
-  Widget _buildWidgetSuccess(TableModel tables) {
+  Widget _buildWidgetSuccess(CategoryModel categoryModel) {
     return Table(
         // border: TableBorder.all(),
         columnWidths: const <int, TableColumnWidth>{
@@ -160,10 +157,9 @@ extension _FoodBodyWidget on _DinnerTableViewState {
           1: FlexColumnWidth(),
           2: FlexColumnWidth(),
           3: FlexColumnWidth(),
-          4: FlexColumnWidth(),
         },
         defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-        children: tables.tableItems
+        children: categoryModel.categoryItems
             .asMap()
             .map(
                 (index, value) => MapEntry(index, _buildRowTable(index, value)))
@@ -185,7 +181,7 @@ extension _FoodBodyWidget on _DinnerTableViewState {
     );
   }
 
-  TableRow _buildRowTable(int index, TableItem tableItem) {
+  TableRow _buildRowTable(int index, CategoryItem categoryItem) {
     return TableRow(
       decoration: BoxDecoration(
         color:
@@ -193,36 +189,35 @@ extension _FoodBodyWidget on _DinnerTableViewState {
       ),
       children: <Widget>[
         Container(
-            height: 70,
-            alignment: Alignment.center,
-            child: Text(
-              '${tableItem.id}',
-              style: kBodyStyle.copyWith(color: AppColors.secondTextColor),
-            )),
-        Container(
-          height: 70.h,
+          height: 70,
           alignment: Alignment.center,
-          child: Text(
-            tableItem.name,
-            style: kBodyStyle.copyWith(color: AppColors.secondTextColor),
-          ),
-        ),
-        Container(
-          height: 70.h,
-          alignment: Alignment.center,
-          child: Text(
-            tableItem.seats.toString(),
-            style: kBodyStyle.copyWith(color: AppColors.secondTextColor),
-          ),
-        ),
-        Container(
-          height: 70.h,
-          alignment: Alignment.center,
-          child: Text(
-            tableItem.isUse ? 'Đang sử dụng' : 'Không sử dụng',
-            style: kBodyStyle.copyWith(
-              color: tableItem.isUse ? AppColors.islamicGreen : AppColors.red,
+          child: Container(
+            height: 60.h,
+            width: 60.h,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(textFieldBorderRadius).r),
+            clipBehavior: Clip.antiAlias,
+            child: CachedNetworkImage(
+              imageUrl: '${ApiConfig.host}${categoryItem.image}',
+              fit: BoxFit.contain,
+              errorWidget: errorBuilderForImage,
             ),
+          ),
+        ),
+        Container(
+          height: 70.h,
+          alignment: Alignment.center,
+          child: Text(
+            categoryItem.name,
+            style: kBodyStyle.copyWith(color: AppColors.secondTextColor),
+          ),
+        ),
+        Container(
+          height: 70.h,
+          alignment: Alignment.center,
+          child: Text(
+            categoryItem.serial.toString(),
+            style: kBodyStyle.copyWith(color: AppColors.secondTextColor),
           ),
         ),
         Row(
@@ -233,9 +228,9 @@ extension _FoodBodyWidget on _DinnerTableViewState {
               alignment: Alignment.center,
               child: CommonIconButton(
                 onTap: () {
-                  _showCreateOrUpdateDinnerTableDialog(
-                      mode: DinnerTableDialogAction.update,
-                      tableItem: tableItem);
+                  _showCreateOrUpdateCategoryDialog(
+                      type: CreateOrUpdateCategoryType.update,
+                      categoryItem: categoryItem);
                 },
                 icon: Icons.edit,
                 color: AppColors.sun,
@@ -251,18 +246,18 @@ extension _FoodBodyWidget on _DinnerTableViewState {
                   showDialog(
                     context: context,
                     builder: (context) => AppDialog(
-                      title: 'Xóa bàn',
-                      description: 'Xóa bàn ${tableItem.name}?',
+                      title: 'Xóa Danh mục',
+                      description: 'Xóa danh mục ${categoryItem.name}?',
                       confirmText: 'Xác nhận',
                       onTap: () {
-                        _handleDeleteDinnerTable(tableID: tableItem.id);
+                        _handleDeleteCategory(categoryID: categoryItem.id);
                       },
                     ),
                   );
                 },
                 icon: Icons.delete_outline,
                 color: AppColors.red,
-                tooltip: 'Xóa bàn',
+                tooltip: 'Xóa Danh mục',
               ),
             ),
           ],
@@ -271,29 +266,30 @@ extension _FoodBodyWidget on _DinnerTableViewState {
     );
   }
 
-  // Future<void> _showCreateOrUpdateDialog(
-  //     {required FoodScreenMode mode, FoodItem? foodItem}) async {
-  //   await showDialog(
-  //       context: context,
-  //       builder: (context) => Dialog(
-  //             backgroundColor: AppColors.background,
-  //             child: CreateOrUpdateFoodDialog(
-  //               mode: mode,
-  //               foodItem: foodItem,
-  //             ),
-  //           )).then(
-  //     (value) {
-  //       if (value != null && value is bool) {
-  //         if (value) {
-  //           // _fetchData(page: _curentPage.value, limit: _limit.value);
-  //         }
-  //       }
-  //     },
-  //   );
-  // }
+  Future<void> _showCreateOrUpdateCategoryDialog(
+      {required CreateOrUpdateCategoryType type,
+      CategoryItem? categoryItem}) async {
+    await showDialog(
+        context: context,
+        builder: (context) => Dialog(
+              backgroundColor: AppColors.background,
+              child: CreateOrUpdateCategory(
+                type: type,
+                categoryItem: categoryItem,
+              ),
+            )).then(
+      (value) {
+        if (value != null && value is bool) {
+          if (value) {
+            _fetchCategory(page: _curentPage.value, limit: _limit.value);
+          }
+        }
+      },
+    );
+  }
 
-  void _handleDeleteDinnerTable({required int tableID}) {
+  void _handleDeleteCategory({required int categoryID}) {
     context.pop();
-    context.read<DinnerTableBloc>().add(DinnerTableDeleted(id: tableID));
+    context.read<CategoryBloc>().add(CategoryDeleted(categoryID));
   }
 }

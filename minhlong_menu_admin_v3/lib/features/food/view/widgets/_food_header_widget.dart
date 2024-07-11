@@ -66,6 +66,7 @@ extension _FoodHeaderWidget on _FoodViewState {
               items: itemsDropdown,
               onChanged: (value) {
                 _limit.value = int.parse(value.toString());
+                _curentPage.value = 1;
                 _fetchData(
                   page: 1,
                   limit: _limit.value,
@@ -89,7 +90,11 @@ extension _FoodHeaderWidget on _FoodViewState {
           controller: _searchController,
           focusNode: _focusSearch,
           onChanged: (value) async {
-            _showOverlaySearch();
+            if (value.isNotEmpty && !_overlayShown) {
+              _showOverlaySearch();
+              _overlayShown = true;
+            }
+
             _searchController.text = value;
             await Future.delayed(const Duration(milliseconds: 500), () {
               context

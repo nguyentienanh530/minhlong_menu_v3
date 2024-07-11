@@ -37,7 +37,9 @@ class Version1 implements Route {
       () {
         Router.get("", categoryController.index);
         Router.get('quantity', categoryController.getCategoryQuantity);
-        Router.delete("/{id}", categoryController.destroy);
+        Router.post("", categoryController.create);
+        Router.patch("{id}", categoryController.update);
+        Router.delete("{id}", categoryController.destroy);
       },
       prefix: '/categories',
     );
@@ -45,6 +47,8 @@ class Version1 implements Route {
     //======= Table route =======
     Router.group(() {
       Router.get("", tableController.index);
+      Router.post("", tableController.create);
+      Router.patch("{id}", tableController.update);
       Router.get('quantity', tableController.getTableQuantity);
       Router.delete("{id}", tableController.destroy);
     }, prefix: '/tables');

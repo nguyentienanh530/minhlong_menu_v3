@@ -1,7 +1,7 @@
-part of '../screens/dinner_table_screen.dart';
+part of '../screens/banner_screen.dart';
 
-extension _HeaderDinnderTableWidget on _DinnerTableViewState {
-  Widget get _headerDinnerTableWidget => SizedBox(
+extension _HeaderCategoryWidget on _BannerViewState {
+  Widget get _headerBannerWidget => SizedBox(
         // height: 80.h,
         width: double.infinity,
         child: context.isMobile
@@ -64,7 +64,7 @@ extension _HeaderDinnderTableWidget on _DinnerTableViewState {
               onChanged: (value) {
                 _limit.value = int.parse(value.toString());
                 _curentPage.value = 1;
-                _fetchDateDinnerTable(limit: _limit.value, page: 1);
+                // _fetchDateDinnerTable(limit: _limit.value, page: 1);
               },
             );
           },
@@ -74,8 +74,8 @@ extension _HeaderDinnderTableWidget on _DinnerTableViewState {
   _buildButtonAddFood() {
     return InkWell(
       onTap: () async {
-        _showCreateOrUpdateDinnerTableDialog(
-            mode: DinnerTableDialogAction.create);
+        // _showCreateOrUpdateCategoryDialog(
+        //     type: CreateOrUpdateCategoryType.create);
       },
       child: Container(
         height: 35,
@@ -90,27 +90,6 @@ extension _HeaderDinnderTableWidget on _DinnerTableViewState {
           style: kBodyStyle.copyWith(color: AppColors.white),
         ),
       ),
-    );
-  }
-
-  Future<void> _showCreateOrUpdateDinnerTableDialog(
-      {required DinnerTableDialogAction mode, TableItem? tableItem}) async {
-    await showDialog(
-        context: context,
-        builder: (context) => Dialog(
-              backgroundColor: AppColors.background,
-              child: CreateOrUpdateDinnerTableDialog(
-                action: mode,
-                tableItem: tableItem,
-              ),
-            )).then(
-      (value) {
-        if (value != null && value is bool) {
-          if (value) {
-            _fetchDateDinnerTable(page: _curentPage.value, limit: _limit.value);
-          }
-        }
-      },
     );
   }
 }

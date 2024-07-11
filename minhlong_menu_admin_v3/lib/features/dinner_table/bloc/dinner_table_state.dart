@@ -27,3 +27,25 @@ final class DinnerTableDeleteFailure extends DinnerTableState {
   final String message;
   DinnerTableDeleteFailure(this.message);
 }
+
+final class DinnerTableCreateInProgress extends DinnerTableState {}
+
+final class DinnerTableCreateSuccess extends DinnerTableState {
+  final int tableID;
+
+  DinnerTableCreateSuccess(this.tableID);
+}
+
+final class DinnerTableCreateFailure extends DinnerTableState {
+  final String message;
+  DinnerTableCreateFailure(this.message);
+}
+
+final class DinnerTableUpdateInProgress extends DinnerTableState {}
+
+final class DinnerTableUpdateSuccess extends DinnerTableState {}
+
+final class DinnerTableUpdateFailure extends DinnerTableState {
+  final String message;
+  DinnerTableUpdateFailure(this.message);
+}

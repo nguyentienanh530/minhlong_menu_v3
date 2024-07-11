@@ -43,6 +43,7 @@ class Ultils {
       queryParameters: {'path': path},
       onSendProgress: (count, total) {
         Logger().w('count: $count, total: $total');
+        loading.value = 100.0 * (count / total);
       },
     );
     if (response.statusCode != 200) {

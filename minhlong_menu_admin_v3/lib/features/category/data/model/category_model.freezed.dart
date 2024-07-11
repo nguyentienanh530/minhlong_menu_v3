@@ -20,14 +20,10 @@ CategoryModel _$CategoryModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$CategoryModel {
-  int get id => throw _privateConstructorUsedError;
-  String get name => throw _privateConstructorUsedError;
-  int get serial => throw _privateConstructorUsedError;
-  String get image => throw _privateConstructorUsedError;
-  @JsonKey(name: 'created_at')
-  String? get createdAt => throw _privateConstructorUsedError;
-  @JsonKey(name: 'updated_at')
-  String? get updatedAt => throw _privateConstructorUsedError;
+  @JsonKey(name: 'pagination')
+  PaginationModel? get paginationModel => throw _privateConstructorUsedError;
+  @JsonKey(name: 'data')
+  List<CategoryItem> get categoryItems => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -42,12 +38,10 @@ abstract class $CategoryModelCopyWith<$Res> {
       _$CategoryModelCopyWithImpl<$Res, CategoryModel>;
   @useResult
   $Res call(
-      {int id,
-      String name,
-      int serial,
-      String image,
-      @JsonKey(name: 'created_at') String? createdAt,
-      @JsonKey(name: 'updated_at') String? updatedAt});
+      {@JsonKey(name: 'pagination') PaginationModel? paginationModel,
+      @JsonKey(name: 'data') List<CategoryItem> categoryItems});
+
+  $PaginationModelCopyWith<$Res>? get paginationModel;
 }
 
 /// @nodoc
@@ -63,39 +57,31 @@ class _$CategoryModelCopyWithImpl<$Res, $Val extends CategoryModel>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
-    Object? name = null,
-    Object? serial = null,
-    Object? image = null,
-    Object? createdAt = freezed,
-    Object? updatedAt = freezed,
+    Object? paginationModel = freezed,
+    Object? categoryItems = null,
   }) {
     return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      serial: null == serial
-          ? _value.serial
-          : serial // ignore: cast_nullable_to_non_nullable
-              as int,
-      image: null == image
-          ? _value.image
-          : image // ignore: cast_nullable_to_non_nullable
-              as String,
-      createdAt: freezed == createdAt
-          ? _value.createdAt
-          : createdAt // ignore: cast_nullable_to_non_nullable
-              as String?,
-      updatedAt: freezed == updatedAt
-          ? _value.updatedAt
-          : updatedAt // ignore: cast_nullable_to_non_nullable
-              as String?,
+      paginationModel: freezed == paginationModel
+          ? _value.paginationModel
+          : paginationModel // ignore: cast_nullable_to_non_nullable
+              as PaginationModel?,
+      categoryItems: null == categoryItems
+          ? _value.categoryItems
+          : categoryItems // ignore: cast_nullable_to_non_nullable
+              as List<CategoryItem>,
     ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $PaginationModelCopyWith<$Res>? get paginationModel {
+    if (_value.paginationModel == null) {
+      return null;
+    }
+
+    return $PaginationModelCopyWith<$Res>(_value.paginationModel!, (value) {
+      return _then(_value.copyWith(paginationModel: value) as $Val);
+    });
   }
 }
 
@@ -108,12 +94,11 @@ abstract class _$$CategoryModelImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {int id,
-      String name,
-      int serial,
-      String image,
-      @JsonKey(name: 'created_at') String? createdAt,
-      @JsonKey(name: 'updated_at') String? updatedAt});
+      {@JsonKey(name: 'pagination') PaginationModel? paginationModel,
+      @JsonKey(name: 'data') List<CategoryItem> categoryItems});
+
+  @override
+  $PaginationModelCopyWith<$Res>? get paginationModel;
 }
 
 /// @nodoc
@@ -127,38 +112,18 @@ class __$$CategoryModelImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
-    Object? name = null,
-    Object? serial = null,
-    Object? image = null,
-    Object? createdAt = freezed,
-    Object? updatedAt = freezed,
+    Object? paginationModel = freezed,
+    Object? categoryItems = null,
   }) {
     return _then(_$CategoryModelImpl(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      serial: null == serial
-          ? _value.serial
-          : serial // ignore: cast_nullable_to_non_nullable
-              as int,
-      image: null == image
-          ? _value.image
-          : image // ignore: cast_nullable_to_non_nullable
-              as String,
-      createdAt: freezed == createdAt
-          ? _value.createdAt
-          : createdAt // ignore: cast_nullable_to_non_nullable
-              as String?,
-      updatedAt: freezed == updatedAt
-          ? _value.updatedAt
-          : updatedAt // ignore: cast_nullable_to_non_nullable
-              as String?,
+      paginationModel: freezed == paginationModel
+          ? _value.paginationModel
+          : paginationModel // ignore: cast_nullable_to_non_nullable
+              as PaginationModel?,
+      categoryItems: null == categoryItems
+          ? _value._categoryItems
+          : categoryItems // ignore: cast_nullable_to_non_nullable
+              as List<CategoryItem>,
     ));
   }
 }
@@ -167,38 +132,29 @@ class __$$CategoryModelImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$CategoryModelImpl implements _CategoryModel {
   _$CategoryModelImpl(
-      {this.id = 0,
-      this.name = '',
-      this.serial = 0,
-      this.image = '0',
-      @JsonKey(name: 'created_at') this.createdAt = '',
-      @JsonKey(name: 'updated_at') this.updatedAt = ''});
+      {@JsonKey(name: 'pagination') this.paginationModel,
+      @JsonKey(name: 'data')
+      final List<CategoryItem> categoryItems = const <CategoryItem>[]})
+      : _categoryItems = categoryItems;
 
   factory _$CategoryModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$CategoryModelImplFromJson(json);
 
   @override
-  @JsonKey()
-  final int id;
+  @JsonKey(name: 'pagination')
+  final PaginationModel? paginationModel;
+  final List<CategoryItem> _categoryItems;
   @override
-  @JsonKey()
-  final String name;
-  @override
-  @JsonKey()
-  final int serial;
-  @override
-  @JsonKey()
-  final String image;
-  @override
-  @JsonKey(name: 'created_at')
-  final String? createdAt;
-  @override
-  @JsonKey(name: 'updated_at')
-  final String? updatedAt;
+  @JsonKey(name: 'data')
+  List<CategoryItem> get categoryItems {
+    if (_categoryItems is EqualUnmodifiableListView) return _categoryItems;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_categoryItems);
+  }
 
   @override
   String toString() {
-    return 'CategoryModel(id: $id, name: $name, serial: $serial, image: $image, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'CategoryModel(paginationModel: $paginationModel, categoryItems: $categoryItems)';
   }
 
   @override
@@ -206,20 +162,16 @@ class _$CategoryModelImpl implements _CategoryModel {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$CategoryModelImpl &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.name, name) || other.name == name) &&
-            (identical(other.serial, serial) || other.serial == serial) &&
-            (identical(other.image, image) || other.image == image) &&
-            (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt) &&
-            (identical(other.updatedAt, updatedAt) ||
-                other.updatedAt == updatedAt));
+            (identical(other.paginationModel, paginationModel) ||
+                other.paginationModel == paginationModel) &&
+            const DeepCollectionEquality()
+                .equals(other._categoryItems, _categoryItems));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, name, serial, image, createdAt, updatedAt);
+  int get hashCode => Object.hash(runtimeType, paginationModel,
+      const DeepCollectionEquality().hash(_categoryItems));
 
   @JsonKey(ignore: true)
   @override
@@ -237,31 +189,19 @@ class _$CategoryModelImpl implements _CategoryModel {
 
 abstract class _CategoryModel implements CategoryModel {
   factory _CategoryModel(
-          {final int id,
-          final String name,
-          final int serial,
-          final String image,
-          @JsonKey(name: 'created_at') final String? createdAt,
-          @JsonKey(name: 'updated_at') final String? updatedAt}) =
+          {@JsonKey(name: 'pagination') final PaginationModel? paginationModel,
+          @JsonKey(name: 'data') final List<CategoryItem> categoryItems}) =
       _$CategoryModelImpl;
 
   factory _CategoryModel.fromJson(Map<String, dynamic> json) =
       _$CategoryModelImpl.fromJson;
 
   @override
-  int get id;
+  @JsonKey(name: 'pagination')
+  PaginationModel? get paginationModel;
   @override
-  String get name;
-  @override
-  int get serial;
-  @override
-  String get image;
-  @override
-  @JsonKey(name: 'created_at')
-  String? get createdAt;
-  @override
-  @JsonKey(name: 'updated_at')
-  String? get updatedAt;
+  @JsonKey(name: 'data')
+  List<CategoryItem> get categoryItems;
   @override
   @JsonKey(ignore: true)
   _$$CategoryModelImplCopyWith<_$CategoryModelImpl> get copyWith =>

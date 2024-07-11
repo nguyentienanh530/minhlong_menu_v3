@@ -7,8 +7,11 @@ import '../../../repositories/table_repository/table_repository.dart';
 class TableController extends Controller {
   final TableRepository _tableRepository = TableRepository();
   Future<Response> index(Request request) async {
-    int page = request.input('page') ?? 1;
-    int limit = request.input('limit') ?? 10;
+    Map<String, dynamic> params = request.all();
+
+    int page = int.parse(params['page'] ?? '1');
+    int limit = int.parse(params['limit'] ?? '10');
+
     try {
       final int totalItems = await _tableRepository.getTableCount();
       final int totalPages = (totalItems / limit).ceil();
@@ -58,8 +61,34 @@ class TableController extends Controller {
     }
   }
 
-  Future<Response> create() async {
-    return Response.json({});
+  Future<Response> create(Request request) async {
+    var params = request.all();
+    try {
+      var table = {
+        'name': params['name'] ?? '',
+        'seats': params['seats'] ?? 0,
+        'is_use': params['is_use'] != null
+            ? bool.parse(params['is_use'].toString()) == true
+                ? 1
+                : 0
+            : 0,
+      };
+
+      var tableID = await _tableRepository.create(data: table);
+      if (tableID == null || tableID == 0) {
+        return AppResponse().error(
+          statusCode: HttpStatus.badRequest,
+          message: 'create table error',
+        );
+      }
+      return AppResponse().ok(data: tableID, statusCode: HttpStatus.ok);
+    } catch (e) {
+      print('create table error: $e');
+      return AppResponse().error(
+        statusCode: HttpStatus.internalServerError,
+        message: 'connection error',
+      );
+    }
   }
 
   Future<Response> store(Request request) async {
@@ -75,7 +104,27 @@ class TableController extends Controller {
   }
 
   Future<Response> update(Request request, int id) async {
-    return Response.json({});
+    var params = request.all();
+    try {
+      var table = await _tableRepository.find(id: id);
+      var tableUpdate = {
+        'name': params['name'] ?? table['name'],
+        'seats': params['seats'] ?? table['seats'],
+        'is_use': params['is_use'] == null
+            ? table['is_use']
+            : bool.parse(params['is_use'].toString()) == true
+                ? 1
+                : 0,
+      };
+      await _tableRepository.update(id: id, tableDataUpdate: tableUpdate);
+      return AppResponse().ok(data: true, statusCode: HttpStatus.ok);
+    } catch (e) {
+      print('update table error: $e');
+      return AppResponse().error(
+        statusCode: HttpStatus.internalServerError,
+        message: 'connection error',
+      );
+    }
   }
 
   Future<Response> destroy(int id) async {

@@ -56,10 +56,12 @@ class DinnerTableView extends StatefulWidget {
   State<DinnerTableView> createState() => _DinnerTableViewState();
 }
 
-class _DinnerTableViewState extends State<DinnerTableView> {
+class _DinnerTableViewState extends State<DinnerTableView>
+    with AutomaticKeepAliveClientMixin {
   final _limit = ValueNotifier(10);
-  final _dinnerTableValueNotifier = ValueNotifier(TableModel());
   final _curentPage = ValueNotifier(1);
+  final _dinnerTableValueNotifier = ValueNotifier(TableModel());
+
   final _listTitleTable = [
     'ID',
     'Tên bàn',
@@ -82,6 +84,7 @@ class _DinnerTableViewState extends State<DinnerTableView> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Column(
       children: [
         _headerDinnerTableWidget,
@@ -94,4 +97,7 @@ class _DinnerTableViewState extends State<DinnerTableView> {
       ],
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

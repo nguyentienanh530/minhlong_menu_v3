@@ -10,32 +10,24 @@ class LoadingWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      shadowColor: AppColors.lavender,
-      elevation: 4,
-      child: SizedBox(
-        height: 200,
-        width: 200,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const SizedBox(
-              height: 25,
-              width: 25,
-              child: CircularProgressIndicator(
-                color: AppColors.themeColor,
-                strokeWidth: 4,
-                strokeCap: StrokeCap.round,
-              ),
-            ),
-            const SizedBox(height: 15),
-            Text(
-              title,
-              style: kBodyStyle,
-            ),
-          ],
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const SizedBox(
+          height: 25,
+          width: 25,
+          child: CircularProgressIndicator(
+            color: AppColors.themeColor,
+            strokeWidth: 4,
+            strokeCap: StrokeCap.round,
+          ),
         ),
-      ),
+        const SizedBox(height: 15),
+        Text(
+          title,
+          style: kBodyStyle,
+        ),
+      ],
     );
   }
 }

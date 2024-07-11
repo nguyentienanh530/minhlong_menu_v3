@@ -22,11 +22,13 @@ class ImageNotFound extends StatelessWidget {
     return Container(
       color: color ?? AppColors.smokeWhite,
       child: Center(
-        child: Text(
-          ':-('.toUpperCase(),
-          style: kSubHeadingStyle.copyWith(
-            color: tintcolor ?? AppColors.smokeWhite1,
-            fontSize: 20,
+        child: FittedBox(
+          child: Text(
+            '(>_<)'.toUpperCase(),
+            style: kSubHeadingStyle.copyWith(
+              color: tintcolor ?? AppColors.smokeWhite1,
+              fontSize: 15,
+            ),
           ),
         ),
       ),

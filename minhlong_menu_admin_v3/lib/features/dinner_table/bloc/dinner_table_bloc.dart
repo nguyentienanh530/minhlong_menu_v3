@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:minhlong_menu_admin_v3/features/dinner_table/data/model/table_item.dart';
 import 'package:minhlong_menu_admin_v3/features/dinner_table/data/repositories/table_repository.dart';
 
 import '../data/model/table_model.dart';
@@ -17,6 +18,8 @@ class DinnerTableBloc extends Bloc<DinnerTableEvent, DinnerTableState> {
         super(DinnerTableInitial()) {
     on<DinnerTableFetched>(_onDinnerTableFetched);
     on<DinnerTableDeleted>(_onDinnerTableDeleted);
+    on<DinnerTableCreated>(_onDinnerTableCreated);
+    on<DinnerTableUpdated>(_onDinnerTableUpdated);
   }
 
   final DinnerTableRepository _tableRepository;
@@ -50,6 +53,34 @@ class DinnerTableBloc extends Bloc<DinnerTableEvent, DinnerTableState> {
       },
       failure: (message) {
         emit(DinnerTableDeleteFailure(message));
+      },
+    );
+  }
+
+  FutureOr<void> _onDinnerTableCreated(
+      DinnerTableCreated event, Emit emit) async {
+    emit(DinnerTableCreateInProgress());
+    final result = await _tableRepository.createTable(table: event.tableItem);
+    result.when(
+      success: (success) {
+        emit(DinnerTableCreateSuccess(success));
+      },
+      failure: (message) {
+        emit(DinnerTableCreateFailure(message));
+      },
+    );
+  }
+
+  FutureOr<void> _onDinnerTableUpdated(
+      DinnerTableUpdated event, Emit emit) async {
+    emit(DinnerTableUpdateInProgress());
+    final result = await _tableRepository.updateTable(table: event.tableItem);
+    result.when(
+      success: (success) {
+        emit(DinnerTableUpdateSuccess());
+      },
+      failure: (message) {
+        emit(DinnerTableUpdateFailure(message));
       },
     );
   }

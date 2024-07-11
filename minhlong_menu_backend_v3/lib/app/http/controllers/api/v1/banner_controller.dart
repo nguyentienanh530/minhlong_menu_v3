@@ -4,7 +4,10 @@ import 'package:minhlong_menu_backend_v3/app/http/helper/app_response.dart';
 import 'package:minhlong_menu_backend_v3/app/models/banner.dart';
 import 'package:vania/vania.dart';
 
+import '../../../repositories/banner_repository/banner_repository.dart';
+
 class BannerController extends Controller {
+  final _bannerRepository = BannerRepository();
   Future<Response> index() async {
     try {
       var banner = await Banner().query().select().get();
