@@ -24,7 +24,11 @@ class CommonTextField extends StatelessWidget {
       this.focusedBorder,
       this.errorBorder,
       this.filled,
-      this.hintStyle});
+      this.hintStyle,
+      this.style,
+      this.contentPadding});
+  final EdgeInsetsGeometry? contentPadding;
+  final TextStyle? style;
   final TextStyle? hintStyle;
   final bool? filled;
   final InputBorder? focusedErrorBorder;
@@ -54,7 +58,7 @@ class CommonTextField extends StatelessWidget {
         textAlignVertical: TextAlignVertical.center,
         key: key,
         maxLines: maxLines,
-        style: kBodyStyle,
+        style: style ?? kBodyStyle,
         textAlign: TextAlign.start,
         keyboardType: keyboardType ?? TextInputType.text,
         autocorrect: false,
@@ -82,7 +86,8 @@ class CommonTextField extends StatelessWidget {
                     borderRadius: BorderRadius.circular(textFieldBorderRadius),
                     borderSide: const BorderSide(color: AppColors.black)),
             errorText: errorText,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 10.0),
+            contentPadding:
+                contentPadding ?? const EdgeInsets.symmetric(horizontal: 10.0),
             filled: filled ?? false,
             hintText: hintText,
             labelText: labelText,

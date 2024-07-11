@@ -60,5 +60,12 @@ class AppString {
   static String check = 'Chọn ';
   static String unchecked = 'Bỏ chọn ';
   static String profile = 'Thông tin người dùng';
-  static String editProfile = 'Sửa thông tin';
+  static String editProfile = 'Thay đổi thông tin';
+  static String fullName = 'Tên đầy đủ *';
+  static String email = 'Email';
+  static String edit = 'Sửa';
+  static String usePrinter = 'Sử dụng máy in';
+  static String settingPrinter = 'Cấu hình máy in';
+  static String uploadImage = 'Tải lên ';
+  static String back = 'Trở lại ';
 }

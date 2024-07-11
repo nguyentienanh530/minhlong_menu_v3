@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:minhlong_menu_client_v3/common/widget/no_product.dart';
 import 'package:minhlong_menu_client_v3/features/auth/view/screens/forgot_password_screen.dart';
 import 'package:minhlong_menu_client_v3/features/auth/view/screens/login_screen.dart';
 import 'package:minhlong_menu_client_v3/features/category/view/screen/category_screen.dart';
 import 'package:minhlong_menu_client_v3/features/home/view/screens/home_screen.dart';
+import 'package:minhlong_menu_client_v3/features/profile/view/screen/edit_profile_screen.dart';
 import 'package:minhlong_menu_client_v3/features/profile/view/screen/profile_screen.dart';
 import 'package:minhlong_menu_client_v3/features/table/view/screen/table_screen.dart';
 
@@ -24,6 +26,8 @@ class AppRoute {
   static const String categories = '/categories';
   static const String banners = '/banners';
   static const String profile = '/profile';
+  static const String editProfile = '/edit-profile';
+  static const String noProductPage = '/no-product-page';
 
   static const publicRoute = [login, forgotPassword, signUp];
 
@@ -126,6 +130,26 @@ class AppRoute {
             context: context,
             state: state,
             child: const ProfileScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        path: editProfile,
+        pageBuilder: (context, state) {
+          return buildPageWithDefaultTransition(
+            context: context,
+            state: state,
+            child: const EditProfileScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        path: noProductPage,
+        pageBuilder: (context, state) {
+          return buildPageWithDefaultTransition(
+            context: context,
+            state: state,
+            child: const NoProduct(),
           );
         },
       ),

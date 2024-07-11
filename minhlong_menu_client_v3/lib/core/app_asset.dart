@@ -25,10 +25,13 @@ class AppAsset {
   static const String fileConfig = 'assets/svg/file_config.svg';
   static const String image = 'assets/svg/image.svg';
   static const String dashboard = 'assets/svg/dashboard.svg';
+  static const String user = 'assets/svg/user.svg';
   static const String food = 'assets/svg/food.svg';
   static const String category = 'assets/svg/category.svg';
   static const String banner = 'assets/svg/banner.svg';
   static const String logo = 'assets/image/logo.png';
   static const String tableEnable = 'assets/image/tableDisable.png';
   static const String tableDisable = 'assets/image/tableEnable.png';
+  static const String noProductImage = 'assets/image/noproduct.png';
+  static const String errorImageScreen = 'assets/image/404error.png';
 }

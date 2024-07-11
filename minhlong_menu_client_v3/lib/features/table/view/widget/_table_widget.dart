@@ -50,6 +50,8 @@ extension _TableWidget on _TableViewState {
                 padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
+                    shadowColor: AppColors.themeColor,
+                    elevation: 4,
                     backgroundColor: AppColors.themeColor,
                   ),
                   onPressed: () {},

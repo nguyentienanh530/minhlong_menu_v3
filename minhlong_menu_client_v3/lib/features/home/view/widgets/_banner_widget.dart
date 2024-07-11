@@ -9,13 +9,12 @@ extension _BannerWidget on _HomeViewState {
   Widget _bannerHome() {
     return CarouselSlider.builder(
       itemBuilder: (context, index, realIndex) {
-        return Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: NetworkImage(imgSliderList[index]),
-              fit: BoxFit.cover,
-            ),
-          ),
+        return CachedNetworkImage(
+          imageUrl: imgSliderList[index],
+          fit: BoxFit.cover,
+          width: double.infinity,
+          errorWidget: errorBuilderForImage,
+          placeholder: (context, url) => const Loading(),
         );
       },
       options: CarouselOptions(

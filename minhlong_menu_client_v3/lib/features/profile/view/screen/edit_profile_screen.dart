@@ -1,32 +1,28 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:minhlong_menu_client_v3/common/widget/error_build_image.dart';
-import 'package:minhlong_menu_client_v3/common/widget/loading.dart';
-import 'package:minhlong_menu_client_v3/core/app_colors.dart';
-import 'package:minhlong_menu_client_v3/core/app_const.dart';
-import 'package:minhlong_menu_client_v3/core/app_style.dart';
 import 'package:minhlong_menu_client_v3/core/extensions.dart';
 
-import '../../../../Routes/app_route.dart';
-import '../../../../core/app_asset.dart';
+import '../../../../common/widget/common_text_field.dart';
+import '../../../../common/widget/error_build_image.dart';
+import '../../../../common/widget/loading.dart';
+import '../../../../core/app_colors.dart';
+import '../../../../core/app_const.dart';
 import '../../../../core/app_string.dart';
+import '../../../../core/app_style.dart';
+import 'profile_screen.dart';
 
-part '../widget/_profile_widget.dart';
+part '../widget/_edit_profile_widget.dart';
 
-class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+class EditProfileScreen extends StatefulWidget {
+  const EditProfileScreen({super.key});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  State<EditProfileScreen> createState() => _EditProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
-  final _isEditProfile = ValueNotifier(false);
-  final _isUsePrinter = ValueNotifier(false);
-
+class _EditProfileScreenState extends State<EditProfileScreen> {
   final List<User> _userList = [
     User(
       name: 'Minh Long',
@@ -37,6 +33,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
     ),
     // Thêm các đối tượng User khác tại đây
   ];
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _imageController = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+    _nameController.text = _userList[0].name ?? '';
+    _emailController.text = _userList[0].email ?? '';
+    _phoneController.text = _userList[0].phone ?? '';
+    _imageController.text = _userList[0].image ?? '';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,31 +53,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
         slivers: [
           SliverAppBar(
             leading: BackButton(onPressed: () => context.pop()),
-            title: Text(AppString.profile),
+            title: Text(AppString.editProfile),
             expandedHeight: context.isPortrait
                 ? 0.4 * context.sizeDevice.height
                 : 0.4 * context.sizeDevice.width,
-            flexibleSpace: FlexibleSpaceBar(background: imageProfileWidget()),
+            flexibleSpace:
+                FlexibleSpaceBar(background: _imageEditProfileWidget()),
           ),
           SliverToBoxAdapter(
-            child: _bodyInfoUser(),
+            child: _bodyEditInfoUser(),
           )
         ],
       ),
     );
   }
-}
-
-class User {
-  String? name;
-  String? email;
-  String? phone;
-  String? image;
-
-  User({
-    this.name,
-    this.email,
-    this.phone,
-    this.image,
-  });
 }

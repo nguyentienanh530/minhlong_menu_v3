@@ -38,8 +38,8 @@ extension _CategoryWidget on _HomeViewState {
                     child: CachedNetworkImage(
                       imageUrl: categoryModel.image,
                       fit: BoxFit.cover,
-                      // placeholder: (context, url) => const Loading(),
-                      //errorWidget: errorBuilderForImage,
+                      placeholder: (context, url) => const Loading(),
+                      errorWidget: errorBuilderForImage,
                     ),
                   ),
                   5.verticalSpace,

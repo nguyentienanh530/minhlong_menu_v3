@@ -23,7 +23,7 @@ class ImageNotFound extends StatelessWidget {
       color: color ?? AppColors.smokeWhite,
       child: Center(
         child: Text(
-          ':-('.toUpperCase(),
+          '(>_<)'.toUpperCase(),
           style: kSubHeadingStyle.copyWith(
             color: tintcolor ?? AppColors.smokeWhite1,
             fontSize: 50,
