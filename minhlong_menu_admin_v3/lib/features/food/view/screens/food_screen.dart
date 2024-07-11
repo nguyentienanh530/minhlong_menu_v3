@@ -78,6 +78,7 @@ class _FoodViewState extends State<FoodView>
   final _focusSearch = FocusNode();
   OverlayEntry? overlayEntry;
   final _layerLink = LayerLink();
+  var _overlayShown = false;
 
   @override
   void initState() {
@@ -103,6 +104,7 @@ class _FoodViewState extends State<FoodView>
       body: GestureDetector(
         onTap: () {
           FocusScope.of(context).requestFocus(FocusNode());
+          _overlayShown = false;
           _hideOverlaySearch();
         },
         child: Padding(

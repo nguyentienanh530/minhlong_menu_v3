@@ -92,6 +92,7 @@ extension _OrderHeaderWidget on _OrderViewState {
               items: itemsDropdown,
               onChanged: (value) {
                 _limit.value = int.parse(value.toString());
+                _curentPage.value = 1;
                 _fetchData(
                   status: _listStatus[_tabController.index],
                   page: 1,

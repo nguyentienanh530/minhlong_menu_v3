@@ -9,6 +9,7 @@ import 'package:minhlong_menu_admin_v3/common/dialog/app_dialog.dart';
 import 'package:minhlong_menu_admin_v3/common/snackbar/overlay_snackbar.dart';
 import 'package:minhlong_menu_admin_v3/core/app_key.dart';
 import 'package:minhlong_menu_admin_v3/core/utils.dart';
+import 'package:minhlong_menu_admin_v3/features/category/data/model/category_item.dart';
 import 'package:minhlong_menu_admin_v3/features/food/data/model/food_item.dart';
 import '../../../../common/network/dio_client.dart';
 import '../../../../common/widget/common_text_field.dart';
@@ -21,7 +22,6 @@ import '../../../../core/app_const.dart';
 import '../../../../core/app_style.dart';
 import '../../../../core/extensions.dart';
 import '../../../category/bloc/category_bloc.dart';
-import '../../../category/data/model/category_model.dart';
 import '../../../category/data/provider/category_api.dart';
 import '../../../category/data/repositories/category_repository.dart';
 import '../../bloc/food_bloc/food_bloc.dart';
@@ -48,7 +48,7 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
   final _descriptionFoodController = TextEditingController();
   final _discountFoodController = TextEditingController();
   // final _formKey = GlobalKey<FormState>();
-  final _categoryValueNotifier = ValueNotifier(CategoryModel());
+  final _categoryValueNotifier = ValueNotifier(CategoryItem());
   late FoodScreenMode _mode;
 
   final _imageFile1 = ValueNotifier(File(''));
@@ -157,7 +157,7 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
                                       fontWeight: FontWeight.w700,
                                       fontSize: 40)),
                               _buildBodyCreateOrUpdateFoodDialog(
-                                  categoryState.categories),
+                                  categoryState.categoryModel.categoryItems),
                               20.verticalSpace,
                               _buildButtonCreateOrUpdateFood(),
                               20.verticalSpace,
@@ -176,7 +176,7 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
     );
   }
 
-  _buildBodyCreateOrUpdateFoodDialog(List<CategoryModel> categories) {
+  _buildBodyCreateOrUpdateFoodDialog(List<CategoryItem> categories) {
     if (_foodItem == null) {
       _categoryValueNotifier.value = categories[0];
     } else {
@@ -457,7 +457,7 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
     );
   }
 
-  Widget _buildDropDownCategory(List<CategoryModel> categories) {
+  Widget _buildDropDownCategory(List<CategoryItem> categories) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
@@ -477,7 +477,7 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
             valueListenable: _categoryValueNotifier,
             builder: (context, value, child) {
               return Expanded(
-                child: DropdownButton<CategoryModel>(
+                child: DropdownButton<CategoryItem>(
                   isExpanded: true,
                   hint: Text('Danh mục',
                       style: kBodyStyle.copyWith(

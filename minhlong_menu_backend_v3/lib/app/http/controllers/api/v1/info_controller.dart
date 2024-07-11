@@ -15,7 +15,7 @@ class InfoController extends Controller {
   final TableRepository _tableRepository = TableRepository();
   Future<Response> index() async {
     try {
-      var categoryCount = await _categoryRepository.getCategoryQuantity();
+      var categoryCount = await _categoryRepository.getCategoryCount();
       var orderCount = await _orderRepository.getOrderSuccess();
       var foodCount = await _foodRepository.getQuantityOfFood();
       var tableCount = await _tableRepository.getTableCount();

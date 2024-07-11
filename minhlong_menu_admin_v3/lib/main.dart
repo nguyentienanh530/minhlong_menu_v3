@@ -9,6 +9,12 @@ import 'package:minhlong_menu_admin_v3/features/auth/bloc/auth_bloc.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/data/auth_local_datasource/auth_local_datasource.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/data/provider/remote/auth_api.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/data/repositories/auth_repository.dart';
+import 'package:minhlong_menu_admin_v3/features/category/bloc/category_bloc.dart';
+import 'package:minhlong_menu_admin_v3/features/category/data/provider/category_api.dart';
+import 'package:minhlong_menu_admin_v3/features/category/data/repositories/category_repository.dart';
+import 'package:minhlong_menu_admin_v3/features/dinner_table/bloc/dinner_table_bloc.dart';
+import 'package:minhlong_menu_admin_v3/features/dinner_table/data/provider/dinner_table_api.dart';
+import 'package:minhlong_menu_admin_v3/features/dinner_table/data/repositories/table_repository.dart';
 import 'package:minhlong_menu_admin_v3/features/food/bloc/food_bloc/food_bloc.dart';
 import 'package:minhlong_menu_admin_v3/features/food/bloc/search_food_bloc/search_food_bloc.dart';
 import 'package:minhlong_menu_admin_v3/features/food/data/provider/food_api.dart';
@@ -46,6 +52,14 @@ class MainApp extends StatelessWidget {
         RepositoryProvider(
           create: (context) => FoodRepository(FoodApi(DioClient().dio!)),
         ),
+        RepositoryProvider(
+          create: (context) => DinnerTableRepository(
+              dinnerTableApi: DinnerTableApi(DioClient().dio!)),
+        ),
+        RepositoryProvider(
+          create: (context) => CategoryRepository(
+              categoryApi: CategoryApi(dio: DioClient().dio!)),
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -67,6 +81,16 @@ class MainApp extends StatelessWidget {
           BlocProvider(
             create: (context) => SearchFoodBloc(
               context.read<FoodRepository>(),
+            ),
+          ),
+          BlocProvider(
+            create: (context) => DinnerTableBloc(
+              context.read<DinnerTableRepository>(),
+            ),
+          ),
+          BlocProvider(
+            create: (context) => CategoryBloc(
+              categoryRepository: context.read<CategoryRepository>(),
             ),
           ),
         ],

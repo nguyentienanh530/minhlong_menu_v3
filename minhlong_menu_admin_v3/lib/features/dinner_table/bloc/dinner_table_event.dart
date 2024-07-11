@@ -13,3 +13,13 @@ final class DinnerTableDeleted extends DinnerTableEvent {
   final int id;
   DinnerTableDeleted({required this.id});
 }
+
+final class DinnerTableCreated extends DinnerTableEvent {
+  final TableItem tableItem;
+  DinnerTableCreated({required this.tableItem});
+}
+
+final class DinnerTableUpdated extends DinnerTableEvent {
+  final TableItem tableItem;
+  DinnerTableUpdated({required this.tableItem});
+}

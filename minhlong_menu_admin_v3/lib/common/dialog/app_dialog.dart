@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/app_colors.dart';
@@ -109,14 +110,40 @@ class AppDialog extends StatelessWidget {
     );
   }
 
-  static Future<dynamic> showLoadingDialog(BuildContext context) {
+  static Future<dynamic> showLoadingDialog(BuildContext context,
+      {bool isProgressed = false, String? imageName, double? progressValue}) {
     return showDialog(
       barrierDismissible: false,
       context: context,
-      builder: (context) => const AlertDialog(
+      builder: (context) => AlertDialog(
         backgroundColor: Colors.transparent,
-        content: LoadingWidget(
-          title: 'Đang xử lý...',
+        content: Card(
+          child: FittedBox(
+            child: Container(
+              padding: const EdgeInsets.all(defaultPadding),
+              constraints: const BoxConstraints(maxWidth: 200),
+              child: Column(
+                children: [
+                  const LoadingWidget(
+                    title: 'Đang xử lý...',
+                  ),
+                  isProgressed
+                      ? Column(
+                          children: [
+                            10.verticalSpace,
+                            Text(imageName ?? ''),
+                            10.verticalSpace,
+                            LinearProgressIndicator(
+                              value: progressValue! / 100,
+                              color: AppColors.themeColor,
+                            ),
+                          ],
+                        )
+                      : const SizedBox()
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     );

@@ -1,8 +1,10 @@
+import 'package:dio/dio.dart';
 import 'package:logger/logger.dart';
 import 'package:minhlong_menu_admin_v3/common/network/result.dart';
 import 'package:minhlong_menu_admin_v3/features/food/data/model/food_model.dart';
 import 'package:minhlong_menu_admin_v3/features/food/data/provider/food_api.dart';
 
+import '../../../../common/network/dio_exception.dart';
 import '../model/food_item.dart';
 
 class FoodRepository {
@@ -14,9 +16,10 @@ class FoodRepository {
     try {
       var response = await _foodApi.getFoods(page: page, limit: limit);
       return Result.success(response);
-    } catch (e) {
+    } on DioException catch (e) {
       Logger().e('get food error: $e');
-      return Result.failure(e.toString());
+      var errorMessage = DioExceptions.fromDioError(e).toString();
+      return Result.failure(errorMessage);
     }
   }
 
@@ -24,9 +27,10 @@ class FoodRepository {
     try {
       var response = await _foodApi.createFood(food: food);
       return Result.success(response);
-    } catch (e) {
+    } on DioException catch (e) {
       Logger().e('create food error: $e');
-      return Result.failure(e.toString());
+      var errorMessage = DioExceptions.fromDioError(e).toString();
+      return Result.failure(errorMessage);
     }
   }
 
@@ -34,9 +38,10 @@ class FoodRepository {
     try {
       var response = await _foodApi.updateFood(food: food);
       return Result.success(response);
-    } catch (e) {
+    } on DioException catch (e) {
       Logger().e('update food error: $e');
-      return Result.failure(e.toString());
+      var errorMessage = DioExceptions.fromDioError(e).toString();
+      return Result.failure(errorMessage);
     }
   }
 
@@ -44,9 +49,10 @@ class FoodRepository {
     try {
       var response = await _foodApi.deleteFood(id: id);
       return Result.success(response);
-    } catch (e) {
+    } on DioException catch (e) {
       Logger().e('delete food error: $e');
-      return Result.failure(e.toString());
+      var errorMessage = DioExceptions.fromDioError(e).toString();
+      return Result.failure(errorMessage);
     }
   }
 
@@ -54,9 +60,10 @@ class FoodRepository {
     try {
       var response = await _foodApi.search(query: query);
       return Result.success(response);
-    } catch (e) {
+    } on DioException catch (e) {
       Logger().e('search food error: $e');
-      return Result.failure(e.toString());
+      var errorMessage = DioExceptions.fromDioError(e).toString();
+      return Result.failure(errorMessage);
     }
   }
 }

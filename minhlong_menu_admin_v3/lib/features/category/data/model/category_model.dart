@@ -1,16 +1,17 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:minhlong_menu_admin_v3/common/model/pagination_model.dart';
+
+import 'category_item.dart';
 part 'category_model.freezed.dart';
 part 'category_model.g.dart';
 
 @freezed
 class CategoryModel with _$CategoryModel {
   factory CategoryModel({
-    @Default(0) int id,
-    @Default('') String name,
-    @Default(0) int serial,
-    @Default('0') String image,
-    @Default('') @JsonKey(name: 'created_at') String? createdAt,
-    @Default('') @JsonKey(name: 'updated_at') String? updatedAt,
+    @JsonKey(name: 'pagination') PaginationModel? paginationModel,
+    @Default(<CategoryItem>[])
+    @JsonKey(name: 'data')
+    List<CategoryItem> categoryItems,
   }) = _CategoryModel;
 
   factory CategoryModel.fromJson(Map<String, dynamic> json) =>
