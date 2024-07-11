@@ -18,3 +18,12 @@ final class DinnerTableFailure extends DinnerTableState {
   final String message;
   DinnerTableFailure(this.message);
 }
+
+final class DinnerTableDeleteInProgress extends DinnerTableState {}
+
+final class DinnerTableDeleteSuccess extends DinnerTableState {}
+
+final class DinnerTableDeleteFailure extends DinnerTableState {
+  final String message;
+  DinnerTableDeleteFailure(this.message);
+}

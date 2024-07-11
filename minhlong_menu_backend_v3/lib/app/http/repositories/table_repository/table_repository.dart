@@ -12,4 +12,8 @@ class TableRepository {
   Future getTableCount() async {
     return await Table().query().count();
   }
+
+  Future delete(int id) async {
+    return await Table().query().where('id', '=', id).delete();
+  }
 }

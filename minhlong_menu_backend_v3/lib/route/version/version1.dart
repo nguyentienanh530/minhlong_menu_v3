@@ -46,7 +46,7 @@ class Version1 implements Route {
     Router.group(() {
       Router.get("", tableController.index);
       Router.get('quantity', tableController.getTableQuantity);
-      Router.delete("/{id}", tableController.destroy);
+      Router.delete("{id}", tableController.destroy);
     }, prefix: '/tables');
 
     //======= Food route ======

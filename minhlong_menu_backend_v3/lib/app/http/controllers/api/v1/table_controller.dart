@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:minhlong_menu_backend_v3/app/http/helper/app_response.dart';
 import 'package:vania/vania.dart';
@@ -78,7 +79,16 @@ class TableController extends Controller {
   }
 
   Future<Response> destroy(int id) async {
-    return Response.json({});
+    try {
+      await _tableRepository.delete(id);
+      return AppResponse().ok(data: true, statusCode: HttpStatus.ok);
+    } catch (e) {
+      log('delete table error: $e');
+      return AppResponse().error(
+        statusCode: HttpStatus.internalServerError,
+        message: 'connection error',
+      );
+    }
   }
 }
 

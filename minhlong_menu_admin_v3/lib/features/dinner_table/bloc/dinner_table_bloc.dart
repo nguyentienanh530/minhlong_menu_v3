@@ -12,13 +12,14 @@ part 'dinner_table_state.dart';
 typedef Emit = Emitter<DinnerTableState>;
 
 class DinnerTableBloc extends Bloc<DinnerTableEvent, DinnerTableState> {
-  DinnerTableBloc(TableRepository tableRepository)
+  DinnerTableBloc(DinnerTableRepository tableRepository)
       : _tableRepository = tableRepository,
         super(DinnerTableInitial()) {
     on<DinnerTableFetched>(_onDinnerTableFetched);
+    on<DinnerTableDeleted>(_onDinnerTableDeleted);
   }
 
-  final TableRepository _tableRepository;
+  final DinnerTableRepository _tableRepository;
 
   FutureOr<void> _onDinnerTableFetched(
       DinnerTableFetched event, Emit emit) async {
@@ -35,6 +36,20 @@ class DinnerTableBloc extends Bloc<DinnerTableEvent, DinnerTableState> {
       },
       failure: (message) {
         emit(DinnerTableFailure(message));
+      },
+    );
+  }
+
+  FutureOr<void> _onDinnerTableDeleted(
+      DinnerTableDeleted event, Emit emit) async {
+    emit(DinnerTableDeleteInProgress());
+    final result = await _tableRepository.deleteTable(id: event.id);
+    result.when(
+      success: (success) {
+        emit(DinnerTableDeleteSuccess());
+      },
+      failure: (message) {
+        emit(DinnerTableDeleteFailure(message));
       },
     );
   }

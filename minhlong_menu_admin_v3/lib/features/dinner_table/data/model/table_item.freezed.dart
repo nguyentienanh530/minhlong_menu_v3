@@ -24,7 +24,7 @@ mixin _$TableItem {
   String get name => throw _privateConstructorUsedError;
   int get seats => throw _privateConstructorUsedError;
   @JsonKey(name: 'is_use')
-  bool? get isUse => throw _privateConstructorUsedError;
+  bool get isUse => throw _privateConstructorUsedError;
   @JsonKey(name: 'order_count')
   int? get orderCount => throw _privateConstructorUsedError;
 
@@ -43,7 +43,7 @@ abstract class $TableItemCopyWith<$Res> {
       {int id,
       String name,
       int seats,
-      @JsonKey(name: 'is_use') bool? isUse,
+      @JsonKey(name: 'is_use') bool isUse,
       @JsonKey(name: 'order_count') int? orderCount});
 }
 
@@ -63,7 +63,7 @@ class _$TableItemCopyWithImpl<$Res, $Val extends TableItem>
     Object? id = null,
     Object? name = null,
     Object? seats = null,
-    Object? isUse = freezed,
+    Object? isUse = null,
     Object? orderCount = freezed,
   }) {
     return _then(_value.copyWith(
@@ -79,10 +79,10 @@ class _$TableItemCopyWithImpl<$Res, $Val extends TableItem>
           ? _value.seats
           : seats // ignore: cast_nullable_to_non_nullable
               as int,
-      isUse: freezed == isUse
+      isUse: null == isUse
           ? _value.isUse
           : isUse // ignore: cast_nullable_to_non_nullable
-              as bool?,
+              as bool,
       orderCount: freezed == orderCount
           ? _value.orderCount
           : orderCount // ignore: cast_nullable_to_non_nullable
@@ -103,7 +103,7 @@ abstract class _$$TableItemImplCopyWith<$Res>
       {int id,
       String name,
       int seats,
-      @JsonKey(name: 'is_use') bool? isUse,
+      @JsonKey(name: 'is_use') bool isUse,
       @JsonKey(name: 'order_count') int? orderCount});
 }
 
@@ -121,7 +121,7 @@ class __$$TableItemImplCopyWithImpl<$Res>
     Object? id = null,
     Object? name = null,
     Object? seats = null,
-    Object? isUse = freezed,
+    Object? isUse = null,
     Object? orderCount = freezed,
   }) {
     return _then(_$TableItemImpl(
@@ -137,10 +137,10 @@ class __$$TableItemImplCopyWithImpl<$Res>
           ? _value.seats
           : seats // ignore: cast_nullable_to_non_nullable
               as int,
-      isUse: freezed == isUse
+      isUse: null == isUse
           ? _value.isUse
           : isUse // ignore: cast_nullable_to_non_nullable
-              as bool?,
+              as bool,
       orderCount: freezed == orderCount
           ? _value.orderCount
           : orderCount // ignore: cast_nullable_to_non_nullable
@@ -173,7 +173,7 @@ class _$TableItemImpl implements _TableItem {
   final int seats;
   @override
   @JsonKey(name: 'is_use')
-  final bool? isUse;
+  final bool isUse;
   @override
   @JsonKey(name: 'order_count')
   final int? orderCount;
@@ -220,7 +220,7 @@ abstract class _TableItem implements TableItem {
       {final int id,
       final String name,
       final int seats,
-      @JsonKey(name: 'is_use') final bool? isUse,
+      @JsonKey(name: 'is_use') final bool isUse,
       @JsonKey(name: 'order_count') final int? orderCount}) = _$TableItemImpl;
 
   factory _TableItem.fromJson(Map<String, dynamic> json) =
@@ -234,7 +234,7 @@ abstract class _TableItem implements TableItem {
   int get seats;
   @override
   @JsonKey(name: 'is_use')
-  bool? get isUse;
+  bool get isUse;
   @override
   @JsonKey(name: 'order_count')
   int? get orderCount;
