@@ -125,26 +125,16 @@ class FoodDetailsView extends StatelessWidget {
     double discountedPrice = foodModel.price - discountAmount;
     return !foodModel.isDiscount
         ? Row(children: [
-            Text('₫ ',
-                style: kBodyStyle.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.themeColor,
-                    fontSize: 24)),
             Text(
-                Ultils.currencyFormat(double.parse(foodModel.price.toString())),
+                '₫${Ultils.currencyFormat(double.parse(foodModel.price.toString()))}',
                 style: kBodyStyle.copyWith(
                     fontWeight: FontWeight.bold,
                     color: AppColors.themeColor,
                     fontSize: 24)),
           ])
         : Row(children: [
-            Text('₫ ',
-                style: kBodyStyle.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.themeColor,
-                    fontSize: 24)),
             Text(
-                Ultils.currencyFormat(double.parse(foodModel.price.toString())),
+                '₫${Ultils.currencyFormat(double.parse(foodModel.price.toString()))}',
                 style: kBodyStyle.copyWith(
                     color: AppColors.secondTextColor,
                     fontSize: 24,
