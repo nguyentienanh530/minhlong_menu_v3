@@ -44,7 +44,7 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  FoodModel foodModel = FoodModel(
+  final FoodModel _foodModel = FoodModel(
     id: 1,
     name: 'Bánh mì',
     categoryID: 1,
@@ -94,9 +94,9 @@ class _HomeViewState extends State<HomeView> {
                 30.verticalSpace,
                 categoryListView(),
                 10.verticalSpace,
-                _buildListFoodView(foodModel),
+                _buildListFoodView(_foodModel),
                 20.verticalSpace,
-                _popularGridView(foodModel),
+                _popularGridView(_foodModel),
               ],
             ),
           ),

@@ -40,6 +40,7 @@ class AppString {
   static String note = 'Ghi chú';
   static String addedToCart = 'Đã thêm vào giỏ hàng.';
   static String addToCart = 'Thêm vào giỏ hàng';
+  static String cart = 'Giỏ hàng';
   static String totalPrice = 'Tổng tiền:';
   static String password = 'Mật khẩu';
   static String login = 'Đăng Nhập';
@@ -68,4 +69,5 @@ class AppString {
   static String settingPrinter = 'Cấu hình máy in';
   static String uploadImage = 'Tải lên ';
   static String back = 'Trở lại ';
+  static String pay = 'Thanh toán';
 }

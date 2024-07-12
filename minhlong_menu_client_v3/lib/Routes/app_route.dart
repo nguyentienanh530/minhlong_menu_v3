@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_client_v3/common/widget/no_product.dart';
 import 'package:minhlong_menu_client_v3/features/auth/view/screens/forgot_password_screen.dart';
 import 'package:minhlong_menu_client_v3/features/auth/view/screens/login_screen.dart';
+import 'package:minhlong_menu_client_v3/features/cart/view/screen/cart_screen.dart';
 import 'package:minhlong_menu_client_v3/features/category/view/screen/category_screen.dart';
 import 'package:minhlong_menu_client_v3/features/home/view/screens/home_screen.dart';
 import 'package:minhlong_menu_client_v3/features/profile/view/screen/edit_profile_screen.dart';
@@ -99,7 +100,7 @@ class AppRoute {
           return buildPageWithDefaultTransition(
             context: context,
             state: state,
-            child: FoodDetailsView(),
+            child: const CartScreen(),
           );
         },
       ),

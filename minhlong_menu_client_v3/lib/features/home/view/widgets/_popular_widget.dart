@@ -50,7 +50,7 @@ extension _PopularWidget on _HomeViewState {
   Widget _buildFloatingButton() {
     return FloatingActionButton(
       backgroundColor: AppColors.themeColor,
-      onPressed: () => context.push(AppRoute.noProductPage),
+      onPressed: () => context.push(AppRoute.carts),
       child: Padding(
         padding: const EdgeInsets.all(5),
         child: badges.Badge(
