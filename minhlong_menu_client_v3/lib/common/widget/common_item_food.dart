@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_client_v3/Routes/app_route.dart';
+import 'package:minhlong_menu_client_v3/common/widget/error_build_image.dart';
+import 'package:minhlong_menu_client_v3/core/api_config.dart';
 import 'package:minhlong_menu_client_v3/core/extensions.dart';
 
 import '../../core/app_colors.dart';
@@ -22,7 +24,7 @@ class CommonItemFood extends StatelessWidget {
   Widget _buildFoodItem() {
     return LayoutBuilder(builder: (context, constraints) {
       return InkWell(
-        onTap: () => context.push(AppRoute.foodsDetails),
+        onTap: () => context.push(AppRoute.foodsDetail, extra: foodModel),
         child: AspectRatio(
           aspectRatio: 9 / 7,
           child: Card(
@@ -34,21 +36,18 @@ class CommonItemFood extends StatelessWidget {
                 Column(
                   children: [
                     Container(
+                      clipBehavior: Clip.antiAlias,
                       height: 0.7 * constraints.maxHeight,
+                      width: constraints.maxWidth,
                       decoration: const BoxDecoration(
                         borderRadius: BorderRadius.only(
                             topRight: Radius.circular(defaultBorderRadius),
                             topLeft: Radius.circular(defaultBorderRadius)),
                       ),
-                      child: ClipRRect(
-                        borderRadius: const BorderRadius.only(
-                            topRight: Radius.circular(defaultBorderRadius),
-                            topLeft: Radius.circular(defaultBorderRadius)),
-                        child: CachedNetworkImage(
-                          imageUrl: foodModel.photoGallery[0],
-                          fit: BoxFit.cover,
-                          width: double.infinity,
-                        ),
+                      child: CachedNetworkImage(
+                        imageUrl: '${ApiConfig.host}${foodModel.image1}',
+                        fit: BoxFit.cover,
+                        errorWidget: errorBuilderForImage,
                       ),
                     ),
                     _buildNameFood(context, foodModel),

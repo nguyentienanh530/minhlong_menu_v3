@@ -32,4 +32,14 @@ class Ultils {
     final oCcy = NumberFormat("###,###,###", "vi");
     return oCcy.format(double);
   }
+
+  static double foodPrice(
+      {required bool isDiscount,
+      required double foodPrice,
+      required int discount}) {
+    double discountAmount = (foodPrice * discount.toDouble()) / 100;
+    double discountedPrice = foodPrice - discountAmount;
+
+    return isDiscount ? discountedPrice : foodPrice;
+  }
 }

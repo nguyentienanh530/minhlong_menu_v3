@@ -32,8 +32,10 @@ mixin _$FoodModel {
   bool get isDiscount => throw _privateConstructorUsedError;
   @JsonKey(name: 'is_show')
   bool get isShow => throw _privateConstructorUsedError;
-  @JsonKey(name: 'photo_gallery', fromJson: stringToList)
-  List<dynamic> get photoGallery => throw _privateConstructorUsedError;
+  String get image1 => throw _privateConstructorUsedError;
+  String get image2 => throw _privateConstructorUsedError;
+  String get image3 => throw _privateConstructorUsedError;
+  String get image4 => throw _privateConstructorUsedError;
   double get price => throw _privateConstructorUsedError;
   @JsonKey(name: 'create_at')
   String get createAt => throw _privateConstructorUsedError;
@@ -58,8 +60,10 @@ abstract class $FoodModelCopyWith<$Res> {
       int discount,
       @JsonKey(name: 'is_discount') bool isDiscount,
       @JsonKey(name: 'is_show') bool isShow,
-      @JsonKey(name: 'photo_gallery', fromJson: stringToList)
-      List<dynamic> photoGallery,
+      String image1,
+      String image2,
+      String image3,
+      String image4,
       double price,
       @JsonKey(name: 'create_at') String createAt});
 }
@@ -85,7 +89,10 @@ class _$FoodModelCopyWithImpl<$Res, $Val extends FoodModel>
     Object? discount = null,
     Object? isDiscount = null,
     Object? isShow = null,
-    Object? photoGallery = null,
+    Object? image1 = null,
+    Object? image2 = null,
+    Object? image3 = null,
+    Object? image4 = null,
     Object? price = null,
     Object? createAt = null,
   }) {
@@ -122,10 +129,22 @@ class _$FoodModelCopyWithImpl<$Res, $Val extends FoodModel>
           ? _value.isShow
           : isShow // ignore: cast_nullable_to_non_nullable
               as bool,
-      photoGallery: null == photoGallery
-          ? _value.photoGallery
-          : photoGallery // ignore: cast_nullable_to_non_nullable
-              as List<dynamic>,
+      image1: null == image1
+          ? _value.image1
+          : image1 // ignore: cast_nullable_to_non_nullable
+              as String,
+      image2: null == image2
+          ? _value.image2
+          : image2 // ignore: cast_nullable_to_non_nullable
+              as String,
+      image3: null == image3
+          ? _value.image3
+          : image3 // ignore: cast_nullable_to_non_nullable
+              as String,
+      image4: null == image4
+          ? _value.image4
+          : image4 // ignore: cast_nullable_to_non_nullable
+              as String,
       price: null == price
           ? _value.price
           : price // ignore: cast_nullable_to_non_nullable
@@ -155,8 +174,10 @@ abstract class _$$FoodModelImplCopyWith<$Res>
       int discount,
       @JsonKey(name: 'is_discount') bool isDiscount,
       @JsonKey(name: 'is_show') bool isShow,
-      @JsonKey(name: 'photo_gallery', fromJson: stringToList)
-      List<dynamic> photoGallery,
+      String image1,
+      String image2,
+      String image3,
+      String image4,
       double price,
       @JsonKey(name: 'create_at') String createAt});
 }
@@ -180,7 +201,10 @@ class __$$FoodModelImplCopyWithImpl<$Res>
     Object? discount = null,
     Object? isDiscount = null,
     Object? isShow = null,
-    Object? photoGallery = null,
+    Object? image1 = null,
+    Object? image2 = null,
+    Object? image3 = null,
+    Object? image4 = null,
     Object? price = null,
     Object? createAt = null,
   }) {
@@ -217,10 +241,22 @@ class __$$FoodModelImplCopyWithImpl<$Res>
           ? _value.isShow
           : isShow // ignore: cast_nullable_to_non_nullable
               as bool,
-      photoGallery: null == photoGallery
-          ? _value._photoGallery
-          : photoGallery // ignore: cast_nullable_to_non_nullable
-              as List<dynamic>,
+      image1: null == image1
+          ? _value.image1
+          : image1 // ignore: cast_nullable_to_non_nullable
+              as String,
+      image2: null == image2
+          ? _value.image2
+          : image2 // ignore: cast_nullable_to_non_nullable
+              as String,
+      image3: null == image3
+          ? _value.image3
+          : image3 // ignore: cast_nullable_to_non_nullable
+              as String,
+      image4: null == image4
+          ? _value.image4
+          : image4 // ignore: cast_nullable_to_non_nullable
+              as String,
       price: null == price
           ? _value.price
           : price // ignore: cast_nullable_to_non_nullable
@@ -245,11 +281,12 @@ class _$FoodModelImpl implements _FoodModel {
       this.discount = 0,
       @JsonKey(name: 'is_discount') this.isDiscount = false,
       @JsonKey(name: 'is_show') this.isShow = false,
-      @JsonKey(name: 'photo_gallery', fromJson: stringToList)
-      final List<dynamic> photoGallery = const [],
+      this.image1 = '',
+      this.image2 = '',
+      this.image3 = '',
+      this.image4 = '',
       this.price = 0,
-      @JsonKey(name: 'create_at') this.createAt = ''})
-      : _photoGallery = photoGallery;
+      @JsonKey(name: 'create_at') this.createAt = ''});
 
   factory _$FoodModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$FoodModelImplFromJson(json);
@@ -278,15 +315,18 @@ class _$FoodModelImpl implements _FoodModel {
   @override
   @JsonKey(name: 'is_show')
   final bool isShow;
-  final List<dynamic> _photoGallery;
   @override
-  @JsonKey(name: 'photo_gallery', fromJson: stringToList)
-  List<dynamic> get photoGallery {
-    if (_photoGallery is EqualUnmodifiableListView) return _photoGallery;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_photoGallery);
-  }
-
+  @JsonKey()
+  final String image1;
+  @override
+  @JsonKey()
+  final String image2;
+  @override
+  @JsonKey()
+  final String image3;
+  @override
+  @JsonKey()
+  final String image4;
   @override
   @JsonKey()
   final double price;
@@ -296,7 +336,7 @@ class _$FoodModelImpl implements _FoodModel {
 
   @override
   String toString() {
-    return 'FoodModel(id: $id, name: $name, categoryID: $categoryID, orderCount: $orderCount, description: $description, discount: $discount, isDiscount: $isDiscount, isShow: $isShow, photoGallery: $photoGallery, price: $price, createAt: $createAt)';
+    return 'FoodModel(id: $id, name: $name, categoryID: $categoryID, orderCount: $orderCount, description: $description, discount: $discount, isDiscount: $isDiscount, isShow: $isShow, image1: $image1, image2: $image2, image3: $image3, image4: $image4, price: $price, createAt: $createAt)';
   }
 
   @override
@@ -317,8 +357,10 @@ class _$FoodModelImpl implements _FoodModel {
             (identical(other.isDiscount, isDiscount) ||
                 other.isDiscount == isDiscount) &&
             (identical(other.isShow, isShow) || other.isShow == isShow) &&
-            const DeepCollectionEquality()
-                .equals(other._photoGallery, _photoGallery) &&
+            (identical(other.image1, image1) || other.image1 == image1) &&
+            (identical(other.image2, image2) || other.image2 == image2) &&
+            (identical(other.image3, image3) || other.image3 == image3) &&
+            (identical(other.image4, image4) || other.image4 == image4) &&
             (identical(other.price, price) || other.price == price) &&
             (identical(other.createAt, createAt) ||
                 other.createAt == createAt));
@@ -336,7 +378,10 @@ class _$FoodModelImpl implements _FoodModel {
       discount,
       isDiscount,
       isShow,
-      const DeepCollectionEquality().hash(_photoGallery),
+      image1,
+      image2,
+      image3,
+      image4,
       price,
       createAt);
 
@@ -364,8 +409,10 @@ abstract class _FoodModel implements FoodModel {
       final int discount,
       @JsonKey(name: 'is_discount') final bool isDiscount,
       @JsonKey(name: 'is_show') final bool isShow,
-      @JsonKey(name: 'photo_gallery', fromJson: stringToList)
-      final List<dynamic> photoGallery,
+      final String image1,
+      final String image2,
+      final String image3,
+      final String image4,
       final double price,
       @JsonKey(name: 'create_at') final String createAt}) = _$FoodModelImpl;
 
@@ -393,8 +440,13 @@ abstract class _FoodModel implements FoodModel {
   @JsonKey(name: 'is_show')
   bool get isShow;
   @override
-  @JsonKey(name: 'photo_gallery', fromJson: stringToList)
-  List<dynamic> get photoGallery;
+  String get image1;
+  @override
+  String get image2;
+  @override
+  String get image3;
+  @override
+  String get image4;
   @override
   double get price;
   @override

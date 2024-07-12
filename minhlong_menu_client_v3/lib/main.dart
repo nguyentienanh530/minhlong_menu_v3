@@ -1,5 +1,4 @@
 import 'package:device_preview/device_preview.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,10 +10,12 @@ import 'package:minhlong_menu_client_v3/features/auth/bloc/auth_bloc.dart';
 import 'package:minhlong_menu_client_v3/features/auth/data/auth_local_datasource/auth_local_datasource.dart';
 import 'package:minhlong_menu_client_v3/features/auth/data/provider/remote/auth_api.dart';
 import 'package:minhlong_menu_client_v3/features/auth/data/respositories/auth_repository.dart';
+import 'package:minhlong_menu_client_v3/features/food/data/provider/food_api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'bloc_observer.dart';
 import 'core/app_colors.dart';
+import 'features/food/data/repositories/food_repository.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,11 +35,20 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RepositoryProvider(
-      create: (context) => AuthRepository(
-        authApi: AuthApi(dio: DioClient().dio!),
-        authLocalDatasource: AuthLocalDatasource(sf),
-      ),
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider(
+          create: (context) => AuthRepository(
+            authApi: AuthApi(dio: DioClient().dio!),
+            authLocalDatasource: AuthLocalDatasource(sf),
+          ),
+        ),
+        RepositoryProvider(
+          create: (context) => FoodRepository(
+            foodApi: FoodApi(dio: DioClient().dio!),
+          ),
+        ),
+      ],
       child: MultiBlocProvider(
         providers: [
           BlocProvider(

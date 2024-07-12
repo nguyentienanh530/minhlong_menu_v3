@@ -6,21 +6,36 @@ extension _PopularWidget on _HomeViewState {
       children: [
         _buildTitle(
           AppString.popular,
-          () => context.push(AppRoute.foodsDetails),
+          () {
+            // context.push(AppRoute.foodsDetails)
+          },
         ),
-        GridView(
-          padding: const EdgeInsets.all(0),
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-          ),
-          children: List.generate(
-            8,
-            (index) => CommonItemFood(
-              foodModel: foodModel,
+        BlocProvider(
+          create: (context) => FoodBloc(
+            foodRepository: context.read<FoodRepository>(),
+          )..add(
+              FoodFetched(property: 'order_count', limit: 10),
             ),
-          ),
+          child: Builder(builder: (context) {
+            final foodState = context.watch<FoodBloc>().state;
+            return (switch (foodState) {
+              FoodFetchInProgress() => const Loading(),
+              FoodFetchEmpty() => const EmptyWidget(),
+              FoodFetchFailure() => ErrWidget(error: foodState.message),
+              FoodFetchSuccess() => GridView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                  ),
+                  itemCount: foodState.foods.length,
+                  itemBuilder: (context, index) {
+                    return CommonItemFood(foodModel: foodState.foods[index]);
+                  },
+                ),
+              _ => const SizedBox(),
+            });
+          }),
         ),
       ],
     );

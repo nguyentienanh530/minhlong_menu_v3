@@ -10,7 +10,8 @@ import 'package:minhlong_menu_client_v3/features/profile/view/screen/edit_profil
 import 'package:minhlong_menu_client_v3/features/profile/view/screen/profile_screen.dart';
 import 'package:minhlong_menu_client_v3/features/table/view/screen/table_screen.dart';
 
-import '../features/food/view/screen/food_details_view.dart';
+import '../features/food/data/model/food_model.dart';
+import '../features/food/view/screen/food_detail_screen.dart';
 
 class AppRoute {
   AppRoute._();
@@ -22,7 +23,7 @@ class AppRoute {
   static const String dashboard = '/dashboard';
   static const String foods = '/foods';
   static const String carts = '/carts';
-  static const String foodsDetails = '/foodsDetails';
+  static const String foodsDetail = '/foods-detail';
   static const String dinnerTables = '/dinner-tables';
   static const String categories = '/categories';
   static const String banners = '/banners';
@@ -75,22 +76,14 @@ class AppRoute {
         },
       ),
       GoRoute(
-        path: foods,
+        path: foodsDetail,
         pageBuilder: (context, state) {
           return buildPageWithDefaultTransition(
             context: context,
             state: state,
-            child: FoodDetailsView(),
-          );
-        },
-      ),
-      GoRoute(
-        path: foodsDetails,
-        pageBuilder: (context, state) {
-          return buildPageWithDefaultTransition(
-            context: context,
-            state: state,
-            child: FoodDetailsView(),
+            child: FoodDetailScreen(
+              foodModel: state.extra as FoodModel,
+            ),
           );
         },
       ),

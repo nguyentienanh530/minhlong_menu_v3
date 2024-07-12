@@ -56,8 +56,7 @@ class Version1 implements Route {
     //======= Food route ======
     Router.group(() {
       Router.get("", foodController.index);
-      Router.get("new-foods", foodController.getNewFoods);
-      Router.get("popular-foods", foodController.getPopularFoods);
+      Router.get("{property}", foodController.getFoods);
       Router.get("category/{id}", foodController.getFoodsOnCategory);
       Router.get("quantity", foodController.getQuantityOfFood);
       Router.delete("/{id}", foodController.destroy);

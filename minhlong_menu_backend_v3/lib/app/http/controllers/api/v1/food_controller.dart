@@ -7,36 +7,16 @@ import 'package:vania/vania.dart';
 
 class FoodController extends Controller {
   final FoodRepository _foodRepository = FoodRepository();
-  Future<Response> getFoods() async {
-    try {
-      List<Map<String, dynamic>> newFoods =
-          await Food().query().where('is_show', '=', 1).get();
-      return AppResponse().ok(data: newFoods, statusCode: HttpStatus.ok);
-    } catch (e) {
-      throw Exception('Something went wrong $e');
-    }
-  }
 
-  Future<Response> getNewFoods(Request request) async {
+  Future<Response> getFoods(Request request, String property) async {
     // print('limit: ${request.all()}');
+    var limit = request.input('limit');
+
     try {
-      var limit = request.input('limit');
       print(limit);
       List<Map<String, dynamic>> newFoods = <Map<String, dynamic>>[];
-      if (limit == null) {
-        newFoods = await Food()
-            .query()
-            .where('is_show', '=', 1)
-            .orderBy('created_at', 'desc')
-            .get();
-      } else {
-        newFoods = await Food()
-            .query()
-            .where('is_show', '=', 1)
-            .orderBy('created_at', 'desc')
-            .limit(int.parse(limit.toString()))
-            .get();
-      }
+      newFoods =
+          await _foodRepository.getFoods(limit: limit, byProperty: property);
 
       return AppResponse().ok(data: newFoods, statusCode: HttpStatus.ok);
     } catch (e) {
@@ -45,32 +25,6 @@ class FoodController extends Controller {
         statusCode: HttpStatus.internalServerError,
         message: 'connection error',
       );
-    }
-  }
-
-  Future<Response> getPopularFoods(Request request) async {
-    try {
-      var limit = request.input('limit');
-
-      List<Map<String, dynamic>> newFoods;
-      if (limit == null) {
-        newFoods = await Food()
-            .query()
-            .where('is_show', '=', 1)
-            .orderBy('order_count', 'desc')
-            .get();
-      } else {
-        newFoods = await Food()
-            .query()
-            .where('is_show', '=', 1)
-            .orderBy('order_count', 'desc')
-            .limit(int.parse(limit.toString()))
-            .get();
-      }
-
-      return AppResponse().ok(data: newFoods, statusCode: HttpStatus.ok);
-    } catch (e) {
-      throw Exception('Something went wrong $e');
     }
   }
 
