@@ -10,11 +10,25 @@ class FoodRepository {
   final FoodApi _foodApi;
   FoodRepository({required FoodApi foodApi}) : _foodApi = foodApi;
 
-  Future<Result<List<FoodModel>>> getFoods(
+  Future<Result<FoodModel>> getFoods(
       {int? limit, required String property}) async {
-    List<FoodModel> foods = <FoodModel>[];
+    FoodModel foods = FoodModel();
     try {
       foods = await _foodApi.getFoods(limit: limit, property: property);
+    } on DioException catch (e) {
+      Logger().e('get popular food error: $e');
+      var errorMessage = DioExceptions.fromDioError(e).toString();
+      return Result.failure(errorMessage);
+    }
+    return Result.success(foods);
+  }
+
+  Future<Result<FoodModel>> getFoodsOnCategory(
+      {required int page, required int limit, required int categoryID}) async {
+    FoodModel foods = FoodModel();
+    try {
+      foods = await _foodApi.getFoodsOnCategory(
+          page: page, limit: limit, categoryID: categoryID);
     } on DioException catch (e) {
       Logger().e('get popular food error: $e');
       var errorMessage = DioExceptions.fromDioError(e).toString();

@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:minhlong_menu_client_v3/common/widget/common_back_button.dart';
+import 'package:minhlong_menu_client_v3/common/widget/empty_widget.dart';
+import 'package:minhlong_menu_client_v3/common/widget/loading.dart';
 import 'package:minhlong_menu_client_v3/core/app_colors.dart';
 import 'package:minhlong_menu_client_v3/core/app_style.dart';
-import 'package:minhlong_menu_client_v3/core/extensions.dart';
 import 'package:minhlong_menu_client_v3/features/table/data/model/table_model.dart';
 
+import '../../../../common/widget/error_widget.dart';
 import '../../../../core/app_asset.dart';
 import '../../../../core/app_const.dart';
 import '../../../../core/app_string.dart';
+import '../../bloc/table_bloc.dart';
 
-part '../widget/_table_widget.dart';
+part '../widget/_body_table_widget.dart';
 
 class TableView extends StatefulWidget {
   const TableView({super.key});
@@ -28,22 +33,41 @@ class _TableViewState extends State<TableView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            leading: BackButton(onPressed: () => context.pop()),
-            title: _titleTable(),
-            pinned: context.isPortrait ? true : false,
-          ),
-          SliverAnimatedGrid(
-            initialItemCount: tableList.length,
-            itemBuilder: (context, index, animation) => _tableList(index),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 1,
-              childAspectRatio: 3 / 1,
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            CommonBackButton(onTap: () => context.pop()),
+            _titleTable(),
+            const SizedBox(width: 20)
+          ],
+        ),
+      ),
+      body: Builder(builder: (context) {
+        var tableState = context.watch<TableBloc>().state;
+        return (switch (tableState) {
+          TableFetchInProgress() => const Loading(),
+          TableFetchEmpty() => const EmptyWidget(),
+          TableFetchFailure() => ErrWidget(error: tableState.message),
+          TableFetchSuccess() => ListView.builder(
+              shrinkWrap: true,
+              itemCount: tableList.length,
+              itemBuilder: (context, index) {
+                return _tableItem(tableState.tables[index]);
+              },
             ),
-          ),
-        ],
+          _ => const SizedBox()
+        });
+      }),
+    );
+  }
+
+  Widget _titleTable() {
+    return Text(
+      AppString.chooseTable,
+      style: kHeadingStyle.copyWith(
+        fontWeight: FontWeight.bold,
       ),
     );
   }

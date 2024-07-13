@@ -4,13 +4,14 @@ import 'package:minhlong_menu_client_v3/common/widget/no_product.dart';
 import 'package:minhlong_menu_client_v3/features/auth/view/screens/forgot_password_screen.dart';
 import 'package:minhlong_menu_client_v3/features/auth/view/screens/login_screen.dart';
 import 'package:minhlong_menu_client_v3/features/cart/view/screen/cart_screen.dart';
+import 'package:minhlong_menu_client_v3/features/category/data/model/category_model.dart';
 import 'package:minhlong_menu_client_v3/features/category/view/screen/category_screen.dart';
+import 'package:minhlong_menu_client_v3/features/food/data/model/food_item.dart';
+import 'package:minhlong_menu_client_v3/features/food/view/screen/food_screen.dart';
 import 'package:minhlong_menu_client_v3/features/home/view/screens/home_screen.dart';
 import 'package:minhlong_menu_client_v3/features/profile/view/screen/edit_profile_screen.dart';
 import 'package:minhlong_menu_client_v3/features/profile/view/screen/profile_screen.dart';
 import 'package:minhlong_menu_client_v3/features/table/view/screen/table_screen.dart';
-
-import '../features/food/data/model/food_model.dart';
 import '../features/food/view/screen/food_detail_screen.dart';
 
 class AppRoute {
@@ -82,7 +83,7 @@ class AppRoute {
             context: context,
             state: state,
             child: FoodDetailScreen(
-              foodModel: state.extra as FoodModel,
+              foodItem: state.extra as FoodItem,
             ),
           );
         },
@@ -103,7 +104,9 @@ class AppRoute {
           return buildPageWithDefaultTransition(
             context: context,
             state: state,
-            child: CategoryScreen(),
+            child: CategoryScreen(
+              categoryModel: state.extra as CategoryModel,
+            ),
           );
         },
       ),
@@ -144,6 +147,16 @@ class AppRoute {
             context: context,
             state: state,
             child: const NoProduct(),
+          );
+        },
+      ),
+      GoRoute(
+        path: foods,
+        pageBuilder: (context, state) {
+          return buildPageWithDefaultTransition(
+            context: context,
+            state: state,
+            child: FoodScreen(property: state.extra as String),
           );
         },
       ),

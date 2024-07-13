@@ -8,17 +8,32 @@ import 'package:vania/vania.dart';
 class FoodController extends Controller {
   final FoodRepository _foodRepository = FoodRepository();
 
-  Future<Response> getFoods(Request request, String property) async {
-    // print('limit: ${request.all()}');
-    var limit = request.input('limit');
+  Future<Response> index(Request request) async {
+    int limit = request.input('limit') ?? 10;
+    int page = request.input('page') ?? 1;
+    String property = request.input('property') ?? 'created_at';
 
     try {
-      print(limit);
-      List<Map<String, dynamic>> newFoods = <Map<String, dynamic>>[];
-      newFoods =
-          await _foodRepository.getFoods(limit: limit, byProperty: property);
+      var totalItems = await _foodRepository.foodCount();
+      var totalPages = (totalItems / limit).ceil();
+      var startIndex = (page - 1) * limit;
 
-      return AppResponse().ok(data: newFoods, statusCode: HttpStatus.ok);
+      List<Map<String, dynamic>> newFoods = <Map<String, dynamic>>[];
+      newFoods = await _foodRepository.get(
+          limit: limit, byProperty: property, startIndex: startIndex);
+
+      return AppResponse().ok(
+        data: {
+          'pagination': {
+            'page': page,
+            'limit': limit,
+            'total_page': totalPages,
+            'total_item': totalItems,
+          },
+          'data': newFoods,
+        },
+        statusCode: HttpStatus.ok,
+      );
     } catch (e) {
       print(e);
       return AppResponse().error(
@@ -28,17 +43,34 @@ class FoodController extends Controller {
     }
   }
 
-  Future<Response> getFoodsOnCategory(int id) async {
+  Future<Response> getFoodsOnCategory(Request request, int id) async {
+    int limit = request.input('limit') ?? 10;
+    int page = request.input('page') ?? 1;
     try {
-      var newFoods = await Food()
-          .query()
-          .where('is_show', '=', 1)
-          .where('category_id', '=', id)
-          .get();
+      var totalItems = await _foodRepository.foodsCountOnCategory(id: id);
+      var totalPages = (totalItems / limit).ceil();
+      var startIndex = (page - 1) * limit;
+      var newFoods = await _foodRepository.getFoodsOnCategory(
+        id: id,
+        limit: limit,
+        startIndex: startIndex,
+      );
 
-      return AppResponse().ok(data: newFoods, statusCode: HttpStatus.ok);
+      return AppResponse().ok(data: {
+        'pagination': {
+          'page': page,
+          'limit': limit,
+          'total_page': totalPages,
+          'total_item': totalItems,
+        },
+        'data': newFoods
+      }, statusCode: HttpStatus.ok);
     } catch (e) {
-      throw Exception('Something went wrong $e');
+      print('get foods on category error: $e');
+      return AppResponse().error(
+        statusCode: HttpStatus.internalServerError,
+        message: 'connection error',
+      );
     }
   }
 
@@ -179,33 +211,6 @@ class FoodController extends Controller {
         statusCode: HttpStatus.internalServerError,
         message: 'connection error',
       );
-    }
-  }
-
-  Future<Response> index(Request request) async {
-    int page = request.input('page') ?? 1;
-    int limit = request.input('limit') ?? 10;
-    try {
-      final int totalItems = await _foodRepository.foodCount();
-      final int totalPages = (totalItems / limit).ceil();
-      final int startIndex = (page - 1) * limit;
-
-      List<Map<String, dynamic>> foods =
-          await _foodRepository.get(startIndex: startIndex, limit: limit);
-      return AppResponse().ok(statusCode: HttpStatus.ok, data: {
-        'pagination': {
-          'page': page,
-          'limit': limit,
-          'total_page': totalPages,
-          'total_item': totalItems,
-        },
-        'data': foods,
-      });
-    } catch (e) {
-      print('error: $e');
-      return AppResponse().error(
-          statusCode: HttpStatus.internalServerError,
-          message: 'connection error');
     }
   }
 }

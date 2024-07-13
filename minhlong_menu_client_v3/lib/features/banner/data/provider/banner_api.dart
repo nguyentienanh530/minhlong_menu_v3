@@ -11,6 +11,9 @@ class BannerApi {
   Future<List<BannerModel>> getBanners() async {
     final response = await _dio.get(ApiConfig.banners);
     return (List<BannerModel>.from(
-        response.data['data'].map((x) => BannerModel.fromJson(x))));
+      response.data['data']['data'].map(
+        (banner) => BannerModel.fromJson(banner),
+      ),
+    ));
   }
 }

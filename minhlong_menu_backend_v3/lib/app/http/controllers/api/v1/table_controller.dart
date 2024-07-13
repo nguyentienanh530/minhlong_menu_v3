@@ -11,16 +11,19 @@ class TableController extends Controller {
 
     int page = int.parse(params['page'] ?? '1');
     int limit = int.parse(params['limit'] ?? '10');
+    var type = params['type'] ?? 'all';
 
     try {
       final int totalItems = await _tableRepository.getTableCount();
       final int totalPages = (totalItems / limit).ceil();
       final int startIndex = (page - 1) * limit;
-      var tables =
-          await _tableRepository.get(startIndex: startIndex, limit: limit);
-      if (tables == null) {
-        return AppResponse()
-            .error(statusCode: HttpStatus.notFound, message: 'table not found');
+      dynamic tables;
+
+      if (type == 'all') {
+        tables = await _tableRepository.getAllTables();
+      } else {
+        tables =
+            await _tableRepository.get(startIndex: startIndex, limit: limit);
       }
 
       return AppResponse().ok(data: {

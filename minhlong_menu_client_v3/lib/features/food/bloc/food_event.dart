@@ -9,3 +9,12 @@ final class FoodFetched extends FoodEvent {
 
   FoodFetched({this.limit, required this.property});
 }
+
+final class FoodOnCategoryFetched extends FoodEvent {
+  final int page;
+  final int limit;
+  final int categoryID;
+
+  FoodOnCategoryFetched(
+      {required this.page, required this.limit, required this.categoryID});
+}

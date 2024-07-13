@@ -11,7 +11,7 @@ extension CartWidget on _CartScreenState {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(defaultPadding),
             child: CachedNetworkImage(
-              imageUrl: _foodList[0].image1,
+              imageUrl: _foodList[0].image1!,
               placeholder: (context, url) => const Loading(),
               errorWidget: errorBuilderForImage,
             ),

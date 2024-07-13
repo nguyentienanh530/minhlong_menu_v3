@@ -10,6 +10,7 @@ import 'package:minhlong_menu_client_v3/features/auth/bloc/auth_bloc.dart';
 import 'package:minhlong_menu_client_v3/features/auth/data/auth_local_datasource/auth_local_datasource.dart';
 import 'package:minhlong_menu_client_v3/features/auth/data/provider/remote/auth_api.dart';
 import 'package:minhlong_menu_client_v3/features/auth/data/respositories/auth_repository.dart';
+import 'package:minhlong_menu_client_v3/features/food/cubit/item_size_cubit.dart';
 import 'package:minhlong_menu_client_v3/features/food/data/provider/food_api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -53,6 +54,9 @@ class MainApp extends StatelessWidget {
         providers: [
           BlocProvider(
             create: (context) => AuthBloc(context.read<AuthRepository>()),
+          ),
+          BlocProvider(
+            create: (context) => ItemSizeCubit(),
           ),
         ],
         child: const AppContent(),

@@ -1,72 +1,98 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_client_v3/Routes/app_route.dart';
 import 'package:minhlong_menu_client_v3/common/widget/error_build_image.dart';
 import 'package:minhlong_menu_client_v3/core/api_config.dart';
 import 'package:minhlong_menu_client_v3/core/extensions.dart';
+import 'package:minhlong_menu_client_v3/features/food/data/dto/item_food_size_dto.dart';
+import 'package:minhlong_menu_client_v3/features/food/data/model/food_item.dart';
 
 import '../../core/app_colors.dart';
 import '../../core/app_const.dart';
 import '../../core/app_style.dart';
 import '../../core/utils.dart';
-import '../../features/food/data/model/food_model.dart';
+import '../../features/food/cubit/item_size_cubit.dart';
 
 class CommonItemFood extends StatelessWidget {
-  const CommonItemFood({super.key, required this.foodModel});
-  final FoodModel foodModel;
+  const CommonItemFood({super.key, required this.food});
+  final FoodItem food;
+
   @override
   Widget build(BuildContext context) {
-    return _buildFoodItem();
+    return _buildFoodItem(food);
   }
 
-  Widget _buildFoodItem() {
+  Widget _buildFoodItem(FoodItem food) {
     return LayoutBuilder(builder: (context, constraints) {
-      return InkWell(
-        onTap: () => context.push(AppRoute.foodsDetail, extra: foodModel),
-        child: AspectRatio(
-          aspectRatio: 9 / 7,
-          child: Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(defaultBorderRadius),
-            ),
-            child: Stack(
-              children: [
-                Column(
-                  children: [
-                    Container(
-                      clipBehavior: Clip.antiAlias,
-                      height: 0.7 * constraints.maxHeight,
-                      width: constraints.maxWidth,
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                            topRight: Radius.circular(defaultBorderRadius),
-                            topLeft: Radius.circular(defaultBorderRadius)),
-                      ),
-                      child: CachedNetworkImage(
-                        imageUrl: '${ApiConfig.host}${foodModel.image1}',
-                        fit: BoxFit.cover,
-                        errorWidget: errorBuilderForImage,
-                      ),
+      context.read<ItemSizeCubit>().setSize(ItemFoodSizeDTO(
+          height: constraints.maxHeight, width: constraints.maxWidth));
+      return ItemFoodView(
+          food: food,
+          height: constraints.maxHeight,
+          width: constraints.maxWidth);
+    });
+  }
+}
+
+class ItemFoodView extends StatelessWidget {
+  const ItemFoodView(
+      {super.key,
+      required this.food,
+      required this.height,
+      required this.width});
+  final FoodItem food;
+  final double height;
+  final double width;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () => context.push(AppRoute.foodsDetail, extra: food),
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(defaultBorderRadius),
+        ),
+        child: SizedBox(
+          height: height,
+          width: width,
+          child: Stack(
+            children: [
+              Column(
+                children: [
+                  Container(
+                    clipBehavior: Clip.antiAlias,
+                    height: 0.7 * height,
+                    width: width,
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(defaultBorderRadius),
+                          topLeft: Radius.circular(defaultBorderRadius)),
                     ),
-                    _buildNameFood(context, foodModel),
-                    _buildPrice(context, foodModel),
-                  ],
-                ),
-                foodModel.isDiscount
-                    ? Positioned(
-                        top: 0.62 * constraints.maxHeight,
-                        right: 5,
-                        child: _buildDiscountItem())
-                    : const SizedBox(),
-                Positioned(top: 5, right: 5, child: _addToCard()),
-              ],
-            ),
+                    child: CachedNetworkImage(
+                      imageUrl: '${ApiConfig.host}${food.image1}',
+                      fit: BoxFit.cover,
+                      errorWidget: errorBuilderForImage,
+                    ),
+                  ),
+                  _buildNameFood(context, food),
+                  _buildPrice(context, food),
+                ],
+              ),
+              food.isDiscount!
+                  ? Positioned(
+                      top: 0.62 * height,
+                      right: 5,
+                      child: _buildDiscountItem(food))
+                  : const SizedBox(),
+              Positioned(top: 5, right: 5, child: _addToCard()),
+            ],
           ),
         ),
-      );
-    });
+      ),
+    );
   }
 
   Widget _addToCard() {
@@ -86,7 +112,7 @@ class CommonItemFood extends StatelessWidget {
     );
   }
 
-  Widget _buildDiscountItem() {
+  Widget _buildDiscountItem(FoodItem food) {
     return Card(
       color: AppColors.red,
       elevation: 4,
@@ -98,14 +124,14 @@ class CommonItemFood extends StatelessWidget {
         alignment: Alignment.center,
         constraints: const BoxConstraints(maxWidth: 45, maxHeight: 25),
         child: Text(
-          '${foodModel.discount}%',
+          '${food.discount}%',
           style: kBodyWhiteStyle.copyWith(fontWeight: FontWeight.bold),
         ),
       ),
     );
   }
 
-  Widget _buildNameFood(BuildContext context, FoodModel foodModel) {
+  Widget _buildNameFood(BuildContext context, food) {
     return Expanded(
       child: SizedBox(
         width: double.infinity,
@@ -119,7 +145,7 @@ class CommonItemFood extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Text(foodModel.name,
+                Text(food.name,
                     textAlign: TextAlign.left,
                     style: context.isTablet
                         ? kBodyStyle.copyWith(
@@ -137,11 +163,10 @@ class CommonItemFood extends StatelessWidget {
     );
   }
 
-  Widget _buildPrice(BuildContext context, FoodModel foodModel) {
-    double discountAmount =
-        (foodModel.price * foodModel.discount.toDouble()) / 100;
-    double discountedPrice = foodModel.price - discountAmount;
-    return !foodModel.isDiscount
+  Widget _buildPrice(BuildContext context, FoodItem food) {
+    double discountAmount = (food.price! * food.discount!.toDouble()) / 100;
+    double discountedPrice = food.price! - discountAmount;
+    return !food.isDiscount!
         ? Expanded(
             child: SizedBox(
               width: double.infinity,
@@ -152,7 +177,7 @@ class CommonItemFood extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: defaultPadding),
                   child: Text(
-                      '₫ ${Ultils.currencyFormat(double.parse(foodModel.price.toString()))}',
+                      '₫ ${Ultils.currencyFormat(double.parse(food.price.toString()))}',
                       style: kBodyStyle.copyWith(
                           fontWeight: FontWeight.bold,
                           color: AppColors.themeColor)),
@@ -171,7 +196,7 @@ class CommonItemFood extends StatelessWidget {
                       const EdgeInsets.symmetric(horizontal: defaultPadding),
                   child: Row(children: [
                     Text(
-                        '₫ ${Ultils.currencyFormat(double.parse(foodModel.price.toString()))}',
+                        '₫ ${Ultils.currencyFormat(double.parse(food.price.toString()))}',
                         style: kBodyStyle.copyWith(
                             color: AppColors.secondTextColor,
                             fontSize: 12,

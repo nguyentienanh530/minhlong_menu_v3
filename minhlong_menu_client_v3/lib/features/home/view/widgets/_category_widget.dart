@@ -31,7 +31,7 @@ extension _CategoryWidget on _HomeViewState {
           aspectRatio: 7 / 12,
           child: InkWell(
             onTap: () {
-              context.push(AppRoute.categories);
+              context.push(AppRoute.categories, extra: categoryModel);
             },
             child: Card(
               margin: const EdgeInsets.only(left: 10, bottom: 20),

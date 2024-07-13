@@ -13,4 +13,8 @@ class BannerRepository {
         .orderBy('created_at', 'desc')
         .get();
   }
+
+  Future bannerCount() async {
+    return await Banner().query().count();
+  }
 }

@@ -1,48 +1,47 @@
 part of '../screen/table_view.dart';
 
-extension _TableWidget on _TableViewState {
-  Widget _titleTable() {
-    return Text(
-      AppString.chooseTable,
-      style: kHeadingStyle.copyWith(
-        fontWeight: FontWeight.bold,
-      ),
-    );
-  }
-
-  Widget _tableList(int index) {
+extension _BodyTableWidget on _TableViewState {
+  Widget _tableItem(TableModel table) {
     bool checkTable = false;
-    return Padding(
-      padding: const EdgeInsets.all(defaultPadding / 2),
-      child: Card(
-        elevation: 3,
+    return Card(
+      elevation: 3,
+      child: Container(
+        padding: const EdgeInsets.all(defaultPadding),
+        height: 100,
+        width: double.infinity,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.all(defaultPadding),
-                child: Image.asset(tableList[index].isUse
-                    ? AppAsset.tableDisable
-                    : AppAsset.tableEnable),
+                padding: const EdgeInsets.all(defaultPadding / 2),
+                child: Image.asset(
+                    table.isUse ? AppAsset.tableDisable : AppAsset.tableEnable),
               ),
             ),
             Expanded(
+                flex: 2,
                 child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                  Text(
-                    tableList[index].name,
-                    style: kBodyStyle.copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    'Số ghế : ${tableList[index].seats}',
-                    style:
-                        kBodyStyle.copyWith(color: AppColors.secondTextColor),
-                  ),
-                ])),
+                      Text(
+                        table.name,
+                        style: kBodyStyle.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        'Số ghế : ${table.seats}',
+                        style: kBodyStyle.copyWith(
+                            color: AppColors.secondTextColor),
+                      ),
+                      // RichText(text: '')
+                      // Text(
+                      //   'Số ghế : ${table.seats}',
+                      //   style: kBodyStyle.copyWith(
+                      //       color: AppColors.secondTextColor),
+                      // ),
+                    ])),
             Expanded(
                 child: FittedBox(
               fit: BoxFit.scaleDown,

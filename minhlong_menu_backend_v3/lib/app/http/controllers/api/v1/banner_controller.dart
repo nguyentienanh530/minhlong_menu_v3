@@ -8,12 +8,41 @@ import '../../../repositories/banner_repository/banner_repository.dart';
 
 class BannerController extends Controller {
   final _bannerRepository = BannerRepository();
-  Future<Response> index() async {
+  Future<Response> index(Request request) async {
+    var params = request.all();
+    var type = params['type'] ?? 'all';
+    int page = request.input('page') ?? 1;
+    int limit = request.input('limit') ?? 10;
     try {
-      var banner = await Banner().query().select().get();
-      print(banner);
+      var totalItems = await _bannerRepository.bannerCount();
+      var totalPages = (totalItems / limit).ceil();
+      var startIndex = (page - 1) * limit;
 
-      return AppResponse().ok(statusCode: HttpStatus.ok, data: banner);
+      if (type == 'all') {
+        var banner = await _bannerRepository.getAll();
+
+        return AppResponse().ok(statusCode: HttpStatus.ok, data: {
+          'pagination': {
+            'page': page,
+            'limit': limit,
+            'total_page': totalPages,
+            'total_item': totalItems,
+          },
+          'data': banner,
+        });
+      } else {
+        var banner =
+            await _bannerRepository.get(startIndex: startIndex, limit: limit);
+        return AppResponse().ok(statusCode: HttpStatus.ok, data: {
+          'pagination': {
+            'page': page,
+            'limit': limit,
+            'total_page': totalPages,
+            'total_item': totalItems,
+          },
+          'data': banner,
+        });
+      }
     } catch (e) {
       return AppResponse().error(
           statusCode: HttpStatus.internalServerError,

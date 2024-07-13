@@ -20,25 +20,10 @@ FoodModel _$FoodModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$FoodModel {
-  int get id => throw _privateConstructorUsedError;
-  String get name => throw _privateConstructorUsedError;
-  @JsonKey(name: 'category_id')
-  int get categoryID => throw _privateConstructorUsedError;
-  @JsonKey(name: 'order_count')
-  int get orderCount => throw _privateConstructorUsedError;
-  String get description => throw _privateConstructorUsedError;
-  int get discount => throw _privateConstructorUsedError;
-  @JsonKey(name: 'is_discount')
-  bool get isDiscount => throw _privateConstructorUsedError;
-  @JsonKey(name: 'is_show')
-  bool get isShow => throw _privateConstructorUsedError;
-  String get image1 => throw _privateConstructorUsedError;
-  String get image2 => throw _privateConstructorUsedError;
-  String get image3 => throw _privateConstructorUsedError;
-  String get image4 => throw _privateConstructorUsedError;
-  double get price => throw _privateConstructorUsedError;
-  @JsonKey(name: 'create_at')
-  String get createAt => throw _privateConstructorUsedError;
+  @JsonKey(name: 'pagination')
+  PaginationModel? get paginationModel => throw _privateConstructorUsedError;
+  @JsonKey(name: 'data')
+  List<FoodItem> get foodItems => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -52,20 +37,10 @@ abstract class $FoodModelCopyWith<$Res> {
       _$FoodModelCopyWithImpl<$Res, FoodModel>;
   @useResult
   $Res call(
-      {int id,
-      String name,
-      @JsonKey(name: 'category_id') int categoryID,
-      @JsonKey(name: 'order_count') int orderCount,
-      String description,
-      int discount,
-      @JsonKey(name: 'is_discount') bool isDiscount,
-      @JsonKey(name: 'is_show') bool isShow,
-      String image1,
-      String image2,
-      String image3,
-      String image4,
-      double price,
-      @JsonKey(name: 'create_at') String createAt});
+      {@JsonKey(name: 'pagination') PaginationModel? paginationModel,
+      @JsonKey(name: 'data') List<FoodItem> foodItems});
+
+  $PaginationModelCopyWith<$Res>? get paginationModel;
 }
 
 /// @nodoc
@@ -81,79 +56,31 @@ class _$FoodModelCopyWithImpl<$Res, $Val extends FoodModel>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
-    Object? name = null,
-    Object? categoryID = null,
-    Object? orderCount = null,
-    Object? description = null,
-    Object? discount = null,
-    Object? isDiscount = null,
-    Object? isShow = null,
-    Object? image1 = null,
-    Object? image2 = null,
-    Object? image3 = null,
-    Object? image4 = null,
-    Object? price = null,
-    Object? createAt = null,
+    Object? paginationModel = freezed,
+    Object? foodItems = null,
   }) {
     return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      categoryID: null == categoryID
-          ? _value.categoryID
-          : categoryID // ignore: cast_nullable_to_non_nullable
-              as int,
-      orderCount: null == orderCount
-          ? _value.orderCount
-          : orderCount // ignore: cast_nullable_to_non_nullable
-              as int,
-      description: null == description
-          ? _value.description
-          : description // ignore: cast_nullable_to_non_nullable
-              as String,
-      discount: null == discount
-          ? _value.discount
-          : discount // ignore: cast_nullable_to_non_nullable
-              as int,
-      isDiscount: null == isDiscount
-          ? _value.isDiscount
-          : isDiscount // ignore: cast_nullable_to_non_nullable
-              as bool,
-      isShow: null == isShow
-          ? _value.isShow
-          : isShow // ignore: cast_nullable_to_non_nullable
-              as bool,
-      image1: null == image1
-          ? _value.image1
-          : image1 // ignore: cast_nullable_to_non_nullable
-              as String,
-      image2: null == image2
-          ? _value.image2
-          : image2 // ignore: cast_nullable_to_non_nullable
-              as String,
-      image3: null == image3
-          ? _value.image3
-          : image3 // ignore: cast_nullable_to_non_nullable
-              as String,
-      image4: null == image4
-          ? _value.image4
-          : image4 // ignore: cast_nullable_to_non_nullable
-              as String,
-      price: null == price
-          ? _value.price
-          : price // ignore: cast_nullable_to_non_nullable
-              as double,
-      createAt: null == createAt
-          ? _value.createAt
-          : createAt // ignore: cast_nullable_to_non_nullable
-              as String,
+      paginationModel: freezed == paginationModel
+          ? _value.paginationModel
+          : paginationModel // ignore: cast_nullable_to_non_nullable
+              as PaginationModel?,
+      foodItems: null == foodItems
+          ? _value.foodItems
+          : foodItems // ignore: cast_nullable_to_non_nullable
+              as List<FoodItem>,
     ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $PaginationModelCopyWith<$Res>? get paginationModel {
+    if (_value.paginationModel == null) {
+      return null;
+    }
+
+    return $PaginationModelCopyWith<$Res>(_value.paginationModel!, (value) {
+      return _then(_value.copyWith(paginationModel: value) as $Val);
+    });
   }
 }
 
@@ -166,20 +93,11 @@ abstract class _$$FoodModelImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {int id,
-      String name,
-      @JsonKey(name: 'category_id') int categoryID,
-      @JsonKey(name: 'order_count') int orderCount,
-      String description,
-      int discount,
-      @JsonKey(name: 'is_discount') bool isDiscount,
-      @JsonKey(name: 'is_show') bool isShow,
-      String image1,
-      String image2,
-      String image3,
-      String image4,
-      double price,
-      @JsonKey(name: 'create_at') String createAt});
+      {@JsonKey(name: 'pagination') PaginationModel? paginationModel,
+      @JsonKey(name: 'data') List<FoodItem> foodItems});
+
+  @override
+  $PaginationModelCopyWith<$Res>? get paginationModel;
 }
 
 /// @nodoc
@@ -193,78 +111,18 @@ class __$$FoodModelImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
-    Object? name = null,
-    Object? categoryID = null,
-    Object? orderCount = null,
-    Object? description = null,
-    Object? discount = null,
-    Object? isDiscount = null,
-    Object? isShow = null,
-    Object? image1 = null,
-    Object? image2 = null,
-    Object? image3 = null,
-    Object? image4 = null,
-    Object? price = null,
-    Object? createAt = null,
+    Object? paginationModel = freezed,
+    Object? foodItems = null,
   }) {
     return _then(_$FoodModelImpl(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      categoryID: null == categoryID
-          ? _value.categoryID
-          : categoryID // ignore: cast_nullable_to_non_nullable
-              as int,
-      orderCount: null == orderCount
-          ? _value.orderCount
-          : orderCount // ignore: cast_nullable_to_non_nullable
-              as int,
-      description: null == description
-          ? _value.description
-          : description // ignore: cast_nullable_to_non_nullable
-              as String,
-      discount: null == discount
-          ? _value.discount
-          : discount // ignore: cast_nullable_to_non_nullable
-              as int,
-      isDiscount: null == isDiscount
-          ? _value.isDiscount
-          : isDiscount // ignore: cast_nullable_to_non_nullable
-              as bool,
-      isShow: null == isShow
-          ? _value.isShow
-          : isShow // ignore: cast_nullable_to_non_nullable
-              as bool,
-      image1: null == image1
-          ? _value.image1
-          : image1 // ignore: cast_nullable_to_non_nullable
-              as String,
-      image2: null == image2
-          ? _value.image2
-          : image2 // ignore: cast_nullable_to_non_nullable
-              as String,
-      image3: null == image3
-          ? _value.image3
-          : image3 // ignore: cast_nullable_to_non_nullable
-              as String,
-      image4: null == image4
-          ? _value.image4
-          : image4 // ignore: cast_nullable_to_non_nullable
-              as String,
-      price: null == price
-          ? _value.price
-          : price // ignore: cast_nullable_to_non_nullable
-              as double,
-      createAt: null == createAt
-          ? _value.createAt
-          : createAt // ignore: cast_nullable_to_non_nullable
-              as String,
+      paginationModel: freezed == paginationModel
+          ? _value.paginationModel
+          : paginationModel // ignore: cast_nullable_to_non_nullable
+              as PaginationModel?,
+      foodItems: null == foodItems
+          ? _value._foodItems
+          : foodItems // ignore: cast_nullable_to_non_nullable
+              as List<FoodItem>,
     ));
   }
 }
@@ -273,70 +131,29 @@ class __$$FoodModelImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$FoodModelImpl implements _FoodModel {
   _$FoodModelImpl(
-      {this.id = 0,
-      this.name = '',
-      @JsonKey(name: 'category_id') this.categoryID = 0,
-      @JsonKey(name: 'order_count') this.orderCount = 0,
-      this.description = '',
-      this.discount = 0,
-      @JsonKey(name: 'is_discount') this.isDiscount = false,
-      @JsonKey(name: 'is_show') this.isShow = false,
-      this.image1 = '',
-      this.image2 = '',
-      this.image3 = '',
-      this.image4 = '',
-      this.price = 0,
-      @JsonKey(name: 'create_at') this.createAt = ''});
+      {@JsonKey(name: 'pagination') this.paginationModel,
+      @JsonKey(name: 'data')
+      final List<FoodItem> foodItems = const <FoodItem>[]})
+      : _foodItems = foodItems;
 
   factory _$FoodModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$FoodModelImplFromJson(json);
 
   @override
-  @JsonKey()
-  final int id;
+  @JsonKey(name: 'pagination')
+  final PaginationModel? paginationModel;
+  final List<FoodItem> _foodItems;
   @override
-  @JsonKey()
-  final String name;
-  @override
-  @JsonKey(name: 'category_id')
-  final int categoryID;
-  @override
-  @JsonKey(name: 'order_count')
-  final int orderCount;
-  @override
-  @JsonKey()
-  final String description;
-  @override
-  @JsonKey()
-  final int discount;
-  @override
-  @JsonKey(name: 'is_discount')
-  final bool isDiscount;
-  @override
-  @JsonKey(name: 'is_show')
-  final bool isShow;
-  @override
-  @JsonKey()
-  final String image1;
-  @override
-  @JsonKey()
-  final String image2;
-  @override
-  @JsonKey()
-  final String image3;
-  @override
-  @JsonKey()
-  final String image4;
-  @override
-  @JsonKey()
-  final double price;
-  @override
-  @JsonKey(name: 'create_at')
-  final String createAt;
+  @JsonKey(name: 'data')
+  List<FoodItem> get foodItems {
+    if (_foodItems is EqualUnmodifiableListView) return _foodItems;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_foodItems);
+  }
 
   @override
   String toString() {
-    return 'FoodModel(id: $id, name: $name, categoryID: $categoryID, orderCount: $orderCount, description: $description, discount: $discount, isDiscount: $isDiscount, isShow: $isShow, image1: $image1, image2: $image2, image3: $image3, image4: $image4, price: $price, createAt: $createAt)';
+    return 'FoodModel(paginationModel: $paginationModel, foodItems: $foodItems)';
   }
 
   @override
@@ -344,46 +161,16 @@ class _$FoodModelImpl implements _FoodModel {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$FoodModelImpl &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.name, name) || other.name == name) &&
-            (identical(other.categoryID, categoryID) ||
-                other.categoryID == categoryID) &&
-            (identical(other.orderCount, orderCount) ||
-                other.orderCount == orderCount) &&
-            (identical(other.description, description) ||
-                other.description == description) &&
-            (identical(other.discount, discount) ||
-                other.discount == discount) &&
-            (identical(other.isDiscount, isDiscount) ||
-                other.isDiscount == isDiscount) &&
-            (identical(other.isShow, isShow) || other.isShow == isShow) &&
-            (identical(other.image1, image1) || other.image1 == image1) &&
-            (identical(other.image2, image2) || other.image2 == image2) &&
-            (identical(other.image3, image3) || other.image3 == image3) &&
-            (identical(other.image4, image4) || other.image4 == image4) &&
-            (identical(other.price, price) || other.price == price) &&
-            (identical(other.createAt, createAt) ||
-                other.createAt == createAt));
+            (identical(other.paginationModel, paginationModel) ||
+                other.paginationModel == paginationModel) &&
+            const DeepCollectionEquality()
+                .equals(other._foodItems, _foodItems));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      id,
-      name,
-      categoryID,
-      orderCount,
-      description,
-      discount,
-      isDiscount,
-      isShow,
-      image1,
-      image2,
-      image3,
-      image4,
-      price,
-      createAt);
+  int get hashCode => Object.hash(runtimeType, paginationModel,
+      const DeepCollectionEquality().hash(_foodItems));
 
   @JsonKey(ignore: true)
   @override
@@ -401,57 +188,18 @@ class _$FoodModelImpl implements _FoodModel {
 
 abstract class _FoodModel implements FoodModel {
   factory _FoodModel(
-      {final int id,
-      final String name,
-      @JsonKey(name: 'category_id') final int categoryID,
-      @JsonKey(name: 'order_count') final int orderCount,
-      final String description,
-      final int discount,
-      @JsonKey(name: 'is_discount') final bool isDiscount,
-      @JsonKey(name: 'is_show') final bool isShow,
-      final String image1,
-      final String image2,
-      final String image3,
-      final String image4,
-      final double price,
-      @JsonKey(name: 'create_at') final String createAt}) = _$FoodModelImpl;
+      {@JsonKey(name: 'pagination') final PaginationModel? paginationModel,
+      @JsonKey(name: 'data') final List<FoodItem> foodItems}) = _$FoodModelImpl;
 
   factory _FoodModel.fromJson(Map<String, dynamic> json) =
       _$FoodModelImpl.fromJson;
 
   @override
-  int get id;
+  @JsonKey(name: 'pagination')
+  PaginationModel? get paginationModel;
   @override
-  String get name;
-  @override
-  @JsonKey(name: 'category_id')
-  int get categoryID;
-  @override
-  @JsonKey(name: 'order_count')
-  int get orderCount;
-  @override
-  String get description;
-  @override
-  int get discount;
-  @override
-  @JsonKey(name: 'is_discount')
-  bool get isDiscount;
-  @override
-  @JsonKey(name: 'is_show')
-  bool get isShow;
-  @override
-  String get image1;
-  @override
-  String get image2;
-  @override
-  String get image3;
-  @override
-  String get image4;
-  @override
-  double get price;
-  @override
-  @JsonKey(name: 'create_at')
-  String get createAt;
+  @JsonKey(name: 'data')
+  List<FoodItem> get foodItems;
   @override
   @JsonKey(ignore: true)
   _$$FoodModelImplCopyWith<_$FoodModelImpl> get copyWith =>

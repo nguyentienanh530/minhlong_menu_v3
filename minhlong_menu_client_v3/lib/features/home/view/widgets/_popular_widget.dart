@@ -1,14 +1,12 @@
 part of '../screens/home_view.dart';
 
 extension _PopularWidget on _HomeViewState {
-  Widget _popularGridView(FoodModel foodModel) {
+  Widget _popularGridView() {
     return Column(
       children: [
         _buildTitle(
           AppString.popular,
-          () {
-            // context.push(AppRoute.foodsDetails)
-          },
+          () => context.push(AppRoute.foods, extra: 'order_count'),
         ),
         BlocProvider(
           create: (context) => FoodBloc(
@@ -22,16 +20,10 @@ extension _PopularWidget on _HomeViewState {
               FoodFetchInProgress() => const Loading(),
               FoodFetchEmpty() => const EmptyWidget(),
               FoodFetchFailure() => ErrWidget(error: foodState.message),
-              FoodFetchSuccess() => GridView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                  ),
-                  itemCount: foodState.foods.length,
-                  itemBuilder: (context, index) {
-                    return CommonItemFood(foodModel: foodState.foods[index]);
-                  },
+              FoodFetchSuccess() => GridItemFood(
+                  crossAxisCount: 2,
+                  foods: foodState.food.foodItems,
+                  aspectRatio: 9 / 12,
                 ),
               _ => const SizedBox(),
             });

@@ -1,7 +1,7 @@
 import '../../../models/table.dart';
 
 class TableRepository {
-  Future getTables() async {
+  Future getAllTables() async {
     return await Table().query().get();
   }
 

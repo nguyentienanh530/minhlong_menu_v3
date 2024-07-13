@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import '../../../models/food.dart';
 
 class FoodRepository {
@@ -9,36 +11,40 @@ class FoodRepository {
   //   return foods;
   // }
 
-  Future get({required int startIndex, required int limit}) async {
+  Future get(
+      {required String byProperty,
+      required int startIndex,
+      required int limit}) async {
     var foods = await Food()
         .query()
         .select(['food.*', 'category.name as category_name'])
         .offset(startIndex)
         .limit(limit)
         .join('category', 'category.id', '=', 'food.category_id')
-        .orderBy('created_at', 'desc')
+        .orderBy(byProperty, 'desc')
         .get();
     return foods;
   }
 
-  Future getFoods({int? limit, required String byProperty}) async {
-    List<Map<String, dynamic>> foods;
-    if (limit != null) {
-      foods = await Food()
-          .query()
-          .where('is_show', '=', 1)
-          .orderBy(byProperty, 'desc')
-          .limit(int.parse(limit.toString()))
-          .get();
-    } else {
-      foods = await Food()
-          .query()
-          .where('is_show', '=', 1)
-          .orderBy(byProperty, 'desc')
-          .get();
-    }
-
+  Future getFoodsOnCategory(
+      {required int startIndex, required int limit, required int id}) async {
+    var foods = await Food()
+        .query()
+        .offset(startIndex)
+        .where('is_show', '=', 1)
+        .where('category_id', '=', id)
+        .limit(limit)
+        .get();
     return foods;
+  }
+
+  Future foodsCountOnCategory({required int id}) async {
+    var count = await Food()
+        .query()
+        .where('is_show', '=', 1)
+        .where('category_id', '=', id)
+        .count();
+    return count;
   }
 
   Future getQuantityOfFood() async {

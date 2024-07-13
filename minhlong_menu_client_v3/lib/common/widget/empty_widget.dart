@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:minhlong_menu_client_v3/core/extensions.dart';
 
 class EmptyWidget extends StatelessWidget {
   const EmptyWidget({super.key});
@@ -10,7 +11,7 @@ class EmptyWidget extends StatelessWidget {
             margin: const EdgeInsets.all(16),
             // color: context.colorScheme.error.withOpacity(0.2),
             child: Container(
-                height: context.size!.height / 2,
+                height: context.sizeDevice.height / 2,
                 padding: const EdgeInsets.all(16),
                 child: const Column(
                     mainAxisAlignment: MainAxisAlignment.center,

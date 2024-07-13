@@ -7,11 +7,16 @@ class FoodApi {
   final Dio _dio;
   FoodApi({required Dio dio}) : _dio = dio;
 
-  Future<List<FoodModel>> getFoods(
-      {int? limit, required String property}) async {
-    final response = await _dio
-        .get('${ApiConfig.foods}/$property', queryParameters: {'limit': limit});
-    return (List<FoodModel>.from(
-        response.data['data'].map((x) => FoodModel.fromJson(x))));
+  Future<FoodModel> getFoods({int? limit, required String property}) async {
+    final response = await _dio.get(ApiConfig.foods,
+        queryParameters: {'limit': limit, 'property': property});
+    return FoodModel.fromJson(response.data['data']);
+  }
+
+  Future<FoodModel> getFoodsOnCategory(
+      {required int page, required int limit, required int categoryID}) async {
+    final response = await _dio.get('${ApiConfig.foodsOnCategory}$categoryID',
+        queryParameters: {'page': page, 'limit': limit});
+    return FoodModel.fromJson(response.data['data']);
   }
 }

@@ -17,7 +17,7 @@ class TableWebSocketController extends Controller {
       'is_use': false,
     };
 
-    var tables = await _tableRepository.getTables();
+    var tables = await _tableRepository.getAllTables();
     tables = [tableAll, ...tables];
     var newTables = [];
     for (var table in tables) {

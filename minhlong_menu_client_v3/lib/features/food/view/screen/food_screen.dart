@@ -1,32 +1,73 @@
 import 'package:flutter/material.dart';
-import '../../../category/data/model/category_model.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:minhlong_menu_client_v3/common/widget/loading.dart';
+import 'package:minhlong_menu_client_v3/features/food/data/repositories/food_repository.dart';
 
-enum ModeScreen { foodsOnCategory, foods }
+import '../../../../common/widget/empty_widget.dart';
+import '../../../../common/widget/error_widget.dart';
+import '../../../../common/widget/grid_item_food.dart';
+import '../../bloc/food_bloc.dart';
 
-class FoodScreen extends StatefulWidget {
-  const FoodScreen({super.key, this.category, required this.modeScreen});
-  final CategoryModel? category;
-  final ModeScreen modeScreen;
+class FoodScreen extends StatelessWidget {
+  const FoodScreen({super.key, required this.property});
+  final String property;
 
   @override
-  State<FoodScreen> createState() => _FoodScreenState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) =>
+          FoodBloc(foodRepository: context.read<FoodRepository>()),
+      child: FoodView(property: property),
+    );
+  }
 }
 
-class _FoodScreenState extends State<FoodScreen> {
+class FoodView extends StatefulWidget {
+  const FoodView({super.key, required this.property});
+  final String property;
+
+  @override
+  State<FoodView> createState() => _FoodViewState();
+}
+
+class _FoodViewState extends State<FoodView> {
+  late String property;
   @override
   void initState() {
-    getData();
     super.initState();
+
+    property = widget.property;
+    getData(property);
   }
 
-  void getData() {
-    if (widget.modeScreen == ModeScreen.foodsOnCategory) {
-      // categoryModel = widget.category!;
-    } else {}
+  void getData(String property, {int limit = 10}) {
+    context.read<FoodBloc>().add(
+          FoodFetched(
+            property: property,
+            limit: limit,
+          ),
+        );
   }
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(body: Column());
+    return Scaffold(
+        appBar: AppBar(),
+        body: BlocBuilder<FoodBloc, FoodState>(
+          builder: (context, state) {
+            return (switch (state) {
+              FoodFetchInProgress() => const Loading(),
+              FoodFetchEmpty() => const EmptyWidget(),
+              FoodFetchFailure() => ErrWidget(error: state.message),
+              FoodFetchSuccess() => GridItemFood(
+                  crossAxisCount: 2,
+                  aspectRatio: 9 / 12,
+                  isScroll: true,
+                  foods: state.food.foodItems,
+                ),
+              _ => const SizedBox()
+            });
+          },
+        ));
   }
 }

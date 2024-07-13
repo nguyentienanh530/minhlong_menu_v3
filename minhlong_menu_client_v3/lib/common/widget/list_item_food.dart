@@ -1,22 +1,20 @@
-// import 'package:flutter/material.dart';
-// import 'package:minhlong_menu_admin_v3/core/app_const.dart';
-// import '../../features/food/data/model/food_model.dart';
-// import 'common_item_food.dart';
+import 'package:flutter/material.dart';
+import 'package:minhlong_menu_client_v3/features/food/data/model/food_item.dart';
+import 'common_item_food.dart';
 
-// class ListItemFood extends StatelessWidget {
-//   final List<FoodModel>? list;
+class ListItemFood extends StatelessWidget {
+  final List<FoodItem>? foods;
 
-//   const ListItemFood({super.key, required this.list});
+  const ListItemFood({super.key, required this.foods});
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return ListView.builder(
-//         physics: const BouncingScrollPhysics(),
-//         itemCount: list!.length,
-//         itemBuilder: (context, index) => Padding(
-//             padding: const EdgeInsets.only(left: defaultPadding),
-//             child: CommonItemFood(foodModel: list![index])),
-//         scrollDirection: Axis.horizontal,
-//         shrinkWrap: true);
-//   }
-// }
+  @override
+  Widget build(BuildContext context) {
+    print('ListItemFood: ${foods!.length}');
+    return ListView.builder(
+      physics: const BouncingScrollPhysics(),
+      scrollDirection: Axis.horizontal,
+      itemCount: foods!.length,
+      itemBuilder: (context, index) => CommonItemFood(food: foods![index]),
+    );
+  }
+}
