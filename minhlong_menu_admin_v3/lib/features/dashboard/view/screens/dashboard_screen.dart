@@ -151,33 +151,32 @@ class _DashboardViewState extends State<DashboardView>
 
           return Padding(
             padding: const EdgeInsets.all(30).r,
-            child: Column(
+            child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildTableWidget(index: state, dinnerTable: dinnerTable),
-                const SizedBox(height: defaultPadding),
                 Expanded(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                          child: SingleChildScrollView(
-                              child: _buildOrdersOnTable(orders))),
-                      context.isDesktop
-                          ? Container(
-                              padding: const EdgeInsets.only(left: 30).r,
-                              width: 450.w,
-                              height: double.infinity,
-                              child: Column(
-                                children: [
-                                  _buildInfoWidget(),
-                                ],
-                              ),
-                            )
-                          : Container(),
-                    ],
-                  ),
-                ),
+                    child: Column(
+                  children: [
+                    _buildTableWidget(index: state, dinnerTable: dinnerTable),
+                    const SizedBox(height: defaultPadding),
+                    Expanded(
+                      child: SingleChildScrollView(
+                          child: _buildOrdersOnTable(orders)),
+                    ),
+                  ],
+                )),
+                context.isDesktop
+                    ? Container(
+                        padding: const EdgeInsets.only(left: 30).r,
+                        width: 450.w,
+                        height: double.infinity,
+                        child: Column(
+                          children: [
+                            _buildInfoWidget(),
+                          ],
+                        ),
+                      )
+                    : Container(),
               ],
             ),
           );
