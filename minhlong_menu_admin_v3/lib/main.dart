@@ -9,6 +9,7 @@ import 'package:minhlong_menu_admin_v3/features/auth/bloc/auth_bloc.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/data/auth_local_datasource/auth_local_datasource.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/data/provider/remote/auth_api.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/data/repositories/auth_repository.dart';
+import 'package:minhlong_menu_admin_v3/features/banner/data/provider/banner_api.dart';
 import 'package:minhlong_menu_admin_v3/features/category/bloc/category_bloc.dart';
 import 'package:minhlong_menu_admin_v3/features/category/data/provider/category_api.dart';
 import 'package:minhlong_menu_admin_v3/features/category/data/repositories/category_repository.dart';
@@ -24,6 +25,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'bloc_observer.dart';
 import 'core/app_colors.dart';
+import 'features/banner/data/repositories/banner_repository.dart';
 import 'features/food/data/repositories/food_repository.dart';
 import 'features/web_socket_client/cubit/web_socket_client_cubit.dart';
 
@@ -50,15 +52,30 @@ class MainApp extends StatelessWidget {
           ),
         ),
         RepositoryProvider(
-          create: (context) => FoodRepository(FoodApi(DioClient().dio!)),
+          create: (context) => FoodRepository(
+            FoodApi(
+              DioClient().dio!,
+            ),
+          ),
         ),
         RepositoryProvider(
           create: (context) => DinnerTableRepository(
-              dinnerTableApi: DinnerTableApi(DioClient().dio!)),
+            dinnerTableApi: DinnerTableApi(
+              DioClient().dio!,
+            ),
+          ),
         ),
         RepositoryProvider(
           create: (context) => CategoryRepository(
-              categoryApi: CategoryApi(dio: DioClient().dio!)),
+            categoryApi: CategoryApi(dio: DioClient().dio!),
+          ),
+        ),
+        RepositoryProvider(
+          create: (context) => BannerRepository(
+            bannerApi: BannerApi(
+              dio: DioClient().dio!,
+            ),
+          ),
         ),
       ],
       child: MultiBlocProvider(
