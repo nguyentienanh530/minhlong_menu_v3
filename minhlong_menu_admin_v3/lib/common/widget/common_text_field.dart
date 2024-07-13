@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import '../../core/app_colors.dart';
 import '../../core/app_const.dart';
 import '../../core/app_style.dart';
@@ -25,7 +26,9 @@ class CommonTextField extends StatelessWidget {
       this.inputFormatters,
       this.style,
       this.focusNode,
-      this.readOnly});
+      this.readOnly,
+      this.hintStyle});
+  final TextStyle? hintStyle;
   final String? errorText;
   final TextInputType? keyboardType;
   final Function(String)? onChanged;
@@ -91,7 +94,8 @@ class CommonTextField extends StatelessWidget {
             labelText: labelText,
             floatingLabelBehavior: FloatingLabelBehavior.always,
             errorStyle: kBodyStyle.copyWith(color: AppColors.red),
-            hintStyle: kBodyStyle.copyWith(color: AppColors.secondTextColor),
+            hintStyle: hintStyle ??
+                kBodyStyle.copyWith(color: AppColors.secondTextColor),
             labelStyle: kBodyWhiteStyle.copyWith(color: AppColors.white)),
         onChanged: onChanged);
   }
