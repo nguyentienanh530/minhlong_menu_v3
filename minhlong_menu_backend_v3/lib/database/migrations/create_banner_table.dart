@@ -7,6 +7,7 @@ class CreateBannerTable extends Migration {
     await createTableNotExists('banner', () {
       id();
       string('image');
+      tinyInt('show', length: 1, defaultValue: 1);
       timeStamp('created_at', nullable: true);
       timeStamp('updated_at', nullable: true);
     });

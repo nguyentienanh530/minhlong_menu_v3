@@ -156,6 +156,7 @@ class _DashboardViewState extends State<DashboardView>
               children: [
                 Expanded(
                     child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildTableWidget(index: state, dinnerTable: dinnerTable),
                     const SizedBox(height: defaultPadding),

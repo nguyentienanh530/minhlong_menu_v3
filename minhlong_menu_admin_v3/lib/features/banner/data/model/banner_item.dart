@@ -7,6 +7,7 @@ class BannerItem with _$BannerItem {
   factory BannerItem({
     @Default(0) int id,
     @Default('') String image,
+    final bool? show,
     @Default('') @JsonKey(name: 'created_at') String? createdAt,
     @Default('') @JsonKey(name: 'updated_at') String? updatedAt,
   }) = _BannerItem;

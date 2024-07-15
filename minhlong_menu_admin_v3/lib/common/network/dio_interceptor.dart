@@ -9,6 +9,8 @@ class DioInterceptor extends Interceptor {
     ),
   );
 
+  DioInterceptor();
+
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     logger.i('====================START====================');

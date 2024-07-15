@@ -8,11 +8,11 @@ extension _BodyBannerWidget on _BannerViewState {
         color: AppColors.white,
         borderRadius: BorderRadius.circular(defaultBorderRadius).r,
       ),
-      child: _tableWidget(),
+      child: _bannerWidget(),
     );
   }
 
-  Widget _tableWidget() {
+  Widget _bannerWidget() {
     return Column(
       children: [
         Container(
@@ -35,20 +35,19 @@ extension _BodyBannerWidget on _BannerViewState {
         Expanded(
           child: BlocListener<BannerBloc, BannerState>(
             listener: (context, state) {
-              // if (state is Cate) {
-              //   AppDialog.showLoadingDialog(context);
-              // }
-              // if (state is DinnerTableDeleteSuccess) {
-              //   Navigator.pop(context);
-              //   OverlaySnackbar.show(context, 'Xoá thành công');
-              //   _fetchDateDinnerTable(
-              //       page: _curentPage.value, limit: _limit.value);
-              // }
-              // if (state is DinnerTableFailure) {
-              //   Navigator.pop(context);
-              //   OverlaySnackbar.show(context, state.message,
-              //       type: OverlaySnackbarType.error);
-              // }
+              if (state is BannerDeleteInProgress) {
+                AppDialog.showLoadingDialog(context);
+              }
+              if (state is BannerDeleteSuccess) {
+                Navigator.pop(context);
+                OverlaySnackbar.show(context, 'Xoá thành công');
+                _fechData(page: _curentPage.value, limit: _limit.value);
+              }
+              if (state is BannerDeleteFailure) {
+                Navigator.pop(context);
+                OverlaySnackbar.show(context, state.errorMessage,
+                    type: OverlaySnackbarType.error);
+              }
             },
             child: Builder(builder: (context) {
               var bannerState = context.watch<BannerBloc>().state;
@@ -131,7 +130,7 @@ extension _BodyBannerWidget on _BannerViewState {
                       child: NumberPagination(
                         onPageChanged: (int pageNumber) {
                           _curentPage.value = pageNumber;
-                          // _fetchCategory(limit: _limit.value, page: pageNumber);
+                          _fechData(limit: _limit.value, page: pageNumber);
                         },
                         fontSize: 16,
                         buttonElevation: 10,
@@ -184,6 +183,7 @@ extension _BodyBannerWidget on _BannerViewState {
   }
 
   TableRow _buildRowTable(int index, BannerItem bannerItem) {
+    final isShowBanner = ValueNotifier(bannerItem.show);
     return TableRow(
       decoration: BoxDecoration(
         color:
@@ -217,9 +217,30 @@ extension _BodyBannerWidget on _BannerViewState {
         Container(
           height: 70.h,
           alignment: Alignment.center,
-          child: Text(
-            "bannerItem.serial.toString()",
-            style: kBodyStyle.copyWith(color: AppColors.secondTextColor),
+          child: ValueListenableBuilder(
+            valueListenable: isShowBanner,
+            builder: (context, value, child) {
+              return Switch(
+                  activeColor: AppColors.themeColor,
+                  inactiveThumbColor: AppColors.black.withOpacity(0.5),
+                  inactiveTrackColor:
+                      AppColors.secondTextColor.withOpacity(0.3),
+                  activeTrackColor: AppColors.themeColor.withOpacity(0.3),
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  dragStartBehavior: DragStartBehavior.start,
+                  hoverColor: AppColors.lavender,
+                  trackOutlineWidth: const WidgetStatePropertyAll(0),
+                  trackOutlineColor:
+                      const WidgetStatePropertyAll(AppColors.transparent),
+                  value: isShowBanner.value ?? false,
+                  onChanged: (value) {
+                    isShowBanner.value = value;
+                    BannerApi(dio: DioClient().dio!).updateBanner(
+                        banner: bannerItem.copyWith(
+                      show: value,
+                    ));
+                  });
+            },
           ),
         ),
         Row(
@@ -230,9 +251,9 @@ extension _BodyBannerWidget on _BannerViewState {
               alignment: Alignment.center,
               child: CommonIconButton(
                 onTap: () {
-                  // _showCreateOrUpdateCategoryDialog(
-                  //     type: CreateOrUpdateCategoryType.update,
-                  //     categoryItem: categoryItem);
+                  _showCreateOrUpdateBannerDialog(
+                      type: CreateOrUpdateBannerType.update,
+                      bannerItem: bannerItem);
                 },
                 icon: Icons.edit,
                 color: AppColors.sun,
@@ -248,11 +269,11 @@ extension _BodyBannerWidget on _BannerViewState {
                   showDialog(
                     context: context,
                     builder: (context) => AppDialog(
-                      title: 'Xóa bàn',
-                      description: 'Xóa bàn ${bannerItem.image}?',
+                      title: 'Xóa Banner',
+                      description: 'Xóa ${bannerItem.image}?',
                       confirmText: 'Xác nhận',
                       onTap: () {
-                        _handleDeleteDinnerTable(tableID: bannerItem.id);
+                        _handleDeleteBanner(tableID: bannerItem.id);
                       },
                     ),
                   );
@@ -268,30 +289,29 @@ extension _BodyBannerWidget on _BannerViewState {
     );
   }
 
-  // Future<void> _showCreateOrUpdateCategoryDialog(
-  //     {required CreateOrUpdateCategoryType type,
-  //     CategoryItem? categoryItem}) async {
-  //   await showDialog(
-  //       context: context,
-  //       builder: (context) => Dialog(
-  //             backgroundColor: AppColors.background,
-  //             child: CreateOrUpdateCategory(
-  //               type: type,
-  //               categoryItem: categoryItem,
-  //             ),
-  //           )).then(
-  //     (value) {
-  //       if (value != null && value is bool) {
-  //         if (value) {
-  //           _fetchCategory(page: _curentPage.value, limit: _limit.value);
-  //         }
-  //       }
-  //     },
-  //   );
-  // }
+  Future<void> _showCreateOrUpdateBannerDialog(
+      {required CreateOrUpdateBannerType type, BannerItem? bannerItem}) async {
+    await showDialog(
+        context: context,
+        builder: (context) => Dialog(
+              backgroundColor: AppColors.background,
+              child: CreateOrUpdateBanner(
+                type: type,
+                bannItem: bannerItem,
+              ),
+            )).then(
+      (value) {
+        if (value != null && value is bool) {
+          if (value) {
+            _fechData(page: _curentPage.value, limit: _limit.value);
+          }
+        }
+      },
+    );
+  }
 
-  void _handleDeleteDinnerTable({required int tableID}) {
-    // context.pop();
-    // context.read<DinnerTableBloc>().add(DinnerTableDeleted(id: tableID));
+  void _handleDeleteBanner({required int tableID}) {
+    context.pop();
+    context.read<BannerBloc>().add(BannerDeleted(id: tableID));
   }
 }

@@ -38,10 +38,15 @@ class _SettingScreenState extends State<SettingScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _imageController = TextEditingController();
-  final TextEditingController _oldPassController = TextEditingController();
-  final TextEditingController _newPassController = TextEditingController();
-  final TextEditingController _reNewPassController = TextEditingController();
-
+  final TextEditingController _oldPasswordController = TextEditingController();
+  final TextEditingController _newPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
+  final _isShowOldPassword = ValueNotifier(false);
+  final _isShowNewPassword = ValueNotifier(false);
+  final _isShowConfirmPassword = ValueNotifier(false);
+  final _isUsePrinter = ValueNotifier(false);
+  final _selectedIndex = ValueNotifier(0);
   @override
   void initState() {
     super.initState();
@@ -51,16 +56,29 @@ class _SettingScreenState extends State<SettingScreen> {
     _imageController.text = _userList[3];
   }
 
-  final _isUsePrinter = ValueNotifier(false);
-  int _selectedIndex = 0;
+  @override
+  void dispose() {
+    super.dispose();
+    _nameController.dispose();
+    _emailController.dispose();
+    _phoneController.dispose();
+    _imageController.dispose();
+    _oldPasswordController.dispose();
+    _newPasswordController.dispose();
+    _confirmPasswordController.dispose();
+    _isShowOldPassword.dispose();
+    _isShowNewPassword.dispose();
+    _isShowConfirmPassword.dispose();
+    _isUsePrinter.dispose();
+    _selectedIndex.dispose();
+  }
+
   void _onCardTap(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    _selectedIndex.value = index;
   }
 
   Widget _buildRightPanel() {
-    switch (_selectedIndex) {
+    switch (_selectedIndex.value) {
       case 0:
         return _imageEditProfileWidget();
       case 1:
@@ -91,7 +109,7 @@ class _SettingScreenState extends State<SettingScreen> {
                     child: Column(
                       children: [
                         _buildviewProfile(),
-                        _EditInfoUser(),
+                        _editInfoUser(),
                         _buildTitleChangePassword(),
                         _buildItemPrint(context),
                       ],
@@ -104,8 +122,11 @@ class _SettingScreenState extends State<SettingScreen> {
                   borderRadius: BorderRadius.only(
                       bottomRight: Radius.circular(defaultBorderRadius),
                       topRight: Radius.circular(defaultBorderRadius))),
-              child: Column(
-                children: [_buildRightPanel()],
+              child: ValueListenableBuilder(
+                valueListenable: _selectedIndex,
+                builder: (context, value, child) {
+                  return _buildRightPanel();
+                },
               ),
             ))
           ],

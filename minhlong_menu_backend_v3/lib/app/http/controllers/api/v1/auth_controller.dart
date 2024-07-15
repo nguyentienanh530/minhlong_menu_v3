@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'dart:math';
-import 'package:minhlong_menu_backend_v3/app/http/helper/app_response.dart';
+import 'package:minhlong_menu_backend_v3/app/http/common/app_response.dart';
 import 'package:vania/vania.dart';
-import '../../../../models/user.dart';
+import '../../../modules/v1/user/models/user.dart';
 
 class AuthController extends Controller {
   /// Login
@@ -15,7 +15,7 @@ class AuthController extends Controller {
     String password = request.input('password').toString();
     try {
       final user =
-          await User().query().where('phone_number', '=', phoneNumber).first();
+          await Users().query().where('phone_number', '=', phoneNumber).first();
 
       if (user == null) {
         return AppResponse()
@@ -55,7 +55,7 @@ class AuthController extends Controller {
     );
 
     /// Checking if the user already exists
-    Map<String, dynamic>? user = await User()
+    Map<String, dynamic>? user = await Users()
         .query()
         .where('phone_number', '=', request.input('phone_number'))
         .first();
@@ -64,7 +64,7 @@ class AuthController extends Controller {
           .error(statusCode: HttpStatus.conflict, message: 'user exists');
     }
 
-    await User().query().insert({
+    await Users().query().insert({
       'phone_number': request.input('phone_number'),
       'password': Hash().make(request.input('password').toString()),
       'created_at': DateTime.now(),
@@ -134,7 +134,7 @@ class AuthController extends Controller {
     String password = request.input('password').toString();
     try {
       final user =
-          await User().query().where('phone_number', '=', phoneNumber).first();
+          await Users().query().where('phone_number', '=', phoneNumber).first();
 
       if (user == null) {
         return AppResponse()
@@ -146,7 +146,7 @@ class AuthController extends Controller {
             message: 'new password same as old password');
       }
 
-      await User().query().update({
+      await Users().query().update({
         'password': Hash().make(password.toString()),
         'updated_at': DateTime.now()
       });

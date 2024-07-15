@@ -11,8 +11,11 @@ class OverlaySnackbar {
   static final OverlaySnackbar _instance = OverlaySnackbar._();
   static OverlaySnackbar get instance => _instance;
 
-  static void show(BuildContext context, String message,
-      {OverlaySnackbarType type = OverlaySnackbarType.success}) {
+  static void show(
+    BuildContext context,
+    String message, {
+    OverlaySnackbarType type = OverlaySnackbarType.success,
+  }) {
     final overlay = Overlay.of(context);
     late OverlayEntry overlayEntry;
 
@@ -28,8 +31,8 @@ class OverlaySnackbar {
             width: 300,
             decoration: BoxDecoration(
                 color: type == OverlaySnackbarType.error
-                    ? AppColors.red.withOpacity(0.5)
-                    : AppColors.islamicGreen.withOpacity(0.5),
+                    ? AppColors.red.withOpacity(0.3)
+                    : AppColors.islamicGreen.withOpacity(0.3),
                 borderRadius: BorderRadius.circular(10)),
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: Column(
@@ -39,21 +42,33 @@ class OverlaySnackbar {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Icon(
-                          type == OverlaySnackbarType.error
-                              ? Icons.error
-                              : Icons.check_circle,
-                          color: AppColors.white,
-                          size: 16),
+                      type == OverlaySnackbarType.error
+                          ? const Icon(Icons.error,
+                              color: AppColors.red, size: 20)
+                          : const Icon(Icons.check_circle,
+                              color: AppColors.islamicGreen, size: 20),
                       const SizedBox(width: 10),
-                      Text(
-                        message,
-                        style: kBodyWhiteStyle,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            type == OverlaySnackbarType.error
+                                ? 'Lỗi!'
+                                : 'Thành công!',
+                            style: kSubHeadingStyle.copyWith(
+                                fontWeight: FontWeight.w700),
+                          ),
+                          Text(
+                            message,
+                            style: kCaptionStyle.copyWith(
+                                color: AppColors.black.withOpacity(0.5)),
+                          ),
+                        ],
                       ),
                       const Spacer(),
                       IconButton(
                         icon: const Icon(Icons.close,
-                            color: Colors.white, size: 15),
+                            color: Colors.black, size: 15),
                         onPressed: () {
                           overlayEntry.remove();
                         },
@@ -65,6 +80,9 @@ class OverlaySnackbar {
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 3),
                   child: LinearTimer(
+                    color: type == OverlaySnackbarType.error
+                        ? AppColors.red
+                        : AppColors.islamicGreen,
                     duration: const Duration(seconds: 3),
                     onTimerEnd: () {
                       overlayEntry.remove();

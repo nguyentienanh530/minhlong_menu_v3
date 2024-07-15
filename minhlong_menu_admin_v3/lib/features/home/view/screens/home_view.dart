@@ -1,8 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_sidemenu/easy_sidemenu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:minhlong_menu_admin_v3/core/api_config.dart';
 import 'package:minhlong_menu_admin_v3/core/extensions.dart';
 import 'package:minhlong_menu_admin_v3/features/banner/view/screens/banner_screen.dart';
 import 'package:minhlong_menu_admin_v3/features/category/view/screens/category_screen.dart';
@@ -11,9 +13,14 @@ import 'package:minhlong_menu_admin_v3/features/dinner_table/view/screens/dinner
 import 'package:minhlong_menu_admin_v3/features/food/view/screens/food_screen.dart';
 import 'package:minhlong_menu_admin_v3/features/order/view/screens/order_screen.dart';
 import 'package:minhlong_menu_admin_v3/features/setting/view/screens/setting_screen.dart';
+import 'package:minhlong_menu_admin_v3/features/user/bloc/user_bloc.dart';
+import 'package:minhlong_menu_admin_v3/features/user/data/model/user_model.dart';
 import '../../../../Routes/app_route.dart';
 import '../../../../common/dialog/app_dialog.dart';
+import '../../../../common/widget/error_build_image.dart';
 import '../../../../common/widget/error_dialog.dart';
+import '../../../../common/widget/error_widget.dart';
+import '../../../../common/widget/loading.dart';
 import '../../../../core/app_asset.dart';
 import '../../../../core/app_colors.dart';
 import '../../../../core/app_style.dart';
@@ -86,6 +93,7 @@ class HomeViewState extends State<HomeView>
 
   @override
   void initState() {
+    context.read<UserBloc>().add(UserFetched());
     _title.value = _listIconMenu[0]['title'].toString();
     _sideMenuCtrl.addListener((index) {
       _pageCtrl.animateToPage(index,
@@ -100,6 +108,8 @@ class HomeViewState extends State<HomeView>
   void dispose() {
     _pageCtrl.dispose();
     _sideMenuCtrl.dispose();
+    _title.dispose();
+    _scaffoldKey.currentState!.dispose();
     super.dispose();
   }
 
@@ -200,82 +210,86 @@ class HomeViewState extends State<HomeView>
 
   _buildAppBar() {
     return AppBar(
-        backgroundColor: AppColors.background,
-        toolbarHeight: context.isMobile ? null : 115.h,
-        leading: context.isMobile
-            ? Card(
-                child: InkWell(
-                    onTap: () => _scaffoldKey.currentState?.openDrawer(),
-                    child: const Icon(Icons.menu)))
-            : null,
-        title: ValueListenableBuilder(
-            valueListenable: _title,
-            builder: (context, value, child) {
-              return Text(value,
-                  style: kHeadingStyle.copyWith(
-                      fontWeight: FontWeight.w700, fontSize: 25));
-            }),
-        actions: [
-          16.horizontalSpace,
-          context.isMobile
-              ? const SizedBox()
-              : Text(
-                  'Xin chèo, Nguyen Tien Anh',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: kSubHeadingStyle.copyWith(
-                      fontWeight: FontWeight.w700, fontSize: 20),
-                ),
-          16.horizontalSpace,
-          _buildAvatar(),
-          16.horizontalSpace,
-        ]);
-  }
-
-  Widget _buildHeader() {
-    return SizedBox(
-      height: 115.h,
-      width: double.infinity,
-      child: Row(
+      automaticallyImplyLeading: false,
+      backgroundColor: AppColors.background,
+      toolbarHeight: context.isMobile ? null : 115.h,
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          30.horizontalSpace,
+          context.isMobile
+              ? Card(
+                  child: SizedBox(
+                  height: 40,
+                  width: 40,
+                  child: InkWell(
+                      onTap: () => _scaffoldKey.currentState?.openDrawer(),
+                      child: const Icon(Icons.menu)),
+                ))
+              : const SizedBox(),
           ValueListenableBuilder(
               valueListenable: _title,
               builder: (context, value, child) {
                 return Text(value,
                     style: kHeadingStyle.copyWith(
-                        fontWeight: FontWeight.w700,
-                        fontSize: context.isMobile ? 25 : 36));
+                        fontWeight: FontWeight.w700, fontSize: 25));
               }),
-          const Spacer(),
-          Text(
-            'Xin chèo, Nguyen Tien Anh',
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: kSubHeadingStyle.copyWith(
-                fontWeight: FontWeight.w700, fontSize: 22.sp),
-          ),
-          16.horizontalSpace,
-          _buildAvatar(),
-          30.horizontalSpace,
+          const SizedBox(),
         ],
       ),
     );
   }
 
-  Widget _buildAvatar() {
+  Widget _buildHeader() {
+    return Builder(builder: (context) {
+      var userState = context.watch<UserBloc>().state;
+      return (switch (userState) {
+        UserFecthInProgress() => const Loading(),
+        UserFecthFailure() => ErrWidget(error: userState.errorMessage),
+        UserFecthSuccess() => SizedBox(
+            height: 115.h,
+            width: double.infinity,
+            child: Row(
+              children: [
+                30.horizontalSpace,
+                ValueListenableBuilder(
+                    valueListenable: _title,
+                    builder: (context, value, child) {
+                      return Text(value,
+                          style: kHeadingStyle.copyWith(
+                              fontWeight: FontWeight.w700,
+                              fontSize: context.isMobile ? 25 : 36));
+                    }),
+                const Spacer(),
+                _buildUserInfo(userState.userModel),
+                30.horizontalSpace,
+              ],
+            ),
+          ),
+        _ => const SizedBox(),
+      });
+    });
+  }
+
+  Widget _buildAvatar(String imageUrl) {
     return Container(
       margin: const EdgeInsets.only(left: 10),
       constraints: BoxConstraints(
         maxHeight: 50.h,
         maxWidth: 50.h,
       ),
-      decoration:
-          const BoxDecoration(color: AppColors.white, shape: BoxShape.circle),
-      child: Center(
+      decoration: BoxDecoration(
+          color: AppColors.white,
+          shape: BoxShape.circle,
+          border: Border.all(color: AppColors.white, width: 1)),
+      child: SizedBox.expand(
         child: ClipRRect(
           borderRadius: BorderRadius.circular(50),
-          child: Image.asset(AppAsset.logo),
+          child: CachedNetworkImage(
+            imageUrl: imageUrl,
+            fit: BoxFit.cover,
+            errorWidget: errorBuilderForImage,
+            placeholder: (context, url) => const Loading(),
+          ),
         ),
       ),
     );
@@ -283,4 +297,19 @@ class HomeViewState extends State<HomeView>
 
   @override
   bool get wantKeepAlive => true;
+
+  _buildUserInfo(UserModel user) {
+    return Row(
+      children: [
+        Text(
+          'Xin chào! ${user.fullName}',
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: kSubHeadingStyle.copyWith(
+              fontWeight: FontWeight.w700, fontSize: 20),
+        ),
+        _buildAvatar('${ApiConfig.host}${user.image}'),
+      ],
+    );
+  }
 }

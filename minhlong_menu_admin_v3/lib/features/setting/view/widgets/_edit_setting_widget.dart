@@ -5,7 +5,7 @@ extension _EditSettingWidget on _SettingScreenState {
     return Padding(
       padding: const EdgeInsets.all(defaultPadding),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Stack(
@@ -65,18 +65,36 @@ extension _EditSettingWidget on _SettingScreenState {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _textProfile(AppString.fullName),
-          _TextBoxProfile(controllers: _nameController),
+          _buildUserNameTextField(),
+          20.verticalSpace,
+          _buildPhoneTextField(),
           10.verticalSpace,
-          _textProfile(AppString.email),
-          _TextBoxProfile(controllers: _emailController),
-          10.verticalSpace,
-          _textProfile(AppString.phoneNumber),
-          _TextBoxProfile(controllers: _phoneController),
           20.verticalSpace,
           _buttonEditProfile(),
         ],
       ),
+    );
+  }
+
+  Widget _buildUserNameTextField() {
+    return CommonTextField(
+      onChanged: (p0) {},
+      controller: _nameController,
+      labelText: AppString.fullName,
+      labelStyle: kBodyStyle.copyWith(color: AppColors.secondTextColor),
+      hintStyle: kBodyStyle,
+      style: kBodyStyle,
+    );
+  }
+
+  Widget _buildPhoneTextField() {
+    return CommonTextField(
+      onChanged: (p0) {},
+      controller: _phoneController,
+      labelText: AppString.phoneNumber,
+      labelStyle: kBodyStyle.copyWith(color: AppColors.secondTextColor),
+      hintStyle: kBodyStyle,
+      style: kBodyStyle,
     );
   }
 
@@ -100,9 +118,7 @@ extension _EditSettingWidget on _SettingScreenState {
                 color: AppColors.secondTextColor, fontWeight: FontWeight.bold),
           ),
           5.verticalSpace,
-          _PasswordFieldBox(
-            passwordCtrl: _oldPassController,
-          ),
+          _buildOldPassworTextField(),
           20.verticalSpace,
           Text(
             '${AppString.newPassword} *',
@@ -110,9 +126,7 @@ extension _EditSettingWidget on _SettingScreenState {
                 color: AppColors.secondTextColor, fontWeight: FontWeight.bold),
           ),
           5.verticalSpace,
-          _PasswordFieldBox(
-            passwordCtrl: _newPassController,
-          ),
+          _buildNewPassworTextField(),
           20.verticalSpace,
           Text(
             '${AppString.reNewPassword} *',
@@ -120,9 +134,7 @@ extension _EditSettingWidget on _SettingScreenState {
                 color: AppColors.secondTextColor, fontWeight: FontWeight.bold),
           ),
           5.verticalSpace,
-          _PasswordFieldBox(
-            passwordCtrl: _reNewPassController,
-          ),
+          _buildComfirmPassworTextField(),
           40.verticalSpace,
           _buttonChangePassword(),
         ],
@@ -162,59 +174,94 @@ extension _EditSettingWidget on _SettingScreenState {
         style: kBodyStyle.copyWith(
             fontWeight: FontWeight.bold, color: AppColors.secondTextColor));
   }
-}
 
-class _PasswordFieldBox extends StatelessWidget {
-  _PasswordFieldBox({required this.passwordCtrl});
-  TextEditingController passwordCtrl = TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
-    var isShowPassword = ValueNotifier(false);
-
+  Widget _buildOldPassworTextField() {
     return ValueListenableBuilder(
-        valueListenable: isShowPassword,
-        builder: (context, value, child) {
-          return CommonTextField(
-              maxLines: 1,
-              style: kBodyWhiteStyle,
-              controller: passwordCtrl,
-              onFieldSubmitted: (p0) {},
-              labelText: AppString.password,
-              // labelText: AppString.password,
-              validator: (password) => AppRes.validatePassword(password)
-                  ? null
-                  : 'Mật khẩu không hợp lệ',
-              onChanged: (value) {},
-              obscureText: !value,
-              prefixIcon: Icon(
-                Icons.lock_outline,
-                color: AppColors.secondTextColor.withOpacity(0.5),
-              ),
-              suffixIcon: GestureDetector(
-                  onTap: () => isShowPassword.value = !isShowPassword.value,
-                  child: Icon(
-                      !value ? Icons.visibility_off : Icons.remove_red_eye,
-                      color: AppColors.secondTextColor.withOpacity(0.5))));
-        });
+      valueListenable: _isShowOldPassword,
+      builder: (context, value, child) {
+        return CommonTextField(
+            maxLines: 1,
+            style: kBodyStyle,
+            controller: _oldPasswordController,
+            onFieldSubmitted: (p0) {},
+            labelText: AppString.password,
+            // labelText: AppString.password,
+            validator: (password) => AppRes.validatePassword(password)
+                ? null
+                : 'Mật khẩu không hợp lệ',
+            onChanged: (value) {},
+            obscureText: !value,
+            prefixIcon: Icon(
+              Icons.lock_outline,
+              color: AppColors.secondTextColor.withOpacity(0.5),
+            ),
+            suffixIcon: GestureDetector(
+                onTap: () =>
+                    _isShowOldPassword.value = !_isShowOldPassword.value,
+                child: Icon(
+                    !value ? Icons.visibility_off : Icons.remove_red_eye,
+                    color: AppColors.secondTextColor.withOpacity(0.5))));
+      },
+    );
   }
-}
 
-class _TextBoxProfile extends StatelessWidget {
-  _TextBoxProfile({required this.controllers, this.hintText, this.hintStyle});
-  String? hintText;
-  TextStyle? hintStyle;
-  TextEditingController controllers = TextEditingController();
+  Widget _buildNewPassworTextField() {
+    return ValueListenableBuilder(
+      valueListenable: _isShowNewPassword,
+      builder: (context, value, child) {
+        return CommonTextField(
+            maxLines: 1,
+            style: kBodyStyle,
+            controller: _newPasswordController,
+            onFieldSubmitted: (p0) {},
+            labelText: AppString.password,
+            // labelText: AppString.password,
+            validator: (password) => AppRes.validatePassword(password)
+                ? null
+                : 'Mật khẩu không hợp lệ',
+            onChanged: (value) {},
+            obscureText: !value,
+            prefixIcon: Icon(
+              Icons.lock_outline,
+              color: AppColors.secondTextColor.withOpacity(0.5),
+            ),
+            suffixIcon: GestureDetector(
+                onTap: () =>
+                    _isShowNewPassword.value = !_isShowNewPassword.value,
+                child: Icon(
+                    !value ? Icons.visibility_off : Icons.remove_red_eye,
+                    color: AppColors.secondTextColor.withOpacity(0.5))));
+      },
+    );
+  }
 
-  @override
-  Widget build(BuildContext context) {
-    return CommonTextField(
-      onChanged: (p0) {},
-      controller: controllers,
-      hintText: hintText,
-      hintStyle: hintStyle,
-      style: kBodyStyle.copyWith(
-          color: AppColors.black, fontWeight: FontWeight.bold, fontSize: 18),
+  Widget _buildComfirmPassworTextField() {
+    return ValueListenableBuilder(
+      valueListenable: _isShowConfirmPassword,
+      builder: (context, value, child) {
+        return CommonTextField(
+            maxLines: 1,
+            style: kBodyStyle,
+            controller: _confirmPasswordController,
+            onFieldSubmitted: (p0) {},
+            labelText: AppString.password,
+            // labelText: AppString.password,
+            validator: (password) => AppRes.validatePassword(password)
+                ? null
+                : 'Mật khẩu không hợp lệ',
+            onChanged: (value) {},
+            obscureText: !value,
+            prefixIcon: Icon(
+              Icons.lock_outline,
+              color: AppColors.secondTextColor.withOpacity(0.5),
+            ),
+            suffixIcon: GestureDetector(
+                onTap: () => _isShowConfirmPassword.value =
+                    !_isShowConfirmPassword.value,
+                child: Icon(
+                    !value ? Icons.visibility_off : Icons.remove_red_eye,
+                    color: AppColors.secondTextColor.withOpacity(0.5))));
+      },
     );
   }
 }

@@ -1,10 +1,13 @@
 import 'dart:convert';
-import 'package:minhlong_menu_backend_v3/app/models/order.dart';
+import 'package:minhlong_menu_backend_v3/app/http/modules/v1/order/models/order.dart';
 import 'package:vania/vania.dart';
-import '../../repositories/table_repository/table_repository.dart';
+import '../../modules/v1/table/repositories/table_repository.dart';
 
 class TableWebSocketController extends Controller {
-  final TableRepository _tableRepository = TableRepository();
+  final TableRepository _tableRepository;
+
+  TableWebSocketController({required TableRepository tableRepository})
+      : _tableRepository = tableRepository;
   Future getTable(WebSocketClient client, dynamic data) async {
     print(data);
     if (data == null) {
@@ -23,7 +26,7 @@ class TableWebSocketController extends Controller {
     for (var table in tables) {
       var orderCount = 0;
       if (table['id'] != 0) {
-        orderCount = await Order()
+        orderCount = await Orders()
             .query()
             .select()
             .where('status', '=', 'new')
@@ -31,7 +34,7 @@ class TableWebSocketController extends Controller {
             .count();
       } else {
         orderCount =
-            await Order().query().select().where('status', '=', 'new').count();
+            await Orders().query().select().where('status', '=', 'new').count();
       }
       var newTable = {
         'id': table['id'],
@@ -47,5 +50,3 @@ class TableWebSocketController extends Controller {
     client.broadcast('tables-ws', jsonEncode(newTables));
   }
 }
-
-TableWebSocketController tableWebSocketController = TableWebSocketController();

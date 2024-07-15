@@ -21,7 +21,7 @@ extension _SettingWidgets on _SettingScreenState {
               shape: BoxShape.circle,
             ),
             child: CachedNetworkImage(
-              imageUrl: _userList[3] ?? '',
+              imageUrl: _userList[3],
               errorWidget: errorBuilderForImage,
               placeholder: (context, url) => const Loading(),
             ),
@@ -41,7 +41,7 @@ extension _SettingWidgets on _SettingScreenState {
           style: kHeadingStyle.copyWith(fontWeight: FontWeight.bold),
         ),
         Text(
-          '+84 ${_userList[2]}' ?? '',
+          '+84 ${_userList[2]}',
           style: kBodyStyle.copyWith(
               color: AppColors.secondTextColor, fontSize: 12),
         ),
@@ -49,7 +49,7 @@ extension _SettingWidgets on _SettingScreenState {
     );
   }
 
-  Widget _EditInfoUser() {
+  Widget _editInfoUser() {
     return _ItemProfile(
       onTap: () => _onCardTap(0),
       colorIcon: AppColors.themeColor,

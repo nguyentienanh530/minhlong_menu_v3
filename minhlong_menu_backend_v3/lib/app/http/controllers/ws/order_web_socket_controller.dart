@@ -1,16 +1,21 @@
 import 'dart:convert';
-import 'package:minhlong_menu_backend_v3/app/http/controllers/api/v1/order_controller.dart';
-import 'package:minhlong_menu_backend_v3/app/http/repositories/order_repository/order_repository.dart';
+import 'package:minhlong_menu_backend_v3/app/http/modules/v1/order/controllers/order_controller.dart';
+import 'package:minhlong_menu_backend_v3/app/http/modules/v1/order/repositories/order_repository.dart';
 import 'package:vania/vania.dart';
 
 class OrderWebSocketController extends Controller {
+  final OrderRepository _orderRepository;
+  final OrderController orderController;
+
+  OrderWebSocketController(
+      {required OrderRepository orderRepository, required this.orderController})
+      : _orderRepository = orderRepository;
   Future getNewOrders(WebSocketClient client, dynamic payload) async {
     if (payload == null) {
       return;
     }
 
-    var payloadData =
-        await await OrderRepository().getNewOrdersByTable(payload);
+    var payloadData = await await _orderRepository.getNewOrdersByTable(payload);
     List<Map<String, dynamic>> formattedOrders = [];
 
     var groupedOrders = orderController.groupOrdersById(payloadData);
@@ -47,4 +52,4 @@ class OrderWebSocketController extends Controller {
   }
 }
 
-OrderWebSocketController orderWebSocketController = OrderWebSocketController();
+

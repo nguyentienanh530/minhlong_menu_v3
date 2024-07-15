@@ -27,7 +27,8 @@ class CommonTextField extends StatelessWidget {
       this.style,
       this.focusNode,
       this.readOnly,
-      this.hintStyle});
+      this.hintStyle,
+      this.labelStyle});
   final TextStyle? hintStyle;
   final String? errorText;
   final TextInputType? keyboardType;
@@ -47,6 +48,7 @@ class CommonTextField extends StatelessWidget {
   final TextStyle? style;
   final FocusNode? focusNode;
   final bool? readOnly;
+  final TextStyle? labelStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -96,7 +98,8 @@ class CommonTextField extends StatelessWidget {
             errorStyle: kBodyStyle.copyWith(color: AppColors.red),
             hintStyle: hintStyle ??
                 kBodyStyle.copyWith(color: AppColors.secondTextColor),
-            labelStyle: kBodyWhiteStyle.copyWith(color: AppColors.white)),
+            labelStyle:
+                labelStyle ?? kBodyWhiteStyle.copyWith(color: AppColors.white)),
         onChanged: onChanged);
   }
 }

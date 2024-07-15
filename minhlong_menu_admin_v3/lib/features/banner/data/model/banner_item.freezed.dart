@@ -22,6 +22,7 @@ BannerItem _$BannerItemFromJson(Map<String, dynamic> json) {
 mixin _$BannerItem {
   int get id => throw _privateConstructorUsedError;
   String get image => throw _privateConstructorUsedError;
+  bool? get show => throw _privateConstructorUsedError;
   @JsonKey(name: 'created_at')
   String? get createdAt => throw _privateConstructorUsedError;
   @JsonKey(name: 'updated_at')
@@ -42,6 +43,7 @@ abstract class $BannerItemCopyWith<$Res> {
   $Res call(
       {int id,
       String image,
+      bool? show,
       @JsonKey(name: 'created_at') String? createdAt,
       @JsonKey(name: 'updated_at') String? updatedAt});
 }
@@ -61,6 +63,7 @@ class _$BannerItemCopyWithImpl<$Res, $Val extends BannerItem>
   $Res call({
     Object? id = null,
     Object? image = null,
+    Object? show = freezed,
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
   }) {
@@ -73,6 +76,10 @@ class _$BannerItemCopyWithImpl<$Res, $Val extends BannerItem>
           ? _value.image
           : image // ignore: cast_nullable_to_non_nullable
               as String,
+      show: freezed == show
+          ? _value.show
+          : show // ignore: cast_nullable_to_non_nullable
+              as bool?,
       createdAt: freezed == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -96,6 +103,7 @@ abstract class _$$BannerItemImplCopyWith<$Res>
   $Res call(
       {int id,
       String image,
+      bool? show,
       @JsonKey(name: 'created_at') String? createdAt,
       @JsonKey(name: 'updated_at') String? updatedAt});
 }
@@ -113,6 +121,7 @@ class __$$BannerItemImplCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? image = null,
+    Object? show = freezed,
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
   }) {
@@ -125,6 +134,10 @@ class __$$BannerItemImplCopyWithImpl<$Res>
           ? _value.image
           : image // ignore: cast_nullable_to_non_nullable
               as String,
+      show: freezed == show
+          ? _value.show
+          : show // ignore: cast_nullable_to_non_nullable
+              as bool?,
       createdAt: freezed == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -143,6 +156,7 @@ class _$BannerItemImpl implements _BannerItem {
   _$BannerItemImpl(
       {this.id = 0,
       this.image = '',
+      this.show,
       @JsonKey(name: 'created_at') this.createdAt = '',
       @JsonKey(name: 'updated_at') this.updatedAt = ''});
 
@@ -156,6 +170,8 @@ class _$BannerItemImpl implements _BannerItem {
   @JsonKey()
   final String image;
   @override
+  final bool? show;
+  @override
   @JsonKey(name: 'created_at')
   final String? createdAt;
   @override
@@ -164,7 +180,7 @@ class _$BannerItemImpl implements _BannerItem {
 
   @override
   String toString() {
-    return 'BannerItem(id: $id, image: $image, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'BannerItem(id: $id, image: $image, show: $show, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -174,6 +190,7 @@ class _$BannerItemImpl implements _BannerItem {
             other is _$BannerItemImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.image, image) || other.image == image) &&
+            (identical(other.show, show) || other.show == show) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
@@ -182,7 +199,8 @@ class _$BannerItemImpl implements _BannerItem {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, image, createdAt, updatedAt);
+  int get hashCode =>
+      Object.hash(runtimeType, id, image, show, createdAt, updatedAt);
 
   @JsonKey(ignore: true)
   @override
@@ -202,6 +220,7 @@ abstract class _BannerItem implements BannerItem {
   factory _BannerItem(
       {final int id,
       final String image,
+      final bool? show,
       @JsonKey(name: 'created_at') final String? createdAt,
       @JsonKey(name: 'updated_at') final String? updatedAt}) = _$BannerItemImpl;
 
@@ -212,6 +231,8 @@ abstract class _BannerItem implements BannerItem {
   int get id;
   @override
   String get image;
+  @override
+  bool? get show;
   @override
   @JsonKey(name: 'created_at')
   String? get createdAt;

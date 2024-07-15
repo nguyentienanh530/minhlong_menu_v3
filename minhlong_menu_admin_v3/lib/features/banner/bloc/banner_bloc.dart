@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:minhlong_menu_admin_v3/features/banner/data/repositories/banner_repository.dart';
 
+import '../data/model/banner_item.dart';
 import '../data/model/banner_model.dart';
 
 part 'banner_event.dart';
@@ -16,6 +17,9 @@ class BannerBloc extends Bloc<BannerEvent, BannerState> {
       : _bannerRepository = bannerRepository,
         super(BannerInitial()) {
     on<BannerFetched>(_onBannerFetched);
+    on<BannerCreated>(_onBannerCreated);
+    on<BannerUpdated>(_onBannerUpdated);
+    on<BannerDeleted>(_onBannerDeleted);
   }
   final BannerRepository _bannerRepository;
 
@@ -32,6 +36,45 @@ class BannerBloc extends Bloc<BannerEvent, BannerState> {
       },
       failure: (String failure) {
         emit(BannerFetchFailure(errorMessage: failure));
+      },
+    );
+  }
+
+  FutureOr<void> _onBannerCreated(BannerCreated event, Emit emit) async {
+    emit(BannerCreateInProgress());
+    final result = await _bannerRepository.createBanner(banner: event.banner);
+    result.when(
+      success: (success) {
+        emit(BannerCreateSuccess(success));
+      },
+      failure: (message) {
+        emit(BannerCreateFailure(errorMessage: message));
+      },
+    );
+  }
+
+  FutureOr<void> _onBannerUpdated(BannerUpdated event, Emit emit) async {
+    emit(BannerUpdateInProgress());
+    final result = await _bannerRepository.updateBanner(banner: event.banner);
+    result.when(
+      success: (success) {
+        emit(BannerUpdateSuccess());
+      },
+      failure: (message) {
+        emit(BannerUpdateFailure(errorMessage: message));
+      },
+    );
+  }
+
+  FutureOr<void> _onBannerDeleted(BannerDeleted event, Emit emit) async {
+    emit(BannerDeleteInProgress());
+    final result = await _bannerRepository.deleteBanner(id: event.id);
+    result.when(
+      success: (success) {
+        emit(BannerDeleteSuccess());
+      },
+      failure: (message) {
+        emit(BannerDeleteFailure(errorMessage: message));
       },
     );
   }

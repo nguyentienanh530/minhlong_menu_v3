@@ -9,6 +9,7 @@ import 'package:minhlong_menu_admin_v3/features/auth/bloc/auth_bloc.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/data/auth_local_datasource/auth_local_datasource.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/data/provider/remote/auth_api.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/data/repositories/auth_repository.dart';
+import 'package:minhlong_menu_admin_v3/features/banner/bloc/banner_bloc.dart';
 import 'package:minhlong_menu_admin_v3/features/banner/data/provider/banner_api.dart';
 import 'package:minhlong_menu_admin_v3/features/category/bloc/category_bloc.dart';
 import 'package:minhlong_menu_admin_v3/features/category/data/provider/category_api.dart';
@@ -21,6 +22,9 @@ import 'package:minhlong_menu_admin_v3/features/food/bloc/search_food_bloc/searc
 import 'package:minhlong_menu_admin_v3/features/food/data/provider/food_api.dart';
 import 'package:minhlong_menu_admin_v3/features/home/cubit/table_index_selected_cubit.dart';
 import 'package:minhlong_menu_admin_v3/features/order/cubit/order_socket_cubit.dart';
+import 'package:minhlong_menu_admin_v3/features/user/bloc/user_bloc.dart';
+import 'package:minhlong_menu_admin_v3/features/user/data/provider/user_api.dart';
+import 'package:minhlong_menu_admin_v3/features/user/data/repositories/user_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'bloc_observer.dart';
@@ -77,6 +81,14 @@ class MainApp extends StatelessWidget {
             ),
           ),
         ),
+        RepositoryProvider(
+          create: (context) => UserRepository(
+            authLocalDatasource: AuthLocalDatasource(sf),
+            userApi: UserApi(
+              dio: DioClient().dio!,
+            ),
+          ),
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -108,6 +120,16 @@ class MainApp extends StatelessWidget {
           BlocProvider(
             create: (context) => CategoryBloc(
               categoryRepository: context.read<CategoryRepository>(),
+            ),
+          ),
+          BlocProvider(
+            create: (context) => BannerBloc(
+              bannerRepository: context.read<BannerRepository>(),
+            ),
+          ),
+          BlocProvider(
+            create: (context) => UserBloc(
+              userRepository: context.read<UserRepository>(),
             ),
           ),
         ],

@@ -19,7 +19,7 @@ extension _HeaderCategoryWidget on _BannerViewState {
                       children: [
                         16.horizontalSpace,
                         Expanded(
-                          child: _buildButtonAddFood(),
+                          child: _buildButtonAdd(),
                         )
                       ],
                     ),
@@ -32,7 +32,7 @@ extension _HeaderCategoryWidget on _BannerViewState {
                   10.horizontalSpace,
                   _buildDropdown(),
                   30.horizontalSpace,
-                  _buildButtonAddFood(),
+                  _buildButtonAdd(),
                   30.horizontalSpace,
                 ],
               ),
@@ -71,11 +71,10 @@ extension _HeaderCategoryWidget on _BannerViewState {
         ));
   }
 
-  _buildButtonAddFood() {
+  _buildButtonAdd() {
     return InkWell(
       onTap: () async {
-        // _showCreateOrUpdateCategoryDialog(
-        //     type: CreateOrUpdateCategoryType.create);
+        _showCreateOrUpdateBannerDialog(type: CreateOrUpdateBannerType.create);
       },
       child: Container(
         height: 35,
