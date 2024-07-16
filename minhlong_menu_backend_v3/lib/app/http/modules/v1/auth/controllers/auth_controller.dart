@@ -103,21 +103,19 @@ class AuthController extends Controller {
     try {
       String? refreshToken = request.input('refresh_token');
 
+      // String? refreshToken =
+      //     request.header('Authorization')?.replaceFirst('Bearer ', '');
+
       if (refreshToken == null) {
         return AppResponse().error(
             message: 'Invalid token', statusCode: HttpStatus.unauthorized);
-      }
-
-      print('isAuthorized: ${Auth().isAuthorized}');
-      if (Auth().isAuthorized) {
-        return AppResponse().ok(statusCode: HttpStatus.ok);
       }
 
       final token = await Auth().createTokenByRefreshToken(refreshToken,
           expiresIn: Duration(minutes: 1));
       return AppResponse().ok(statusCode: HttpStatus.created, data: token);
     } catch (e) {
-      print('refreshToken error: $e');
+      print('refreshToken error: ${e.toString()}');
       return AppResponse().error(
         statusCode: HttpStatus.internalServerError,
         message: 'connection error',

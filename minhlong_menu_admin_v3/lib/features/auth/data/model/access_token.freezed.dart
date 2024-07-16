@@ -24,6 +24,8 @@ mixin _$AccessToken {
   String get accessToken => throw _privateConstructorUsedError;
   @JsonKey(name: 'refresh_token')
   String get refreshToken => throw _privateConstructorUsedError;
+  @JsonKey(name: 'expires_in')
+  String get expiresIn => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -39,7 +41,8 @@ abstract class $AccessTokenCopyWith<$Res> {
   @useResult
   $Res call(
       {@JsonKey(name: 'access_token') String accessToken,
-      @JsonKey(name: 'refresh_token') String refreshToken});
+      @JsonKey(name: 'refresh_token') String refreshToken,
+      @JsonKey(name: 'expires_in') String expiresIn});
 }
 
 /// @nodoc
@@ -57,6 +60,7 @@ class _$AccessTokenCopyWithImpl<$Res, $Val extends AccessToken>
   $Res call({
     Object? accessToken = null,
     Object? refreshToken = null,
+    Object? expiresIn = null,
   }) {
     return _then(_value.copyWith(
       accessToken: null == accessToken
@@ -66,6 +70,10 @@ class _$AccessTokenCopyWithImpl<$Res, $Val extends AccessToken>
       refreshToken: null == refreshToken
           ? _value.refreshToken
           : refreshToken // ignore: cast_nullable_to_non_nullable
+              as String,
+      expiresIn: null == expiresIn
+          ? _value.expiresIn
+          : expiresIn // ignore: cast_nullable_to_non_nullable
               as String,
     ) as $Val);
   }
@@ -81,7 +89,8 @@ abstract class _$$AccessTokenImplCopyWith<$Res>
   @useResult
   $Res call(
       {@JsonKey(name: 'access_token') String accessToken,
-      @JsonKey(name: 'refresh_token') String refreshToken});
+      @JsonKey(name: 'refresh_token') String refreshToken,
+      @JsonKey(name: 'expires_in') String expiresIn});
 }
 
 /// @nodoc
@@ -97,6 +106,7 @@ class __$$AccessTokenImplCopyWithImpl<$Res>
   $Res call({
     Object? accessToken = null,
     Object? refreshToken = null,
+    Object? expiresIn = null,
   }) {
     return _then(_$AccessTokenImpl(
       accessToken: null == accessToken
@@ -107,6 +117,10 @@ class __$$AccessTokenImplCopyWithImpl<$Res>
           ? _value.refreshToken
           : refreshToken // ignore: cast_nullable_to_non_nullable
               as String,
+      expiresIn: null == expiresIn
+          ? _value.expiresIn
+          : expiresIn // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -116,7 +130,8 @@ class __$$AccessTokenImplCopyWithImpl<$Res>
 class _$AccessTokenImpl implements _AccessToken {
   _$AccessTokenImpl(
       {@JsonKey(name: 'access_token') this.accessToken = '',
-      @JsonKey(name: 'refresh_token') this.refreshToken = ''});
+      @JsonKey(name: 'refresh_token') this.refreshToken = '',
+      @JsonKey(name: 'expires_in') this.expiresIn = ''});
 
   factory _$AccessTokenImpl.fromJson(Map<String, dynamic> json) =>
       _$$AccessTokenImplFromJson(json);
@@ -127,10 +142,13 @@ class _$AccessTokenImpl implements _AccessToken {
   @override
   @JsonKey(name: 'refresh_token')
   final String refreshToken;
+  @override
+  @JsonKey(name: 'expires_in')
+  final String expiresIn;
 
   @override
   String toString() {
-    return 'AccessToken(accessToken: $accessToken, refreshToken: $refreshToken)';
+    return 'AccessToken(accessToken: $accessToken, refreshToken: $refreshToken, expiresIn: $expiresIn)';
   }
 
   @override
@@ -141,12 +159,15 @@ class _$AccessTokenImpl implements _AccessToken {
             (identical(other.accessToken, accessToken) ||
                 other.accessToken == accessToken) &&
             (identical(other.refreshToken, refreshToken) ||
-                other.refreshToken == refreshToken));
+                other.refreshToken == refreshToken) &&
+            (identical(other.expiresIn, expiresIn) ||
+                other.expiresIn == expiresIn));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, accessToken, refreshToken);
+  int get hashCode =>
+      Object.hash(runtimeType, accessToken, refreshToken, expiresIn);
 
   @JsonKey(ignore: true)
   @override
@@ -164,9 +185,9 @@ class _$AccessTokenImpl implements _AccessToken {
 
 abstract class _AccessToken implements AccessToken {
   factory _AccessToken(
-          {@JsonKey(name: 'access_token') final String accessToken,
-          @JsonKey(name: 'refresh_token') final String refreshToken}) =
-      _$AccessTokenImpl;
+      {@JsonKey(name: 'access_token') final String accessToken,
+      @JsonKey(name: 'refresh_token') final String refreshToken,
+      @JsonKey(name: 'expires_in') final String expiresIn}) = _$AccessTokenImpl;
 
   factory _AccessToken.fromJson(Map<String, dynamic> json) =
       _$AccessTokenImpl.fromJson;
@@ -177,6 +198,9 @@ abstract class _AccessToken implements AccessToken {
   @override
   @JsonKey(name: 'refresh_token')
   String get refreshToken;
+  @override
+  @JsonKey(name: 'expires_in')
+  String get expiresIn;
   @override
   @JsonKey(ignore: true)
   _$$AccessTokenImplCopyWith<_$AccessTokenImpl> get copyWith =>

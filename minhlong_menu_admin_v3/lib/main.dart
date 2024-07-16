@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -38,7 +39,11 @@ class MainApp extends StatefulWidget {
 class _MainAppState extends State<MainApp> {
   @override
   void initState() {
-    dio.interceptors.add(DioInterceptor(widget.sf));
+    dio.interceptors.add(LogInterceptor(
+      requestBody: true,
+      responseBody: true,
+    ));
+    dio.interceptors.add(DioInterceptor(widget.sf, context));
     super.initState();
   }
 
@@ -74,6 +79,7 @@ class _AppContentState extends State<AppContent> {
   @override
   void initState() {
     context.read<AuthBloc>().add(AuthAuthenticateStarted());
+
     super.initState();
   }
 

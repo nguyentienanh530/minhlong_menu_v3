@@ -1,8 +1,11 @@
+import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:logger/logger.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/data/auth_local_datasource/auth_local_datasource.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/data/model/access_token.dart';
@@ -13,6 +16,7 @@ import 'dio_client.dart';
 class DioInterceptor extends Interceptor {
   final SharedPreferences sf;
   late AuthLocalDatasource _authLocalDatasource;
+  final BuildContext context;
 
   final Logger logger = Logger(
     printer: PrettyPrinter(
@@ -21,7 +25,7 @@ class DioInterceptor extends Interceptor {
     ),
   );
 
-  DioInterceptor(this.sf) {
+  DioInterceptor(this.sf, this.context) {
     _authLocalDatasource = AuthLocalDatasource(sf);
   }
 
@@ -32,14 +36,8 @@ class DioInterceptor extends Interceptor {
     logger.i('HTTP method => ${options.method} ');
     logger.i('Request => ${options.baseUrl}${options.path}');
     logger.i('Header  => ${options.headers}');
-    final accessToken = await _authLocalDatasource.getAccessToken();
-    log('token: ${accessToken?.accessToken}');
-    if (accessToken != null && accessToken.accessToken.isNotEmpty) {
-      options.headers['Authorization'] = 'Bearer ${accessToken.accessToken}';
-      options.headers['Content-Type'] = 'application/json';
-      options.headers['Accept'] = 'application/json';
-    }
-    // _addTokenIfNeeded(options, handler);
+    _addTokenIfNeeded(options, handler);
+    // super.onRequest(options, handler);
   }
 
   void _addTokenIfNeeded(
@@ -51,7 +49,7 @@ class DioInterceptor extends Interceptor {
     }
 
     final accessToken = await _authLocalDatasource.getAccessToken();
-    log('token: ${accessToken?.accessToken}');
+    log('token: $accessToken');
     if (accessToken != null && accessToken.accessToken.isNotEmpty) {
       options.headers['Authorization'] = 'Bearer ${accessToken.accessToken}';
       options.headers['Content-Type'] = 'application/json';
@@ -62,11 +60,12 @@ class DioInterceptor extends Interceptor {
   }
 
   @override
-  void onError(DioException err, ErrorInterceptorHandler handler) async {
+  void onError(DioException err, ErrorInterceptorHandler handler) {
     final options = err.requestOptions;
-    if (err.response?.data['message'] != 'Token expired' ||
-        err.response?.statusCode != 401) {
+    if (err.response?.statusCode != 401) {
       return handler.next(err);
+    } else {
+      _refreshTokenAndResolveError(err, handler);
     }
 
     logger.e(options.method); // Debug log
@@ -76,8 +75,6 @@ class DioInterceptor extends Interceptor {
 
     logger.e(
         'Request => ${options.baseUrl}${options.path}${options.queryParameters}');
-
-    _refreshTokenAndResolveError(err, handler);
   }
 
   void _refreshTokenAndResolveError(
@@ -86,30 +83,26 @@ class DioInterceptor extends Interceptor {
   ) async {
     _debugPrint('### Refreshing token... ###');
     final token = await _authLocalDatasource.getAccessToken();
-    final refreshToken = token?.refreshToken;
+    // final refreshToken = token?.refreshToken;
 
-    if (refreshToken == null) {
+    if (token == null ||
+        token.accessToken.isEmpty ||
+        token.refreshToken.isEmpty) {
       return handler.next(err);
     }
 
     late final AccessToken? accessToken;
 
     try {
-      accessToken = await refreshTokenFuction(accessToken: token!) ?? token;
-    } catch (e) {
+      accessToken = await refreshTokenFuction(token: token) ?? token;
+    } on DioException catch (e) {
       print('caching error $e');
-      // await _authLocalDatasource.removeAccessToken();
+      await _authLocalDatasource.removeAccessToken();
 
-      if (e is DioException) {
-        return handler.next(e);
-      }
-
-      return handler.next(err);
+      return handler.next(e);
     }
 
     _debugPrint('### Token refreshed! ###');
-
-    await _authLocalDatasource.saveAccessToken(accessToken);
 
     err.requestOptions.headers['Authorization'] =
         'Bearer ${accessToken.accessToken}';
@@ -125,24 +118,27 @@ class DioInterceptor extends Interceptor {
     return super.onResponse(response, handler);
   }
 
-  Future<AccessToken?> refreshTokenFuction(
-      {required AccessToken accessToken}) async {
+  Future<AccessToken?> refreshTokenFuction({required AccessToken token}) async {
     try {
       final response = await dio.post(
         ApiConfig.refreshToken,
-        queryParameters: {'refresh_token': accessToken.refreshToken},
+        queryParameters: {
+          'refresh_token': token.refreshToken,
+          // 'access_token': token.accessToken
+        },
       );
 
       if (response.statusCode == HttpStatus.created) {
-        return AccessToken.fromJson(response.data['data']);
+        final newToken = AccessToken.fromJson(response.data['data']);
+        await _authLocalDatasource.saveAccessToken(newToken);
+        return newToken;
       }
-      if (response.statusCode == HttpStatus.ok) {
-        return null;
-      }
+
+      return null;
     } catch (e) {
-      throw 'refreshToken went wrong $e';
+      logger.e('refreshToken went wrong $e');
+      return null;
     }
-    return null;
   }
 
   void _debugPrint(String message) {
@@ -150,4 +146,124 @@ class DioInterceptor extends Interceptor {
       print(message);
     }
   }
+
+  bool isTokenExpired(String token) {
+    return JwtDecoder.isExpired(token);
+  }
 }
+
+// class MyHttpInterceptor extends Interceptor {
+//   List<Map<dynamic, dynamic>> failedRequests = [];
+//   bool isRefreshing = false;
+//   final SharedPreferences sf;
+//   late AuthLocalDatasource _authLocalDatasource;
+
+//   MyHttpInterceptor(this.sf) {
+//     _authLocalDatasource = AuthLocalDatasource(sf);
+//   }
+
+//   @override
+//   void onRequest(
+//       RequestOptions options, RequestInterceptorHandler handler) async {
+//     debugPrint('REQUEST[${options.method}] => PATH: ${options.path}');
+//     final accessToken = await _authLocalDatasource.getAccessToken();
+//     log('token: ${accessToken?.accessToken}');
+//     if (accessToken != null && accessToken.accessToken.isNotEmpty) {
+//       options.headers['Authorization'] = 'Bearer ${accessToken.accessToken}';
+//       options.headers['Content-Type'] = 'application/json';
+//       options.headers['Accept'] = 'application/json';
+//     }
+//     handler.next(options);
+//   }
+
+//   @override
+//   void onResponse(Response response, ResponseInterceptorHandler handler) async {
+//     debugPrint(
+//         'RESPONSE[${response.statusCode}] => PATH: ${response.requestOptions.path}');
+
+//     handler.next(response);
+//   }
+
+//   @override
+//   void onError(DioException err, ErrorInterceptorHandler handler) async {
+//     debugPrint(
+//         'ERROR[${err.response?.statusCode}] => PATH: ${err.requestOptions.path}, IS REFRESHING: ${isRefreshing.toString()}');
+//     if (err.response?.statusCode == 401) {
+//       var token = await _authLocalDatasource.getAccessToken();
+//       if (token == null || token.refreshToken.isEmpty) {
+//         debugPrint("LOGGING OUT: NO REFRESH TOKEN FOUND");
+//         // perform logout
+//         return handler.reject(err);
+//       }
+
+//       if (!isRefreshing) {
+//         debugPrint("ACCESS TOKEN EXPIRED, GETTING NEW TOKEN PAIR");
+//         isRefreshing = true;
+//         await refreshToken(err, handler, token.refreshToken);
+//       } else {
+//         debugPrint("ADDING ERRRORED REQUEST TO FAILED QUEUE");
+//         failedRequests.add({'err': err, 'handler': handler});
+//       }
+//     } else {
+//       return handler.next(err);
+//     }
+//   }
+
+//   FutureOr refreshToken(DioException err, ErrorInterceptorHandler handler,
+//       String refreshToken) async {
+//     var retryDio = Dio(
+//       BaseOptions(
+//         baseUrl: ApiConfig.baseUrl,
+//         headers: <String, String>{
+//           'Content-Type': 'application/json',
+//           'Authorization': 'Bearer $refreshToken}',
+//           'Accept': 'application/json'
+//         },
+//       ),
+//     );
+//     // handle refresh token
+//     var response = await retryDio.post(ApiConfig.refreshToken);
+//     var parsedResponse = response.data;
+//     if (response.statusCode == 401 || response.statusCode == 403) {
+//       // handle logout
+//       debugPrint("LOGGING OUT: EXPIRED REFRESH TOKEN");
+//       return handler.reject(err);
+//     }
+
+//     // handle setting tokens in your store for future requests
+
+//     isRefreshing = false;
+//     failedRequests.add({'err': err, 'handler': handler});
+//     debugPrint("RETRYING ${failedRequests.length} FAILED REQUEST(s)");
+//     retryRequests(parsedResponse['data']['access_token']);
+//     return null;
+//   }
+
+//   Future retryRequests(token) async {
+//     Dio retryDio = Dio(
+//       BaseOptions(
+//         baseUrl: ApiConfig.baseUrl,
+//       ),
+//     );
+
+//     for (var i = 0; i < failedRequests.length; i++) {
+//       debugPrint(
+//           'RETRYING[$i] => PATH: ${failedRequests[i]['err'].requestOptions.path}');
+//       RequestOptions requestOptions =
+//           failedRequests[i]['err'].requestOptions as RequestOptions;
+//       requestOptions.headers = {
+//         'Authorization': 'Bearer $token',
+//         'Content-Type': 'application/json'
+//       };
+//       await retryDio.fetch(requestOptions).then(
+//             failedRequests[i]['handler'].resolve,
+//             onError: (error) =>
+//                 failedRequests[i]['handler'].reject(error as DioException),
+//           );
+//     }
+//     isRefreshing = false;
+//     failedRequests = [];
+//   }
+// }
+
+
