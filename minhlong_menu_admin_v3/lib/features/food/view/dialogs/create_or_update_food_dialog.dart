@@ -9,9 +9,10 @@ import 'package:minhlong_menu_admin_v3/common/dialog/app_dialog.dart';
 import 'package:minhlong_menu_admin_v3/common/snackbar/overlay_snackbar.dart';
 import 'package:minhlong_menu_admin_v3/core/app_key.dart';
 import 'package:minhlong_menu_admin_v3/core/utils.dart';
+import 'package:minhlong_menu_admin_v3/features/auth/data/model/access_token.dart';
 import 'package:minhlong_menu_admin_v3/features/category/data/model/category_item.dart';
 import 'package:minhlong_menu_admin_v3/features/food/data/model/food_item.dart';
-import '../../../../common/network/dio_client.dart';
+
 import '../../../../common/widget/common_text_field.dart';
 import '../../../../common/widget/error_build_image.dart';
 import '../../../../common/widget/error_widget.dart';
@@ -21,8 +22,8 @@ import '../../../../core/app_colors.dart';
 import '../../../../core/app_const.dart';
 import '../../../../core/app_style.dart';
 import '../../../../core/extensions.dart';
+import '../../../auth/cubit/access_token_cubit.dart';
 import '../../../category/bloc/category_bloc.dart';
-import '../../../category/data/provider/category_api.dart';
 import '../../../category/data/repositories/category_repository.dart';
 import '../../bloc/food_bloc/food_bloc.dart';
 
@@ -70,6 +71,7 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
   void initState() {
     super.initState();
     _mode = widget.mode;
+
     if (_mode == FoodScreenMode.update) {
       _foodItem = widget.foodItem!;
       _nameFoodController.text = _foodItem?.name ?? '';
@@ -93,81 +95,86 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
     _priceFoodController.dispose();
     _descriptionFoodController.dispose();
     _discountFoodController.dispose();
+    _imageFile1.dispose();
+    _imageFile2.dispose();
+    _imageFile3.dispose();
+    _imageFile4.dispose();
+    _applyforDiscount.dispose();
+    _loadingProgress1.dispose();
+    _loadingProgress2.dispose();
+    _loadingProgress3.dispose();
+    _loadingProgress4.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return RepositoryProvider(
+    return BlocProvider(
       create: (context) =>
-          CategoryRepository(categoryApi: CategoryApi(dio: DioClient().dio!)),
-      child: BlocProvider(
-        create: (context) =>
-            CategoryBloc(categoryRepository: context.read<CategoryRepository>())
-              ..add(CategoryFetched()),
-        child: SizedBox(
-          width: 500,
-          child: BlocListener<FoodBloc, FoodState>(
-            listener: (context, state) {
-              if (state is FoodCreateInProgress ||
-                  state is FoodUpdateInProgress) {
-                AppDialog.showLoadingDialog(context);
-              }
-              if (state is FoodCreateSuccess) {
-                pop(context, 2);
-                OverlaySnackbar.show(context, 'Tạo mới thành công');
-                _resetForm();
-              }
-              if (state is FoodUpdateSuccess) {
-                pop(context, 2);
-                OverlaySnackbar.show(context, 'Tạo mới thành công');
-              }
-              if (state is FoodCreateFailure) {
-                Navigator.pop(context);
-                OverlaySnackbar.show(context, state.message,
-                    type: OverlaySnackbarType.error);
-              }
+          CategoryBloc(categoryRepository: context.read<CategoryRepository>())
+            ..add(CategoryFetched()),
+      child: SizedBox(
+        width: 500,
+        child: BlocListener<FoodBloc, FoodState>(
+          listener: (context, state) {
+            if (state is FoodCreateInProgress ||
+                state is FoodUpdateInProgress) {
+              AppDialog.showLoadingDialog(context);
+            }
+            if (state is FoodCreateSuccess) {
+              pop(context, 2);
+              OverlaySnackbar.show(context, 'Tạo mới thành công');
+              _resetForm();
+            }
+            if (state is FoodUpdateSuccess) {
+              pop(context, 2);
+              OverlaySnackbar.show(context, 'Tạo mới thành công');
+            }
+            if (state is FoodCreateFailure) {
+              Navigator.pop(context);
+              OverlaySnackbar.show(context, state.message,
+                  type: OverlaySnackbarType.error);
+            }
 
-              if (state is FoodCreateFailure) {
-                Navigator.pop(context);
-                OverlaySnackbar.show(context, state.message,
-                    type: OverlaySnackbarType.error);
-              }
-            },
-            child: SingleChildScrollView(
-              child: Form(
-                key: AppKeys.createOrUpdateKey,
-                child: Builder(
-                  builder: (context) {
-                    var categoryState = context.watch<CategoryBloc>().state;
-                    return (switch (categoryState) {
-                      CategoryFetchInProgress() => const Loading(),
-                      CategoryFetchFailure(message: final msg) =>
-                        ErrWidget(error: msg),
-                      CategoryFetchSuccess() => Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 52, horizontal: 20),
-                          child: Column(
-                            children: [
-                              Text(
-                                  _mode == FoodScreenMode.create
-                                      ? 'Thêm món mới'.toUpperCase()
-                                      : 'Chỉnh sửa'.toUpperCase(),
-                                  style: kHeadingStyle.copyWith(
-                                      color: AppColors.secondTextColor,
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 40)),
-                              _buildBodyCreateOrUpdateFoodDialog(
-                                  categoryState.categoryModel.categoryItems),
-                              20.verticalSpace,
-                              _buildButtonCreateOrUpdateFood(),
-                              20.verticalSpace,
-                            ],
-                          ),
+            if (state is FoodCreateFailure) {
+              Navigator.pop(context);
+              OverlaySnackbar.show(context, state.message,
+                  type: OverlaySnackbarType.error);
+            }
+          },
+          child: SingleChildScrollView(
+            child: Form(
+              key: AppKeys.createOrUpdateKey,
+              child: Builder(
+                builder: (context) {
+                  var categoryState = context.watch<CategoryBloc>().state;
+                  return (switch (categoryState) {
+                    CategoryFetchInProgress() => const Loading(),
+                    CategoryFetchFailure(message: final msg) =>
+                      ErrWidget(error: msg),
+                    CategoryFetchSuccess() => Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 52, horizontal: 20),
+                        child: Column(
+                          children: [
+                            Text(
+                                _mode == FoodScreenMode.create
+                                    ? 'Thêm món mới'.toUpperCase()
+                                    : 'Chỉnh sửa'.toUpperCase(),
+                                style: kHeadingStyle.copyWith(
+                                    color: AppColors.secondTextColor,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 40)),
+                            _buildBodyCreateOrUpdateFoodDialog(
+                                categoryState.categoryModel.categoryItems),
+                            20.verticalSpace,
+                            _buildButtonCreateOrUpdateFood(),
+                            20.verticalSpace,
+                          ],
                         ),
-                      _ => const SizedBox.shrink()
-                    });
-                  },
-                ),
+                      ),
+                    _ => const SizedBox.shrink()
+                  });
+                },
               ),
             ),
           ),

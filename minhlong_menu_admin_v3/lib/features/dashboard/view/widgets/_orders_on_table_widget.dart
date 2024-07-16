@@ -2,9 +2,11 @@ part of '../screens/dashboard_screen.dart';
 
 extension _OrdersOnTableWidget on _DashboardViewState {
   Widget _buildOrdersOnTable(List<OrderItem> orderList) {
-    return StaggeredGrid.count(
-        crossAxisCount: _gridCount(),
-        children: orderList.map((e) => _buildItem(e)).toList());
+    return orderList.isEmpty
+        ? const Center(child: Text('No order'))
+        : StaggeredGrid.count(
+            crossAxisCount: _gridCount(),
+            children: orderList.map((e) => _buildItem(e)).toList());
   }
 
   int _gridCount() {

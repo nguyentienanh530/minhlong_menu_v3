@@ -37,7 +37,7 @@ class AuthRepository {
 
   Future<Result<void>> logout() async {
     try {
-      // await authApi.logout();
+      await authApi.logout();
       await authLocalDatasource.removeAccessToken();
       return const Result.success(null);
     } catch (e) {

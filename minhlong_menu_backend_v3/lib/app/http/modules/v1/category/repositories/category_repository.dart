@@ -1,9 +1,9 @@
-import 'package:minhlong_menu_backend_v3/app/http/modules/v1/category/models/category.dart';
+import 'package:minhlong_menu_backend_v3/app/http/modules/v1/category/models/categories.dart';
 
 class CategoryRepository {
-  final Category _category;
+  final Categories _category;
 
-  CategoryRepository({required Category category}) : _category = category;
+  CategoryRepository({required Categories category}) : _category = category;
 
   Future getCategoryCount() async {
     return await _category.query().count();

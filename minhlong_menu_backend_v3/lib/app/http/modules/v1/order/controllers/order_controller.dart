@@ -1,11 +1,11 @@
 import 'dart:io';
 import 'package:minhlong_menu_backend_v3/app/http/common/app_response.dart';
-import 'package:minhlong_menu_backend_v3/app/http/modules/v1/order/models/order_detail.dart';
+import 'package:minhlong_menu_backend_v3/app/http/modules/v1/order/models/order_details.dart';
 import 'package:minhlong_menu_backend_v3/app/http/modules/v1/order/repositories/order_details_repository.dart';
 import 'package:minhlong_menu_backend_v3/app/http/modules/v1/order/repositories/order_repository.dart';
 import 'package:minhlong_menu_backend_v3/app/http/modules/v1/table/models/table.dart';
 import 'package:vania/vania.dart';
-import '../../food/models/food.dart';
+import '../../food/models/foods.dart';
 
 class OrderController extends Controller {
   final OrderRepository _orderRepository;
@@ -36,7 +36,7 @@ class OrderController extends Controller {
         for (var food in listFood) {
           var foodID = food['food_id'];
           var quantity = food['quantity'];
-          var foodDB = await Food().query().where('id', '=', foodID).first();
+          var foodDB = await Foods().query().where('id', '=', foodID).first();
           var isDiscount = foodDB!['is_discount'];
           var price = foodDB['price'];
           var discount = foodDB['discount'];
@@ -59,7 +59,7 @@ class OrderController extends Controller {
             'updated_at': DateTime.now()
           });
 
-          await Food()
+          await Foods()
               .query()
               .where('id', '=', foodID)
               .update({'order_count': foodDB['order_count'] + 1});
@@ -124,7 +124,7 @@ class OrderController extends Controller {
 
       return AppResponse().ok(statusCode: HttpStatus.ok, data: formattedOrders);
     } catch (e) {
-      print('error: $e');
+      print('get new orders by table error: $e');
       return AppResponse().error(
           statusCode: HttpStatus.internalServerError,
           message: 'connection error');
@@ -188,7 +188,7 @@ class OrderController extends Controller {
         'data': pageData,
       });
     } catch (e) {
-      print('error: $e');
+      print('get orders error: $e');
       return AppResponse().error(
           statusCode: HttpStatus.internalServerError,
           message: 'connection error');
@@ -216,6 +216,7 @@ class OrderController extends Controller {
         data: orders,
       );
     } catch (e) {
+      print('get orders data chart error: $e');
       return AppResponse().error(
         statusCode: HttpStatus.internalServerError,
         message: 'connection error',
@@ -260,7 +261,7 @@ class OrderController extends Controller {
         data: true,
       );
     } catch (e) {
-      print('error: $e');
+      print('update order error: $e');
       return AppResponse().error(
         statusCode: HttpStatus.internalServerError,
         message: 'connection error',
@@ -284,6 +285,7 @@ class OrderController extends Controller {
         data: true,
       );
     } catch (e) {
+      print('delete order error: $e');
       return AppResponse().error(
         statusCode: HttpStatus.internalServerError,
         message: 'connection error',

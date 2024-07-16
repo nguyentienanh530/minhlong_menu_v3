@@ -28,7 +28,7 @@ extension IndexFood on FoodController {
         statusCode: HttpStatus.ok,
       );
     } catch (e) {
-      print(e);
+      print('get foods error: $e');
       return AppResponse().error(
         statusCode: HttpStatus.internalServerError,
         message: 'connection error',

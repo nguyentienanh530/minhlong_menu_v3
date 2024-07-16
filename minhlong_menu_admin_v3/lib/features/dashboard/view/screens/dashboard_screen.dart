@@ -1,19 +1,16 @@
 import 'dart:convert';
 import 'dart:developer';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:minhlong_menu_admin_v3/common/network/dio_client.dart';
 import 'package:minhlong_menu_admin_v3/common/widget/error_build_image.dart';
 import 'package:minhlong_menu_admin_v3/common/widget/error_widget.dart';
 import 'package:minhlong_menu_admin_v3/core/extensions.dart';
 import 'package:badges/badges.dart' as badges;
 import 'package:minhlong_menu_admin_v3/features/dashboard/bloc/info_bloc.dart';
 import 'package:minhlong_menu_admin_v3/features/dashboard/data/model/info_model.dart';
-import 'package:minhlong_menu_admin_v3/features/dashboard/data/provider/info_api.dart';
 import 'package:minhlong_menu_admin_v3/features/dashboard/data/respositories/info_respository.dart';
 import 'package:minhlong_menu_admin_v3/features/dinner_table/data/model/table_item.dart';
 import 'package:minhlong_menu_admin_v3/features/home/cubit/table_index_selected_cubit.dart';
@@ -37,23 +34,19 @@ class DashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RepositoryProvider(
-      create: (context) => InfoRespository(InfoApi(DioClient().dio!)),
-      child: MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (context) => TableIndexSelectedCubit(),
-          ),
-          BlocProvider(
-            create: (context) => DinnerTableCubit(),
-          ),
-          BlocProvider(
-            create: (context) => InfoBloc(context.read<InfoRespository>())
-              ..add(InfoFetchStarted()),
-          )
-        ],
-        child: const DashboardView(),
-      ),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => TableIndexSelectedCubit(),
+        ),
+        BlocProvider(
+          create: (context) => DinnerTableCubit(),
+        ),
+        BlocProvider(
+          create: (context) => InfoBloc(context.read<InfoRespository>()),
+        )
+      ],
+      child: const DashboardView(),
     );
   }
 }
@@ -72,6 +65,7 @@ class _DashboardViewState extends State<DashboardView>
   final _indexSelectedTable = ValueNotifier(0);
   @override
   void initState() {
+    context.read<InfoBloc>().add(InfoFetchStarted());
     _channel.ready.then((value) {
       _handleDataSocket(_indexSelectedTable.value);
       Ultils.sendSocket(_channel, 'tables', 0);

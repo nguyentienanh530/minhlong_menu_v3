@@ -37,7 +37,7 @@ class Ultils {
     FormData formData = FormData.fromMap({
       "image": await MultipartFile.fromFile(file.path, filename: filePath),
     });
-    final response = await DioClient().dio!.post(
+    final response = await dio.post(
       ApiConfig.uploadImage,
       data: formData,
       queryParameters: {'path': path},

@@ -4,12 +4,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_admin_v3/core/extensions.dart';
 import 'package:minhlong_menu_admin_v3/features/dinner_table/data/model/table_model.dart';
-import 'package:minhlong_menu_admin_v3/features/dinner_table/data/provider/dinner_table_api.dart';
 import 'package:minhlong_menu_admin_v3/features/dinner_table/view/dialogs/create_or_update_dinner_table_dialog.dart';
 import 'package:number_pagination/number_pagination.dart';
 
 import '../../../../common/dialog/app_dialog.dart';
-import '../../../../common/network/dio_client.dart';
 import '../../../../common/snackbar/overlay_snackbar.dart';
 import '../../../../common/widget/common_icon_button.dart';
 import '../../../../common/widget/error_widget.dart';
@@ -30,21 +28,17 @@ class DinnerTableScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RepositoryProvider(
-      create: (context) => DinnerTableRepository(
-          dinnerTableApi: DinnerTableApi(DioClient().dio!)),
-      child: MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (context) =>
-                DinnerTableBloc(context.read<DinnerTableRepository>()),
-          ),
-          BlocProvider(
-            create: (context) => PaginationCubit(),
-          ),
-        ],
-        child: const DinnerTableView(),
-      ),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) =>
+              DinnerTableBloc(context.read<DinnerTableRepository>()),
+        ),
+        BlocProvider(
+          create: (context) => PaginationCubit(),
+        ),
+      ],
+      child: const DinnerTableView(),
     );
   }
 }

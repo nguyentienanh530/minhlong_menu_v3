@@ -8,12 +8,9 @@ class UserController extends Controller {
   Future<Response> index() async {
     try {
       Map? user = Auth().user();
+      print('user: $user');
+      user?.remove('password');
 
-      if (user == null) {
-        return AppResponse()
-            .error(statusCode: HttpStatus.notFound, message: 'user not found');
-      }
-      user.remove('password');
       return AppResponse().ok(statusCode: HttpStatus.ok, data: user);
     } catch (e) {
       return AppResponse().error(

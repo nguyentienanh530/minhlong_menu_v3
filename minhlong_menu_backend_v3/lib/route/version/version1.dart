@@ -1,7 +1,7 @@
 import 'package:minhlong_menu_backend_v3/app/http/modules/v1/food/controllers/food_controller.dart';
 import 'package:minhlong_menu_backend_v3/app/http/modules/v1/info/controllers/info_controller.dart';
 import 'package:vania/vania.dart';
-import '../../app/http/controllers/api/v1/auth_controller.dart';
+import '../../app/http/modules/v1/auth/controllers/auth_controller.dart';
 import '../../app/http/modules/v1/banner/controllers/banner_controller.dart';
 import '../../app/http/modules/v1/category/controllers/category_controller.dart';
 import '../../app/http/modules/v1/order/controllers/order_controller.dart';
@@ -48,7 +48,7 @@ class Version1 implements Route {
     //======= User route =======
     Router.group(() {
       Router.get("", userController.index);
-      Router.put("/update", userController.update);
+      Router.put("update", userController.update);
       Router.delete("/{id}", userController.destroy);
     }, prefix: '/user', middleware: [AuthenticateMiddleware()]);
 
@@ -62,27 +62,36 @@ class Version1 implements Route {
         Router.delete("{id}", _categoryController.destroy);
       },
       prefix: '/categories',
+      middleware: [AuthenticateMiddleware()],
     );
 
     //======= Table route =======
-    Router.group(() {
-      Router.get("", _tableController.index);
-      Router.post("", _tableController.create);
-      Router.patch("{id}", _tableController.update);
-      Router.get('quantity', _tableController.getTableQuantity);
-      Router.delete("{id}", _tableController.destroy);
-    }, prefix: '/tables');
+    Router.group(
+      () {
+        Router.get("", _tableController.index);
+        Router.post("", _tableController.create);
+        Router.patch("{id}", _tableController.update);
+        Router.get('quantity', _tableController.getTableQuantity);
+        Router.delete("{id}", _tableController.destroy);
+      },
+      prefix: '/tables',
+      middleware: [AuthenticateMiddleware()],
+    );
 
     //======= Food route ======
-    Router.group(() {
-      Router.get("", _foodController.index);
-      Router.get("category/{id}", _foodController.getFoodsOnCategory);
-      Router.get("quantity", _foodController.getQuantityOfFood);
-      Router.delete("{id}", _foodController.destroy);
-      Router.post('', _foodController.create);
-      // Router.patch('{id}', _foodController.update);
-      Router.get('search', _foodController.search);
-    }, prefix: '/foods');
+    Router.group(
+      () {
+        Router.get("", _foodController.index);
+        Router.get("category/{id}", _foodController.getFoodsOnCategory);
+        Router.get("quantity", _foodController.getTotalNumberOfFoods);
+        Router.delete("{id}", _foodController.destroy);
+        Router.post('', _foodController.create);
+        Router.patch('{id}', _foodController.update);
+        Router.get('search', _foodController.search);
+      },
+      prefix: '/foods',
+      middleware: [AuthenticateMiddleware()],
+    );
 
     //======= Banner route =======
     Router.group(
@@ -93,21 +102,31 @@ class Version1 implements Route {
         Router.delete("{id}", _bannerController.destroy);
       },
       prefix: '/banners',
-      // middleware: [AuthenticateMiddleware()],
+      middleware: [AuthenticateMiddleware()],
     );
 
     //======= Order route =======
-    Router.group(() {
-      Router.get('new-orders', _orderController.getOrders);
-      Router.post('create-order', _orderController.create);
-      Router.get('new-orders-by-table', _orderController.getNewOrdersByTable);
-      Router.get('orders-chart', _orderController.getOrdersDataChart);
-      Router.patch('{id}', _orderController.update);
-      Router.delete('{id}', _orderController.destroy);
-    }, prefix: '/orders');
+    Router.group(
+      () {
+        Router.get('new-orders', _orderController.getOrders);
+        Router.post('create-order', _orderController.create);
+        Router.get('new-orders-by-table', _orderController.getNewOrdersByTable);
+        Router.get('orders-chart', _orderController.getOrdersDataChart);
+        Router.patch('{id}', _orderController.update);
+        Router.delete('{id}', _orderController.destroy);
+      },
+      prefix: '/orders',
+      middleware: [AuthenticateMiddleware()],
+    );
 
     //======= Info route =======
-    Router.get('/info', _infoController.index);
+    Router.group(
+      () {
+        Router.get('', _infoController.index);
+      },
+      prefix: '/info',
+      middleware: [AuthenticateMiddleware()],
+    );
 
     //======= Upload image =======
     Router.post('/upload-image', uploadImageController.updateImage);

@@ -27,7 +27,7 @@ class InfoController extends Controller {
     try {
       var categoryCount = await _categoryRepository.getCategoryCount();
       var orderCount = await _orderRepository.getOrderSuccess();
-      var foodCount = await _foodRepository.getQuantityOfFood();
+      var foodCount = await _foodRepository.getTotalNumberOfFoods();
       var tableCount = await _tableRepository.getTableCount();
       return AppResponse().ok(
         statusCode: HttpStatus.ok,
@@ -40,6 +40,7 @@ class InfoController extends Controller {
         },
       );
     } catch (e) {
+      print('get info error: $e');
       return AppResponse().error(
         statusCode: HttpStatus.internalServerError,
         message: 'connection error',

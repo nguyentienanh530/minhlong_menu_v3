@@ -25,7 +25,7 @@ import '../../../../core/app_asset.dart';
 import '../../../../core/app_colors.dart';
 import '../../../../core/app_style.dart';
 import '../../../auth/bloc/auth_bloc.dart';
-part '../widgets/side_menu.dart';
+part '../widgets/_side_menu.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -109,7 +109,7 @@ class HomeViewState extends State<HomeView>
     _pageCtrl.dispose();
     _sideMenuCtrl.dispose();
     _title.dispose();
-    _scaffoldKey.currentState!.dispose();
+
     super.dispose();
   }
 

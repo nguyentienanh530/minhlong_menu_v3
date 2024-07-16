@@ -20,52 +20,52 @@ class OrderRepository {
       return await _orders
           .query()
           .select([
-            'order.id',
-            'order.status',
+            'orders.id',
+            'orders.status',
             'table_id',
-            'order_detail.quantity',
-            'order_detail.price',
-            'order_detail.quantity',
-            'order_detail.note',
-            'order_detail.total_amount',
-            'food.name',
-            'food.image1',
-            'food.image2',
-            'food.image3',
-            'food.image4',
-            'order.total_price',
-            'order.payed_at',
-            'order.created_at',
-            'order.updated_at'
+            'order_details.quantity',
+            'order_details.price',
+            'order_details.quantity',
+            'order_details.note',
+            'order_details.total_amount',
+            'foods.name',
+            'foods.image1',
+            'foods.image2',
+            'foods.image3',
+            'foods.image4',
+            'orders.total_price',
+            'orders.payed_at',
+            'orders.created_at',
+            'orders.updated_at'
           ])
-          .join('order_detail', 'order.id', '=', 'order_detail.order_id')
-          .join('food', 'food.id', '=', 'order_detail.food_id')
+          .join('order_details', 'orders.id', '=', 'order_details.order_id')
+          .join('foods', 'foods.id', '=', 'order_details.food_id')
           .where('status', '=', 'new')
           .get();
     } else {
       return await _orders
           .query()
           .select([
-            'order.id',
-            'order.status',
+            'orders.id',
+            'orders.status',
             'table_id',
-            'order_detail.quantity',
-            'order_detail.price',
-            'order_detail.quantity',
-            'order_detail.note',
-            'order_detail.total_amount',
-            'food.name',
-            'food.image1',
-            'food.image2',
-            'food.image3',
-            'food.image4',
-            'order.total_price',
-            'order.payed_at',
-            'order.created_at',
-            'order.updated_at'
+            'order_details.quantity',
+            'order_details.price',
+            'order_details.quantity',
+            'order_details.note',
+            'order_details.total_amount',
+            'foods.name',
+            'foods.image1',
+            'foods.image2',
+            'foods.image3',
+            'foods.image4',
+            'orders.total_price',
+            'orders.payed_at',
+            'orders.created_at',
+            'orders.updated_at'
           ])
-          .join('order_detail', 'order.id', '=', 'order_detail.order_id')
-          .join('food', 'food.id', '=', 'order_detail.food_id')
+          .join('order_details', 'orders.id', '=', 'order_details.order_id')
+          .join('foods', 'foods.id', '=', 'order_details.food_id')
           .where('table_id', '=', tableID)
           .where('status', '=', 'new')
           .get();
@@ -76,26 +76,26 @@ class OrderRepository {
     return await _orders
         .query()
         .select([
-          'order.id',
-          'order.status',
-          'order.table_id',
-          'order_detail.quantity',
-          'order_detail.price',
-          'order_detail.quantity',
-          'order_detail.note',
-          'order_detail.total_amount',
-          'food.name',
-          'food.image1',
-          'food.image2',
-          'food.image3',
-          'food.image4',
-          'order.total_price',
-          'order.payed_at',
-          'order.created_at',
-          'order.updated_at'
+          'orders.id',
+          'orders.status',
+          'orders.table_id',
+          'order_details.quantity',
+          'order_details.price',
+          'order_details.quantity',
+          'order_details.note',
+          'order_details.total_amount',
+          'foods.name',
+          'foods.image1',
+          'foods.image2',
+          'foods.image3',
+          'foods.image4',
+          'orders.total_price',
+          'orders.payed_at',
+          'orders.created_at',
+          'orders.updated_at'
         ])
-        .join('order_detail', 'order.id', '=', 'order_detail.order_id')
-        .join('food', 'food.id', '=', 'order_detail.food_id')
+        .join('order_details', 'orders.id', '=', 'order_details.order_id')
+        .join('foods', 'foods.id', '=', 'order_details.food_id')
         .where('status', '=', status)
         .get();
   }

@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_admin_v3/common/dialog/app_dialog.dart';
-import 'package:minhlong_menu_admin_v3/common/network/dio_client.dart';
 import 'package:minhlong_menu_admin_v3/common/snackbar/overlay_snackbar.dart';
 import 'package:minhlong_menu_admin_v3/common/widget/common_icon_button.dart';
 import 'package:minhlong_menu_admin_v3/common/widget/error_widget.dart';
@@ -15,7 +14,6 @@ import 'package:minhlong_menu_admin_v3/core/extensions.dart';
 import 'package:minhlong_menu_admin_v3/core/utils.dart';
 import 'package:minhlong_menu_admin_v3/features/order/cubit/pagination_cubit.dart';
 import 'package:minhlong_menu_admin_v3/features/order/data/model/food_order_model.dart';
-import 'package:minhlong_menu_admin_v3/features/order/data/provider/order_api.dart';
 import 'package:number_pagination/number_pagination.dart';
 import '../../bloc/order_bloc.dart';
 import '../../data/model/order_item.dart';
@@ -30,27 +28,23 @@ class OrderScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RepositoryProvider(
-      create: (context) =>
-          OrderRepository(orderApi: OrderApi(DioClient().dio!)),
-      child: MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (context) => OrderBloc(context.read<OrderRepository>())
-              ..add(
-                OrderFetchNewOrdersStarted(
-                  status: 'new',
-                  page: 1,
-                  limit: 10,
-                ),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => OrderBloc(context.read<OrderRepository>())
+            ..add(
+              OrderFetchNewOrdersStarted(
+                status: 'new',
+                page: 1,
+                limit: 10,
               ),
-          ),
-          BlocProvider(
-            create: (context) => PaginationCubit(),
-          ),
-        ],
-        child: const OrderView(),
-      ),
+            ),
+        ),
+        BlocProvider(
+          create: (context) => PaginationCubit(),
+        ),
+      ],
+      child: const OrderView(),
     );
   }
 }

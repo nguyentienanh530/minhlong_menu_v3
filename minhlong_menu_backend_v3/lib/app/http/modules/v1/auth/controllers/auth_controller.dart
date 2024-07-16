@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:math';
 import 'package:minhlong_menu_backend_v3/app/http/common/app_response.dart';
 import 'package:vania/vania.dart';
-import '../../../modules/v1/user/models/user.dart';
+import '../../user/models/user.dart';
 
 class AuthController extends Controller {
   /// Login
@@ -30,10 +30,11 @@ class AuthController extends Controller {
       // If you have guard and multi access like user and admin you can pass the guard Auth().guard('admin')
       Map<String, dynamic> token = await Auth().login(user).createToken(
           withRefreshToken: true,
-          expiresIn: Duration(days: 1)); // 1 minute for testing
+          expiresIn: Duration(minutes: 1)); // 1 minute for testing
 
       return AppResponse().ok(data: token, statusCode: HttpStatus.ok);
     } catch (e) {
+      print('login error: $e');
       return AppResponse().error(
           statusCode: HttpStatus.internalServerError,
           message: 'connection error');
@@ -100,12 +101,23 @@ class AuthController extends Controller {
 
   Future<Response> refreshToken(Request request) async {
     try {
-      var refreshToken = request.input('refresh_token');
+      String? refreshToken = request.input('refresh_token');
 
-      final newToken = Auth().createTokenByRefreshToken(refreshToken,
-          expiresIn: Duration(days: 1)); // 1 minute for testing
-      return AppResponse().ok(data: newToken, statusCode: HttpStatus.ok);
+      if (refreshToken == null) {
+        return AppResponse().error(
+            message: 'Invalid token', statusCode: HttpStatus.unauthorized);
+      }
+
+      print('isAuthorized: ${Auth().isAuthorized}');
+      if (Auth().isAuthorized) {
+        return AppResponse().ok(statusCode: HttpStatus.ok);
+      }
+
+      final token = await Auth().createTokenByRefreshToken(refreshToken,
+          expiresIn: Duration(minutes: 1));
+      return AppResponse().ok(statusCode: HttpStatus.created, data: token);
     } catch (e) {
+      print('refreshToken error: $e');
       return AppResponse().error(
         statusCode: HttpStatus.internalServerError,
         message: 'connection error',
@@ -118,6 +130,7 @@ class AuthController extends Controller {
       var isDeleted = await Auth().deleteCurrentToken();
       return AppResponse().ok(statusCode: HttpStatus.ok, data: isDeleted);
     } catch (e) {
+      print('logout error: $e');
       return AppResponse().error(
         statusCode: HttpStatus.internalServerError,
         message: 'connection error',

@@ -59,15 +59,8 @@ class UserApi {
   final Dio _dio;
   UserApi({required Dio dio}) : _dio = dio;
 
-  Future<UserModel> getUser({required String token}) async {
-    final response = await _dio.get(
-      ApiConfig.user,
-      options: Options(
-        headers: {
-          'Authorization': 'Bearer $token',
-        },
-      ),
-    );
+  Future<UserModel> getUser() async {
+    final response = await _dio.get(ApiConfig.user);
     return UserModel.fromJson(response.data['data']);
   }
 }

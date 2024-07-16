@@ -266,10 +266,10 @@ extension _FoodBodyWidget on _FoodViewState {
                   value: isShowFood.value ?? false,
                   onChanged: (value) {
                     isShowFood.value = value;
-                    FoodApi(DioClient().dio!).updateFood(
-                        food: foodItem.copyWith(
-                      isShow: value,
-                    ));
+                    // FoodApi(DioClient().dio!).updateFood(
+                    //     food: foodItem.copyWith(
+                    //   isShow: value,
+                    // ));
                   });
             },
           ),

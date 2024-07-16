@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:minhlong_menu_backend_v3/app/http/common/app_response.dart';
 import 'package:minhlong_menu_backend_v3/app/http/modules/v1/food/repositories/food_repository.dart';
-import 'package:minhlong_menu_backend_v3/app/http/modules/v1/food/models/food.dart';
 import 'package:vania/vania.dart';
 
 part '../controllers/_index_food.dart';
@@ -48,9 +47,9 @@ class FoodController extends Controller {
     }
   }
 
-  Future<Response> getQuantityOfFood() async {
+  Future<Response> getTotalNumberOfFoods() async {
     try {
-      var quantity = await Food().query().count();
+      var quantity = await _foodRepository.getTotalNumberOfFoods();
       return AppResponse().ok(data: quantity, statusCode: HttpStatus.ok);
     } catch (e) {
       return AppResponse().error(

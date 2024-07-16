@@ -1,11 +1,11 @@
 import 'dart:async';
 
-import '../models/food.dart';
+import '../models/foods.dart';
 
 class FoodRepository {
-  final Food _food;
+  final Foods _food;
 
-  FoodRepository({required Food food}) : _food = food;
+  FoodRepository({required Foods food}) : _food = food;
 
   Future get(
       {required String byProperty,
@@ -13,10 +13,10 @@ class FoodRepository {
       required int limit}) async {
     var foods = await _food
         .query()
-        .select(['food.*', 'category.name as category_name'])
+        .select(['foods.*', 'categories.name as category_name'])
         .offset(startIndex)
         .limit(limit)
-        .join('category', 'category.id', '=', 'food.category_id')
+        .join('categories', 'categories.id', '=', 'foods.category_id')
         .orderBy(byProperty, 'desc')
         .get();
     return foods;
@@ -43,7 +43,7 @@ class FoodRepository {
     return count;
   }
 
-  Future getQuantityOfFood() async {
+  Future getTotalNumberOfFoods() async {
     var quantity = await _food.query().count();
     return quantity;
   }
