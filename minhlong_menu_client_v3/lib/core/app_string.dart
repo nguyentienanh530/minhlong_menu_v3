@@ -70,4 +70,8 @@ class AppString {
   static String uploadImage = 'Tải lên ';
   static String back = 'Trở lại ';
   static String pay = 'Thanh toán';
+  static String changePassword = 'Thay đổi mật khẩu';
+  static String newPassword = 'Mật khẩu mới';
+  static String oldPassword = 'Mật khẩu cũ';
+  static String reNewPassword = 'Nhập lại mật khẩu mới';
 }

@@ -11,6 +11,7 @@ import 'package:minhlong_menu_client_v3/core/app_style.dart';
 import 'package:minhlong_menu_client_v3/core/extensions.dart';
 
 import '../../../../Routes/app_route.dart';
+import '../../../../common/widget/common_back_button.dart';
 import '../../../../core/app_asset.dart';
 import '../../../../core/app_string.dart';
 
@@ -24,7 +25,6 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  final _isEditProfile = ValueNotifier(false);
   final _isUsePrinter = ValueNotifier(false);
 
   final List<User> _userList = [
@@ -44,16 +44,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            leading: BackButton(onPressed: () => context.pop()),
-            title: Text(AppString.profile),
+            leading: CommonBackButton(
+              onTap: () => context.pop(),
+            ),
+            title: FittedBox(child: Text(AppString.profile)),
             expandedHeight: context.isPortrait
                 ? 0.4 * context.sizeDevice.height
                 : 0.4 * context.sizeDevice.width,
             flexibleSpace: FlexibleSpaceBar(background: imageProfileWidget()),
           ),
-          SliverToBoxAdapter(
-            child: _bodyInfoUser(),
-          )
+          SliverToBoxAdapter(child: _bodyInfoUser())
         ],
       ),
     );

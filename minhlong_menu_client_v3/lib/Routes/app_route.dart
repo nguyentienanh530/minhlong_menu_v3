@@ -9,9 +9,11 @@ import 'package:minhlong_menu_client_v3/features/category/view/screen/category_s
 import 'package:minhlong_menu_client_v3/features/food/data/model/food_item.dart';
 import 'package:minhlong_menu_client_v3/features/food/view/screen/food_screen.dart';
 import 'package:minhlong_menu_client_v3/features/home/view/screens/home_screen.dart';
+import 'package:minhlong_menu_client_v3/features/profile/view/screen/change_password_screen.dart';
 import 'package:minhlong_menu_client_v3/features/profile/view/screen/edit_profile_screen.dart';
 import 'package:minhlong_menu_client_v3/features/profile/view/screen/profile_screen.dart';
 import 'package:minhlong_menu_client_v3/features/table/view/screen/table_screen.dart';
+
 import '../features/food/view/screen/food_detail_screen.dart';
 
 class AppRoute {
@@ -21,6 +23,7 @@ class AppRoute {
   static const String forgotPassword = '/forgot-password';
   static const String signUp = '/sign-up';
   static const String resetPassword = '/reset-password';
+  static const String changePassword = '/change-password';
   static const String dashboard = '/dashboard';
   static const String foods = '/foods';
   static const String carts = '/carts';
@@ -31,6 +34,7 @@ class AppRoute {
   static const String profile = '/profile';
   static const String editProfile = '/edit-profile';
   static const String noProductPage = '/no-product-page';
+  static const String searchPage = '/search-page';
 
   static const publicRoute = [login, forgotPassword, signUp];
 
@@ -157,6 +161,26 @@ class AppRoute {
             context: context,
             state: state,
             child: FoodScreen(property: state.extra as String),
+          );
+        },
+      ),
+      GoRoute(
+        path: searchPage,
+        pageBuilder: (context, state) {
+          return buildPageWithDefaultTransition(
+            context: context,
+            state: state,
+            child: FoodScreen(property: state.extra as String),
+          );
+        },
+      ),
+      GoRoute(
+        path: changePassword,
+        pageBuilder: (context, state) {
+          return buildPageWithDefaultTransition(
+            context: context,
+            state: state,
+            child: const ChangePassword(),
           );
         },
       ),

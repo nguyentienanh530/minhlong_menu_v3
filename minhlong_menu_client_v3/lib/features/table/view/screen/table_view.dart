@@ -39,7 +39,19 @@ class _TableViewState extends State<TableView> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             CommonBackButton(onTap: () => context.pop()),
-            _titleTable(),
+            Expanded(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: FittedBox(
+                  child: Text(
+                    AppString.chooseTable,
+                    style: kHeadingStyle.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ),
             const SizedBox(width: 20)
           ],
         ),
@@ -60,15 +72,6 @@ class _TableViewState extends State<TableView> {
           _ => const SizedBox()
         });
       }),
-    );
-  }
-
-  Widget _titleTable() {
-    return Text(
-      AppString.chooseTable,
-      style: kHeadingStyle.copyWith(
-        fontWeight: FontWeight.bold,
-      ),
     );
   }
 }

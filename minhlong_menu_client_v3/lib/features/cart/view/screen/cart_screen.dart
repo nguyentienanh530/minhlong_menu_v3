@@ -10,6 +10,7 @@ import 'package:minhlong_menu_client_v3/core/app_colors.dart';
 import 'package:minhlong_menu_client_v3/core/app_const.dart';
 import 'package:minhlong_menu_client_v3/core/app_style.dart';
 import 'package:minhlong_menu_client_v3/features/food/data/model/food_item.dart';
+
 import '../../../../core/app_string.dart';
 import '../../../../core/utils.dart';
 
@@ -51,7 +52,7 @@ class _CartScreenState extends State<CartScreen> {
           SliverAppBar(
             pinned: true,
             centerTitle: true,
-            title: Text(AppString.cart),
+            title: FittedBox(child: Text(AppString.cart)),
             leading: CommonBackButton(onTap: () => context.pop()),
           ),
           SliverToBoxAdapter(
@@ -59,14 +60,17 @@ class _CartScreenState extends State<CartScreen> {
               children: [
                 _cartItem(),
                 30.verticalSpace,
-                ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.themeColor),
-                    onPressed: () {},
-                    child: Text(
-                      AppString.pay,
-                      style: kBodyWhiteStyle,
-                    ))
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.themeColor),
+                      onPressed: () {},
+                      child: Text(
+                        AppString.pay,
+                        style: kBodyWhiteStyle,
+                      )),
+                )
               ],
             ),
           )

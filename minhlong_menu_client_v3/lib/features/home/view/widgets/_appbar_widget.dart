@@ -36,29 +36,15 @@ extension _AppBarWidget on _HomeViewState {
     );
   }
 
-  Widget _tableButton() {
+  Widget _iconActionButtonAppBar({IconData? icon, void Function()? onPressed}) {
     return IconButton(
       style: IconButton.styleFrom(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(defaultBorderRadius / 4),
         ),
       ),
-      onPressed: () => context.push(AppRoute.dinnerTables),
-      icon: const Icon(Icons.table_bar_outlined, color: AppColors.white),
-    );
-  }
-
-  Widget _userProfile() {
-    return IconButton(
-      style: IconButton.styleFrom(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(defaultBorderRadius / 4),
-        ),
-      ),
-      onPressed: () {
-        context.push(AppRoute.profile);
-      },
-      icon: const Icon(Icons.tune, color: AppColors.white),
+      onPressed: onPressed,
+      icon: Icon(icon, color: AppColors.themeColor),
     );
   }
 }

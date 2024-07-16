@@ -57,18 +57,19 @@ extension _EditProfileWidget on _EditProfileScreenState {
 
   Widget _bodyEditInfoUser() {
     return Container(
+      width: double.infinity,
       padding: const EdgeInsets.all(defaultPadding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _textProfile(AppString.fullName),
-          _TextBoxProfile(controllers: _nameController),
+          TextBoxProfile(controllers: _nameController),
           10.verticalSpace,
           _textProfile(AppString.email),
-          _TextBoxProfile(controllers: _emailController),
+          TextBoxProfile(controllers: _emailController),
           10.verticalSpace,
           _textProfile(AppString.phoneNumber),
-          _TextBoxProfile(controllers: _phoneController),
+          TextBoxProfile(controllers: _phoneController),
           20.verticalSpace,
           _buttonEditProfile(),
         ],
@@ -98,9 +99,16 @@ extension _EditProfileWidget on _EditProfileScreenState {
 }
 
 // ignore: must_be_immutable
-class _TextBoxProfile extends StatelessWidget {
-  _TextBoxProfile({required this.controllers});
+class TextBoxProfile extends StatelessWidget {
+  TextBoxProfile({
+    super.key,
+    required this.controllers,
+    this.labelText,
+    this.labelStyle,
+  });
   TextEditingController controllers = TextEditingController();
+  String? labelText;
+  TextStyle? labelStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -108,6 +116,8 @@ class _TextBoxProfile extends StatelessWidget {
       contentPadding: const EdgeInsets.symmetric(
           horizontal: defaultPadding, vertical: defaultPadding - 6),
       onChanged: (p0) {},
+      labelText: labelText,
+      labelStyle: labelStyle,
       controller: controllers,
       style: kBodyStyle.copyWith(
           color: AppColors.black, fontWeight: FontWeight.bold, fontSize: 18),
