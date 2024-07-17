@@ -5,7 +5,7 @@ part 'login_dto.g.dart';
 @freezed
 class LoginDto with _$LoginDto {
   factory LoginDto({
-    @Default('') @JsonKey(name: 'phone_number') String phoneNumber,
+    @Default(0) @JsonKey(name: 'phone_number') int phoneNumber,
     @Default('') @JsonKey(name: 'password') String password,
   }) = _LoginDto;
 

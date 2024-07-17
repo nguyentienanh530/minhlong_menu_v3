@@ -12,6 +12,7 @@ import 'package:minhlong_menu_admin_v3/features/food/view/screens/food_screen.da
 import 'package:minhlong_menu_admin_v3/features/home/view/screens/home_screen.dart';
 import 'package:minhlong_menu_admin_v3/features/order/view/screens/order_screen.dart';
 import 'package:minhlong_menu_admin_v3/features/user/data/model/user_model.dart';
+import 'package:minhlong_menu_admin_v3/features/user/view/widgets/change_password.dart';
 
 import '../features/user/view/screens/edit_profile_screen.dart';
 // import 'package:minhlong_menu_admin_v3/features/setting/view/screens/setting_screen.dart';
@@ -147,6 +148,16 @@ class AppRoute {
             child: EditProfileScreen(
               user: state.extra as UserModel,
             ),
+          );
+        },
+      ),
+      GoRoute(
+        path: updatePassword,
+        pageBuilder: (context, state) {
+          return buildPageWithDefaultTransition(
+            context: context,
+            state: state,
+            child: const ChangePassword(),
           );
         },
       ),

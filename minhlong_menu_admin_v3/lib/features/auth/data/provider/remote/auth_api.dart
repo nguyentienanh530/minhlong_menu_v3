@@ -21,4 +21,10 @@ class AuthApi {
     final response = await dio.post(ApiConfig.logout);
     return response.data['data'];
   }
+
+  Future<bool> forgotPassword({required LoginDto login}) async {
+    final response =
+        await dio.post(ApiConfig.forgotPassword, data: login.toJson());
+    return response.data['data'];
+  }
 }

@@ -17,7 +17,6 @@ import '../../../../core/app_asset.dart';
 import '../../../../core/app_string.dart';
 import '../../../../core/app_style.dart';
 import '../../../user/bloc/user_bloc.dart';
-import '../../../user/view/widgets/change_password.dart';
 
 part '../widgets/_setting_widgets.dart';
 

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:minhlong_menu_admin_v3/core/extensions.dart';
 
 import '../../../../common/widget/common_text_field.dart';
 import '../../../../core/app_colors.dart';
 import '../../../../core/app_const.dart';
+import '../../../../core/app_key.dart';
 import '../../../../core/app_res.dart';
 import '../../../../core/app_string.dart';
 import '../../../../core/app_style.dart';
@@ -42,34 +44,46 @@ class _ChangePasswordState extends State<ChangePassword> {
 
   @override
   Widget build(BuildContext context) {
-    return _buildChangePassword();
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Đổi mật khẩu', style: kHeadingStyle),
+        centerTitle: true,
+      ),
+      body: context.isMobile
+          ? Card(child: _buildChangePassword())
+          : Row(
+              children: [
+                const Spacer(),
+                Expanded(flex: 2, child: Card(child: _buildChangePassword())),
+                const Spacer(),
+              ],
+            ),
+    );
   }
 
   Widget _buildChangePassword() {
     return Padding(
       padding: const EdgeInsets.all(defaultPadding),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Center(
-            child: Text(AppString.changePassword,
-                style: kHeadingStyle.copyWith(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 25,
-                    color: AppColors.secondTextColor)),
-          ),
-          20.verticalSpace,
-          5.verticalSpace,
-          _buildOldPassworTextField(),
-          20.verticalSpace,
-          5.verticalSpace,
-          _buildNewPassworTextField(),
-          20.verticalSpace,
-          5.verticalSpace,
-          _buildComfirmPassworTextField(),
-          40.verticalSpace,
-          _buttonChangePassword(),
-        ],
+      child: Form(
+        key: AppKeys.updatePasswordKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _buildOldPassworTextField(),
+            20.verticalSpace,
+            _buildNewPassworTextField(),
+            20.verticalSpace,
+            _buildComfirmPassworTextField(),
+            20.verticalSpace,
+            Text(
+                'Mật khẩu bao gồm (1 ký tự Hoa, 1 ký tự Thường, 1 ký tự số, 1 ký tự đặc biệt và tối thiểu 8 ký tự)',
+                style:
+                    kCaptionStyle.copyWith(color: AppColors.secondTextColor)),
+            40.verticalSpace,
+            _buttonChangePassword(),
+          ],
+        ),
       ),
     );
   }
@@ -79,7 +93,11 @@ class _ChangePasswordState extends State<ChangePassword> {
       child: ElevatedButton(
           style:
               ElevatedButton.styleFrom(backgroundColor: AppColors.themeColor),
-          onPressed: () {},
+          onPressed: () {
+            if (AppKeys.updatePasswordKey.currentState!.validate()) {
+              // context.pop();
+            }
+          },
           child: Text(
             AppString.edit,
             style: kBodyWhiteStyle,
@@ -100,7 +118,8 @@ class _ChangePasswordState extends State<ChangePassword> {
             validator: (password) => AppRes.validatePassword(password)
                 ? null
                 : 'Mật khẩu không hợp lệ',
-            labelStyle: kBodyStyle.copyWith(color: AppColors.secondTextColor),
+            labelStyle:
+                kSubHeadingStyle.copyWith(color: AppColors.secondTextColor),
             onChanged: (value) {},
             obscureText: !value,
             prefixIcon: Icon(
@@ -127,7 +146,8 @@ class _ChangePasswordState extends State<ChangePassword> {
             controller: _newPasswordController,
             onFieldSubmitted: (p0) {},
             labelText: '${AppString.newPassword} *',
-            labelStyle: kBodyStyle.copyWith(color: AppColors.secondTextColor),
+            labelStyle:
+                kSubHeadingStyle.copyWith(color: AppColors.secondTextColor),
             validator: (password) => AppRes.validatePassword(password)
                 ? null
                 : 'Mật khẩu không hợp lệ',
@@ -157,7 +177,8 @@ class _ChangePasswordState extends State<ChangePassword> {
             controller: _confirmPasswordController,
             onFieldSubmitted: (p0) {},
             labelText: '${AppString.reNewPassword} *',
-            labelStyle: kBodyStyle.copyWith(color: AppColors.secondTextColor),
+            labelStyle:
+                kSubHeadingStyle.copyWith(color: AppColors.secondTextColor),
             validator: (password) => AppRes.validatePassword(password)
                 ? null
                 : 'Mật khẩu không hợp lệ',

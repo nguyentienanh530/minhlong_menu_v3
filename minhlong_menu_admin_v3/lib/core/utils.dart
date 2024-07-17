@@ -8,7 +8,6 @@ import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:minhlong_menu_admin_v3/common/network/dio_client.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
-import 'package:path/path.dart' as pathFile;
 import 'api_config.dart';
 
 class Ultils {
@@ -26,39 +25,64 @@ class Ultils {
     return imageFile;
   }
 
-  static Future<String?> uploadImage(
-      {required File file,
-      required String path,
-      required ValueNotifier<double> loading}) async {
-    // final Response response = await dioClient.dio!
-    //     .post(ApiConfig.uploadAvatar, data: {'avatar': file});
-    // var filePath = file.path.split('/').last;
+  static Future<String?> uploadImage({
+    required File file,
+    required String path,
+    required ValueNotifier<double> loading,
+  }) async {
+    try {
+      String newFileName = '${DateTime.now().millisecondsSinceEpoch}.webp';
 
-    String dir = pathFile.dirname(file.path);
-    String newPath = pathFile.join(dir, '${DateTime.now()}.webp');
+      FormData formData = FormData.fromMap({
+        "image": await MultipartFile.fromFile(file.path, filename: newFileName),
+      });
 
-    file.renameSync(newPath);
-    file = File(newPath);
-    print('filePath: $newPath');
-    FormData formData = FormData.fromMap({
-      "image": await MultipartFile.fromFile(file.path,
-          filename: pathFile.basename(file.path)),
-    });
-    final response = await dio.post(
-      ApiConfig.uploadImage,
-      data: formData,
-      queryParameters: {'path': path},
-      onSendProgress: (count, total) {
-        Logger().w('count: $count, total: $total');
-        loading.value = 100.0 * (count / total);
-      },
-    );
-    if (response.statusCode != 200) {
+      // Send the request using Dio
+      final response = await dio.post(
+        ApiConfig.uploadImage,
+        data: formData,
+        queryParameters: {'path': path},
+        onSendProgress: (count, total) {
+          loading.value = 100.0 * (count / total);
+        },
+      );
+
+      if (response.statusCode != HttpStatus.ok) {
+        return null;
+      }
+
+      return response.data['image'];
+    } on DioException catch (e) {
+      print("Error uploading image: $e");
       return null;
     }
-
-    return response.data['image'];
   }
+
+  // static Future<String?> uploadImage(
+  //     {required File file,
+  //     required String path,
+  //     required ValueNotifier<double> loading}) async {
+  //   await file.rename('${DateTime.now()}.webp');
+  //   var filePath = file.path.split('/').last;
+
+  //   FormData formData = FormData.fromMap({
+  //     "image": await MultipartFile.fromFile(file.path, filename: filePath),
+  //   });
+  //   final response = await dio.post(
+  //     ApiConfig.uploadImage,
+  //     data: formData,
+  //     queryParameters: {'path': path},
+  //     onSendProgress: (count, total) {
+  //       Logger().w('count: $count, total: $total');
+  //       loading.value = 100.0 * (count / total);
+  //     },
+  //   );
+  //   if (response.statusCode != 200) {
+  //     return null;
+  //   }
+
+  //   return response.data['image'];
+  // }
 
   static String formatDateToString(String date,
       {bool isShort = false, bool isTime = false}) {

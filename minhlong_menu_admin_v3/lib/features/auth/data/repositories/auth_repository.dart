@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:logger/logger.dart';
 import 'package:minhlong_menu_admin_v3/common/network/result.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/data/auth_local_datasource/auth_local_datasource.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/data/model/access_token.dart';
@@ -42,6 +43,17 @@ class AuthRepository {
       return const Result.success(null);
     } catch (e) {
       return Result.failure('$e');
+    }
+  }
+
+  Future<Result<bool>> forgotPassword({required LoginDto login}) async {
+    try {
+      final result = await authApi.forgotPassword(login: login);
+      return Result.success(result);
+    } on DioException catch (e) {
+      Logger().e('forgot password error: $e');
+      final errorMessage = DioExceptions.fromDioError(e).toString();
+      return Result.failure(errorMessage);
     }
   }
 }

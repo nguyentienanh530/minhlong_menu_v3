@@ -30,6 +30,7 @@ class UploadImageController extends Controller {
           {'message': 'User avatar updated successfully', 'image': avatarPath},
           HttpStatus.ok);
     } catch (e) {
+      print('Error uploading image: $e');
       return Response.json(
           {'message': 'Error'}, HttpStatus.internalServerError);
     }

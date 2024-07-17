@@ -21,7 +21,7 @@ LoginDto _$LoginDtoFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$LoginDto {
   @JsonKey(name: 'phone_number')
-  String get phoneNumber => throw _privateConstructorUsedError;
+  int get phoneNumber => throw _privateConstructorUsedError;
   @JsonKey(name: 'password')
   String get password => throw _privateConstructorUsedError;
 
@@ -37,7 +37,7 @@ abstract class $LoginDtoCopyWith<$Res> {
       _$LoginDtoCopyWithImpl<$Res, LoginDto>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'phone_number') String phoneNumber,
+      {@JsonKey(name: 'phone_number') int phoneNumber,
       @JsonKey(name: 'password') String password});
 }
 
@@ -61,7 +61,7 @@ class _$LoginDtoCopyWithImpl<$Res, $Val extends LoginDto>
       phoneNumber: null == phoneNumber
           ? _value.phoneNumber
           : phoneNumber // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
       password: null == password
           ? _value.password
           : password // ignore: cast_nullable_to_non_nullable
@@ -79,7 +79,7 @@ abstract class _$$LoginDtoImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'phone_number') String phoneNumber,
+      {@JsonKey(name: 'phone_number') int phoneNumber,
       @JsonKey(name: 'password') String password});
 }
 
@@ -101,7 +101,7 @@ class __$$LoginDtoImplCopyWithImpl<$Res>
       phoneNumber: null == phoneNumber
           ? _value.phoneNumber
           : phoneNumber // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
       password: null == password
           ? _value.password
           : password // ignore: cast_nullable_to_non_nullable
@@ -114,7 +114,7 @@ class __$$LoginDtoImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$LoginDtoImpl implements _LoginDto {
   _$LoginDtoImpl(
-      {@JsonKey(name: 'phone_number') this.phoneNumber = '',
+      {@JsonKey(name: 'phone_number') this.phoneNumber = 0,
       @JsonKey(name: 'password') this.password = ''});
 
   factory _$LoginDtoImpl.fromJson(Map<String, dynamic> json) =>
@@ -122,7 +122,7 @@ class _$LoginDtoImpl implements _LoginDto {
 
   @override
   @JsonKey(name: 'phone_number')
-  final String phoneNumber;
+  final int phoneNumber;
   @override
   @JsonKey(name: 'password')
   final String password;
@@ -163,7 +163,7 @@ class _$LoginDtoImpl implements _LoginDto {
 
 abstract class _LoginDto implements LoginDto {
   factory _LoginDto(
-      {@JsonKey(name: 'phone_number') final String phoneNumber,
+      {@JsonKey(name: 'phone_number') final int phoneNumber,
       @JsonKey(name: 'password') final String password}) = _$LoginDtoImpl;
 
   factory _LoginDto.fromJson(Map<String, dynamic> json) =
@@ -171,7 +171,7 @@ abstract class _LoginDto implements LoginDto {
 
   @override
   @JsonKey(name: 'phone_number')
-  String get phoneNumber;
+  int get phoneNumber;
   @override
   @JsonKey(name: 'password')
   String get password;

@@ -14,3 +14,8 @@ class AuthRegisterStarted extends AuthEvent {}
 class AuthAuthenticateStarted extends AuthEvent {}
 
 class AuthLogoutStarted extends AuthEvent {}
+
+final class AuthForgotPasswordStarted extends AuthEvent {
+  AuthForgotPasswordStarted(this.login);
+  final LoginDto login;
+}

@@ -149,19 +149,22 @@ class AuthController extends Controller {
   Future<Response> forgotPassword(Request request) async {
     request
         .validate({'phone_number': 'required|numeric', 'password': 'required'});
+    var params = request.all();
 
-    String phoneNumber = request.input('phone_number');
+    int? phoneNumber = params['phone_number'];
 
-    String password = request.input('password').toString();
+    String? password = params['password'];
+    print('phoneNumber: $phoneNumber');
+    print('password: $password');
     try {
       final user =
           await Users().query().where('phone_number', '=', phoneNumber).first();
-
+      print('user: $user');
       if (user == null) {
         return AppResponse()
             .error(statusCode: HttpStatus.notFound, message: 'user not found');
       }
-      if (Hash().verify(password, user['password'])) {
+      if (Hash().verify(password!, user['password'])) {
         return AppResponse().error(
             statusCode: HttpStatus.badRequest,
             message: 'new password same as old password');
@@ -169,12 +172,12 @@ class AuthController extends Controller {
 
       await Users().query().update({
         'password': Hash().make(password.toString()),
-        'updated_at': DateTime.now()
       });
 
       return AppResponse().ok(
           data: true, statusCode: HttpStatus.ok, message: 'Password updated');
     } catch (e) {
+      print('forgotPassword error: $e');
       return AppResponse().error(
           statusCode: HttpStatus.internalServerError,
           message: 'connection error');

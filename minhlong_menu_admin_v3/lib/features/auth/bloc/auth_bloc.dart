@@ -15,6 +15,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthLoginStarted>(_onLoginStarted);
     on<AuthAuthenticateStarted>(_onAuthenticateStarted);
     on<AuthLogoutStarted>(_onLogoutStarted);
+    on<AuthForgotPasswordStarted>(_onAuthForgotPasswordStarted);
   }
 
   final AuthRepository authRepository;
@@ -63,5 +64,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(AuthLogoutSuccess());
       },
     );
+  }
+
+  FutureOr<void> _onAuthForgotPasswordStarted(
+      AuthForgotPasswordStarted event, Emitter<AuthState> emit) async {
+    emit(AuthForgotPasswordInProgress());
+    final result = await authRepository.forgotPassword(login: event.login);
+    result.when(failure: (String failure) {
+      emit(AuthForgotPasswordFailure(failure));
+    }, success: (_) {
+      emit(AuthForgotPasswordSuccess());
+    });
   }
 }

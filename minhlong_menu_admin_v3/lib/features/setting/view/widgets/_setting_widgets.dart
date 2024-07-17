@@ -66,7 +66,7 @@ extension _SettingWidgets on _SettingScreenState {
 
   Widget _buildTitleChangePassword() {
     return _ItemProfile(
-      onTap: () => _showChangePasswordDialog(),
+      onTap: () => context.push(AppRoute.updatePassword),
       colorIcon: AppColors.themeColor,
       svgPath: AppAsset.lock,
       title: AppString.changePassword,
@@ -130,21 +130,6 @@ extension _SettingWidgets on _SettingScreenState {
           ),
         );
       },
-    );
-  }
-
-  _showChangePasswordDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => Dialog(
-        backgroundColor: AppColors.white,
-        child: FittedBox(
-          child: Container(
-            constraints: const BoxConstraints(maxWidth: 500),
-            child: const ChangePassword(),
-          ),
-        ),
-      ),
     );
   }
 }

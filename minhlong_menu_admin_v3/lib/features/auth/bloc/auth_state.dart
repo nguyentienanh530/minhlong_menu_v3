@@ -35,3 +35,13 @@ final class AuthLogoutFailure extends AuthState {
 
   final String message;
 }
+
+final class AuthForgotPasswordInProgress extends AuthState {}
+
+final class AuthForgotPasswordSuccess extends AuthState {}
+
+final class AuthForgotPasswordFailure extends AuthState {
+  AuthForgotPasswordFailure(this.message);
+
+  final String message;
+}
