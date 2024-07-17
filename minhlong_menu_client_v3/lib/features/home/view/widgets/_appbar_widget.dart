@@ -37,14 +37,19 @@ extension _AppBarWidget on _HomeViewState {
   }
 
   Widget _iconActionButtonAppBar({IconData? icon, void Function()? onPressed}) {
-    return IconButton(
-      style: IconButton.styleFrom(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(defaultBorderRadius / 4),
-        ),
-      ),
-      onPressed: onPressed,
-      icon: Icon(icon, color: AppColors.themeColor),
-    );
+    return ValueListenableBuilder<bool>(
+        valueListenable: _isScrolledNotifier,
+        builder: (context, isScrolled, child) => IconButton(
+              style: IconButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(defaultBorderRadius / 4),
+                ),
+              ),
+              onPressed: onPressed,
+              icon: Icon(icon,
+                  color: isScrolled
+                      ? AppColors.themeColor
+                      : AppColors.secondTextColor),
+            ));
   }
 }

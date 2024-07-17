@@ -48,12 +48,24 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
   final TextEditingController _searchText = TextEditingController();
   final _indexPage = ValueNotifier(0);
+  final ScrollController _scrollController = ScrollController();
+  final ValueNotifier<bool> _isScrolledNotifier = ValueNotifier(false);
 
   @override
   void dispose() {
     super.dispose();
     _indexPage.dispose();
     _searchText.dispose();
+    _scrollController.removeListener(_scrollListener);
+    _isScrolledNotifier.dispose();
+  }
+
+  void _scrollListener() {
+    if (_scrollController.hasClients && _scrollController.offset > 0) {
+      _isScrolledNotifier.value = true;
+    } else {
+      _isScrolledNotifier.value = false;
+    }
   }
 
   @override

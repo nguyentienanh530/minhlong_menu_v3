@@ -39,7 +39,7 @@ class AppRoute {
   static const publicRoute = [login, forgotPassword, signUp];
 
   static GoRouter routes = GoRouter(
-    initialLocation: home,
+    initialLocation: login,
     // redirect: (context, state) {
     //   if (publicRoute.contains(state.fullPath)) {
     //     return null;
