@@ -2,18 +2,31 @@ part of '../controllers/food_controller.dart';
 
 extension IndexFood on FoodController {
   Future<Response> index(Request request) async {
-    int limit = request.input('limit') ?? 10;
-    int page = request.input('page') ?? 1;
+    var params = request.all();
+    int? page = params['page'] != null ? int.tryParse(params['page']) : null;
+    int? limit = params['limit'] != null ? int.tryParse(params['limit']) : null;
     String property = request.input('property') ?? 'created_at';
+    print('params: $params');
 
     try {
-      var totalItems = await _foodRepository.foodCount();
+      final userID = Auth().id();
+
+      if (userID == null) {
+        return AppResponse().error(
+            statusCode: HttpStatus.unauthorized, message: 'unauthorized');
+      }
+      if (page == null && limit == null) {}
+
+      var totalItems = await _foodRepository.foodCount(userID: userID);
       var totalPages = (totalItems / limit).ceil();
-      var startIndex = (page - 1) * limit;
+      var startIndex = (page! - 1) * limit!;
 
       List<Map<String, dynamic>> newFoods = <Map<String, dynamic>>[];
       newFoods = await _foodRepository.get(
-          limit: limit, byProperty: property, startIndex: startIndex);
+          userID: userID,
+          limit: limit,
+          byProperty: property,
+          startIndex: startIndex);
 
       return AppResponse().ok(
         data: {

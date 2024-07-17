@@ -23,6 +23,7 @@ class FoodBloc extends Bloc<FoodEvent, FoodState> {
       FoodFetched event, Emitter<FoodState> emit) async {
     emit(FoodFetchInProgress());
     final result = await _foodRepository.getFoods(
+      page: event.page,
       limit: event.limit,
       property: event.property,
     );

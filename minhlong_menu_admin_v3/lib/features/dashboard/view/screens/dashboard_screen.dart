@@ -15,6 +15,8 @@ import 'package:minhlong_menu_admin_v3/features/dashboard/data/respositories/inf
 import 'package:minhlong_menu_admin_v3/features/dinner_table/data/model/table_item.dart';
 import 'package:minhlong_menu_admin_v3/features/home/cubit/table_index_selected_cubit.dart';
 import 'package:minhlong_menu_admin_v3/features/order/cubit/order_socket_cubit.dart';
+import 'package:minhlong_menu_admin_v3/features/user/bloc/user_bloc.dart';
+import 'package:minhlong_menu_admin_v3/features/user/data/model/user_model.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import '../../../../common/widget/common_icon_button.dart';
 import '../../../../core/api_config.dart';
@@ -30,7 +32,8 @@ part '../widgets/_orders_on_table_widget.dart';
 part '../widgets/_info_widget.dart';
 
 class DashboardScreen extends StatelessWidget {
-  const DashboardScreen({super.key});
+  const DashboardScreen({super.key, required this.userModel});
+  final UserModel userModel;
 
   @override
   Widget build(BuildContext context) {
@@ -46,13 +49,14 @@ class DashboardScreen extends StatelessWidget {
           create: (context) => InfoBloc(context.read<InfoRespository>()),
         )
       ],
-      child: const DashboardView(),
+      child: DashboardView(userModel: userModel),
     );
   }
 }
 
 class DashboardView extends StatefulWidget {
-  const DashboardView({super.key});
+  const DashboardView({super.key, required this.userModel});
+  final UserModel userModel;
 
   @override
   State<DashboardView> createState() => _DashboardViewState();
@@ -66,11 +70,7 @@ class _DashboardViewState extends State<DashboardView>
   @override
   void initState() {
     context.read<InfoBloc>().add(InfoFetchStarted());
-    _channel.ready.then((value) {
-      _handleDataSocket(_indexSelectedTable.value);
-      Ultils.sendSocket(_channel, 'tables', 0);
-      Ultils.sendSocket(_channel, 'orders', 0);
-    });
+
     super.initState();
   }
 
@@ -142,7 +142,14 @@ class _DashboardViewState extends State<DashboardView>
         builder: (context, state) {
           final dinnerTable = context.watch<DinnerTableCubit>().state;
           final orders = context.watch<OrderSocketCubit>().state;
-
+          var user = context.watch<UserBloc>().state;
+          if (user is UserFecthSuccess) {
+            _channel.ready.then((value) {
+              _handleDataSocket(_indexSelectedTable.value);
+              Ultils.sendSocket(_channel, 'tables', user.userModel.id);
+              Ultils.sendSocket(_channel, 'orders', 0);
+            });
+          }
           return Padding(
             padding: const EdgeInsets.all(30).r,
             child: Row(

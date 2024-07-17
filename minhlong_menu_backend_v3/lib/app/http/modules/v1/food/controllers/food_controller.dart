@@ -17,16 +17,27 @@ class FoodController extends Controller {
       : _foodRepository = foodRepository;
 
   Future<Response> getFoodsOnCategory(Request request, int id) async {
-    int limit = request.input('limit') ?? 10;
-    int page = request.input('page') ?? 1;
+    var params = request.all();
+    int? page = params['page'] != null ? int.tryParse(params['page']) : null;
+    int? limit = params['limit'] != null ? int.tryParse(params['limit']) : null;
+    int totalPages = 0;
+    int startIndex = 0;
     try {
-      var totalItems = await _foodRepository.foodsCountOnCategory(id: id);
-      var totalPages = (totalItems / limit).ceil();
-      var startIndex = (page - 1) * limit;
+      final userID = Auth().id();
+      if (userID == null) {
+        return AppResponse().error(
+            statusCode: HttpStatus.unauthorized, message: 'unauthorized');
+      }
+      if (page == null && limit == null) {}
+      var totalItems = await _foodRepository.foodsCountOnCategory(
+          categoryID: id, userID: userID);
+      totalPages = (totalItems / limit).ceil();
+      startIndex = (page! - 1) * limit!;
       var newFoods = await _foodRepository.getFoodsOnCategory(
-        id: id,
+        categoryID: id,
         limit: limit,
         startIndex: startIndex,
+        userID: userID,
       );
 
       return AppResponse().ok(data: {
@@ -49,7 +60,13 @@ class FoodController extends Controller {
 
   Future<Response> getTotalNumberOfFoods() async {
     try {
-      var quantity = await _foodRepository.getTotalNumberOfFoods();
+      final userID = Auth().id();
+      if (userID == null) {
+        return AppResponse().error(
+            statusCode: HttpStatus.unauthorized, message: 'unauthorized');
+      }
+      var quantity =
+          await _foodRepository.getTotalNumberOfFoods(userID: userID);
       return AppResponse().ok(data: quantity, statusCode: HttpStatus.ok);
     } catch (e) {
       return AppResponse().error(

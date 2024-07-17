@@ -20,8 +20,8 @@ class BannerRepository {
         .get();
   }
 
-  Future bannerCount() async {
-    return await _banner.query().count();
+  Future bannerCount({required int userID}) async {
+    return await _banner.query().where('user_id', '=', userID).count();
   }
 
   Future delete({required int id}) async {

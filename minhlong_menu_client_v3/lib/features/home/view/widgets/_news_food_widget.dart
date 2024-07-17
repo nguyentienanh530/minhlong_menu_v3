@@ -5,7 +5,7 @@ extension _NewsFoodWidget on _HomeViewState {
     return BlocProvider(
       create: (context) =>
           FoodBloc(foodRepository: context.read<FoodRepository>())
-            ..add(FoodFetched(property: 'created_at', limit: 10)),
+            ..add(FoodFetched(property: 'created_at', limit: 10, page: 1)),
       child: Column(
         children: [
           _buildTitle(AppString.newFoods,
