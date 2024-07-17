@@ -10,7 +10,7 @@ extension _BodyTableWidget on _TableViewState {
         height: 100,
         width: double.infinity,
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(
@@ -22,26 +22,41 @@ extension _BodyTableWidget on _TableViewState {
             ),
             Expanded(
                 flex: 2,
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Text(
-                        table.name,
-                        style: kBodyStyle.copyWith(fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        'Số ghế : ${table.seats}',
-                        style: kBodyStyle.copyWith(
-                            color: AppColors.secondTextColor),
-                      ),
-                      // RichText(text: '')
-                      // Text(
-                      //   'Số ghế : ${table.seats}',
-                      //   style: kBodyStyle.copyWith(
-                      //       color: AppColors.secondTextColor),
-                      // ),
-                    ])),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: defaultPadding * 2),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Expanded(
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              table.name,
+                              style: kBodyStyle.copyWith(
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              'Số ghế : ${table.seats}',
+                              style: kBodyStyle.copyWith(
+                                  color: AppColors.secondTextColor),
+                            ),
+                          ),
+                        ),
+                        // RichText(text: '')
+                        // Text(
+                        //   'Số ghế : ${table.seats}',
+                        //   style: kBodyStyle.copyWith(
+                        //       color: AppColors.secondTextColor),
+                        // ),
+                      ]),
+                )),
             Expanded(
                 child: FittedBox(
               fit: BoxFit.scaleDown,

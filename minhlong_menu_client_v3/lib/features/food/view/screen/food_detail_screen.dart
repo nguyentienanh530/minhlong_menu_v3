@@ -65,17 +65,31 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                CommonBackButton(onTap: () => context.pop()),
-                ValueListenableBuilder(
-                  valueListenable: _indexImage,
-                  builder: (context, value, child) {
-                    return _buildIndicator(context, 4);
-                  },
+                Expanded(
+                    child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: CommonBackButton(onTap: () => context.pop()))),
+                Expanded(
+                  flex: 8,
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: ValueListenableBuilder(
+                      valueListenable: _indexImage,
+                      builder: (context, value, child) {
+                        return _buildIndicator(context, 4);
+                      },
+                    ),
+                  ),
                 ),
-                CartButton(
-                  onPressed: () => context.push(AppRoute.carts),
-                  number: '2',
-                  colorIcon: AppColors.themeColor,
+                Expanded(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: CartButton(
+                      onPressed: () => context.push(AppRoute.carts),
+                      number: '2',
+                      colorIcon: AppColors.themeColor,
+                    ),
+                  ),
                 )
               ],
             ),
@@ -89,22 +103,47 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  _buildDetailsName(_foodItem),
+                  Row(
+                    children: [
+                      Expanded(
+                          child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              alignment: Alignment.centerLeft,
+                              child: _buildDetailsName(_foodItem))),
+                    ],
+                  ),
                   20.verticalSpace,
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      _buildDetailsPrice(_foodItem),
+                      Expanded(
+                          child: FittedBox(
+                              alignment: Alignment.centerLeft,
+                              fit: BoxFit.scaleDown,
+                              child: _buildDetailsPrice(_foodItem))),
                       5.horizontalSpace,
-                      QuantityButton(),
+                      Expanded(
+                          child: FittedBox(
+                              alignment: Alignment.centerRight,
+                              fit: BoxFit.scaleDown,
+                              child: QuantityButton())),
                     ],
                   ),
                   20.verticalSpace,
-                  _buildDetailsDescription(_foodItem),
+                  _foodItem.description.isNotEmpty
+                      ? _buildDetailsDescription(_foodItem)
+                      : const SizedBox(),
                   10.verticalSpace,
                   _buildDetailsNote(),
                   20.verticalSpace,
-                  _buildDetailsButton(),
+                  Row(
+                    children: [
+                      Expanded(
+                          child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: _buildDetailsButton())),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -163,7 +202,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
     return !food.isDiscount!
         ? Row(children: [
             Text(
-                '₫${Ultils.currencyFormat(double.parse(food.price.toString()))}',
+                '₫ ${Ultils.currencyFormat(double.parse(food.price.toString()))}',
                 style: kBodyStyle.copyWith(
                     fontWeight: FontWeight.bold,
                     color: AppColors.themeColor,
@@ -171,7 +210,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
           ])
         : Row(children: [
             Text(
-                '₫${Ultils.currencyFormat(double.parse(food.price.toString()))}',
+                '₫ ${Ultils.currencyFormat(double.parse(food.price.toString()))}',
                 style: kBodyStyle.copyWith(
                     color: AppColors.secondTextColor,
                     fontSize: 24,
@@ -240,7 +279,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
               borderRadius: BorderRadius.circular(30), // Rounded corners
             ),
             padding: const EdgeInsets.symmetric(
-                horizontal: defaultPadding, vertical: defaultPadding - 4),
+                horizontal: defaultPadding / 2, vertical: defaultPadding - 4),
           ),
           onPressed: () {
             // Add your onPressed code here!

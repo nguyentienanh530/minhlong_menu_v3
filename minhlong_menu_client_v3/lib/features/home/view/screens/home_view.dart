@@ -66,10 +66,15 @@ class _HomeViewState extends State<HomeView> {
   }
 
   void _scrollListener() {
+    // print("Scroll Offset: ${_scrollController.offset}"); // Debugging line
     if (_scrollController.hasClients && _scrollController.offset > 0) {
-      _isScrolledNotifier.value = true;
+      if (!_isScrolledNotifier.value) {
+        _isScrolledNotifier.value = true;
+      }
     } else {
-      _isScrolledNotifier.value = false;
+      if (_isScrolledNotifier.value) {
+        _isScrolledNotifier.value = false;
+      }
     }
   }
 
@@ -112,6 +117,7 @@ class _HomeViewState extends State<HomeView> {
                 _buildListNewFood(),
                 20.verticalSpace,
                 _popularGridView(),
+                // Text("Scroll Offset: ${_scrollController.offset}"),
               ],
             ),
           ),

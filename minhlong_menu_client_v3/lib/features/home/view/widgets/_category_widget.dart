@@ -29,8 +29,7 @@ extension _CategoryWidget on _HomeViewState {
       builder: (context, constraints) {
         return AspectRatio(
           aspectRatio: 7 / 12,
-          child: InkWell(
-            borderRadius: BorderRadius.circular(defaultBorderRadius * 10),
+          child: GestureDetector(
             onTap: () {
               context.push(AppRoute.categories, extra: categoryModel);
             },

@@ -156,6 +156,7 @@ class _ItemProfile extends StatelessWidget {
     this.titleStyle,
     this.colorIcon,
   });
+
   final Color? colorIcon;
   final String svgPath;
   final String title;

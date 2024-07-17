@@ -74,4 +74,5 @@ class AppString {
   static String newPassword = 'Mật khẩu mới';
   static String oldPassword = 'Mật khẩu cũ';
   static String reNewPassword = 'Nhập lại mật khẩu mới';
+  static String total = 'Tổng tiền';
 }

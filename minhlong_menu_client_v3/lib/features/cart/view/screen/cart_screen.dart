@@ -9,6 +9,7 @@ import 'package:minhlong_menu_client_v3/common/widget/quantity_button.dart';
 import 'package:minhlong_menu_client_v3/core/app_colors.dart';
 import 'package:minhlong_menu_client_v3/core/app_const.dart';
 import 'package:minhlong_menu_client_v3/core/app_style.dart';
+import 'package:minhlong_menu_client_v3/core/extensions.dart';
 import 'package:minhlong_menu_client_v3/features/food/data/model/food_item.dart';
 
 import '../../../../core/app_string.dart';
@@ -47,6 +48,47 @@ class _CartScreenState extends State<CartScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.only(
+            right: defaultPadding,
+            left: defaultPadding,
+            bottom: defaultPadding / 2),
+        child: SizedBox(
+          height: 0.08 * context.sizeDevice.height,
+          child: Column(
+            children: [
+              Expanded(
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          '${AppString.total}:',
+                          style:
+                              kBodyStyle.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: FittedBox(
+                        alignment: Alignment.centerRight,
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          '${Ultils.currencyFormat(double.parse(_foodList[0].price.toString()))} ₫',
+                          style:
+                              kBodyStyle.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(child: FittedBox(child: _buildPayButton())),
+            ],
+          ),
+        ),
+      ),
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
@@ -56,26 +98,39 @@ class _CartScreenState extends State<CartScreen> {
             leading: CommonBackButton(onTap: () => context.pop()),
           ),
           SliverToBoxAdapter(
-            child: Column(
-              children: [
-                _cartItem(),
-                30.verticalSpace,
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.themeColor),
-                      onPressed: () {},
-                      child: Text(
-                        AppString.pay,
-                        style: kBodyWhiteStyle,
-                      )),
-                )
-              ],
+            child: Padding(
+              padding: const EdgeInsets.all(defaultPadding),
+              child: Column(
+                children: [
+                  ListView.builder(
+                      itemCount: _foodList.length + 10,
+                      shrinkWrap: true,
+                      padding: EdgeInsets.zero,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        return _cartItem();
+                      }),
+                  30.verticalSpace,
+                ],
+              ),
             ),
-          )
+          ),
         ],
       ),
+    );
+  }
+
+  Widget _buildPayButton() {
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      child: ElevatedButton(
+          style:
+              ElevatedButton.styleFrom(backgroundColor: AppColors.themeColor),
+          onPressed: () {},
+          child: Text(
+            AppString.pay,
+            style: kBodyWhiteStyle,
+          )),
     );
   }
 }

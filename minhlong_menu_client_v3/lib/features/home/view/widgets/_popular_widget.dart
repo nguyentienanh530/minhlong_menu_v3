@@ -23,7 +23,7 @@ extension _PopularWidget on _HomeViewState {
               FoodFetchSuccess() => GridItemFood(
                   crossAxisCount: 2,
                   foods: foodState.food.foodItems,
-                  aspectRatio: 9 / 12,
+                  aspectRatio: 1,
                 ),
               _ => const SizedBox(),
             });
