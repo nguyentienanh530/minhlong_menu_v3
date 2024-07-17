@@ -22,12 +22,10 @@ import 'package:minhlong_menu_client_v3/features/food/data/repositories/food_rep
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../../../../Routes/app_route.dart';
-import '../../../../common/dialog/app_dialog.dart';
 import '../../../../common/widget/error_build_image.dart';
 import '../../../../common/widget/loading.dart';
 import '../../../../core/api_config.dart';
 import '../../../../core/app_asset.dart';
-import '../../../auth/bloc/auth_bloc.dart';
 import '../../../banner/bloc/banner_bloc.dart';
 import '../../../category/bloc/category_bloc.dart';
 import '../../../category/data/model/category_model.dart';
@@ -52,11 +50,18 @@ class _HomeViewState extends State<HomeView> {
   final ValueNotifier<bool> _isScrolledNotifier = ValueNotifier(false);
 
   @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_scrollListener);
+  }
+
+  @override
   void dispose() {
     super.dispose();
     _indexPage.dispose();
     _searchText.dispose();
     _scrollController.removeListener(_scrollListener);
+    _scrollController.dispose();
     _isScrolledNotifier.dispose();
   }
 
@@ -101,11 +106,10 @@ class _HomeViewState extends State<HomeView> {
           SliverToBoxAdapter(
             child: Column(
               children: [
-                // _bannerHome(),
                 30.verticalSpace,
                 categoryListView(),
                 10.verticalSpace,
-                _buildListFoodView(),
+                _buildListNewFood(),
                 20.verticalSpace,
                 _popularGridView(),
               ],
@@ -116,17 +120,17 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  void _showDialogLogout() {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AppDialog(
-            title: 'Đăng xuất?',
-            description: 'Bạn có muốn đăng xuất?',
-            onTap: () {
-              context.read<AuthBloc>().add(AuthLogoutStarted());
-            },
-          );
-        });
-  }
+  // void _showDialogLogout() {
+  //   showDialog(
+  //       context: context,
+  //       builder: (context) {
+  //         return AppDialog(
+  //           title: 'Đăng xuất?',
+  //           description: 'Bạn có muốn đăng xuất?',
+  //           onTap: () {
+  //             context.read<AuthBloc>().add(AuthLogoutStarted());
+  //           },
+  //         );
+  //       });
+  // }
 }

@@ -1,7 +1,7 @@
 part of '../screens/home_view.dart';
 
 extension _NewsFoodWidget on _HomeViewState {
-  Widget _buildListFoodView() {
+  Widget _buildListNewFood() {
     return BlocProvider(
       create: (context) =>
           FoodBloc(foodRepository: context.read<FoodRepository>())

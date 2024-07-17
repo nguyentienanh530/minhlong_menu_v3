@@ -30,6 +30,7 @@ extension _CategoryWidget on _HomeViewState {
         return AspectRatio(
           aspectRatio: 7 / 12,
           child: InkWell(
+            borderRadius: BorderRadius.circular(defaultBorderRadius * 10),
             onTap: () {
               context.push(AppRoute.categories, extra: categoryModel);
             },
@@ -58,11 +59,15 @@ extension _CategoryWidget on _HomeViewState {
                   ),
                   5.verticalSpace,
                   Expanded(
-                    child: Text(
-                      textAlign: TextAlign.center,
-                      categoryModel.name,
-                      style: kSubHeadingWhiteStyle.copyWith(
-                          fontSize: 14, fontWeight: FontWeight.w700),
+                    child: FittedBox(
+                      alignment: Alignment.topCenter,
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        textAlign: TextAlign.center,
+                        categoryModel.name,
+                        style: kSubHeadingWhiteStyle.copyWith(
+                            fontSize: 14, fontWeight: FontWeight.w700),
+                      ),
                     ),
                   ),
                 ],
