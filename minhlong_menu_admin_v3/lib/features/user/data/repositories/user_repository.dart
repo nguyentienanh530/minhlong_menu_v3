@@ -22,4 +22,14 @@ class UserRepository {
     }
     return Result.success(userModel);
   }
+
+  Future<Result<bool>> updateUser({required UserModel userModel}) async {
+    try {
+      return Result.success(await _userApi.updateUser(userModel: userModel));
+    } on DioException catch (e) {
+      Logger().e('update user error: $e');
+      final errorMessage = DioExceptions.fromDioError(e).toString();
+      return Result.failure(errorMessage);
+    }
+  }
 }

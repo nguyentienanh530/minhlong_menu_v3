@@ -48,7 +48,7 @@ class Version1 implements Route {
     //======= User route =======
     Router.group(() {
       Router.get("", userController.index);
-      Router.put("update", userController.update);
+      Router.patch("update", userController.update);
       Router.delete("/{id}", userController.destroy);
     }, prefix: '/user', middleware: [AuthenticateMiddleware()]);
 

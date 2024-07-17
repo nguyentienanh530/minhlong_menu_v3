@@ -16,3 +16,12 @@ final class UserFecthFailure extends UserState {
   final String errorMessage;
   UserFecthFailure(this.errorMessage);
 }
+
+final class UserUpdateInProgress extends UserState {}
+
+final class UserUpdateSuccess extends UserState {}
+
+final class UserUpdateFailure extends UserState {
+  final String errorMessage;
+  UserUpdateFailure(this.errorMessage);
+}

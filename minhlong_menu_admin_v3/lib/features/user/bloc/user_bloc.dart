@@ -16,6 +16,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       : _userRepository = userRepository,
         super(UserInitial()) {
     on<UserFetched>(_onUserFetched);
+    on<UserUpdated>(_onUserUpdated);
   }
   final UserRepository _userRepository;
 
@@ -28,6 +29,19 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       },
       failure: (message) {
         emit(UserFecthFailure(message));
+      },
+    );
+  }
+
+  FutureOr<void> _onUserUpdated(UserUpdated event, Emit emit) async {
+    emit(UserUpdateInProgress());
+    final result = await _userRepository.updateUser(userModel: event.userModel);
+    result.when(
+      success: (success) {
+        emit(UserUpdateSuccess());
+      },
+      failure: (message) {
+        emit(UserUpdateFailure(message));
       },
     );
   }

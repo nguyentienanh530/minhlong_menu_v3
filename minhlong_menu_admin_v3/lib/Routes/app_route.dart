@@ -11,7 +11,10 @@ import 'package:minhlong_menu_admin_v3/features/dinner_table/view/screens/dinner
 import 'package:minhlong_menu_admin_v3/features/food/view/screens/food_screen.dart';
 import 'package:minhlong_menu_admin_v3/features/home/view/screens/home_screen.dart';
 import 'package:minhlong_menu_admin_v3/features/order/view/screens/order_screen.dart';
-import 'package:minhlong_menu_admin_v3/features/setting/view/screens/setting_screen.dart';
+import 'package:minhlong_menu_admin_v3/features/user/data/model/user_model.dart';
+
+import '../features/user/view/screens/edit_profile_screen.dart';
+// import 'package:minhlong_menu_admin_v3/features/setting/view/screens/setting_screen.dart';
 
 class AppRoute {
   AppRoute._();
@@ -27,6 +30,9 @@ class AppRoute {
   static const String banners = '/banners';
   static const String settings = '/settings';
   static const String orders = '/orders';
+
+  static const String updatePassword = '/update-password';
+  static const String editProfile = '/edit-profile';
 
   static const publicRoute = [login, forgotPassword, signUp];
 
@@ -133,12 +139,14 @@ class AppRoute {
         },
       ),
       GoRoute(
-        path: settings,
+        path: editProfile,
         pageBuilder: (context, state) {
           return buildPageWithDefaultTransition(
             context: context,
             state: state,
-            child: const SettingScreen(),
+            child: EditProfileScreen(
+              user: state.extra as UserModel,
+            ),
           );
         },
       ),

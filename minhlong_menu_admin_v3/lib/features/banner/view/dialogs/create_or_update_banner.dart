@@ -55,7 +55,6 @@ class _CreateOrUpdateBannerState extends State<CreateOrUpdateBanner> {
       _bannItem = widget.bannItem!;
       _image = _bannItem.image;
       _isShowBanner.value = _bannItem.show ?? false;
-      print(_image);
     }
   }
 

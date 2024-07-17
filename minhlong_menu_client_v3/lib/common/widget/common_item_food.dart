@@ -83,7 +83,7 @@ class ItemFoodView extends StatelessWidget {
               ),
               food.isDiscount!
                   ? Positioned(
-                      top: 0.62 * height,
+                      top: (0.7 * height) - 18,
                       right: 5,
                       child: _buildDiscountItem(food))
                   : const SizedBox(),

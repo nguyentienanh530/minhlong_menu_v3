@@ -41,9 +41,10 @@ class UserController extends Controller {
       'phone_number': 'required|numeric',
       'image': 'required|string',
     });
-    print(request.all());
-    var fullName = request.input('full_name');
-    var phoneNumber = request.input('phone_number');
+
+    String? fullName = request.input('full_name');
+    int? phoneNumber = request.input('phone_number');
+    String? image = request.input('image');
 
     try {
       var user = Auth().user();
@@ -55,11 +56,13 @@ class UserController extends Controller {
       await Users().query().where('id', '=', user['id']).update({
         'full_name': fullName ?? user['full_name'],
         'phone_number': phoneNumber ?? user['phone_number'],
+        'image': image ?? user['image'],
         'updated_at': DateTime.now(),
       });
 
       return AppResponse().ok(statusCode: HttpStatus.ok, data: true);
     } catch (e) {
+      print('update user error: $e');
       return AppResponse().error(
           statusCode: HttpStatus.internalServerError,
           message: 'connection error');

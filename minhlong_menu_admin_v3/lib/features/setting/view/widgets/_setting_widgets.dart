@@ -1,14 +1,14 @@
 part of '../screens/setting_screen.dart';
 
 extension _SettingWidgets on _SettingScreenState {
-  Widget _buildviewProfile() {
+  Widget _buildInfoProfile(UserModel user) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Container(
           padding: const EdgeInsets.all(2),
-          width: double.infinity,
+          width: 0.25 * context.sizeDevice.height,
           height: 0.25 * context.sizeDevice.height,
           decoration: BoxDecoration(
             color: AppColors.white,
@@ -21,27 +21,28 @@ extension _SettingWidgets on _SettingScreenState {
               shape: BoxShape.circle,
             ),
             child: CachedNetworkImage(
-              imageUrl: _userList[3],
+              imageUrl: '${ApiConfig.host}${user.image}',
               errorWidget: errorBuilderForImage,
               placeholder: (context, url) => const Loading(),
+              fit: BoxFit.cover,
             ),
           ),
         ),
         10.verticalSpace,
-        _nameAndPhoneWidgets(),
+        _nameAndPhoneWidgets(user),
       ],
     );
   }
 
-  Widget _nameAndPhoneWidgets() {
+  Widget _nameAndPhoneWidgets(UserModel user) {
     return Column(
       children: [
         Text(
-          _userList[0],
+          user.fullName,
           style: kHeadingStyle.copyWith(fontWeight: FontWeight.bold),
         ),
         Text(
-          '+84 ${_userList[2]}',
+          '+84 ${user.phoneNumber}',
           style: kBodyStyle.copyWith(
               color: AppColors.secondTextColor, fontSize: 12),
         ),
@@ -49,9 +50,14 @@ extension _SettingWidgets on _SettingScreenState {
     );
   }
 
-  Widget _editInfoUser() {
+  Widget _editInfoUser(UserModel user) {
     return _ItemProfile(
-      onTap: () => _onCardTap(0),
+      onTap: () async =>
+          context.push<bool>(AppRoute.editProfile, extra: user).then((value) {
+        if (value != null && value) {
+          context.read<UserBloc>().add(UserFetched());
+        }
+      }),
       colorIcon: AppColors.themeColor,
       svgPath: AppAsset.user,
       title: AppString.editProfile,
@@ -60,7 +66,7 @@ extension _SettingWidgets on _SettingScreenState {
 
   Widget _buildTitleChangePassword() {
     return _ItemProfile(
-      onTap: () => _onCardTap(1),
+      onTap: () => _showChangePasswordDialog(),
       colorIcon: AppColors.themeColor,
       svgPath: AppAsset.lock,
       title: AppString.changePassword,
@@ -80,18 +86,26 @@ extension _SettingWidgets on _SettingScreenState {
                   child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(children: [
-                          Padding(
-                              padding: const EdgeInsets.all(defaultPadding),
-                              child: SvgPicture.asset(AppAsset.print,
-                                  colorFilter: const ColorFilter.mode(
-                                      AppColors.themeColor, BlendMode.srcIn))),
-                          Text(
-                            AppString.usePrinter,
-                            style: kBodyStyle.copyWith(
-                                color: AppColors.secondTextColor),
-                          )
-                        ]),
+                        Expanded(
+                          flex: 2,
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            alignment: Alignment.centerLeft,
+                            child: Row(children: [
+                              Padding(
+                                  padding: const EdgeInsets.all(defaultPadding),
+                                  child: SvgPicture.asset(AppAsset.print,
+                                      colorFilter: const ColorFilter.mode(
+                                          AppColors.themeColor,
+                                          BlendMode.srcIn))),
+                              Text(
+                                AppString.usePrinter,
+                                style: kBodyStyle.copyWith(
+                                    color: AppColors.secondTextColor),
+                              )
+                            ]),
+                          ),
+                        ),
                         Transform.scale(
                           scale: 0.8,
                           child: Switch(
@@ -107,21 +121,30 @@ extension _SettingWidgets on _SettingScreenState {
                         ),
                       ])),
               _isUsePrinter.value
-                  ? Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: defaultPadding * 2),
-                      child: _ItemProfile(
-                          svgPath: AppAsset.fileConfig,
-                          title: AppString.settingPrinter,
-                          titleStyle: kBodyStyle.copyWith(
-                              color: AppColors.secondTextColor),
-                          onTap: () => _onCardTap(2)),
-                    )
+                  ? _ItemProfile(
+                      svgPath: AppAsset.fileConfig,
+                      title: AppString.settingPrinter,
+                      onTap: () {})
                   : const SizedBox()
             ],
           ),
         );
       },
+    );
+  }
+
+  _showChangePasswordDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        backgroundColor: AppColors.white,
+        child: FittedBox(
+          child: Container(
+            constraints: const BoxConstraints(maxWidth: 500),
+            child: const ChangePassword(),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -131,43 +154,65 @@ class _ItemProfile extends StatelessWidget {
     required this.svgPath,
     required this.title,
     required this.onTap,
-    this.titleStyle,
     this.colorIcon,
   });
   final Color? colorIcon;
   final String svgPath;
   final String title;
-  final TextStyle? titleStyle;
+
   final void Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-        borderRadius: BorderRadius.circular(defaultBorderRadius),
+    return Card(
+      child: InkWell(
+        // borderRadius: BorderRadius.circular(defaultBorderRadius),
         onTap: onTap,
         child: SizedBox(
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-              Row(children: [
-                Padding(
-                    padding: const EdgeInsets.all(defaultPadding),
-                    child: SvgPicture.asset(svgPath,
-                        colorFilter: const ColorFilter.mode(
-                            Colors.red, BlendMode.srcIn))),
-                Text(
-                  title,
-                  style: titleStyle ??
-                      kBodyStyle.copyWith(color: AppColors.secondTextColor),
-                )
-              ]),
+          height: 50,
+          width: double.infinity,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                flex: 2,
+                child: FittedBox(
+                  alignment: Alignment.centerLeft,
+                  fit: BoxFit.scaleDown,
+                  child: Row(
+                    children: [
+                      Padding(
+                          padding: const EdgeInsets.all(defaultPadding),
+                          child: SvgPicture.asset(svgPath,
+                              colorFilter: const ColorFilter.mode(
+                                  Colors.red, BlendMode.srcIn))),
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          title,
+                          style: kBodyStyle.copyWith(
+                              color: AppColors.secondTextColor),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
               Padding(
-                  padding: const EdgeInsets.all(defaultPadding),
+                padding: const EdgeInsets.only(right: defaultPadding),
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
                   child: Icon(
                     Icons.arrow_forward_ios_rounded,
                     size: 15,
                     color: colorIcon ?? AppColors.secondTextColor,
-                  ))
-            ])));
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

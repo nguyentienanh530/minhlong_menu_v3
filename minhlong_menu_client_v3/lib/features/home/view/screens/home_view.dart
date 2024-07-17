@@ -22,12 +22,10 @@ import 'package:minhlong_menu_client_v3/features/food/data/repositories/food_rep
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../../../../Routes/app_route.dart';
-import '../../../../common/dialog/app_dialog.dart';
 import '../../../../common/widget/error_build_image.dart';
 import '../../../../common/widget/loading.dart';
 import '../../../../core/api_config.dart';
 import '../../../../core/app_asset.dart';
-import '../../../auth/bloc/auth_bloc.dart';
 import '../../../banner/bloc/banner_bloc.dart';
 import '../../../category/bloc/category_bloc.dart';
 import '../../../category/data/model/category_model.dart';

@@ -12,4 +12,7 @@ class AppKeys {
 
   static GlobalKey<FormState> createOrUpdateCategoryKey =
       GlobalKey<FormState>(debugLabel: 'createOrUpdateCategoryKey');
+
+  static GlobalKey<FormState> updateUserKey =
+      GlobalKey<FormState>(debugLabel: 'updateUserKey');
 }

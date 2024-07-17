@@ -1,101 +1,48 @@
-part of '../screens/setting_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-extension _EditSettingWidget on _SettingScreenState {
-  Widget _imageEditProfileWidget() {
-    return Padding(
-      padding: const EdgeInsets.all(defaultPadding),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Stack(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(2),
-                width: 0.25 * context.sizeDevice.height,
-                height: 0.25 * context.sizeDevice.height,
-                decoration: BoxDecoration(
-                  color: AppColors.white,
-                  shape: BoxShape.circle,
-                  border: Border.all(color: AppColors.smokeWhite, width: 6),
-                ),
-                child: Container(
-                  clipBehavior: Clip.antiAlias,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                  ),
-                  child: CachedNetworkImage(
-                    imageUrl: _userList[0],
-                    errorWidget: errorBuilderForImage,
-                    placeholder: (context, url) => const Loading(),
-                  ),
-                ),
-              ),
-              Positioned(bottom: 15, right: 20, child: _uploadImage())
-            ],
-          ),
-          10.verticalSpace,
-          _bodyEditInfoUser()
-        ],
-      ),
-    );
+import '../../../../common/widget/common_text_field.dart';
+import '../../../../core/app_colors.dart';
+import '../../../../core/app_const.dart';
+import '../../../../core/app_res.dart';
+import '../../../../core/app_string.dart';
+import '../../../../core/app_style.dart';
+
+class ChangePassword extends StatefulWidget {
+  const ChangePassword({super.key});
+
+  @override
+  State<ChangePassword> createState() => _ChangePasswordState();
+}
+
+class _ChangePasswordState extends State<ChangePassword> {
+  final TextEditingController _oldPasswordController = TextEditingController();
+  final TextEditingController _newPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
+  final _isShowOldPassword = ValueNotifier(false);
+  final _isShowNewPassword = ValueNotifier(false);
+  final _isShowConfirmPassword = ValueNotifier(false);
+
+  @override
+  void initState() {
+    super.initState();
   }
 
-  Widget _uploadImage() {
-    return InkWell(
-      borderRadius: BorderRadius.circular(100),
-      onTap: () {},
-      child: Card(
-        elevation: 3,
-        child: Container(
-          padding: const EdgeInsets.all(5),
-          child: const Icon(
-            Icons.camera_enhance,
-            size: 16,
-            color: AppColors.secondTextColor,
-          ),
-        ),
-      ),
-    );
+  @override
+  void dispose() {
+    super.dispose();
+    _isShowOldPassword.dispose();
+    _isShowNewPassword.dispose();
+    _isShowConfirmPassword.dispose();
+    _oldPasswordController.dispose();
+    _newPasswordController.dispose();
+    _confirmPasswordController.dispose();
   }
 
-  Widget _bodyEditInfoUser() {
-    return Container(
-      padding: const EdgeInsets.all(defaultPadding),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildUserNameTextField(),
-          20.verticalSpace,
-          _buildPhoneTextField(),
-          10.verticalSpace,
-          20.verticalSpace,
-          _buttonEditProfile(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildUserNameTextField() {
-    return CommonTextField(
-      onChanged: (p0) {},
-      controller: _nameController,
-      labelText: AppString.fullName,
-      labelStyle: kBodyStyle.copyWith(color: AppColors.secondTextColor),
-      hintStyle: kBodyStyle,
-      style: kBodyStyle,
-    );
-  }
-
-  Widget _buildPhoneTextField() {
-    return CommonTextField(
-      onChanged: (p0) {},
-      controller: _phoneController,
-      labelText: AppString.phoneNumber,
-      labelStyle: kBodyStyle.copyWith(color: AppColors.secondTextColor),
-      hintStyle: kBodyStyle,
-      style: kBodyStyle,
-    );
+  @override
+  Widget build(BuildContext context) {
+    return _buildChangePassword();
   }
 
   Widget _buildChangePassword() {
@@ -112,27 +59,12 @@ extension _EditSettingWidget on _SettingScreenState {
                     color: AppColors.secondTextColor)),
           ),
           20.verticalSpace,
-          Text(
-            '${AppString.oldPassword} *',
-            style: kBodyStyle.copyWith(
-                color: AppColors.secondTextColor, fontWeight: FontWeight.bold),
-          ),
           5.verticalSpace,
           _buildOldPassworTextField(),
           20.verticalSpace,
-          Text(
-            '${AppString.newPassword} *',
-            style: kBodyStyle.copyWith(
-                color: AppColors.secondTextColor, fontWeight: FontWeight.bold),
-          ),
           5.verticalSpace,
           _buildNewPassworTextField(),
           20.verticalSpace,
-          Text(
-            '${AppString.reNewPassword} *',
-            style: kBodyStyle.copyWith(
-                color: AppColors.secondTextColor, fontWeight: FontWeight.bold),
-          ),
           5.verticalSpace,
           _buildComfirmPassworTextField(),
           40.verticalSpace,
@@ -155,26 +87,6 @@ extension _EditSettingWidget on _SettingScreenState {
     );
   }
 
-  Widget _buttonEditProfile() {
-    return Container(
-      alignment: Alignment.center,
-      child: ElevatedButton(
-          style:
-              ElevatedButton.styleFrom(backgroundColor: AppColors.themeColor),
-          onPressed: () {},
-          child: Text(
-            AppString.edit,
-            style: kBodyWhiteStyle,
-          )),
-    );
-  }
-
-  Widget _textProfile(String stringText) {
-    return Text(stringText,
-        style: kBodyStyle.copyWith(
-            fontWeight: FontWeight.bold, color: AppColors.secondTextColor));
-  }
-
   Widget _buildOldPassworTextField() {
     return ValueListenableBuilder(
       valueListenable: _isShowOldPassword,
@@ -184,11 +96,11 @@ extension _EditSettingWidget on _SettingScreenState {
             style: kBodyStyle,
             controller: _oldPasswordController,
             onFieldSubmitted: (p0) {},
-            labelText: AppString.password,
-            // labelText: AppString.password,
+            labelText: '${AppString.oldPassword} *',
             validator: (password) => AppRes.validatePassword(password)
                 ? null
                 : 'Mật khẩu không hợp lệ',
+            labelStyle: kBodyStyle.copyWith(color: AppColors.secondTextColor),
             onChanged: (value) {},
             obscureText: !value,
             prefixIcon: Icon(
@@ -214,8 +126,8 @@ extension _EditSettingWidget on _SettingScreenState {
             style: kBodyStyle,
             controller: _newPasswordController,
             onFieldSubmitted: (p0) {},
-            labelText: AppString.password,
-            // labelText: AppString.password,
+            labelText: '${AppString.newPassword} *',
+            labelStyle: kBodyStyle.copyWith(color: AppColors.secondTextColor),
             validator: (password) => AppRes.validatePassword(password)
                 ? null
                 : 'Mật khẩu không hợp lệ',
@@ -244,8 +156,8 @@ extension _EditSettingWidget on _SettingScreenState {
             style: kBodyStyle,
             controller: _confirmPasswordController,
             onFieldSubmitted: (p0) {},
-            labelText: AppString.password,
-            // labelText: AppString.password,
+            labelText: '${AppString.reNewPassword} *',
+            labelStyle: kBodyStyle.copyWith(color: AppColors.secondTextColor),
             validator: (password) => AppRes.validatePassword(password)
                 ? null
                 : 'Mật khẩu không hợp lệ',

@@ -8,7 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:minhlong_menu_admin_v3/common/network/dio_client.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
-
+import 'package:path/path.dart' as pathFile;
 import 'api_config.dart';
 
 class Ultils {
@@ -32,10 +32,17 @@ class Ultils {
       required ValueNotifier<double> loading}) async {
     // final Response response = await dioClient.dio!
     //     .post(ApiConfig.uploadAvatar, data: {'avatar': file});
-    var filePath = file.path.split('/').last;
-    print('filePath: $filePath');
+    // var filePath = file.path.split('/').last;
+
+    String dir = pathFile.dirname(file.path);
+    String newPath = pathFile.join(dir, '${DateTime.now()}.webp');
+
+    file.renameSync(newPath);
+    file = File(newPath);
+    print('filePath: $newPath');
     FormData formData = FormData.fromMap({
-      "image": await MultipartFile.fromFile(file.path, filename: filePath),
+      "image": await MultipartFile.fromFile(file.path,
+          filename: pathFile.basename(file.path)),
     });
     final response = await dio.post(
       ApiConfig.uploadImage,

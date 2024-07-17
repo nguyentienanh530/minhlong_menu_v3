@@ -67,11 +67,14 @@ class _DashboardViewState extends State<DashboardView>
   final WebSocketChannel _channel =
       WebSocketChannel.connect(Uri.parse(ApiConfig.webSocketUrl));
   final _indexSelectedTable = ValueNotifier(0);
+  var _isFirstSendSocket = false;
   @override
   void initState() {
-    context.read<InfoBloc>().add(InfoFetchStarted());
-
     super.initState();
+    context.read<InfoBloc>().add(InfoFetchStarted());
+    _channel.ready.then((value) {
+      _handleDataSocket(_indexSelectedTable.value);
+    });
   }
 
   @override
@@ -144,11 +147,11 @@ class _DashboardViewState extends State<DashboardView>
           final orders = context.watch<OrderSocketCubit>().state;
           var user = context.watch<UserBloc>().state;
           if (user is UserFecthSuccess) {
-            _channel.ready.then((value) {
-              _handleDataSocket(_indexSelectedTable.value);
+            if (!_isFirstSendSocket) {
               Ultils.sendSocket(_channel, 'tables', user.userModel.id);
               Ultils.sendSocket(_channel, 'orders', 0);
-            });
+              _isFirstSendSocket = true;
+            }
           }
           return Padding(
             padding: const EdgeInsets.all(30).r,
@@ -156,17 +159,19 @@ class _DashboardViewState extends State<DashboardView>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
-                    child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildTableWidget(index: state, dinnerTable: dinnerTable),
-                    const SizedBox(height: defaultPadding),
-                    Expanded(
-                      child: SingleChildScrollView(
-                          child: _buildOrdersOnTable(orders)),
-                    ),
-                  ],
-                )),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildTableWidget(index: state, dinnerTable: dinnerTable),
+                      const SizedBox(height: defaultPadding),
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: _buildOrdersOnTable(orders),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                 context.isDesktop
                     ? Container(
                         padding: const EdgeInsets.only(left: 30).r,

@@ -63,4 +63,10 @@ class UserApi {
     final response = await _dio.get(ApiConfig.user);
     return UserModel.fromJson(response.data['data']);
   }
+
+  Future<bool> updateUser({required UserModel userModel}) async {
+    final response =
+        await _dio.patch(ApiConfig.updateUser, data: userModel.toJson());
+    return response.data['data'];
+  }
 }
