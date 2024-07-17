@@ -200,16 +200,17 @@ extension _FoodBodyWidget on _FoodViewState {
         Container(
           height: 70,
           alignment: Alignment.center,
-          child: Container(
+          child: SizedBox(
             height: 60.h,
             width: 60.h,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(textFieldBorderRadius).r),
-            clipBehavior: Clip.hardEdge,
-            child: CachedNetworkImage(
-              imageUrl: '${ApiConfig.host}${foodItem.image1 ?? ''}',
-              fit: BoxFit.cover,
-              errorWidget: errorBuilderForImage,
+            child: ClipRRect(
+              clipBehavior: Clip.antiAlias,
+              borderRadius: BorderRadius.circular(textFieldBorderRadius).r,
+              child: CachedNetworkImage(
+                imageUrl: '${ApiConfig.host}${foodItem.image1 ?? ''}',
+                fit: BoxFit.cover,
+                errorWidget: errorBuilderForImage,
+              ),
             ),
           ),
         ),
@@ -266,10 +267,10 @@ extension _FoodBodyWidget on _FoodViewState {
                   value: isShowFood.value ?? false,
                   onChanged: (value) {
                     isShowFood.value = value;
-                    // FoodApi(DioClient().dio!).updateFood(
-                    //     food: foodItem.copyWith(
-                    //   isShow: value,
-                    // ));
+                    FoodApi(dio).updateFood(
+                        food: foodItem.copyWith(
+                      isShow: value,
+                    ));
                   });
             },
           ),

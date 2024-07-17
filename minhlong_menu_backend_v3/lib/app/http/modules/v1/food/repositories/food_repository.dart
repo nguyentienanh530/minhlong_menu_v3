@@ -10,7 +10,8 @@ class FoodRepository {
   Future get(
       {required String byProperty,
       required int startIndex,
-      required int limit}) async {
+      required int limit,
+      required int userID}) async {
     var foods = await _food
         .query()
         .select(['foods.*', 'categories.name as category_name'])
@@ -18,33 +19,40 @@ class FoodRepository {
         .limit(limit)
         .join('categories', 'categories.id', '=', 'foods.category_id')
         .orderBy(byProperty, 'desc')
+        .where('foods.user_id', '=', userID)
         .get();
     return foods;
   }
 
   Future getFoodsOnCategory(
-      {required int startIndex, required int limit, required int id}) async {
+      {required int startIndex,
+      required int limit,
+      required int categoryID,
+      required int userID}) async {
     var foods = await _food
         .query()
         .offset(startIndex)
         .where('is_show', '=', 1)
-        .where('category_id', '=', id)
+        .where('category_id', '=', categoryID)
+        .where('user_id', '=', userID)
         .limit(limit)
         .get();
     return foods;
   }
 
-  Future foodsCountOnCategory({required int id}) async {
+  Future foodsCountOnCategory(
+      {required int categoryID, required int userID}) async {
     var count = await _food
         .query()
         .where('is_show', '=', 1)
-        .where('category_id', '=', id)
+        .where('category_id', '=', categoryID)
+        .where('user_id', '=', userID)
         .count();
     return count;
   }
 
-  Future getTotalNumberOfFoods() async {
-    var quantity = await _food.query().count();
+  Future getTotalNumberOfFoods({required int userID}) async {
+    var quantity = await _food.query().where('user_id', '=', userID).count();
     return quantity;
   }
 
@@ -60,17 +68,21 @@ class FoodRepository {
     return await _food.query().insertGetId(data);
   }
 
-  Future foodCount() async {
-    return await _food.query().count();
+  Future foodCount({required int userID}) async {
+    return await _food.query().where('user_id', '=', userID).count();
   }
 
   Future delete({required int id}) async {
     return await _food.query().where('id', '=', id).delete();
   }
 
-  Future search({required String query}) async {
-    var foods =
-        await _food.query().limit(10).where('name', 'like', '%$query%').get();
+  Future search({required String query, required int userID}) async {
+    var foods = await _food
+        .query()
+        .limit(10)
+        .where('user_id', '=', userID)
+        .where('name', 'like', '%$query%')
+        .get();
     return foods;
   }
 }

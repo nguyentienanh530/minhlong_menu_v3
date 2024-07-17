@@ -125,7 +125,7 @@ class Version1 implements Route {
         Router.get('', _infoController.index);
       },
       prefix: '/info',
-      // middleware: [AuthenticateMiddleware()],
+      middleware: [AuthenticateMiddleware()],
     );
 
     //======= Upload image =======

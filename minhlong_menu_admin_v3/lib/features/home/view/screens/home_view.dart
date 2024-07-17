@@ -41,16 +41,17 @@ class HomeViewState extends State<HomeView>
 
   final SideMenuController _sideMenuCtrl = SideMenuController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  UserModel _userModel = UserModel();
 
-  final _listPage = <Widget>[
-    const DashboardScreen(),
-    const OrderScreen(),
-    const FoodScreen(),
-    const DinnerTableScreen(),
-    const CategoryScreen(),
-    const BannerScreen(),
-    const SettingScreen(),
-  ];
+  // final _listPage = <Widget>[
+  //   DashboardScreen(userModel: _userModel),
+  //   const OrderScreen(),
+  //   const FoodScreen(),
+  //   const DinnerTableScreen(),
+  //   const CategoryScreen(),
+  //   const BannerScreen(),
+  //   const SettingScreen(),
+  // ];
 
   final _listIconMenu = [
     {
@@ -177,10 +178,26 @@ class HomeViewState extends State<HomeView>
 
                   Expanded(
                     child: PageView.builder(
-                      itemCount: _listPage.length,
+                      itemCount: <Widget>[
+                        DashboardScreen(userModel: _userModel),
+                        const OrderScreen(),
+                        const FoodScreen(),
+                        const DinnerTableScreen(),
+                        const CategoryScreen(),
+                        const BannerScreen(),
+                        const SettingScreen(),
+                      ].length,
                       physics: const NeverScrollableScrollPhysics(),
                       itemBuilder: (context, index) {
-                        return _listPage[index];
+                        return <Widget>[
+                          DashboardScreen(userModel: _userModel),
+                          const OrderScreen(),
+                          const FoodScreen(),
+                          const DinnerTableScreen(),
+                          const CategoryScreen(),
+                          const BannerScreen(),
+                          const SettingScreen(),
+                        ][index];
                       },
                       controller: _pageCtrl,
                     ),
@@ -245,26 +262,7 @@ class HomeViewState extends State<HomeView>
       return (switch (userState) {
         UserFecthInProgress() => const Loading(),
         UserFecthFailure() => ErrWidget(error: userState.errorMessage),
-        UserFecthSuccess() => SizedBox(
-            height: 115.h,
-            width: double.infinity,
-            child: Row(
-              children: [
-                30.horizontalSpace,
-                ValueListenableBuilder(
-                    valueListenable: _title,
-                    builder: (context, value, child) {
-                      return Text(value,
-                          style: kHeadingStyle.copyWith(
-                              fontWeight: FontWeight.w700,
-                              fontSize: context.isMobile ? 25 : 36));
-                    }),
-                const Spacer(),
-                _buildUserInfo(userState.userModel),
-                30.horizontalSpace,
-              ],
-            ),
-          ),
+        UserFecthSuccess() => _buildFechUserSuccess(userState.userModel),
         _ => const SizedBox(),
       });
     });
@@ -310,6 +308,30 @@ class HomeViewState extends State<HomeView>
         ),
         _buildAvatar('${ApiConfig.host}${user.image}'),
       ],
+    );
+  }
+
+  _buildFechUserSuccess(UserModel user) {
+    _userModel = user;
+    return SizedBox(
+      height: 115.h,
+      width: double.infinity,
+      child: Row(
+        children: [
+          30.horizontalSpace,
+          ValueListenableBuilder(
+              valueListenable: _title,
+              builder: (context, value, child) {
+                return Text(value,
+                    style: kHeadingStyle.copyWith(
+                        fontWeight: FontWeight.w700,
+                        fontSize: context.isMobile ? 25 : 36));
+              }),
+          const Spacer(),
+          _buildUserInfo(user),
+          30.horizontalSpace,
+        ],
+      ),
     );
   }
 }

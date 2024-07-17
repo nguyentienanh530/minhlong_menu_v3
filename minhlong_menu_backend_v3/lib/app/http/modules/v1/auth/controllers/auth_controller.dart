@@ -47,6 +47,7 @@ class AuthController extends Controller {
       {
         'phone_number': 'required|numeric',
         'password': 'required',
+        'full_name': 'required|string',
       },
       // {
       //   'phone_number.required': 'The phone number is required',
@@ -56,23 +57,32 @@ class AuthController extends Controller {
     );
 
     /// Checking if the user already exists
-    Map<String, dynamic>? user = await Users()
-        .query()
-        .where('phone_number', '=', request.input('phone_number'))
-        .first();
-    if (user != null) {
-      return AppResponse()
-          .error(statusCode: HttpStatus.conflict, message: 'user exists');
+    try {
+      Map<String, dynamic>? user = await Users()
+          .query()
+          .where('phone_number', '=', request.input('phone_number'))
+          .first();
+      if (user != null) {
+        return AppResponse()
+            .error(statusCode: HttpStatus.conflict, message: 'user exists');
+      }
+
+      await Users().query().insert({
+        'phone_number': request.input('phone_number'),
+        'full_name': request.input('full_name'),
+        'password': Hash().make(request.input('password').toString()),
+        'created_at': DateTime.now(),
+        'updated_at': DateTime.now(),
+      });
+
+      return Response.json({'message': 'User created successfully'});
+    } catch (e) {
+      print('create user error: $e');
+      return AppResponse().error(
+        statusCode: HttpStatus.internalServerError,
+        message: 'connection error',
+      );
     }
-
-    await Users().query().insert({
-      'phone_number': request.input('phone_number'),
-      'password': Hash().make(request.input('password').toString()),
-      'created_at': DateTime.now(),
-      'updated_at': DateTime.now(),
-    });
-
-    return Response.json({'message': 'User created successfully'});
   }
 
   Future<Response> otp(Request request) {

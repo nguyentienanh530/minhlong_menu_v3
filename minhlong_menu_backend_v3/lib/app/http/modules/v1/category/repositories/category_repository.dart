@@ -5,8 +5,8 @@ class CategoryRepository {
 
   CategoryRepository({required Categories category}) : _category = category;
 
-  Future getCategoryCount() async {
-    return await _category.query().count();
+  Future getCategoryCount({required int userID}) async {
+    return await _category.query().where('user_id', '=', userID).count();
   }
 
   Future get(

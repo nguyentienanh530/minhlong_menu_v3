@@ -4,16 +4,24 @@ class TableRepository {
   final Tables _tables;
 
   TableRepository({required Tables tables}) : _tables = tables;
-  Future getAllTables() async {
-    return await _tables.query().get();
+  Future getAllTables({required int userID}) async {
+    return await _tables.query().where('user_id', '=', userID).get();
   }
 
-  Future get({required int startIndex, required int limit}) async {
-    return await _tables.query().offset(startIndex).limit(limit).get();
+  Future get(
+      {required int startIndex,
+      required int limit,
+      required int userID}) async {
+    return await _tables
+        .query()
+        .offset(startIndex)
+        .where('user_id', '=', userID)
+        .limit(limit)
+        .get();
   }
 
-  Future getTableCount() async {
-    return await _tables.query().count();
+  Future getTableCount({required int userID}) async {
+    return await _tables.query().where('user_id', '=', userID).count();
   }
 
   Future delete(int id) async {

@@ -12,7 +12,7 @@ extension _PopularWidget on _HomeViewState {
           create: (context) => FoodBloc(
             foodRepository: context.read<FoodRepository>(),
           )..add(
-              FoodFetched(property: 'order_count', limit: 10),
+              FoodFetched(property: 'order_count', limit: 10, page: 1),
             ),
           child: Builder(builder: (context) {
             final foodState = context.watch<FoodBloc>().state;

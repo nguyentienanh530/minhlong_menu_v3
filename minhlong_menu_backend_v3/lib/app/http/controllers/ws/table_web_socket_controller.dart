@@ -9,7 +9,7 @@ class TableWebSocketController extends Controller {
   TableWebSocketController({required TableRepository tableRepository})
       : _tableRepository = tableRepository;
   Future getTable(WebSocketClient client, dynamic data) async {
-    print(data);
+    print('data: $data');
     if (data == null) {
       return;
     }
@@ -19,8 +19,12 @@ class TableWebSocketController extends Controller {
       'seats': 0,
       'is_use': false,
     };
+    // var userID = Auth().id();
+    // if (userID == null) {
+    //   return;
+    // }
 
-    var tables = await _tableRepository.getAllTables();
+    var tables = await _tableRepository.getAllTables(userID: data);
     tables = [tableAll, ...tables];
     var newTables = [];
     for (var table in tables) {

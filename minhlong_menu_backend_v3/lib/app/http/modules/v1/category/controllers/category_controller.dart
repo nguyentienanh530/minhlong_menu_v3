@@ -17,7 +17,12 @@ class CategoryController extends Controller {
 
   Future<Response> getCategoryQuantity() async {
     try {
-      var quantity = await _categoryRepository.getCategoryCount();
+      final userID = Auth().id();
+      if (userID == null) {
+        return AppResponse().error(
+            statusCode: HttpStatus.unauthorized, message: 'unauthorized');
+      }
+      var quantity = await _categoryRepository.getCategoryCount(userID: userID);
       return AppResponse().ok(data: quantity, statusCode: HttpStatus.ok);
     } catch (e) {
       return AppResponse().error(

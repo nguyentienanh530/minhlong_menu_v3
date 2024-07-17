@@ -5,17 +5,18 @@ extension IndexBannerCtrl on BannerController {
     var params = request.all();
 
     try {
-      int? page = params['page'] != null ? int.tryParse(params['page']) : null;
-      int? limit =
-          params['limit'] != null ? int.tryParse(params['limit']) : null;
-      var totalItems = await _bannerRepository.bannerCount();
-      int totalPages = 0;
-      int startIndex = 0;
       final userID = Auth().id();
       if (userID == null) {
         return AppResponse().error(
             statusCode: HttpStatus.unauthorized, message: 'unauthorized');
       }
+      int? page = params['page'] != null ? int.tryParse(params['page']) : null;
+      int? limit =
+          params['limit'] != null ? int.tryParse(params['limit']) : null;
+      var totalItems = await _bannerRepository.bannerCount(userID: userID);
+      int totalPages = 0;
+      int startIndex = 0;
+
       dynamic banner;
       if (page == null && limit == null) {
         banner = await _bannerRepository.getAll(userID: userID);

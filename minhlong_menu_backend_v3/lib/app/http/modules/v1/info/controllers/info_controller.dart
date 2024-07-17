@@ -25,10 +25,19 @@ class InfoController extends Controller {
         _tableRepository = tableRepository;
   Future<Response> index() async {
     try {
-      var categoryCount = await _categoryRepository.getCategoryCount();
+      final userID = Auth().id();
+      if (userID == null) {
+        return AppResponse().error(
+          statusCode: HttpStatus.unauthorized,
+          message: 'unauthorized',
+        );
+      }
+      var categoryCount =
+          await _categoryRepository.getCategoryCount(userID: userID);
       var orderCount = await _orderRepository.getOrderSuccess();
-      var foodCount = await _foodRepository.getTotalNumberOfFoods();
-      var tableCount = await _tableRepository.getTableCount();
+      var foodCount =
+          await _foodRepository.getTotalNumberOfFoods(userID: userID);
+      var tableCount = await _tableRepository.getTableCount(userID: userID);
       return AppResponse().ok(
         statusCode: HttpStatus.ok,
         message: 'success',
