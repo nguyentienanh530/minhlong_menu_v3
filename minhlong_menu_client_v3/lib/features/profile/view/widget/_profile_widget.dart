@@ -65,7 +65,11 @@ extension _ProfileWidget on _ProfileScreenState {
               svgPath: AppAsset.lock,
               title: AppString.changePassword,
               onTap: () => context.push(AppRoute.changePassword)),
-          _buildItemPrint(context)
+          _buildItemPrint(context),
+          _ItemProfile(
+              svgPath: AppAsset.lock,
+              title: 'password',
+              onTap: () => _showDialogLogout()),
         ],
       ),
     );

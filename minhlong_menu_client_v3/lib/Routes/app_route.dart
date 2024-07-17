@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_client_v3/common/widget/no_product.dart';
 import 'package:minhlong_menu_client_v3/features/auth/view/screens/forgot_password_screen.dart';
@@ -14,6 +15,7 @@ import 'package:minhlong_menu_client_v3/features/profile/view/screen/edit_profil
 import 'package:minhlong_menu_client_v3/features/profile/view/screen/profile_screen.dart';
 import 'package:minhlong_menu_client_v3/features/table/view/screen/table_screen.dart';
 
+import '../features/auth/bloc/auth_bloc.dart';
 import '../features/food/view/screen/food_detail_screen.dart';
 
 class AppRoute {
@@ -39,16 +41,16 @@ class AppRoute {
   static const publicRoute = [login, forgotPassword, signUp];
 
   static GoRouter routes = GoRouter(
-    initialLocation: login,
-    // redirect: (context, state) {
-    //   if (publicRoute.contains(state.fullPath)) {
-    //     return null;
-    //   }
-    //   if (context.read<AuthBloc>().state is AuthAuthenticateSuccess) {
-    //     return null;
-    //   }
-    //   return foods;
-    // },
+    initialLocation: home,
+    redirect: (context, state) {
+      if (publicRoute.contains(state.fullPath)) {
+        return null;
+      }
+      if (context.read<AuthBloc>().state is AuthAuthenticateSuccess) {
+        return null;
+      }
+      return login;
+    },
     routes: [
       GoRoute(
         path: home,

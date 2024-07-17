@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:minhlong_menu_client_v3/Routes/app_route.dart';
-import 'package:minhlong_menu_client_v3/common/network/dio_client.dart';
 import 'package:minhlong_menu_client_v3/features/auth/bloc/auth_bloc.dart';
 import 'package:minhlong_menu_client_v3/features/auth/data/auth_local_datasource/auth_local_datasource.dart';
 import 'package:minhlong_menu_client_v3/features/auth/data/provider/remote/auth_api.dart';
@@ -15,6 +14,8 @@ import 'package:minhlong_menu_client_v3/features/food/data/provider/food_api.dar
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'bloc_observer.dart';
+import 'common/network/dio_client.dart';
+import 'common/network/dio_interceptor.dart';
 import 'core/app_colors.dart';
 import 'features/food/data/repositories/food_repository.dart';
 
@@ -29,10 +30,21 @@ void main() async {
       builder: (context) => MainApp(sf: sf)));
 }
 
-class MainApp extends StatelessWidget {
+class MainApp extends StatefulWidget {
   const MainApp({super.key, required this.sf});
 
   final SharedPreferences sf;
+
+  @override
+  State<MainApp> createState() => _MainAppState();
+}
+
+class _MainAppState extends State<MainApp> {
+  @override
+  void initState() {
+    dio.interceptors.add(DioInterceptor(widget.sf, context));
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,13 +52,13 @@ class MainApp extends StatelessWidget {
       providers: [
         RepositoryProvider(
           create: (context) => AuthRepository(
-            authApi: AuthApi(dio: DioClient().dio!),
-            authLocalDatasource: AuthLocalDatasource(sf),
+            authApi: AuthApi(dio: dio),
+            authLocalDatasource: AuthLocalDatasource(widget.sf),
           ),
         ),
         RepositoryProvider(
           create: (context) => FoodRepository(
-            foodApi: FoodApi(dio: DioClient().dio!),
+            foodApi: FoodApi(dio: dio),
           ),
         ),
       ],

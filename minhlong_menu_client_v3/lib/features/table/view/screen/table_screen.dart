@@ -13,8 +13,7 @@ class TableScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RepositoryProvider(
-      create: (context) =>
-          TableRepository(tableApi: TableApi(dio: DioClient().dio!)),
+      create: (context) => TableRepository(tableApi: TableApi(dio: dio)),
       child: BlocProvider(
         create: (context) =>
             TableBloc(tableRepository: context.read<TableRepository>())

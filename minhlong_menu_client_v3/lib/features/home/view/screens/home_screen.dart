@@ -18,11 +18,10 @@ class HomeScreen extends StatelessWidget {
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider(
-          create: (context) => BannerRepository(BannerApi(DioClient().dio!)),
+          create: (context) => BannerRepository(BannerApi(dio)),
         ),
         RepositoryProvider(
-          create: (context) =>
-              CategoryRepository(CategoryApi(DioClient().dio!)),
+          create: (context) => CategoryRepository(CategoryApi(dio)),
         ),
       ],
       child: MultiBlocProvider(

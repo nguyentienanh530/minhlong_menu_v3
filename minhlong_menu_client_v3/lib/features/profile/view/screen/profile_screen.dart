@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
@@ -11,9 +12,12 @@ import 'package:minhlong_menu_client_v3/core/app_style.dart';
 import 'package:minhlong_menu_client_v3/core/extensions.dart';
 
 import '../../../../Routes/app_route.dart';
+import '../../../../common/dialog/app_dialog.dart';
 import '../../../../common/widget/common_back_button.dart';
+import '../../../../common/widget/error_dialog.dart';
 import '../../../../core/app_asset.dart';
 import '../../../../core/app_string.dart';
+import '../../../auth/bloc/auth_bloc.dart';
 
 part '../widget/_profile_widget.dart';
 
@@ -53,10 +57,52 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 : 0.4 * context.sizeDevice.width,
             flexibleSpace: FlexibleSpaceBar(background: imageProfileWidget()),
           ),
-          SliverToBoxAdapter(child: _bodyInfoUser())
+          SliverToBoxAdapter(
+              child: BlocListener<AuthBloc, AuthState>(
+            listener: (context, state) {
+              switch (state) {
+                case AuthLogoutSuccess():
+                  context.read<AuthBloc>().add(AuthEventStarted());
+                  context.pushReplacement(AppRoute.login);
+
+                  break;
+                case AuthLogoutFailure(message: final msg):
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return ErrorDialog(
+                        title: msg,
+                        onRetryText: 'Thử lại',
+                        onRetryPressed: () {
+                          context.pop();
+                          context.read<AuthBloc>().add(AuthLogoutStarted());
+                        },
+                      );
+                    },
+                  );
+                  break;
+                default:
+              }
+            },
+            child: _bodyInfoUser(),
+          ))
         ],
       ),
     );
+  }
+
+  void _showDialogLogout() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AppDialog(
+            title: 'Đăng xuất?',
+            description: 'Bạn có muốn đăng xuất?',
+            onTap: () {
+              context.read<AuthBloc>().add(AuthLogoutStarted());
+            },
+          );
+        });
   }
 }
 
