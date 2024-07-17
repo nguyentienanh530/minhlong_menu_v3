@@ -9,17 +9,25 @@ class CategoryRepository {
     return await _category.query().count();
   }
 
-  Future get({required int startIndex, required int limit}) async {
+  Future get(
+      {required int startIndex,
+      required int limit,
+      required int userID}) async {
     return _category
         .query()
         .offset(startIndex)
         .limit(limit)
+        .where('user_id', '=', userID)
         .orderBy('serial', 'asc')
         .get();
   }
 
-  Future getAll() async {
-    return _category.query().orderBy('serial', 'asc').get();
+  Future getAll({required int userID}) async {
+    return _category
+        .query()
+        .where('user_id', '=', userID)
+        .orderBy('serial', 'asc')
+        .get();
   }
 
   Future find({required int id}) async {

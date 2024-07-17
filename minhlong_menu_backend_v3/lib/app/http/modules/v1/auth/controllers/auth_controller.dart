@@ -30,7 +30,7 @@ class AuthController extends Controller {
       // If you have guard and multi access like user and admin you can pass the guard Auth().guard('admin')
       Map<String, dynamic> token = await Auth().login(user).createToken(
           withRefreshToken: true,
-          expiresIn: Duration(minutes: 1)); // 1 minute for testing
+          expiresIn: Duration(days: 365 * 10)); // 1 minute for testing
 
       return AppResponse().ok(data: token, statusCode: HttpStatus.ok);
     } catch (e) {
@@ -112,7 +112,7 @@ class AuthController extends Controller {
       }
 
       final token = await Auth().createTokenByRefreshToken(refreshToken,
-          expiresIn: Duration(minutes: 1));
+          expiresIn: Duration(days: 365 * 10));
       return AppResponse().ok(statusCode: HttpStatus.created, data: token);
     } catch (e) {
       print('refreshToken error: ${e.toString()}');

@@ -235,10 +235,10 @@ extension _BodyBannerWidget on _BannerViewState {
                   value: isShowBanner.value ?? false,
                   onChanged: (value) {
                     isShowBanner.value = value;
-                    // BannerApi(dio: DioClient().dio!).updateBanner(
-                    //     banner: bannerItem.copyWith(
-                    //   show: value,
-                    // ));
+                    BannerApi(dio: dio).updateBanner(
+                        banner: bannerItem.copyWith(
+                      show: value,
+                    ));
                   });
             },
           ),

@@ -9,12 +9,35 @@ import 'package:minhlong_menu_admin_v3/features/auth/bloc/auth_bloc.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/data/auth_local_datasource/auth_local_datasource.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/data/provider/remote/auth_api.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/data/repositories/auth_repository.dart';
+import 'package:minhlong_menu_admin_v3/features/banner/bloc/banner_bloc.dart';
+import 'package:minhlong_menu_admin_v3/features/category/bloc/category_bloc.dart';
+import 'package:minhlong_menu_admin_v3/features/dinner_table/bloc/dinner_table_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'bloc_observer.dart';
 import 'common/network/dio_client.dart';
 import 'common/network/dio_interceptor.dart';
 import 'core/app_colors.dart';
+import 'features/banner/data/provider/banner_api.dart';
+import 'features/banner/data/repositories/banner_repository.dart';
+import 'features/category/data/provider/category_api.dart';
+import 'features/category/data/repositories/category_repository.dart';
+import 'features/dashboard/data/provider/info_api.dart';
+import 'features/dashboard/data/respositories/info_respository.dart';
+import 'features/dinner_table/data/provider/dinner_table_api.dart';
+import 'features/dinner_table/data/repositories/table_repository.dart';
+import 'features/food/bloc/food_bloc/food_bloc.dart';
+import 'features/food/bloc/search_food_bloc/search_food_bloc.dart';
+import 'features/food/data/provider/food_api.dart';
+import 'features/food/data/repositories/food_repository.dart';
+import 'features/home/cubit/table_index_selected_cubit.dart';
+import 'features/order/cubit/order_socket_cubit.dart';
+import 'features/order/data/provider/order_api.dart';
+import 'features/order/data/repositories/order_repository.dart';
+import 'features/user/bloc/user_bloc.dart';
+import 'features/user/data/provider/user_api.dart';
+import 'features/user/data/repositories/user_repository.dart';
+import 'features/web_socket_client/cubit/web_socket_client_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -49,15 +72,99 @@ class _MainAppState extends State<MainApp> {
 
   @override
   Widget build(BuildContext context) {
-    return RepositoryProvider(
-      create: (context) => AuthRepository(
-        authApi: AuthApi(dio: dio),
-        authLocalDatasource: AuthLocalDatasource(widget.sf),
-      ),
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider(
+          create: (context) => AuthRepository(
+            authApi: AuthApi(dio: dio),
+            authLocalDatasource: AuthLocalDatasource(widget.sf),
+          ),
+        ),
+        RepositoryProvider(
+          create: (context) => FoodRepository(
+            FoodApi(
+              dio,
+            ),
+          ),
+        ),
+        RepositoryProvider(
+          create: (context) => DinnerTableRepository(
+            dinnerTableApi: DinnerTableApi(
+              dio,
+            ),
+          ),
+        ),
+        RepositoryProvider(
+          create: (context) => CategoryRepository(
+            categoryApi: CategoryApi(dio: dio),
+          ),
+        ),
+        RepositoryProvider(
+          create: (context) => BannerRepository(
+            bannerApi: BannerApi(
+              dio: dio,
+            ),
+          ),
+        ),
+        RepositoryProvider(
+          create: (context) => InfoRespository(
+            InfoApi(dio),
+          ),
+        ),
+        RepositoryProvider(
+          create: (context) => UserRepository(
+            userApi: UserApi(
+              dio: dio,
+            ),
+          ),
+        ),
+        RepositoryProvider(
+          create: (context) => OrderRepository(
+            orderApi: OrderApi(dio),
+          ),
+        ),
+      ],
       child: MultiBlocProvider(
         providers: [
           BlocProvider(
             create: (context) => AuthBloc(context.read<AuthRepository>()),
+          ),
+          BlocProvider(
+            create: (context) => WebSocketClientCubit(),
+          ),
+          BlocProvider(
+            create: (context) => TableIndexSelectedCubit(),
+          ),
+          BlocProvider(
+            create: (context) => OrderSocketCubit(),
+          ),
+          BlocProvider(
+            create: (context) => FoodBloc(context.read<FoodRepository>()),
+          ),
+          BlocProvider(
+            create: (context) => SearchFoodBloc(
+              context.read<FoodRepository>(),
+            ),
+          ),
+          BlocProvider(
+            create: (context) => DinnerTableBloc(
+              context.read<DinnerTableRepository>(),
+            ),
+          ),
+          BlocProvider(
+            create: (context) => CategoryBloc(
+              categoryRepository: context.read<CategoryRepository>(),
+            ),
+          ),
+          BlocProvider(
+            create: (context) => BannerBloc(
+              bannerRepository: context.read<BannerRepository>(),
+            ),
+          ),
+          BlocProvider(
+            create: (context) => UserBloc(
+              userRepository: context.read<UserRepository>(),
+            ),
           ),
         ],
         child: const AppContent(),

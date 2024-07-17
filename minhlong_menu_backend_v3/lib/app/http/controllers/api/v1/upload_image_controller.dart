@@ -22,7 +22,8 @@ class UploadImageController extends Controller {
 
       if (image != null) {
         avatarPath = await image.move(
-            path: 'public/$path', filename: image.getClientOriginalName);
+            path: 'public/$path/${Auth().id()}',
+            filename: image.getClientOriginalName);
       }
 
       return Response.json(

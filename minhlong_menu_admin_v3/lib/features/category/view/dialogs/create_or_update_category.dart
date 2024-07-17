@@ -9,7 +9,6 @@ import 'package:minhlong_menu_admin_v3/common/widget/error_build_image.dart';
 import 'package:minhlong_menu_admin_v3/core/api_config.dart';
 import 'package:minhlong_menu_admin_v3/core/app_key.dart';
 import 'package:minhlong_menu_admin_v3/core/utils.dart';
-import 'package:minhlong_menu_admin_v3/features/auth/data/model/access_token.dart';
 import 'package:minhlong_menu_admin_v3/features/category/data/model/category_item.dart';
 
 import '../../../../common/dialog/app_dialog.dart';
@@ -18,7 +17,6 @@ import '../../../../core/app_colors.dart';
 import '../../../../core/app_const.dart';
 import '../../../../core/app_style.dart';
 import '../../../../core/extensions.dart';
-import '../../../auth/cubit/access_token_cubit.dart';
 import '../../bloc/category_bloc.dart';
 
 enum CreateOrUpdateCategoryType {
@@ -48,13 +46,12 @@ class _CreateOrUpdateCategoryState extends State<CreateOrUpdateCategory> {
   String _image = '';
   final _imageUploadProgress = ValueNotifier(0.0);
   late CategoryItem _categoryItem;
-  late AccessToken _accessToken;
 
   @override
   void initState() {
     super.initState();
     _type = widget.type;
-    _accessToken = context.read<AccessTokenCubit>().state;
+
     if (_type == CreateOrUpdateCategoryType.update) {
       _categoryItem = widget.categoryItem!;
       _nameCategoryController.text = _categoryItem.name;

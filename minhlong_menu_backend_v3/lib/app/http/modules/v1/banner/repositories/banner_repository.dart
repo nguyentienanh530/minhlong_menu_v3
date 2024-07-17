@@ -3,15 +3,19 @@ import '../models/banners.dart';
 class BannerRepository {
   final Banner _banner;
   BannerRepository({required Banner banner}) : _banner = banner;
-  Future getAll() async {
-    return await _banner.query().get();
+  Future getAll({required int userID}) async {
+    return await _banner.query().where('user_id', '=', userID).get();
   }
 
-  Future get({required int startIndex, required int limit}) async {
+  Future get(
+      {required int startIndex,
+      required int limit,
+      required int userID}) async {
     return await _banner
         .query()
         .offset(startIndex)
         .limit(limit)
+        .where('user_id', '=', userID)
         .orderBy('created_at', 'desc')
         .get();
   }

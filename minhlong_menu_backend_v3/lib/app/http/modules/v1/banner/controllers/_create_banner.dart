@@ -5,13 +5,16 @@ extension CreateBannerCtrl on BannerController {
     Map<String, dynamic> data = request.all();
     try {
       print(data);
+
+      var userID = Auth().id();
+      if (userID == null) {
+        return AppResponse().error(
+            statusCode: HttpStatus.unauthorized, message: 'unauthorized');
+      }
       var banner = {
+        'user_id': userID,
         'image': data['image'] ?? '',
-        'show': data['show'] == null
-            ? 1
-            : bool.parse(data['show'].toString())
-                ? 1
-                : 0,
+        'show': data['show'] == null ? 0 : (data['show'] ? 1 : 0),
       };
       var bannerID = await _bannerRepository.create(data: banner);
       return AppResponse().ok(data: bannerID, statusCode: HttpStatus.ok);
