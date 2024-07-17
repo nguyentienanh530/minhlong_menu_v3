@@ -28,16 +28,25 @@ extension _ProfileWidget on _ProfileScreenState {
           ),
         ),
         10.verticalSpace,
-        _editInfoButtonWidget()
+        _textBotton()
       ],
     );
   }
 
-  Widget _editInfoButtonWidget() {
-    return Text(
-      '+84 ${_userList[0].phone}',
-      style:
-          kBodyStyle.copyWith(color: AppColors.secondTextColor, fontSize: 12),
+  Widget _textBotton() {
+    return Column(
+      children: [
+        Text(
+          _userList[0].name.toString(),
+          style:
+              kHeadingStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 20),
+        ),
+        Text(
+          '+84 ${_userList[0].phone}',
+          style: kBodyStyle.copyWith(
+              color: AppColors.secondTextColor, fontSize: 12),
+        ),
+      ],
     );
   }
 
@@ -46,13 +55,17 @@ extension _ProfileWidget on _ProfileScreenState {
       width: double.infinity,
       padding: const EdgeInsets.all(defaultPadding),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _ItemProfile(
-            onTap: () => context.push(AppRoute.editProfile),
-            svgPath: AppAsset.user,
-            title: AppString.editProfile,
-          ),
-          _buildItemPrint(context),
+              onTap: () => context.push(AppRoute.editProfile),
+              svgPath: AppAsset.user,
+              title: AppString.editProfile),
+          _ItemProfile(
+              svgPath: AppAsset.lock,
+              title: AppString.changePassword,
+              onTap: () => context.push(AppRoute.changePassword)),
+          _buildItemPrint(context)
         ],
       ),
     );
@@ -68,11 +81,14 @@ extension _ProfileWidget on _ProfileScreenState {
                 elevation: 4,
                 shadowColor: AppColors.lavender,
                 child: SizedBox(
-                    width: double.infinity,
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Row(children: [
+                      Expanded(
+                        child: FittedBox(
+                          alignment: Alignment.centerLeft,
+                          fit: BoxFit.scaleDown,
+                          child: Row(children: [
                             Padding(
                                 padding: const EdgeInsets.all(defaultPadding),
                                 child: SvgPicture.asset(AppAsset.print,
@@ -85,7 +101,13 @@ extension _ProfileWidget on _ProfileScreenState {
                                   color: AppColors.secondTextColor),
                             )
                           ]),
-                          Transform.scale(
+                        ),
+                      ),
+                      Expanded(
+                        child: FittedBox(
+                          alignment: Alignment.centerRight,
+                          fit: BoxFit.scaleDown,
+                          child: Transform.scale(
                             scale: 0.8,
                             child: Switch(
                               activeTrackColor: AppColors.themeColor,
@@ -98,11 +120,13 @@ extension _ProfileWidget on _ProfileScreenState {
                               },
                             ),
                           ),
-                        ]))),
+                        ),
+                      ),
+                    ]))),
             _isUsePrinter.value
                 ? Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: defaultPadding * 2),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: defaultPadding),
                     child: _ItemProfile(
                         svgPath: AppAsset.fileConfig,
                         title: AppString.settingPrinter,
@@ -136,34 +160,49 @@ class _ItemProfile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-        onTap: onTap,
-        child: Card(
-            elevation: 4,
-            shadowColor: AppColors.lavender,
-            child: SizedBox(
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                  Row(children: [
-                    Padding(
+    return Card(
+        elevation: 4,
+        shadowColor: AppColors.lavender,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(defaultPadding),
+          onTap: onTap,
+          child: SizedBox(
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                Expanded(
+                  child: FittedBox(
+                    alignment: Alignment.centerLeft,
+                    fit: BoxFit.scaleDown,
+                    child: Row(children: [
+                      Padding(
+                          padding: const EdgeInsets.all(defaultPadding),
+                          child: SvgPicture.asset(svgPath,
+                              colorFilter: const ColorFilter.mode(
+                                  Colors.red, BlendMode.srcIn))),
+                      Text(
+                        title,
+                        style: titleStyle ??
+                            kBodyStyle.copyWith(
+                                color: AppColors.secondTextColor),
+                      )
+                    ]),
+                  ),
+                ),
+                Expanded(
+                  child: FittedBox(
+                    alignment: Alignment.centerRight,
+                    fit: BoxFit.scaleDown,
+                    child: Padding(
                         padding: const EdgeInsets.all(defaultPadding),
-                        child: SvgPicture.asset(svgPath,
-                            colorFilter: const ColorFilter.mode(
-                                Colors.red, BlendMode.srcIn))),
-                    Text(
-                      title,
-                      style: titleStyle ??
-                          kBodyStyle.copyWith(color: AppColors.secondTextColor),
-                    )
-                  ]),
-                  Padding(
-                      padding: const EdgeInsets.all(defaultPadding),
-                      child: Icon(
-                        Icons.arrow_forward_ios_rounded,
-                        size: 15,
-                        color: colorIcon ?? AppColors.secondTextColor,
-                      ))
-                ]))));
+                        child: Icon(
+                          Icons.arrow_forward_ios_rounded,
+                          size: 15,
+                          color: colorIcon ?? AppColors.secondTextColor,
+                        )),
+                  ),
+                )
+              ])),
+        ));
   }
 }

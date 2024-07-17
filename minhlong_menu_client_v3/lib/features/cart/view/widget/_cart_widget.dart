@@ -18,7 +18,9 @@ extension CartWidget on _CartScreenState {
           ),
         ),
         Expanded(
-            flex: 3,
+          flex: 3,
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
             child: Column(children: [
               Text(
                 _foodList[0].name,
@@ -27,12 +29,23 @@ extension CartWidget on _CartScreenState {
               Text(
                 '${Ultils.currencyFormat(double.parse(_foodList[0].price.toString()))} ₫',
               )
-            ])),
-        Expanded(flex: 3, child: QuantityButton()),
+            ]),
+          ),
+        ),
         Expanded(
-          child: IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.close),
+          flex: 3,
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: QuantityButton(),
+          ),
+        ),
+        Expanded(
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.close),
+            ),
           ),
         )
       ]),

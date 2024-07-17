@@ -19,6 +19,7 @@ import 'package:minhlong_menu_client_v3/core/extensions.dart';
 import 'package:minhlong_menu_client_v3/features/food/bloc/food_bloc.dart';
 import 'package:minhlong_menu_client_v3/features/food/cubit/item_size_cubit.dart';
 import 'package:minhlong_menu_client_v3/features/food/data/repositories/food_repository.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../../../../Routes/app_route.dart';
 import '../../../../common/dialog/app_dialog.dart';
@@ -30,7 +31,7 @@ import '../../../auth/bloc/auth_bloc.dart';
 import '../../../banner/bloc/banner_bloc.dart';
 import '../../../category/bloc/category_bloc.dart';
 import '../../../category/data/model/category_model.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+
 part '../widgets/_appbar_widget.dart';
 part '../widgets/_banner_widget.dart';
 part '../widgets/_category_widget.dart';
@@ -47,11 +48,24 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
   final TextEditingController _searchText = TextEditingController();
   final _indexPage = ValueNotifier(0);
+  final ScrollController _scrollController = ScrollController();
+  final ValueNotifier<bool> _isScrolledNotifier = ValueNotifier(false);
 
   @override
   void dispose() {
     super.dispose();
     _indexPage.dispose();
+    _searchText.dispose();
+    _scrollController.removeListener(_scrollListener);
+    _isScrolledNotifier.dispose();
+  }
+
+  void _scrollListener() {
+    if (_scrollController.hasClients && _scrollController.offset > 0) {
+      _isScrolledNotifier.value = true;
+    } else {
+      _isScrolledNotifier.value = false;
+    }
   }
 
   @override
@@ -73,7 +87,16 @@ class _HomeViewState extends State<HomeView> {
               background: _bannerHome(),
             ),
             title: _seachBox(),
-            actions: [_tableButton(), _userProfile(), 5.horizontalSpace],
+            actions: [
+              _iconActionButtonAppBar(
+                icon: Icons.table_bar_outlined,
+                onPressed: () => context.push(AppRoute.dinnerTables),
+              ),
+              _iconActionButtonAppBar(
+                  icon: Icons.tune,
+                  onPressed: () => context.push(AppRoute.profile)),
+              5.horizontalSpace
+            ],
           ),
           SliverToBoxAdapter(
             child: Column(

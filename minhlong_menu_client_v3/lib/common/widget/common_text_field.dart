@@ -26,7 +26,9 @@ class CommonTextField extends StatelessWidget {
       this.filled,
       this.hintStyle,
       this.style,
-      this.contentPadding});
+      this.contentPadding,
+      this.labelStyle});
+  final TextStyle? labelStyle;
   final EdgeInsetsGeometry? contentPadding;
   final TextStyle? style;
   final TextStyle? hintStyle;
@@ -93,7 +95,7 @@ class CommonTextField extends StatelessWidget {
             labelText: labelText,
             errorStyle: kBodyStyle.copyWith(color: AppColors.black),
             hintStyle: hintStyle ?? kBodyStyle,
-            labelStyle: kBodyStyle),
+            labelStyle: labelStyle ?? kBodyStyle),
         onChanged: onChanged);
   }
 }
