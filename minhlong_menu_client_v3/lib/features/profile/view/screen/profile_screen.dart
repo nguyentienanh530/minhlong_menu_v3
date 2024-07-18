@@ -63,7 +63,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               switch (state) {
                 case AuthLogoutSuccess():
                   context.read<AuthBloc>().add(AuthEventStarted());
-                  context.pushReplacement(AppRoute.login);
+                  context.go(AppRoute.login);
 
                   break;
                 case AuthLogoutFailure(message: final msg):

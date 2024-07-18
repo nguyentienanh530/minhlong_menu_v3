@@ -53,14 +53,15 @@ class ItemFoodView extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(defaultBorderRadius / 2),
       ),
-      child: SizedBox(
-        height: height,
-        width: width,
-        child: Stack(
-          children: [
-            GestureDetector(
-              onTap: () => context.push(AppRoute.foodsDetail, extra: food),
-              child: Column(
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: GestureDetector(
+          onTap: () => context.push(AppRoute.foodsDetail, extra: food),
+          child: SizedBox(
+            height: height,
+            width: width,
+            child: Stack(children: [
+              Column(
                 children: [
                   Container(
                     clipBehavior: Clip.antiAlias,
@@ -81,18 +82,17 @@ class ItemFoodView extends StatelessWidget {
                   _buildPrice(context, food),
                 ],
               ),
-              food.isDiscount!
-                  ? Positioned(
-                      top: 0.62 * height,
-                      right: 5,
-                      child: _buildDiscountItem(food))
-                  : const SizedBox(),
               Positioned(top: 5, right: 5, child: _addToCard()),
-            ],
+              if (food.isDiscount!)
+                Positioned(
+                    right: 5,
+                    top: 0.7 * height - 18,
+                    child: _buildDiscountItem(food)),
+            ]),
           ),
         ),
       ),
-    )
+    );
   }
 
   Widget _addToCard() {
