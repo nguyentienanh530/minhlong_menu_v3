@@ -65,9 +65,6 @@ extension _EditProfileWidget on _EditProfileScreenState {
           _textProfile(AppString.fullName),
           TextBoxProfile(controllers: _nameController),
           10.verticalSpace,
-          _textProfile(AppString.email),
-          TextBoxProfile(controllers: _emailController),
-          10.verticalSpace,
           _textProfile(AppString.phoneNumber),
           TextBoxProfile(controllers: _phoneController),
           20.verticalSpace,
@@ -98,17 +95,16 @@ extension _EditProfileWidget on _EditProfileScreenState {
   }
 }
 
-// ignore: must_be_immutable
 class TextBoxProfile extends StatelessWidget {
-  TextBoxProfile({
+  const TextBoxProfile({
     super.key,
     required this.controllers,
     this.labelText,
     this.labelStyle,
   });
-  TextEditingController controllers = TextEditingController();
-  String? labelText;
-  TextStyle? labelStyle;
+  final TextEditingController controllers;
+  final String? labelText;
+  final TextStyle? labelStyle;
 
   @override
   Widget build(BuildContext context) {

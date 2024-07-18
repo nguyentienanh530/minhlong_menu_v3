@@ -50,19 +50,30 @@ class _HomeViewState extends State<HomeView> {
   final ValueNotifier<bool> _isScrolledNotifier = ValueNotifier(false);
 
   @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_scrollListener);
+  }
+
+  @override
   void dispose() {
     super.dispose();
     _indexPage.dispose();
     _searchText.dispose();
     _scrollController.removeListener(_scrollListener);
+    _scrollController.dispose();
     _isScrolledNotifier.dispose();
   }
 
   void _scrollListener() {
     if (_scrollController.hasClients && _scrollController.offset > 0) {
-      _isScrolledNotifier.value = true;
+      if (!_isScrolledNotifier.value) {
+        _isScrolledNotifier.value = true;
+      }
     } else {
-      _isScrolledNotifier.value = false;
+      if (_isScrolledNotifier.value) {
+        _isScrolledNotifier.value = false;
+      }
     }
   }
 
@@ -99,13 +110,13 @@ class _HomeViewState extends State<HomeView> {
           SliverToBoxAdapter(
             child: Column(
               children: [
-                // _bannerHome(),
                 30.verticalSpace,
                 categoryListView(),
                 10.verticalSpace,
-                _buildListFoodView(),
+                _buildListNewFood(),
                 20.verticalSpace,
                 _popularGridView(),
+                // Text("Scroll Offset: ${_scrollController.offset}"),
               ],
             ),
           ),

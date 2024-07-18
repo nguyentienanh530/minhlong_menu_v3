@@ -24,12 +24,6 @@ class TableView extends StatefulWidget {
 }
 
 class _TableViewState extends State<TableView> {
-  List<TableModel> tableList = List.generate(
-      10,
-      (index) => TableModel(
-          id: index, name: 'Table $index', seats: 4, isUse: index % 2 == 0));
-  TableModel tableModel = TableModel();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,22 +50,25 @@ class _TableViewState extends State<TableView> {
           ],
         ),
       ),
-      body: Builder(builder: (context) {
-        var tableState = context.watch<TableBloc>().state;
-        return (switch (tableState) {
-          TableFetchInProgress() => const Loading(),
-          TableFetchEmpty() => const EmptyWidget(),
-          TableFetchFailure() => ErrWidget(error: tableState.message),
-          TableFetchSuccess() => ListView.builder(
-              shrinkWrap: true,
-              itemCount: tableList.length,
-              itemBuilder: (context, index) {
-                return _tableItem(tableState.tables[index]);
-              },
-            ),
-          _ => const SizedBox()
-        });
-      }),
+      body: Padding(
+        padding: const EdgeInsets.all(defaultPadding),
+        child: Builder(builder: (context) {
+          var tableState = context.watch<TableBloc>().state;
+          return (switch (tableState) {
+            TableFetchInProgress() => const Loading(),
+            TableFetchEmpty() => const EmptyWidget(),
+            TableFetchFailure() => ErrWidget(error: tableState.message),
+            TableFetchSuccess() => ListView.builder(
+                // shrinkWrap: true,
+                itemCount: tableState.tables.length,
+                itemBuilder: (context, index) {
+                  return _tableItem(tableState.tables[index]);
+                },
+              ),
+            _ => const SizedBox()
+          });
+        }),
+      ),
     );
   }
 }

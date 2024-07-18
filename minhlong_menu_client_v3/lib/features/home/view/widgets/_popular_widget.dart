@@ -23,7 +23,7 @@ extension _PopularWidget on _HomeViewState {
               FoodFetchSuccess() => GridItemFood(
                   crossAxisCount: 2,
                   foods: foodState.food.foodItems,
-                  aspectRatio: 9 / 12,
+                  aspectRatio: 1,
                 ),
               _ => const SizedBox(),
             });
@@ -38,16 +38,26 @@ extension _PopularWidget on _HomeViewState {
         padding: const EdgeInsets.all(defaultPadding),
         child:
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Text(title,
-              style: kHeadingStyle.copyWith(fontWeight: FontWeight.bold)),
-          GestureDetector(
+          Expanded(
+            child: FittedBox(
+              alignment: Alignment.centerLeft,
+              fit: BoxFit.scaleDown,
+              child: Text(title,
+                  style: kHeadingStyle.copyWith(fontWeight: FontWeight.bold)),
+            ),
+          ),
+          InkWell(
               onTap: onTap,
               child:
                   Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-                Text(AppString.seeMore,
-                    style: kBodyStyle.copyWith(
-                        fontStyle: FontStyle.italic,
-                        color: AppColors.themeColor)),
+                FittedBox(
+                  alignment: Alignment.centerRight,
+                  fit: BoxFit.scaleDown,
+                  child: Text(AppString.seeMore,
+                      style: kBodyStyle.copyWith(
+                          fontStyle: FontStyle.italic,
+                          color: AppColors.themeColor)),
+                ),
                 const Icon(Icons.navigate_next_rounded,
                     size: 15, color: Colors.red)
               ]))

@@ -67,12 +67,26 @@ extension _ProfileWidget on _ProfileScreenState {
               onTap: () => context.push(AppRoute.changePassword)),
           _buildItemPrint(context),
           _ItemProfile(
-              svgPath: AppAsset.lock,
-              title: 'password',
+              svgPath: AppAsset.logout,
+              title: 'Đăng xuất',
               onTap: () => _showDialogLogout()),
         ],
       ),
     );
+  }
+
+  void _showDialogLogout() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AppDialog(
+            title: 'Đăng xuất?',
+            description: 'Bạn có muốn đăng xuất?',
+            onTap: () {
+              context.read<AuthBloc>().add(AuthLogoutStarted());
+            },
+          );
+        });
   }
 
   Widget _buildItemPrint(BuildContext context) {
@@ -156,6 +170,7 @@ class _ItemProfile extends StatelessWidget {
     this.titleStyle,
     this.colorIcon,
   });
+
   final Color? colorIcon;
   final String svgPath;
   final String title;

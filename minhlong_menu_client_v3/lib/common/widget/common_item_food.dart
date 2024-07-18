@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:minhlong_menu_client_v3/Routes/app_route.dart';
 import 'package:minhlong_menu_client_v3/common/widget/error_build_image.dart';
 import 'package:minhlong_menu_client_v3/core/api_config.dart';
 import 'package:minhlong_menu_client_v3/core/extensions.dart';
 import 'package:minhlong_menu_client_v3/features/food/data/dto/item_food_size_dto.dart';
 import 'package:minhlong_menu_client_v3/features/food/data/model/food_item.dart';
 
+import '../../Routes/app_route.dart';
 import '../../core/app_colors.dart';
 import '../../core/app_const.dart';
 import '../../core/app_style.dart';
@@ -49,18 +49,18 @@ class ItemFoodView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () => context.push(AppRoute.foodsDetail, extra: food),
-      child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(defaultBorderRadius),
-        ),
-        child: SizedBox(
-          height: height,
-          width: width,
-          child: Stack(
-            children: [
-              Column(
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(defaultBorderRadius / 2),
+      ),
+      child: SizedBox(
+        height: height,
+        width: width,
+        child: Stack(
+          children: [
+            GestureDetector(
+              onTap: () => context.push(AppRoute.foodsDetail, extra: food),
+              child: Column(
                 children: [
                   Container(
                     clipBehavior: Clip.antiAlias,
@@ -68,8 +68,8 @@ class ItemFoodView extends StatelessWidget {
                     width: width,
                     decoration: const BoxDecoration(
                       borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(defaultBorderRadius),
-                          topLeft: Radius.circular(defaultBorderRadius)),
+                          topRight: Radius.circular(defaultBorderRadius / 2),
+                          topLeft: Radius.circular(defaultBorderRadius / 2)),
                     ),
                     child: CachedNetworkImage(
                       imageUrl: '${ApiConfig.host}${food.image1}',
@@ -83,7 +83,7 @@ class ItemFoodView extends StatelessWidget {
               ),
               food.isDiscount!
                   ? Positioned(
-                      top: (0.7 * height) - 18,
+                      top: 0.62 * height,
                       right: 5,
                       child: _buildDiscountItem(food))
                   : const SizedBox(),
@@ -92,23 +92,26 @@ class ItemFoodView extends StatelessWidget {
           ),
         ),
       ),
-    );
+    )
   }
 
   Widget _addToCard() {
-    return const Card(
-      elevation: 4,
-      shadowColor: AppColors.themeColor,
-      shape: CircleBorder(),
-      color: AppColors.red,
-      child: SizedBox(
-          height: 35,
-          width: 35,
-          child: Icon(
-            Icons.add,
-            color: AppColors.white,
-            size: 30,
-          )),
+    return InkWell(
+      onTap: () {},
+      child: const Card(
+        elevation: 4,
+        shadowColor: AppColors.themeColor,
+        shape: CircleBorder(),
+        color: AppColors.red,
+        child: SizedBox(
+            height: 35,
+            width: 35,
+            child: Icon(
+              Icons.add,
+              color: AppColors.white,
+              size: 30,
+            )),
+      ),
     );
   }
 
@@ -136,22 +139,22 @@ class ItemFoodView extends StatelessWidget {
       child: SizedBox(
         width: double.infinity,
         child: FittedBox(
+          fit: BoxFit.scaleDown,
           alignment: Alignment.centerLeft,
           child: Padding(
-            padding: const EdgeInsets.only(
-                right: defaultPadding,
-                left: defaultPadding,
-                top: defaultPadding / 3),
+            padding: const EdgeInsets.symmetric(
+              horizontal: defaultPadding,
+            ),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
               children: [
+                const Icon(Icons.check_circle,
+                    color: AppColors.islamicGreen, size: 16),
+                5.horizontalSpace,
                 Text(food.name,
-                    textAlign: TextAlign.left,
+                    textAlign: TextAlign.center,
                     style: context.isTablet
-                        ? kBodyStyle.copyWith(
-                            fontWeight: FontWeight.bold, fontSize: 18.0)
-                        : kBodyStyle.copyWith(
-                            fontWeight: FontWeight.bold, fontSize: 14.0)),
+                        ? kHeadingStyle.copyWith(fontWeight: FontWeight.bold)
+                        : kHeadingStyle.copyWith(fontWeight: FontWeight.bold)),
                 2.horizontalSpace,
                 // const Icon(Icons.check_circle,
                 //     color: AppColors.islamicGreen, size: 14),
@@ -180,6 +183,7 @@ class ItemFoodView extends StatelessWidget {
                       '₫ ${Ultils.currencyFormat(double.parse(food.price.toString()))}',
                       style: kBodyStyle.copyWith(
                           fontWeight: FontWeight.bold,
+                          fontSize: 18,
                           color: AppColors.themeColor)),
                 ),
               ),
@@ -199,8 +203,8 @@ class ItemFoodView extends StatelessWidget {
                         '₫ ${Ultils.currencyFormat(double.parse(food.price.toString()))}',
                         style: kBodyStyle.copyWith(
                             color: AppColors.secondTextColor,
-                            fontSize: 12,
                             decoration: TextDecoration.lineThrough,
+                            fontSize: 18,
                             decorationThickness: 1,
                             decorationColor: Colors.red,
                             decorationStyle: TextDecorationStyle.solid)),
@@ -208,9 +212,10 @@ class ItemFoodView extends StatelessWidget {
                     Text(
                         '₫ ${Ultils.currencyFormat(double.parse(discountedPrice.toString()))}',
                         style: kBodyStyle.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.themeColor,
-                            fontSize: 12)),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                          color: AppColors.themeColor,
+                        )),
                   ]),
                 ),
               ),

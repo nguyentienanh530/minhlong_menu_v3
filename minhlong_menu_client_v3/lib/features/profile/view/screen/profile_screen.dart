@@ -90,20 +90,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     );
   }
-
-  void _showDialogLogout() {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AppDialog(
-            title: 'Đăng xuất?',
-            description: 'Bạn có muốn đăng xuất?',
-            onTap: () {
-              context.read<AuthBloc>().add(AuthLogoutStarted());
-            },
-          );
-        });
-  }
 }
 
 class User {

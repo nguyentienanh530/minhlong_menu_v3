@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_client_v3/common/widget/loading_widget.dart';
+import 'package:minhlong_menu_client_v3/core/extensions.dart';
 
 import '../../../../Routes/app_route.dart';
 import '../../../../common/widget/common_text_field.dart';
@@ -49,14 +50,23 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          SizedBox(
-              width: double.infinity,
-              height: 0.2.sh,
-              child: Image.asset(AppAsset.backgroundLogin,
-                  colorBlendMode: BlendMode.srcIn, fit: BoxFit.cover)),
-          _buildBody(),
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: context.isPortrait
+                ? 0.2 * context.sizeDevice.height
+                : 0.2 * context.sizeDevice.width,
+            flexibleSpace: FlexibleSpaceBar(
+              background: SizedBox(
+                  width: double.infinity,
+                  height: 0.2.sh,
+                  child: Image.asset(AppAsset.backgroundLogin,
+                      colorBlendMode: BlendMode.srcIn, fit: BoxFit.cover)),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: _buildBody(),
+          ),
         ],
       ),
     );
@@ -252,7 +262,7 @@ class _ButtonForgotPassword extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
         onTap: () {
-          context.go(AppRoute.forgotPassword);
+          context.push(AppRoute.forgotPassword);
         },
         child: Text(AppString.forgotPassword,
             style: kCaptionStyle.copyWith(color: AppColors.themeColor)));

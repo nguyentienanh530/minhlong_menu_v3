@@ -3,8 +3,9 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:minhlong_menu_client_v3/core/extensions.dart';
 
-import '../../../../Routes/app_route.dart';
+import '../../../../common/widget/common_back_button.dart';
 import '../../../../common/widget/common_text_field.dart';
 import '../../../../core/app_asset.dart';
 import '../../../../core/app_colors.dart';
@@ -43,107 +44,104 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          SizedBox(
-            width: double.infinity,
-            height: 0.2.sh,
-            child: Image.asset(
-              AppAsset.backgroundLogin,
-              fit: BoxFit.cover,
-            ),
-          ),
-          Card(
-            margin: const EdgeInsets.only(left: 20, top: 50),
-            child: InkWell(
-              hoverColor: AppColors.transparent,
-              onTap: () {
-                context.go(AppRoute.login);
-              },
-              child: const SizedBox(
-                height: 50,
-                width: 50,
-                child: Center(
-                  child: Icon(
-                    Icons.arrow_back_ios,
-                    size: 20,
-                  ),
-                ),
+        body: CustomScrollView(
+      slivers: [
+        SliverAppBar(
+          leading: CommonBackButton(onTap: () => context.pop()),
+          expandedHeight: context.isPortrait
+              ? 0.2 * context.sizeDevice.height
+              : 0.2 * context.sizeDevice.width,
+          pinned: true,
+          backgroundColor: AppColors.transparent,
+          flexibleSpace: FlexibleSpaceBar(
+            background: SizedBox(
+              width: double.infinity,
+              height: 0.2.sh,
+              child: Image.asset(
+                AppAsset.backgroundLogin,
+                fit: BoxFit.cover,
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(35).r,
-            child: Center(
-              child: SizedBox(
-                width: 360,
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      24.verticalSpace,
-                      _buildForgotPasswordWidget(),
-                      Text('Nhập số điện thoại của bạn để đổi mật khẩu',
-                          style: kBodyStyle.copyWith(
-                              fontSize: 14,
-                              color: AppColors.black.withOpacity(0.7))),
-                      20.verticalSpace,
-                      _buildPhoneField(),
-                      20.verticalSpace,
-                      _buildPasswordField(),
-                      20.verticalSpace,
-                      _buildComfirmPasswordField(),
-                      10.verticalSpace,
-                      SizedBox(
-                        width: 360,
-                        child: Text(
-                          '*Mật khẩu ít nhất 8 ký tự, bao gồm(ký tự hoa, ký tự thường, ký tự số, ký tự đặc biệt)',
-                          style: kCaptionWhiteStyle.copyWith(
-                            fontStyle: FontStyle.italic,
-                            color: AppColors.black.withOpacity(0.7),
-                          ),
-                        ),
+        ),
+        SliverToBoxAdapter(
+          child: _buildFormForgotPassword(),
+        ),
+      ],
+    ));
+  }
+
+  Widget _buildFormForgotPassword() {
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(35).r,
+        child: Center(
+          child: SizedBox(
+            width: 360,
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  24.verticalSpace,
+                  _buildForgotPasswordWidget(),
+                  Text('Nhập số điện thoại của bạn để đổi mật khẩu',
+                      style: kBodyStyle.copyWith(
+                          fontSize: 14,
+                          color: AppColors.black.withOpacity(0.7))),
+                  20.verticalSpace,
+                  _buildPhoneField(),
+                  20.verticalSpace,
+                  _buildPasswordField(),
+                  20.verticalSpace,
+                  _buildComfirmPasswordField(),
+                  10.verticalSpace,
+                  SizedBox(
+                    width: 360,
+                    child: Text(
+                      '*Mật khẩu ít nhất 8 ký tự, bao gồm(ký tự hoa, ký tự thường, ký tự số, ký tự đặc biệt)',
+                      style: kCaptionWhiteStyle.copyWith(
+                        fontStyle: FontStyle.italic,
+                        color: AppColors.black.withOpacity(0.7),
                       ),
-                      40.verticalSpace,
-                      SizedBox(
-                          width: double.infinity,
-                          height: 40,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(
-                                        textFieldBorderRadius * 10)),
-                                side: const BorderSide(
-                                    color: AppColors.themeColor),
-                                foregroundColor: AppColors.white,
-                                elevation: 0,
-                                shadowColor: Colors.transparent,
-                                backgroundColor: AppColors.themeColor),
-                            onPressed: () => _handleForgotPassword(),
-                            child: const Text('Đặt lại mật khẩu',
-                                style: kButtonWhiteStyle),
-                          )),
-                      16.verticalSpace,
-                      _buildHaveAccount(),
-                      66.verticalSpace,
-                    ]
-                        .animate(interval: 50.ms)
-                        .slideX(
-                            begin: -0.1,
-                            end: 0,
-                            curve: Curves.easeInOutCubic,
-                            duration: 400.ms)
-                        .fadeIn(
-                          curve: Curves.easeInOutCubic,
-                          duration: 400.ms,
-                        ),
+                    ),
                   ),
-                ),
+                  40.verticalSpace,
+                  SizedBox(
+                      width: double.infinity,
+                      height: 40,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                    textFieldBorderRadius * 10)),
+                            side: const BorderSide(color: AppColors.themeColor),
+                            foregroundColor: AppColors.white,
+                            elevation: 0,
+                            shadowColor: Colors.transparent,
+                            backgroundColor: AppColors.themeColor),
+                        onPressed: () => _handleForgotPassword(),
+                        child: const Text('Đặt lại mật khẩu',
+                            style: kButtonWhiteStyle),
+                      )),
+                  16.verticalSpace,
+                  _buildHaveAccount(),
+                  66.verticalSpace,
+                ]
+                    .animate(interval: 50.ms)
+                    .slideX(
+                        begin: -0.1,
+                        end: 0,
+                        curve: Curves.easeInOutCubic,
+                        duration: 400.ms)
+                    .fadeIn(
+                      curve: Curves.easeInOutCubic,
+                      duration: 400.ms,
+                    ),
               ),
             ),
-          )
-        ],
+          ),
+        ),
       ),
     );
   }
@@ -276,7 +274,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       const Text('Đã có tài khoản,', style: kButtonStyle),
       const SizedBox(width: defaultPadding / 2),
       GestureDetector(
-          onTap: () => context.go(AppRoute.login),
+          onTap: () => context.pop(),
           child: Text('Quay lại đăng nhập',
               style: kBodyWhiteStyle.copyWith(
                   color: AppColors.themeColor.withOpacity(0.6),
@@ -287,8 +285,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
 // class ForgotPasswordScreen extends GetResponsiveView {
 //   ForgotPasswordScreen({super.key});
-
-
 
 //   @override
 //   Widget? phone() =>
@@ -312,8 +308,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 //             onPressed: () => Get.back(),
 //             icon: const Icon(Icons.arrow_back_ios_new_rounded)));
 //   }
-
-
 
 //   _buildBodyPhone() {
 //     return Stack(
