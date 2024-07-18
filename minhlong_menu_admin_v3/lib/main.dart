@@ -43,11 +43,11 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = const AppBlocObserver();
   final sf = await SharedPreferences.getInstance();
-
+  dio.interceptors.add(DioInterceptor(sf));
   runApp(MainApp(sf: sf));
 }
 
-class MainApp extends StatefulWidget {
+class MainApp extends StatelessWidget {
   const MainApp({
     super.key,
     required this.sf,
@@ -56,28 +56,13 @@ class MainApp extends StatefulWidget {
   final SharedPreferences sf;
 
   @override
-  State<MainApp> createState() => _MainAppState();
-}
-
-class _MainAppState extends State<MainApp> {
-  @override
-  void initState() {
-    // dio.interceptors.add(LogInterceptor(
-    //   requestBody: true,
-    //   responseBody: true,
-    // ));
-    dio.interceptors.add(DioInterceptor(widget.sf, context));
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider(
           create: (context) => AuthRepository(
             authApi: AuthApi(dio: dio),
-            authLocalDatasource: AuthLocalDatasource(widget.sf),
+            authLocalDatasource: AuthLocalDatasource(sf),
           ),
         ),
         RepositoryProvider(

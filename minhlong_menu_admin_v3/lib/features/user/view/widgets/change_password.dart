@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:minhlong_menu_admin_v3/core/extensions.dart';
 
+import '../../../../common/dialog/app_dialog.dart';
+import '../../../../common/snackbar/overlay_snackbar.dart';
 import '../../../../common/widget/common_text_field.dart';
 import '../../../../core/app_colors.dart';
 import '../../../../core/app_const.dart';
@@ -9,15 +12,30 @@ import '../../../../core/app_key.dart';
 import '../../../../core/app_res.dart';
 import '../../../../core/app_string.dart';
 import '../../../../core/app_style.dart';
+import '../../bloc/user_bloc.dart';
+import '../../data/repositories/user_repository.dart';
 
-class ChangePassword extends StatefulWidget {
+class ChangePassword extends StatelessWidget {
   const ChangePassword({super.key});
 
   @override
-  State<ChangePassword> createState() => _ChangePasswordState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) =>
+          UserBloc(userRepository: context.read<UserRepository>()),
+      child: const ChangePasswordView(),
+    );
+  }
 }
 
-class _ChangePasswordState extends State<ChangePassword> {
+class ChangePasswordView extends StatefulWidget {
+  const ChangePasswordView({super.key});
+
+  @override
+  State<ChangePasswordView> createState() => _ChangePasswordViewState();
+}
+
+class _ChangePasswordViewState extends State<ChangePasswordView> {
   final TextEditingController _oldPasswordController = TextEditingController();
   final TextEditingController _newPasswordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
@@ -62,27 +80,49 @@ class _ChangePasswordState extends State<ChangePassword> {
   }
 
   Widget _buildChangePassword() {
-    return Padding(
-      padding: const EdgeInsets.all(defaultPadding),
-      child: Form(
-        key: AppKeys.updatePasswordKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _buildOldPassworTextField(),
-            20.verticalSpace,
-            _buildNewPassworTextField(),
-            20.verticalSpace,
-            _buildComfirmPassworTextField(),
-            20.verticalSpace,
-            Text(
-                'Mật khẩu bao gồm (1 ký tự Hoa, 1 ký tự Thường, 1 ký tự số, 1 ký tự đặc biệt và tối thiểu 8 ký tự)',
-                style:
-                    kCaptionStyle.copyWith(color: AppColors.secondTextColor)),
-            40.verticalSpace,
-            _buttonChangePassword(),
-          ],
+    return BlocListener<UserBloc, UserState>(
+      listener: (context, state) {
+        switch (state) {
+          case UserUpdatePasswordInProgress():
+            AppDialog.showLoadingDialog(context);
+            break;
+          case UserUpdatePasswordSuccess():
+            pop(context, 1);
+            OverlaySnackbar.show(context, 'Thao tác thành công');
+            _oldPasswordController.clear();
+            _newPasswordController.clear();
+            _confirmPasswordController.clear();
+            break;
+          case UserUpdatePasswordFailure():
+            pop(context, 1);
+            OverlaySnackbar.show(context, state.errorMessage,
+                type: OverlaySnackbarType.error);
+            break;
+          default:
+        }
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(defaultPadding),
+        child: Form(
+          key: AppKeys.updatePasswordKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _buildOldPassworTextField(),
+              20.verticalSpace,
+              _buildNewPassworTextField(),
+              20.verticalSpace,
+              _buildComfirmPassworTextField(),
+              20.verticalSpace,
+              Text(
+                  'Mật khẩu bao gồm (1 ký tự Hoa, 1 ký tự Thường, 1 ký tự số, 1 ký tự đặc biệt và tối thiểu 8 ký tự)',
+                  style:
+                      kCaptionStyle.copyWith(color: AppColors.secondTextColor)),
+              40.verticalSpace,
+              _buttonChangePassword(),
+            ],
+          ),
         ),
       ),
     );
@@ -95,11 +135,14 @@ class _ChangePasswordState extends State<ChangePassword> {
               ElevatedButton.styleFrom(backgroundColor: AppColors.themeColor),
           onPressed: () {
             if (AppKeys.updatePasswordKey.currentState!.validate()) {
-              // context.pop();
+              context.read<UserBloc>().add(UserUpdatePasswordStarted(
+                    oldPassword: _oldPasswordController.text,
+                    newPassword: _newPasswordController.text,
+                  ));
             }
           },
-          child: Text(
-            AppString.edit,
+          child: const Text(
+            'Thay đổi mật khẩu',
             style: kBodyWhiteStyle,
           )),
     );
@@ -179,9 +222,15 @@ class _ChangePasswordState extends State<ChangePassword> {
             labelText: '${AppString.reNewPassword} *',
             labelStyle:
                 kSubHeadingStyle.copyWith(color: AppColors.secondTextColor),
-            validator: (password) => AppRes.validatePassword(password)
-                ? null
-                : 'Mật khẩu không hợp lệ',
+            validator: (value) {
+              if (_newPasswordController.text !=
+                  _confirmPasswordController.text) {
+                return 'Xác nhận mật khẩu không khớp';
+              }
+              return AppRes.validatePassword(value)
+                  ? null
+                  : 'mật khẩu không hợp lệ';
+            },
             onChanged: (value) {},
             obscureText: !value,
             prefixIcon: Icon(

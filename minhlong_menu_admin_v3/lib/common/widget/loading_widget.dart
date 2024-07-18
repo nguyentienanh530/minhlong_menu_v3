@@ -14,18 +14,18 @@ class LoadingWidget extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const SizedBox(
-          height: 25,
-          width: 25,
+          height: 20,
+          width: 20,
           child: CircularProgressIndicator(
             color: AppColors.themeColor,
-            strokeWidth: 4,
+            strokeWidth: 3,
             strokeCap: StrokeCap.round,
           ),
         ),
         const SizedBox(height: 15),
         Text(
           title,
-          style: kBodyStyle,
+          style: kBodyStyle.copyWith(color: AppColors.secondTextColor),
         ),
       ],
     );

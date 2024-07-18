@@ -90,7 +90,8 @@ class CommonTextField extends StatelessWidget {
                 borderRadius: BorderRadius.circular(textFieldBorderRadius).r,
                 borderSide: const BorderSide(color: AppColors.lavender)),
             errorText: errorText,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16).r,
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 16).r,
             filled: filled ?? false,
             hintText: hintText,
             labelText: labelText,

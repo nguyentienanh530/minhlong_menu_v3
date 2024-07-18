@@ -69,6 +69,35 @@ class UserController extends Controller {
     }
   }
 
+  Future<Response> changePassword(Request request) async {
+    String oldPassword = request.input('old_password');
+    String newPassword = request.input('new_password');
+    try {
+      var user = Auth().user();
+      if (user == null) {
+        return AppResponse()
+            .error(statusCode: HttpStatus.notFound, message: 'user not found');
+      }
+
+      if (!Hash().verify(oldPassword, user['password'])) {
+        return AppResponse().error(
+            statusCode: HttpStatus.unauthorized, message: 'wrong password');
+      }
+
+      await Users().query().where('id', '=', user['id']).update({
+        'password': Hash().make(newPassword),
+      });
+
+      return AppResponse().ok(
+          statusCode: HttpStatus.ok, data: true, message: 'Password updated');
+    } catch (e) {
+      print('update password error: $e');
+      return AppResponse().error(
+          statusCode: HttpStatus.internalServerError,
+          message: 'connection error');
+    }
+  }
+
   Future<Response> destroy(int id) async {
     return Response.json({});
   }

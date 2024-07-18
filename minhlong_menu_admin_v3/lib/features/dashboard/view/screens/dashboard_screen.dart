@@ -79,8 +79,9 @@ class _DashboardViewState extends State<DashboardView>
 
   @override
   void dispose() {
-    disconnect();
     super.dispose();
+    disconnect();
+    _indexSelectedTable.dispose();
   }
 
   void disconnect() {

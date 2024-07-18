@@ -4,8 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_admin_v3/common/dialog/app_dialog.dart';
-import 'package:minhlong_menu_admin_v3/common/widget/loading_widget.dart';
-import 'package:minhlong_menu_admin_v3/features/auth/data/repositories/auth_repository.dart';
 import '../../../../Routes/app_route.dart';
 import '../../../../common/widget/common_text_field.dart';
 import '../../../../core/app_asset.dart';
@@ -32,18 +30,16 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
   final _isShowPassword = ValueNotifier(false);
   final _isShowConfirmPassword = ValueNotifier(false);
-  // final _forgotPasswordController = Get.put(ForgotPasswordController());
 
   @override
   void dispose() {
+    super.dispose();
     _phoneController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     _formKey.currentState?.dispose();
     _isShowPassword.dispose();
     _isShowConfirmPassword.dispose();
-
-    super.dispose();
   }
 
   @override

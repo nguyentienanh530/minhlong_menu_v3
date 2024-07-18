@@ -1,10 +1,8 @@
 import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:logger/logger.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/data/auth_local_datasource/auth_local_datasource.dart';
@@ -16,7 +14,6 @@ import 'dio_client.dart';
 class DioInterceptor extends Interceptor {
   final SharedPreferences sf;
   late AuthLocalDatasource _authLocalDatasource;
-  final BuildContext context;
 
   final Logger logger = Logger(
     printer: PrettyPrinter(
@@ -25,7 +22,7 @@ class DioInterceptor extends Interceptor {
     ),
   );
 
-  DioInterceptor(this.sf, this.context) {
+  DioInterceptor(this.sf) {
     _authLocalDatasource = AuthLocalDatasource(sf);
   }
 
@@ -62,11 +59,11 @@ class DioInterceptor extends Interceptor {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
     final options = err.requestOptions;
-    if (err.response?.statusCode != 401) {
-      return handler.next(err);
-    } else {
-      _refreshTokenAndResolveError(err, handler);
-    }
+    // if (err.response?.statusCode != 401) {
+    //   return handler.next(err);
+    // } else {
+    //   _refreshTokenAndResolveError(err, handler);
+    // }
 
     logger.e(options.method); // Debug log
     logger.e(
@@ -75,6 +72,7 @@ class DioInterceptor extends Interceptor {
 
     logger.e(
         'Request => ${options.baseUrl}${options.path}${options.queryParameters}');
+    super.onError(err, handler);
   }
 
   void _refreshTokenAndResolveError(

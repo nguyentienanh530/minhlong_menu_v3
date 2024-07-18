@@ -49,6 +49,7 @@ class Version1 implements Route {
     Router.group(() {
       Router.get("", userController.index);
       Router.patch("update", userController.update);
+      Router.patch("change-password", userController.changePassword);
       Router.delete("/{id}", userController.destroy);
     }, prefix: '/user', middleware: [AuthenticateMiddleware()]);
 

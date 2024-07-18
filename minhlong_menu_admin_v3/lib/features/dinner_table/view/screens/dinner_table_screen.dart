@@ -70,6 +70,14 @@ class _DinnerTableViewState extends State<DinnerTableView>
     _fetchDateDinnerTable(limit: _limit.value, page: _curentPage.value);
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    _limit.dispose();
+    _curentPage.dispose();
+    _dinnerTableValueNotifier.dispose();
+  }
+
   void _fetchDateDinnerTable({required int limit, required int page}) {
     context
         .read<DinnerTableBloc>()

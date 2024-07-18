@@ -32,4 +32,17 @@ class UserRepository {
       return Result.failure(errorMessage);
     }
   }
+
+  Future<Result<bool>> updatePassword(
+      {required String oldPassword, required String newPassword}) async {
+    try {
+      var result = await _userApi.updatePassword(
+          oldPassword: oldPassword, newPassword: newPassword);
+      return Result.success(result);
+    } on DioException catch (e) {
+      Logger().e('update password error: $e');
+      final errorMessage = DioExceptions.fromDioError(e).toString();
+      return Result.failure(errorMessage);
+    }
+  }
 }

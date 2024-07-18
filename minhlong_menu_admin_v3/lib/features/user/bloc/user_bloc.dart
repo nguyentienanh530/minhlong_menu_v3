@@ -17,6 +17,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         super(UserInitial()) {
     on<UserFetched>(_onUserFetched);
     on<UserUpdated>(_onUserUpdated);
+    on<UserUpdatePasswordStarted>(_onUserUpdatedPassword);
   }
   final UserRepository _userRepository;
 
@@ -42,6 +43,21 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       },
       failure: (message) {
         emit(UserUpdateFailure(message));
+      },
+    );
+  }
+
+  FutureOr<void> _onUserUpdatedPassword(
+      UserUpdatePasswordStarted event, Emit emit) async {
+    emit(UserUpdatePasswordInProgress());
+    final result = await _userRepository.updatePassword(
+        oldPassword: event.oldPassword, newPassword: event.newPassword);
+    result.when(
+      success: (success) {
+        emit(UserUpdatePasswordSuccess());
+      },
+      failure: (message) {
+        emit(UserUpdatePasswordFailure(message));
       },
     );
   }

@@ -43,10 +43,8 @@ class CreateOrUpdateFoodDialog extends StatefulWidget {
 class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
   final _nameFoodController = TextEditingController();
   final _priceFoodController = TextEditingController();
-  // final _statusFoodController = TextEditingController();
   final _descriptionFoodController = TextEditingController();
   final _discountFoodController = TextEditingController();
-  // final _formKey = GlobalKey<FormState>();
   final _categoryValueNotifier = ValueNotifier(CategoryItem());
   late FoodScreenMode _mode;
 
@@ -343,7 +341,7 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
       controller: _descriptionFoodController,
       hintText: 'Mô tả món ăn',
       filled: true,
-      maxLines: 1,
+      // maxLines: 1,
       prefixIcon: const Icon(
         Icons.description_outlined,
         size: 20,
@@ -379,7 +377,7 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
               imageFile.value = value;
             }),
             child: Container(
-              clipBehavior: Clip.hardEdge,
+              clipBehavior: Clip.antiAlias,
               decoration: BoxDecoration(
                 color: AppColors.white,
                 borderRadius: BorderRadius.circular(defaultBorderRadius).r,

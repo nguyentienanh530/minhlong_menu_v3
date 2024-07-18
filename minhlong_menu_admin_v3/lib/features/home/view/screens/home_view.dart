@@ -43,16 +43,6 @@ class HomeViewState extends State<HomeView>
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   UserModel _userModel = UserModel();
 
-  // final _listPage = <Widget>[
-  //   DashboardScreen(userModel: _userModel),
-  //   const OrderScreen(),
-  //   const FoodScreen(),
-  //   const DinnerTableScreen(),
-  //   const CategoryScreen(),
-  //   const BannerScreen(),
-  //   const SettingScreen(),
-  // ];
-
   final _listIconMenu = [
     {
       'title': 'Dashboard',
@@ -94,6 +84,7 @@ class HomeViewState extends State<HomeView>
 
   @override
   void initState() {
+    super.initState();
     context.read<UserBloc>().add(UserFetched());
     _title.value = _listIconMenu[0]['title'].toString();
     _sideMenuCtrl.addListener((index) {
@@ -102,16 +93,14 @@ class HomeViewState extends State<HomeView>
 
       _title.value = _listIconMenu[index]['title'].toString();
     });
-    super.initState();
   }
 
   @override
   void dispose() {
+    super.dispose();
     _pageCtrl.dispose();
     _sideMenuCtrl.dispose();
     _title.dispose();
-
-    super.dispose();
   }
 
   @override

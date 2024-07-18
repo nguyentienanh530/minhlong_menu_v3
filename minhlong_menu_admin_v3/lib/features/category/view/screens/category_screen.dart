@@ -66,6 +66,14 @@ class _CategoryViewState extends State<CategoryView>
     _fetchCategory(limit: _limit.value, page: _curentPage.value);
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    _limit.dispose();
+    _curentPage.dispose();
+    _categoryValueNotifier.dispose();
+  }
+
   void _fetchCategory({required int limit, required int page}) {
     context.read<CategoryBloc>().add(CategoryFetched(
         limit: _limit.value, page: _curentPage.value, type: 'paging'));

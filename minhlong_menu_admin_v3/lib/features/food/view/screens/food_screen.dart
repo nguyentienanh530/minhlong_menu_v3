@@ -91,6 +91,10 @@ class _FoodViewState extends State<FoodView>
     super.dispose();
     _searchController.dispose();
     _hideOverlaySearch();
+    _curentPage.dispose();
+    _limit.dispose();
+    _foodModel.dispose();
+    _focusSearch.dispose();
   }
 
   void _fetchData({required int page, required int limit}) {

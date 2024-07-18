@@ -19,7 +19,7 @@ class DioExceptions implements Exception {
       case DioExceptionType.badResponse:
         message = _handleError(
           dioException.response?.statusCode,
-          dioException.response?.data,
+          dioException.response?.data['message'],
         );
         break;
       case DioExceptionType.sendTimeout:
@@ -34,12 +34,15 @@ class DioExceptions implements Exception {
     }
   }
 
-  String _handleError(int? statusCode, dynamic error) {
+  String _handleError(int? statusCode, String error) {
     switch (statusCode) {
       case 400:
         return AppString.badRequest;
       case 401:
-        return AppString.unauthorized;
+        // return AppString.unauthorized;
+        return error.contains('wrong password')
+            ? 'Mật khẩu không đúng'
+            : error;
       case 403:
         return AppString.forbidden;
       case 404:

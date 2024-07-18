@@ -54,9 +54,10 @@ class _CreateOrUpdateDinnerTableDialogState
 
   @override
   void dispose() {
+    super.dispose();
     _dinnerTableNameCtrl.dispose();
     _dinnertableSeatCtrl.dispose();
-    super.dispose();
+    _dinnerTableStatus.dispose();
   }
 
   @override

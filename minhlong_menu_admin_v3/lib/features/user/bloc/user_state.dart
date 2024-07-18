@@ -25,3 +25,12 @@ final class UserUpdateFailure extends UserState {
   final String errorMessage;
   UserUpdateFailure(this.errorMessage);
 }
+
+final class UserUpdatePasswordInProgress extends UserState {}
+
+final class UserUpdatePasswordSuccess extends UserState {}
+
+final class UserUpdatePasswordFailure extends UserState {
+  final String errorMessage;
+  UserUpdatePasswordFailure(this.errorMessage);
+}

@@ -57,7 +57,6 @@ class _CreateOrUpdateCategoryState extends State<CreateOrUpdateCategory> {
       _nameCategoryController.text = _categoryItem.name;
       _serialCategoryController.text = _categoryItem.serial.toString();
       _image = _categoryItem.image;
-      print(_image);
     }
   }
 

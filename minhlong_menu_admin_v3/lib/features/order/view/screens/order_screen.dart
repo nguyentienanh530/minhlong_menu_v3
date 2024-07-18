@@ -79,6 +79,15 @@ class _OrderViewState extends State<OrderView>
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    _tabController.dispose();
+    _orderModel.dispose();
+    _curentPage.dispose();
+    _limit.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
