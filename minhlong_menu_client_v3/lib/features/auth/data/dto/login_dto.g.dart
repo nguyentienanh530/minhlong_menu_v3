@@ -8,7 +8,7 @@ part of 'login_dto.dart';
 
 _$LoginDtoImpl _$$LoginDtoImplFromJson(Map<String, dynamic> json) =>
     _$LoginDtoImpl(
-      phoneNumber: json['phone_number'] as String? ?? '',
+      phoneNumber: (json['phone_number'] as num?)?.toInt() ?? 0,
       password: json['password'] as String? ?? '',
     );
 

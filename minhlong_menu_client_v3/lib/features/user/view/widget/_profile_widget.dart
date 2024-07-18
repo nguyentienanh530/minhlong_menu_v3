@@ -76,17 +76,27 @@ extension _ProfileWidget on _ProfileScreenState {
   }
 
   void _showDialogLogout() {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AppDialog(
-            title: 'Đăng xuất?',
-            description: 'Bạn có muốn đăng xuất?',
-            onPressedComfirm: () {
-              context.read<AuthBloc>().add(AuthLogoutStarted());
-            },
-          );
-        });
+    AppDialog.showErrorDialog(
+      context,
+      title: 'Đăng xuất nhó?',
+      description: 'Ấy có muốn đăng xuất không?',
+      cancelText: 'Thôi',
+      confirmText: 'Bái bai',
+      onPressedComfirm: () {
+        context.read<AuthBloc>().add(AuthLogoutStarted());
+      },
+    );
+    // showDialog(
+    //     context: context,
+    //     builder: (context) {
+    //       return AppDialog(
+    //         title: 'Đăng xuất?',
+    //         description: 'Bạn có muốn đăng xuất?',
+    //         onPressedComfirm: () {
+    //           context.read<AuthBloc>().add(AuthLogoutStarted());
+    //         },
+    //       );
+    //     });
   }
 
   Widget _buildItemPrint(BuildContext context) {

@@ -84,8 +84,9 @@ extension _LoginBody on _LoginScreenState {
   }
 
   void _handleLoginSubmited() async {
-    final login =
-        LoginDto(phoneNumber: _emailCtrl.text, password: _passwordCtrl.text);
+    final login = LoginDto(
+        phoneNumber: int.parse(_emailCtrl.text.trim()),
+        password: _passwordCtrl.text.trim());
     if (_formKey.currentState!.validate()) {
       context.read<AuthBloc>().add(AuthLoginStarted(login));
     }

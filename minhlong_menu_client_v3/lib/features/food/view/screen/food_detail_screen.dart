@@ -20,10 +20,10 @@ import 'package:readmore/readmore.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../../../../Routes/app_route.dart';
+import '../../../../common/snackbar/app_snackbar.dart';
 import '../../../../core/api_config.dart';
 import '../../../../core/app_colors.dart';
 import '../../../../core/app_const.dart';
-import '../../../../core/app_res.dart';
 import '../../../../core/app_string.dart';
 import '../../../../core/utils.dart';
 
@@ -406,10 +406,11 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
 
   void _handleOnTapAddToCart(OrderModel order, TableModel table) async {
     if (table.name.isEmpty) {
-      AppRes.showSnackBar(context, 'Chưa chọn bàn', false);
+      AppSnackbar.showSnackBar(context, msg: 'Chưa chọn bàn', isSuccess: false);
     } else {
       if (checkExistFood(order)) {
-        AppRes.showSnackBar(context, 'Món ăn đã có trong giỏ hàng.', false);
+        AppSnackbar.showSnackBar(context,
+            msg: 'Món ăn đã có trong giỏ hàng.', isSuccess: false);
       } else {
         var newFoodOrder = OrderDetail(
             foodID: _foodItem.id,
@@ -431,7 +432,8 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
             // status: 'new',
             totalPrice: newTotalPrice);
         context.read<CartCubit>().setOrderModel(order);
-        AppRes.showSnackBar(context, 'Món ăn đã được thêm.', true);
+        AppSnackbar.showSnackBar(context,
+            msg: 'Món ăn đã được thêm.', isSuccess: true);
         _quantity.value = 1;
         _noteController.clear();
       }

@@ -11,9 +11,9 @@ import 'package:minhlong_menu_client_v3/features/category/view/screen/category_s
 import 'package:minhlong_menu_client_v3/features/food/data/model/food_item.dart';
 import 'package:minhlong_menu_client_v3/features/food/view/screen/food_screen.dart';
 import 'package:minhlong_menu_client_v3/features/home/view/screens/home_screen.dart';
-import 'package:minhlong_menu_client_v3/features/profile/view/screen/change_password_screen.dart';
-import 'package:minhlong_menu_client_v3/features/profile/view/screen/edit_profile_screen.dart';
-import 'package:minhlong_menu_client_v3/features/profile/view/screen/profile_screen.dart';
+import 'package:minhlong_menu_client_v3/features/user/view/screen/change_password_screen.dart';
+import 'package:minhlong_menu_client_v3/features/user/view/screen/edit_profile_screen.dart';
+import 'package:minhlong_menu_client_v3/features/user/view/screen/profile_screen.dart';
 import 'package:minhlong_menu_client_v3/features/table/view/screen/table_screen.dart';
 
 import '../features/auth/bloc/auth_bloc.dart';

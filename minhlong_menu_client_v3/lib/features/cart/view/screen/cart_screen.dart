@@ -159,20 +159,14 @@ class _CartViewState extends State<CartView> {
   }
 
   void submitCreateOrder(OrderModel order, TableModel table) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AppDialog(
-            title: 'Lên đơn nhá!',
-            description:
-                'Đơn đã lên sẽ không thể sửa, kiểm tra kĩ trước khi lên đơn!',
-            confirmText: 'Ừ lên đi :v',
-            cancelText: 'Thôi!',
-            onPressedComfirm: () {
-              _handleCreateOrder(order, table);
-            });
-      },
-    );
+    AppDialog.showErrorDialog(context,
+        title: 'Lên đơn nhó!',
+        description:
+            'Đơn không lên sẽ không thể sửa, kiểm tra kĩ trước khi lên đơn!',
+        confirmText: 'Ừ! lên đi',
+        cancelText: 'Thôi!', onPressedComfirm: () {
+      _handleCreateOrder(order, table);
+    });
   }
 
   void _handleCreateOrder(OrderModel order, TableModel table) {
