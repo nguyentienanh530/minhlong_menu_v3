@@ -66,7 +66,6 @@ class _HomeViewState extends State<HomeView> {
   }
 
   void _scrollListener() {
-    // print("Scroll Offset: ${_scrollController.offset}"); // Debugging line
     if (_scrollController.hasClients && _scrollController.offset > 0) {
       if (!_isScrolledNotifier.value) {
         _isScrolledNotifier.value = true;

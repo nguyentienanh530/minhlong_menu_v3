@@ -11,6 +11,7 @@ import 'package:minhlong_menu_client_v3/common/widget/error_build_image.dart';
 import 'package:minhlong_menu_client_v3/core/app_style.dart';
 import 'package:minhlong_menu_client_v3/core/extensions.dart';
 import 'package:minhlong_menu_client_v3/features/food/data/model/food_item.dart';
+import 'package:readmore/readmore.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../../../../Routes/app_route.dart';
@@ -109,7 +110,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                           child: FittedBox(
                               fit: BoxFit.scaleDown,
                               alignment: Alignment.centerLeft,
-                              child: _buildDetailsName(_foodItem))),
+                              child: _buildFoodDetailsName(_foodItem))),
                     ],
                   ),
                   20.verticalSpace,
@@ -120,7 +121,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                           child: FittedBox(
                               alignment: Alignment.centerLeft,
                               fit: BoxFit.scaleDown,
-                              child: _buildDetailsPrice(_foodItem))),
+                              child: _buildFoodDetailsPrice(_foodItem))),
                       5.horizontalSpace,
                       Expanded(
                           child: FittedBox(
@@ -131,17 +132,17 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                   ),
                   20.verticalSpace,
                   _foodItem.description.isNotEmpty
-                      ? _buildDetailsDescription(_foodItem)
+                      ? _buildFoodDetailsDescription(_foodItem)
                       : const SizedBox(),
                   10.verticalSpace,
-                  _buildDetailsNote(),
+                  _buildFoodDetailsNote(),
                   20.verticalSpace,
                   Row(
                     children: [
                       Expanded(
                           child: FittedBox(
                               fit: BoxFit.scaleDown,
-                              child: _buildDetailsButton())),
+                              child: _buildFoodDetailsButton())),
                     ],
                   ),
                 ],
@@ -190,15 +191,25 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
     );
   }
 
-  Widget _buildDetailsName(FoodItem food) {
-    return CommonLineText(
-      title: food.name,
-      titleStyle:
-          kHeadingStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24),
+  Widget _buildFoodDetailsName(FoodItem food) {
+    return Padding(
+      padding: const EdgeInsets.only(top: defaultPadding),
+      child: Row(
+        children: [
+          const Icon(Icons.check_circle,
+              color: AppColors.islamicGreen, size: 16),
+          5.horizontalSpace,
+          CommonLineText(
+            title: food.name,
+            titleStyle: kHeadingStyle.copyWith(
+                fontWeight: FontWeight.bold, fontSize: 24),
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _buildDetailsPrice(FoodItem food) {
+  Widget _buildFoodDetailsPrice(FoodItem food) {
     return !food.isDiscount!
         ? Row(children: [
             Text(
@@ -231,20 +242,26 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
           ]);
   }
 
-  Widget _buildDetailsDescription(FoodItem food) {
-    return SizedBox(
-      width: context.sizeDevice.width,
-      height: context.isPortrait
-          ? 0.2 * context.sizeDevice.height
-          : 0.4 * context.sizeDevice.width,
-      child: Text(
-        food.description,
-        style: kBodyStyle.copyWith(color: AppColors.secondTextColor),
-      ),
+  Widget _buildFoodDetailsDescription(FoodItem food) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(AppString.description, style: kHeadingStyle.copyWith()),
+        ReadMoreText(
+          food.description,
+          trimLines: 8,
+          trimMode: TrimMode.Line,
+          trimCollapsedText: AppString.seeMore,
+          trimExpandedText: AppString.hide,
+          style: kBodyStyle.copyWith(color: AppColors.secondTextColor),
+          lessStyle: kBodyStyle.copyWith(color: AppColors.themeColor),
+          moreStyle: kBodyStyle.copyWith(color: AppColors.themeColor),
+        )
+      ],
     );
   }
 
-  Widget _buildDetailsNote() {
+  Widget _buildFoodDetailsNote() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -258,7 +275,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
           ),
           onChanged: (value) {},
           controller: _noteController,
-          maxLines: 6,
+          maxLines: 4,
           enabledBorder: const OutlineInputBorder(
               borderSide: BorderSide(color: AppColors.secondTextColor)),
           focusedBorder: const OutlineInputBorder(
@@ -268,7 +285,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
     );
   }
 
-  Widget _buildDetailsButton() {
+  Widget _buildFoodDetailsButton() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [

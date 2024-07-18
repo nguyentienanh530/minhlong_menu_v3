@@ -17,7 +17,8 @@ extension _BodyTableWidget on _TableViewState {
               child: Padding(
                 padding: const EdgeInsets.all(defaultPadding / 2),
                 child: Image.asset(
-                    table.isUse ? AppAsset.tableDisable : AppAsset.tableEnable),
+                  table.isUse ? AppAsset.tableDisable : AppAsset.tableEnable,
+                ),
               ),
             ),
             Expanded(

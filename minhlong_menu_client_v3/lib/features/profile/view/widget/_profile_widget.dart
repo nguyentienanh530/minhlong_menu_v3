@@ -75,6 +75,20 @@ extension _ProfileWidget on _ProfileScreenState {
     );
   }
 
+  void _showDialogLogout() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AppDialog(
+            title: 'Đăng xuất?',
+            description: 'Bạn có muốn đăng xuất?',
+            onTap: () {
+              context.read<AuthBloc>().add(AuthLogoutStarted());
+            },
+          );
+        });
+  }
+
   Widget _buildItemPrint(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: _isUsePrinter,

@@ -37,7 +37,7 @@ class AppString {
   static String cancel = 'Hủy';
   static String priceSell = 'Giá bán';
   static String quantity = 'Số lượng';
-  static String note = 'Ghi chú';
+  static String note = 'Ghi chú :';
   static String addedToCart = 'Đã thêm vào giỏ hàng.';
   static String addToCart = 'Thêm vào giỏ hàng';
   static String cart = 'Giỏ hàng';
@@ -51,6 +51,7 @@ class AppString {
   static String newFoodTitle = 'Món ăn mới';
   static String popularFoodTitle = 'Được chọn nhiều';
   static String seeMore = 'Xem thêm';
+  static String hide = 'Ẩn bớt';
   static String foodsLists = 'Danh sách món ăn';
   static String filter = 'Lọc Theo';
   static String latest = 'Mới Nhất';
@@ -75,4 +76,5 @@ class AppString {
   static String oldPassword = 'Mật khẩu cũ';
   static String reNewPassword = 'Nhập lại mật khẩu mới';
   static String total = 'Tổng tiền';
+  static String description = 'Mô tả :';
 }
