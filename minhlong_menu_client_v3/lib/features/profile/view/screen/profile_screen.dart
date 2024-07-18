@@ -14,7 +14,7 @@ import 'package:minhlong_menu_client_v3/core/extensions.dart';
 import '../../../../Routes/app_route.dart';
 import '../../../../common/dialog/app_dialog.dart';
 import '../../../../common/widget/common_back_button.dart';
-import '../../../../common/widget/error_dialog.dart';
+import '../../../../common/dialog/error_dialog.dart';
 import '../../../../core/app_asset.dart';
 import '../../../../core/app_string.dart';
 import '../../../auth/bloc/auth_bloc.dart';

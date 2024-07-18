@@ -2,7 +2,6 @@ part of '../screen/table_view.dart';
 
 extension _BodyTableWidget on _TableViewState {
   Widget _tableItem(TableModel table) {
-    bool checkTable = false;
     return Card(
       elevation: 3,
       child: Container(
@@ -64,24 +63,20 @@ extension _BodyTableWidget on _TableViewState {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
                 child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    shadowColor: AppColors.themeColor,
-                    elevation: 4,
-                    backgroundColor: AppColors.themeColor,
-                  ),
-                  onPressed: () {},
-                  child: checkTable == false
-                      ? Text(
-                          AppString.check,
-                          style: kBodyWhiteStyle.copyWith(
-                              fontWeight: FontWeight.bold),
-                        )
-                      : Text(
-                          AppString.unchecked,
-                          style: kBodyWhiteStyle.copyWith(
-                              fontWeight: FontWeight.bold),
-                        ),
-                ),
+                    style: ElevatedButton.styleFrom(
+                      shadowColor: AppColors.themeColor,
+                      elevation: 4,
+                      backgroundColor: AppColors.themeColor,
+                    ),
+                    onPressed: () {
+                      context.read<TableCubit>().changeTable(table);
+                      context.pop(true);
+                    },
+                    child: Text(
+                      AppString.check,
+                      style:
+                          kBodyWhiteStyle.copyWith(fontWeight: FontWeight.bold),
+                    )),
               ),
             )),
           ],

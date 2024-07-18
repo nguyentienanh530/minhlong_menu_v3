@@ -24,13 +24,20 @@ class OrderController extends Controller {
     try {
       var tableID = request.input('table_id');
       var listFood = request.input('order_detail') as List;
+      var userID = Auth().id();
+      if (userID == null) {
+        return AppResponse().error(
+          statusCode: HttpStatus.unauthorized,
+          message: 'unauthorized',
+        );
+      }
       var order = {
         'status': 'new',
         'table_id': tableID,
-        'created_at': DateTime.now(),
-        'updated_at': DateTime.now(),
+        'user_id': userID,
       };
       var orderID = await _orderRepository.createOrder(order);
+
       if (orderID != 0) {
         var totalPrice = 0.0;
         for (var food in listFood) {
@@ -55,8 +62,7 @@ class OrderController extends Controller {
             'quantity': quantity,
             'price': price,
             'total_amount': totalAmount,
-            'created_at': DateTime.now(),
-            'updated_at': DateTime.now()
+            'note': food['note']
           });
 
           await Foods()
@@ -70,12 +76,17 @@ class OrderController extends Controller {
         await _orderRepository
             .updateOrder(orderID, {'total_price': totalPrice});
       } else {
-        return Response.json({'error': 'create order failed'});
+        // return Response.json({'error': 'create order failed'});
+        return AppResponse().error(
+            statusCode: HttpStatus.badRequest, message: 'create order failed');
       }
 
-      return Response.json({'message': 'create order success'});
+      return AppResponse().ok(data: true, statusCode: HttpStatus.ok);
     } catch (e) {
-      throw Exception('Something went wrong: $e');
+      print('create order error: $e');
+      return AppResponse().error(
+          statusCode: HttpStatus.internalServerError,
+          message: 'connection error');
     }
   }
 

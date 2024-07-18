@@ -6,6 +6,7 @@ import 'package:minhlong_menu_client_v3/common/widget/empty_widget.dart';
 import 'package:minhlong_menu_client_v3/common/widget/loading.dart';
 import 'package:minhlong_menu_client_v3/core/app_colors.dart';
 import 'package:minhlong_menu_client_v3/core/app_style.dart';
+import 'package:minhlong_menu_client_v3/features/table/cubit/table_cubit.dart';
 import 'package:minhlong_menu_client_v3/features/table/data/model/table_model.dart';
 
 import '../../../../common/widget/error_widget.dart';

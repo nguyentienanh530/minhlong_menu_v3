@@ -1,3 +1,8 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import 'app_colors.dart';
+
 class AppRes {
   static double foodPrice(
       {required bool isDiscount,
@@ -22,34 +27,23 @@ class AppRes {
     return phoneNumberRegex.hasMatch(phoneNumber);
   }
 
-  // static Future<SnackbarController> showSnackBar(
-  //     String msg, bool positive) async {
-  //   return Get.showSnackbar(
-  //     GetSnackBar(
-  //       snackPosition: SnackPosition.TOP,
-  //       titleText: Container(),
-  //       backgroundColor: positive
-  //           ? AppColors.islamicGreen.withOpacity(0.8)
-  //           : AppColors.themeColor,
-  //       message: msg,
-  //       messageText: Row(
-  //         children: [
-  //           positive
-  //               ? const Icon(Icons.check_box_rounded, color: AppColors.white)
-  //               : const Icon(Icons.error, color: AppColors.white),
-  //           const SizedBox(width: defaultPadding),
-  //           Text(
-  //             msg,
-  //             style: kSubHeadingStyle.copyWith(
-  //               color: AppColors.white,
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //       duration: const Duration(seconds: 1),
-  //     ),
-  //   );
-  // }
+  static Future showSnackBar(
+      BuildContext context, String msg, bool isSuccess) async {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        showCloseIcon: true,
+        content: Row(
+          children: [
+            Icon(isSuccess ? Icons.check : Icons.error, color: Colors.white),
+            10.horizontalSpace,
+            Text(msg),
+          ],
+        ),
+        backgroundColor: isSuccess ? AppColors.islamicGreen : AppColors.red,
+        duration: const Duration(seconds: 1),
+      ),
+    );
+  }
 
   // static showWanningDiaLog(
   //     {String? title,

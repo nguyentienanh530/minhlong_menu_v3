@@ -120,7 +120,6 @@ class AfterSearchUI extends StatefulWidget {
 class _AfterSearchUIState extends State<AfterSearchUI> {
   @override
   Widget build(BuildContext context) {
-    var text = widget.text;
     return Container();
   }
 

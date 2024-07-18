@@ -1,4 +1,5 @@
 import 'package:device_preview/device_preview.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,8 +10,13 @@ import 'package:minhlong_menu_client_v3/features/auth/bloc/auth_bloc.dart';
 import 'package:minhlong_menu_client_v3/features/auth/data/auth_local_datasource/auth_local_datasource.dart';
 import 'package:minhlong_menu_client_v3/features/auth/data/provider/remote/auth_api.dart';
 import 'package:minhlong_menu_client_v3/features/auth/data/respositories/auth_repository.dart';
+import 'package:minhlong_menu_client_v3/features/cart/cubit/cart_cubit.dart';
 import 'package:minhlong_menu_client_v3/features/food/cubit/item_size_cubit.dart';
 import 'package:minhlong_menu_client_v3/features/food/data/provider/food_api.dart';
+import 'package:minhlong_menu_client_v3/features/order/bloc/order_bloc.dart';
+import 'package:minhlong_menu_client_v3/features/order/data/provider/order_api.dart';
+import 'package:minhlong_menu_client_v3/features/order/data/repositories/order_repository.dart';
+import 'package:minhlong_menu_client_v3/features/table/cubit/table_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'bloc_observer.dart';
@@ -23,10 +29,10 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = const AppBlocObserver();
   final sf = await SharedPreferences.getInstance();
+  dio.interceptors.add(DioInterceptor(sf));
   runApp(DevicePreview(
-
-      // enabled: !kReleaseMode,
-      enabled: false,
+      enabled: !kReleaseMode,
+      // enabled: false,
       builder: (context) => MainApp(sf: sf)));
 }
 
@@ -42,7 +48,6 @@ class MainApp extends StatefulWidget {
 class _MainAppState extends State<MainApp> {
   @override
   void initState() {
-    dio.interceptors.add(DioInterceptor(widget.sf, context));
     super.initState();
   }
 
@@ -61,6 +66,11 @@ class _MainAppState extends State<MainApp> {
             foodApi: FoodApi(dio: dio),
           ),
         ),
+        RepositoryProvider(
+          create: (context) => OrderRepository(
+            orderApi: OrderApi(dio),
+          ),
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -70,6 +80,16 @@ class _MainAppState extends State<MainApp> {
           BlocProvider(
             create: (context) => ItemSizeCubit(),
           ),
+          BlocProvider(
+            create: (context) => CartCubit(),
+          ),
+          BlocProvider(
+            create: (context) => TableCubit(),
+          ),
+          BlocProvider(
+            create: (context) =>
+                OrderBloc(orderRepository: context.read<OrderRepository>()),
+          )
         ],
         child: const AppContent(),
       ),
@@ -116,7 +136,7 @@ class _AppContentState extends State<AppContent> {
           scrollBehavior: MyCustomScrollBehavior(),
           theme: ThemeData(
             fontFamily: GoogleFonts.roboto().fontFamily,
-            scaffoldBackgroundColor: AppColors.white,
+            scaffoldBackgroundColor: AppColors.background,
             textTheme: const TextTheme(
                 displaySmall: TextStyle(color: AppColors.white),
                 displayLarge: TextStyle(color: AppColors.white),

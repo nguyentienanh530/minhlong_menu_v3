@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/app_colors.dart';
 import '../../core/app_const.dart';
 import '../../core/app_style.dart';
+import '../widget/loading_widget.dart';
 
 class AppDialog extends StatelessWidget {
   const AppDialog({
     super.key,
     required this.title,
     this.description,
-    required this.onTap,
+    required this.onPressedComfirm,
     this.cancelText,
     this.confirmText,
     this.icon,
@@ -18,7 +20,7 @@ class AppDialog extends StatelessWidget {
 
   final String title;
   final String? description;
-  final VoidCallback onTap;
+  final VoidCallback onPressedComfirm;
   final String? cancelText;
   final String? confirmText;
   final Widget? icon;
@@ -90,7 +92,7 @@ class AppDialog extends StatelessWidget {
                       backgroundColor: AppColors.themeColor,
                       foregroundColor: AppColors.white,
                     ),
-                    onPressed: onTap,
+                    onPressed: onPressedComfirm,
                     child: FittedBox(
                       fit: BoxFit.scaleDown,
                       child: Text(
@@ -104,6 +106,45 @@ class AppDialog extends StatelessWidget {
             ),
           )
         ],
+      ),
+    );
+  }
+
+  static Future<dynamic> showLoadingDialog(BuildContext context,
+      {bool isProgressed = false, String? imageName, double? progressValue}) {
+    return showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.transparent,
+        content: Card(
+          child: FittedBox(
+            child: Container(
+              padding: const EdgeInsets.all(defaultPadding),
+              constraints: const BoxConstraints(maxWidth: 200),
+              child: Column(
+                children: [
+                  const LoadingWidget(
+                    title: 'Đang xử lý...',
+                  ),
+                  isProgressed
+                      ? Column(
+                          children: [
+                            10.verticalSpace,
+                            Text(imageName ?? ''),
+                            10.verticalSpace,
+                            LinearProgressIndicator(
+                              value: progressValue! / 100,
+                              color: AppColors.themeColor,
+                            ),
+                          ],
+                        )
+                      : const SizedBox()
+                ],
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }

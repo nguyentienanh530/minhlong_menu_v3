@@ -82,7 +82,7 @@ extension _ProfileWidget on _ProfileScreenState {
           return AppDialog(
             title: 'Đăng xuất?',
             description: 'Bạn có muốn đăng xuất?',
-            onTap: () {
+            onPressedComfirm: () {
               context.read<AuthBloc>().add(AuthLogoutStarted());
             },
           );

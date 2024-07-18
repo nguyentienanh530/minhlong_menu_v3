@@ -89,7 +89,7 @@ class CommonTextField extends StatelessWidget {
                     borderSide: const BorderSide(color: AppColors.black)),
             errorText: errorText,
             contentPadding:
-                contentPadding ?? const EdgeInsets.symmetric(horizontal: 10.0),
+                contentPadding ?? const EdgeInsets.all(defaultPadding / 2),
             filled: filled ?? false,
             hintText: hintText,
             labelText: labelText,

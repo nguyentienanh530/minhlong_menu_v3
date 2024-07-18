@@ -27,8 +27,10 @@ import '../../../../common/widget/loading.dart';
 import '../../../../core/api_config.dart';
 import '../../../../core/app_asset.dart';
 import '../../../banner/bloc/banner_bloc.dart';
+import '../../../cart/cubit/cart_cubit.dart';
 import '../../../category/bloc/category_bloc.dart';
 import '../../../category/data/model/category_model.dart';
+import '../../../table/cubit/table_cubit.dart';
 
 part '../widgets/_appbar_widget.dart';
 part '../widgets/_banner_widget.dart';
@@ -82,25 +84,24 @@ class _HomeViewState extends State<HomeView> {
     return Scaffold(
       floatingActionButton: _buildFloatingButton(),
       body: CustomScrollView(
+        controller: _scrollController,
         physics: const BouncingScrollPhysics(),
         slivers: [
           SliverAppBar(
-            forceElevated: true,
             expandedHeight: context.isPortrait == true
                 ? 0.3 * context.sizeDevice.height
                 : 0.4 * context.sizeDevice.height,
             stretch: true,
             pinned: true,
+            leadingWidth: 0,
             backgroundColor: AppColors.white,
             flexibleSpace: FlexibleSpaceBar(
               background: _bannerHome(),
             ),
             title: _seachBox(),
             actions: [
-              _iconActionButtonAppBar(
-                icon: Icons.table_bar_outlined,
-                onPressed: () => context.push(AppRoute.dinnerTables),
-              ),
+              _buildIconTableWidget(),
+              5.horizontalSpace,
               _iconActionButtonAppBar(
                   icon: Icons.tune,
                   onPressed: () => context.push(AppRoute.profile)),
@@ -123,5 +124,23 @@ class _HomeViewState extends State<HomeView> {
         ],
       ),
     );
+  }
+
+  _buildIconTableWidget() {
+    return Builder(builder: (context) {
+      var tableState = context.watch<TableCubit>().state;
+      return tableState.name.isEmpty
+          ? _iconActionButtonAppBar(
+              icon: Icons.table_bar_outlined,
+              onPressed: () => context.push(AppRoute.dinnerTables),
+            )
+          : OutlinedButton(
+              onPressed: () => context.push(AppRoute.dinnerTables),
+              child: Text(
+                tableState.name.toUpperCase(),
+                style: kBodyStyle.copyWith(
+                    fontWeight: FontWeight.w700, color: AppColors.themeColor),
+              ));
+    });
   }
 }

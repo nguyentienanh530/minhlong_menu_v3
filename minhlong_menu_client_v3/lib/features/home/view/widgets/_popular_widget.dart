@@ -23,7 +23,7 @@ extension _PopularWidget on _HomeViewState {
               FoodFetchSuccess() => GridItemFood(
                   crossAxisCount: 2,
                   foods: foodState.food.foodItems,
-                  aspectRatio: 1,
+                  aspectRatio: 0.8,
                 ),
               _ => const SizedBox(),
             });
@@ -68,22 +68,26 @@ extension _PopularWidget on _HomeViewState {
     return FloatingActionButton(
       backgroundColor: AppColors.themeColor,
       onPressed: () => context.push(AppRoute.carts),
-      child: Padding(
-        padding: const EdgeInsets.all(5),
-        child: badges.Badge(
-          badgeStyle:
-              const badges.BadgeStyle(badgeColor: AppColors.islamicGreen),
-          position: badges.BadgePosition.topEnd(top: -14),
-          badgeContent: const Text('2', style: kBodyWhiteStyle),
-          child: SvgPicture.asset(
-            AppAsset.shoppingCart,
-            height: double.infinity,
-            fit: BoxFit.cover,
-            colorFilter:
-                const ColorFilter.mode(AppColors.white, BlendMode.srcIn),
+      child: Builder(builder: (context) {
+        var cartState = context.watch<CartCubit>().state;
+        return Padding(
+          padding: const EdgeInsets.all(5),
+          child: badges.Badge(
+            badgeStyle:
+                const badges.BadgeStyle(badgeColor: AppColors.islamicGreen),
+            position: badges.BadgePosition.topEnd(top: -14),
+            badgeContent: Text(cartState.orderDetail.length.toString(),
+                style: kBodyWhiteStyle),
+            child: SvgPicture.asset(
+              AppAsset.shoppingCart,
+              height: double.infinity,
+              fit: BoxFit.cover,
+              colorFilter:
+                  const ColorFilter.mode(AppColors.white, BlendMode.srcIn),
+            ),
           ),
-        ),
-      ),
+        );
+      }),
     );
   }
 }

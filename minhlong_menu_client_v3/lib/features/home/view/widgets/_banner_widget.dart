@@ -10,36 +10,36 @@ extension _BannerWidget on _HomeViewState {
               valueListenable: _indexPage,
               builder: (context, value, child) {
                 return Stack(
+                  fit: StackFit.expand,
                   alignment: Alignment.bottomCenter,
                   children: [
-                    SizedBox.expand(
-                      child: CarouselSlider.builder(
-                        itemBuilder: (context, index, realIndex) {
-                          return CachedNetworkImage(
-                            imageUrl:
-                                '${ApiConfig.host}${state.banners[index].image}',
-                            fit: BoxFit.cover,
-                            errorWidget: errorBuilderForImage,
-                            placeholder: (context, url) => const Loading(),
-                          );
+                    CarouselSlider.builder(
+                      itemBuilder: (context, index, realIndex) {
+                        return CachedNetworkImage(
+                          imageUrl:
+                              '${ApiConfig.host}${state.banners[index].image}',
+                          errorWidget: errorBuilderForImage,
+                          fit: BoxFit.cover,
+                          placeholder: (context, url) => const Loading(),
+                        );
+                      },
+                      options: CarouselOptions(
+                        onPageChanged: (index, reason) {
+                          _indexPage.value = index;
                         },
-                        options: CarouselOptions(
-                          onPageChanged: (index, reason) {
-                            _indexPage.value = index;
-                          },
-                          reverse: false,
-                          enlargeCenterPage: true,
-                          autoPlay: true,
-                          aspectRatio: 1,
-                          autoPlayCurve: Curves.fastEaseInToSlowEaseOut,
-                          enableInfiniteScroll: true,
-                          autoPlayInterval: const Duration(seconds: 3),
-                          autoPlayAnimationDuration:
-                              const Duration(milliseconds: 1000),
-                          viewportFraction: 1,
-                        ),
-                        itemCount: state.banners.length,
+                        clipBehavior: Clip.antiAlias,
+                        reverse: false,
+                        // enlargeCenterPage: true,
+                        autoPlay: true,
+                        aspectRatio: 1,
+                        autoPlayCurve: Curves.fastEaseInToSlowEaseOut,
+                        enableInfiniteScroll: true,
+                        autoPlayInterval: const Duration(seconds: 3),
+                        autoPlayAnimationDuration:
+                            const Duration(milliseconds: 1000),
+                        viewportFraction: 1,
                       ),
+                      itemCount: state.banners.length,
                     ),
                     Positioned(
                         bottom: 10,

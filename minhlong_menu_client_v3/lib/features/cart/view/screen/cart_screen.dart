@@ -1,136 +1,184 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:minhlong_menu_client_v3/common/dialog/app_dialog.dart';
+import 'package:minhlong_menu_client_v3/common/dialog/error_dialog.dart';
 import 'package:minhlong_menu_client_v3/common/widget/common_back_button.dart';
+import 'package:minhlong_menu_client_v3/common/widget/common_icon_button.dart';
 import 'package:minhlong_menu_client_v3/common/widget/error_build_image.dart';
 import 'package:minhlong_menu_client_v3/common/widget/loading.dart';
-import 'package:minhlong_menu_client_v3/common/widget/quantity_button.dart';
 import 'package:minhlong_menu_client_v3/core/app_colors.dart';
 import 'package:minhlong_menu_client_v3/core/app_const.dart';
 import 'package:minhlong_menu_client_v3/core/app_style.dart';
-import 'package:minhlong_menu_client_v3/core/extensions.dart';
-import 'package:minhlong_menu_client_v3/features/food/data/model/food_item.dart';
+import 'package:minhlong_menu_client_v3/features/cart/cubit/cart_cubit.dart';
+import 'package:minhlong_menu_client_v3/features/order/data/model/order_detail.dart';
+import 'package:minhlong_menu_client_v3/features/order/data/model/order_model.dart';
+import 'package:minhlong_menu_client_v3/features/order/data/repositories/order_repository.dart';
+import 'package:minhlong_menu_client_v3/features/table/cubit/table_cubit.dart';
+import 'package:minhlong_menu_client_v3/features/table/data/model/table_model.dart';
 
+import '../../../../Routes/app_route.dart';
+import '../../../../common/widget/no_product.dart';
+import '../../../../core/api_config.dart';
+import '../../../../core/app_res.dart';
 import '../../../../core/app_string.dart';
 import '../../../../core/utils.dart';
+import '../../../order/bloc/order_bloc.dart';
 
-part '../widget/_cart_widget.dart';
+part '../widget/_item_cart_widget.dart';
 
-class CartScreen extends StatefulWidget {
+class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
 
   @override
-  State<CartScreen> createState() => _CartScreenState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) =>
+          OrderBloc(orderRepository: context.read<OrderRepository>()),
+      child: const CartView(),
+    );
+  }
 }
 
-class _CartScreenState extends State<CartScreen> {
-  final List<FoodItem> _foodList = List.generate(
-      2,
-      (index) => FoodItem(
-            id: 1,
-            name: 'Bánh mì',
-            categoryID: 1,
-            isShow: true,
-            isDiscount: false,
-            discount: 10,
-            price: 200000,
-            image1:
-                'https://lh3.googleusercontent.com/fife/ALs6j_Hr1Z_2KLUE5wgbI2RLKlaKbDg4X0m7QRyIpp-3XQjxO-4yU2F_hv69WHupSSWIS5Ng8HmPVriOaRCnpt5xlDjaLsk0RqByHVTQWUD_9qkAXOBVWtsZHugFtCIgORqDfH7qVftTMG86wzKAfD6Nx8bTRL5vE1YxVCjFv7es6cbJX2xk1TAfHGum6Ce1Bxk-vCpLlUjwWAcRI3BvnQ6vPMRxzJ3-5r21UtVRlpI_Sugz8Sqv0DoArv7zkCHgLx2431yCl4Mx_UYYNSJ0ANKpjJ4CtstX46-yAwBpU_gYoJjyQkXs6PGWURoPE6wWpnEM4CNmlYt6XvAFv14pdmP5P2F8Sld6K0FDvmlPSkV2IifSuvE2a1jru8MsJX3t8XdKWgpqCOcAxxJpkqcEAe1SSjDKp35GjPYFXkJojdMt15MG1KA4LJKHjD9yZWZIw8uIAm1akHnixP5Atn9nFnIjwP-O-VXyeCZ7u7zU_Z4USvcN_ylWqH1GsyHJ7278gqDnBT6mvWXfOu8UBJ_8j66jVA2xHR8soZUtObem6inv384hgGH1tr1q67Fn6VdNiduKmUyIX9b2kwEOGexWVeoGduZR1UnbzsQ5Hi8cmvj9OxCyPncru1W-IKofWux-yw5XGxYKv3_lOMvLFv38QvvFU4jBaCog5DKswtLbgNAK2Id9a5R6sVoTR8rVkbSl89tFBiHa_wv5lKBHws6PhglbR7fO_xjLeEGB2th1dg8aTfez58YJAAobOygwNmnulgj9S_U6wjpVr9xjyHbxgmE3jQpsfeSPxzMV9EEyNs_VMdFBSfwl3UcWM3kJqw2u1AOn9UiJeddzMlJNZv1wasrnVF8I9ZZuwq3vwYkou9piVsUTQkQOE6dXWwwCxYKj4SIxrJUt8Nl7qIPeaQ-5Fr2-NFchHcUWdfiHKai7jy1qRVewLVXsDCl92csVk_N-MgL3bfhlp2jDOpF_pyCi4gljoqyXfIMYFXokgB6-4Hh4mvHTJnRd3DV02AmhMsbgz_6NkiwyucMq2ZmXO_8rXdgjvNNp6FbkLoFg0jVWkBDF6syEUS7W1-gjIBmVc5tb7Vv_V49kzN-39ro0PUSp-YDU73XXP9CEnS2F56LjTI3XiPB1plG-ogupNJvmBUNIi4CTAF_soeLS16OddISL6Pw7AdexbhExXyt1FSYWNLURHw6aVZ-holV5RXYnCdjxrRIj2HUa4vsiO4DJjq5PSMU_X85iDGUcBEm681A_KpGVJJlmJvrFFsBL-pu1r1HKIl1EF1s2MGZhuXVuxxw6v2tRUoRu8yLtqWiBmuRYXv4vVq2-cPGhPYK9kHszYdeyRj6nuGjQtUyiS9QZLPKdJNMRzwTZaZdmPyR7bQmcBDJZnl8HdPSBqTckdaZNRPQA2dDjvF_gqdLoCOXFH9H_vT7qrmD_OlOUD6xHFk7JsB_cgJuw11J_wXlmu_EgbYhZeAqfPSWEP1KgveemZNm0XgcwsInbk454yE3dvgZiv-hIpeTNVyl1mjfFuEOn5OzVTd2k_3VfGyG-2KCsbaLDe5xFabxCg7ggzNGYH8lSNTqUrGxjUmK8YbGYfyOmWwAgRnL4rS8S1SDXDYTcSbUaUb7vaE-wCRvhE7bBE8JiEBm1nDQ62_Vsg0g2NQz8=w884-h705',
-            image2:
-                'https://lh3.googleusercontent.com/fife/ALs6j_Hr1Z_2KLUE5wgbI2RLKlaKbDg4X0m7QRyIpp-3XQjxO-4yU2F_hv69WHupSSWIS5Ng8HmPVriOaRCnpt5xlDjaLsk0RqByHVTQWUD_9qkAXOBVWtsZHugFtCIgORqDfH7qVftTMG86wzKAfD6Nx8bTRL5vE1YxVCjFv7es6cbJX2xk1TAfHGum6Ce1Bxk-vCpLlUjwWAcRI3BvnQ6vPMRxzJ3-5r21UtVRlpI_Sugz8Sqv0DoArv7zkCHgLx2431yCl4Mx_UYYNSJ0ANKpjJ4CtstX46-yAwBpU_gYoJjyQkXs6PGWURoPE6wWpnEM4CNmlYt6XvAFv14pdmP5P2F8Sld6K0FDvmlPSkV2IifSuvE2a1jru8MsJX3t8XdKWgpqCOcAxxJpkqcEAe1SSjDKp35GjPYFXkJojdMt15MG1KA4LJKHjD9yZWZIw8uIAm1akHnixP5Atn9nFnIjwP-O-VXyeCZ7u7zU_Z4USvcN_ylWqH1GsyHJ7278gqDnBT6mvWXfOu8UBJ_8j66jVA2xHR8soZUtObem6inv384hgGH1tr1q67Fn6VdNiduKmUyIX9b2kwEOGexWVeoGduZR1UnbzsQ5Hi8cmvj9OxCyPncru1W-IKofWux-yw5XGxYKv3_lOMvLFv38QvvFU4jBaCog5DKswtLbgNAK2Id9a5R6sVoTR8rVkbSl89tFBiHa_wv5lKBHws6PhglbR7fO_xjLeEGB2th1dg8aTfez58YJAAobOygwNmnulgj9S_U6wjpVr9xjyHbxgmE3jQpsfeSPxzMV9EEyNs_VMdFBSfwl3UcWM3kJqw2u1AOn9UiJeddzMlJNZv1wasrnVF8I9ZZuwq3vwYkou9piVsUTQkQOE6dXWwwCxYKj4SIxrJUt8Nl7qIPeaQ-5Fr2-NFchHcUWdfiHKai7jy1qRVewLVXsDCl92csVk_N-MgL3bfhlp2jDOpF_pyCi4gljoqyXfIMYFXokgB6-4Hh4mvHTJnRd3DV02AmhMsbgz_6NkiwyucMq2ZmXO_8rXdgjvNNp6FbkLoFg0jVWkBDF6syEUS7W1-gjIBmVc5tb7Vv_V49kzN-39ro0PUSp-YDU73XXP9CEnS2F56LjTI3XiPB1plG-ogupNJvmBUNIi4CTAF_soeLS16OddISL6Pw7AdexbhExXyt1FSYWNLURHw6aVZ-holV5RXYnCdjxrRIj2HUa4vsiO4DJjq5PSMU_X85iDGUcBEm681A_KpGVJJlmJvrFFsBL-pu1r1HKIl1EF1s2MGZhuXVuxxw6v2tRUoRu8yLtqWiBmuRYXv4vVq2-cPGhPYK9kHszYdeyRj6nuGjQtUyiS9QZLPKdJNMRzwTZaZdmPyR7bQmcBDJZnl8HdPSBqTckdaZNRPQA2dDjvF_gqdLoCOXFH9H_vT7qrmD_OlOUD6xHFk7JsB_cgJuw11J_wXlmu_EgbYhZeAqfPSWEP1KgveemZNm0XgcwsInbk454yE3dvgZiv-hIpeTNVyl1mjfFuEOn5OzVTd2k_3VfGyG-2KCsbaLDe5xFabxCg7ggzNGYH8lSNTqUrGxjUmK8YbGYfyOmWwAgRnL4rS8S1SDXDYTcSbUaUb7vaE-wCRvhE7bBE8JiEBm1nDQ62_Vsg0g2NQz8=w884-h705',
-            image3:
-                'https://lh3.googleusercontent.com/fife/ALs6j_Hr1Z_2KLUE5wgbI2RLKlaKbDg4X0m7QRyIpp-3XQjxO-4yU2F_hv69WHupSSWIS5Ng8HmPVriOaRCnpt5xlDjaLsk0RqByHVTQWUD_9qkAXOBVWtsZHugFtCIgORqDfH7qVftTMG86wzKAfD6Nx8bTRL5vE1YxVCjFv7es6cbJX2xk1TAfHGum6Ce1Bxk-vCpLlUjwWAcRI3BvnQ6vPMRxzJ3-5r21UtVRlpI_Sugz8Sqv0DoArv7zkCHgLx2431yCl4Mx_UYYNSJ0ANKpjJ4CtstX46-yAwBpU_gYoJjyQkXs6PGWURoPE6wWpnEM4CNmlYt6XvAFv14pdmP5P2F8Sld6K0FDvmlPSkV2IifSuvE2a1jru8MsJX3t8XdKWgpqCOcAxxJpkqcEAe1SSjDKp35GjPYFXkJojdMt15MG1KA4LJKHjD9yZWZIw8uIAm1akHnixP5Atn9nFnIjwP-O-VXyeCZ7u7zU_Z4USvcN_ylWqH1GsyHJ7278gqDnBT6mvWXfOu8UBJ_8j66jVA2xHR8soZUtObem6inv384hgGH1tr1q67Fn6VdNiduKmUyIX9b2kwEOGexWVeoGduZR1UnbzsQ5Hi8cmvj9OxCyPncru1W-IKofWux-yw5XGxYKv3_lOMvLFv38QvvFU4jBaCog5DKswtLbgNAK2Id9a5R6sVoTR8rVkbSl89tFBiHa_wv5lKBHws6PhglbR7fO_xjLeEGB2th1dg8aTfez58YJAAobOygwNmnulgj9S_U6wjpVr9xjyHbxgmE3jQpsfeSPxzMV9EEyNs_VMdFBSfwl3UcWM3kJqw2u1AOn9UiJeddzMlJNZv1wasrnVF8I9ZZuwq3vwYkou9piVsUTQkQOE6dXWwwCxYKj4SIxrJUt8Nl7qIPeaQ-5Fr2-NFchHcUWdfiHKai7jy1qRVewLVXsDCl92csVk_N-MgL3bfhlp2jDOpF_pyCi4gljoqyXfIMYFXokgB6-4Hh4mvHTJnRd3DV02AmhMsbgz_6NkiwyucMq2ZmXO_8rXdgjvNNp6FbkLoFg0jVWkBDF6syEUS7W1-gjIBmVc5tb7Vv_V49kzN-39ro0PUSp-YDU73XXP9CEnS2F56LjTI3XiPB1plG-ogupNJvmBUNIi4CTAF_soeLS16OddISL6Pw7AdexbhExXyt1FSYWNLURHw6aVZ-holV5RXYnCdjxrRIj2HUa4vsiO4DJjq5PSMU_X85iDGUcBEm681A_KpGVJJlmJvrFFsBL-pu1r1HKIl1EF1s2MGZhuXVuxxw6v2tRUoRu8yLtqWiBmuRYXv4vVq2-cPGhPYK9kHszYdeyRj6nuGjQtUyiS9QZLPKdJNMRzwTZaZdmPyR7bQmcBDJZnl8HdPSBqTckdaZNRPQA2dDjvF_gqdLoCOXFH9H_vT7qrmD_OlOUD6xHFk7JsB_cgJuw11J_wXlmu_EgbYhZeAqfPSWEP1KgveemZNm0XgcwsInbk454yE3dvgZiv-hIpeTNVyl1mjfFuEOn5OzVTd2k_3VfGyG-2KCsbaLDe5xFabxCg7ggzNGYH8lSNTqUrGxjUmK8YbGYfyOmWwAgRnL4rS8S1SDXDYTcSbUaUb7vaE-wCRvhE7bBE8JiEBm1nDQ62_Vsg0g2NQz8=w884-h705',
-            description: '123123',
-            orderCount: 10,
-            createdAt: '2021-11-11 11:11:11',
-          ));
+class CartView extends StatefulWidget {
+  const CartView({super.key});
+
+  @override
+  State<CartView> createState() => _CartViewState();
+}
+
+class _CartViewState extends State<CartView> {
   @override
   Widget build(BuildContext context) {
+    var cartState = context.watch<CartCubit>().state;
+    var tableState = context.watch<TableCubit>().state;
     return Scaffold(
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.only(
-            right: defaultPadding,
-            left: defaultPadding,
-            bottom: defaultPadding / 2),
-        child: SizedBox(
-          height: 0.08 * context.sizeDevice.height,
+      // backgroundColor: AppColors.background,
+      appBar: AppBar(
+        centerTitle: true,
+        title: FittedBox(child: Text(AppString.cart)),
+        leading: CommonBackButton(onTap: () => context.pop()),
+      ),
+      bottomNavigationBar: Card(
+        elevation: 5,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: Container(
+          height: 130,
+          padding: const EdgeInsets.all(defaultPadding),
           child: Column(
             children: [
               Expanded(
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Expanded(
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Text(
-                          '${AppString.total}:',
-                          style:
-                              kBodyStyle.copyWith(fontWeight: FontWeight.bold),
-                        ),
-                      ),
+                    Text(
+                      AppString.total,
+                      style: kBodyStyle.copyWith(fontWeight: FontWeight.bold),
                     ),
-                    Expanded(
-                      child: FittedBox(
-                        alignment: Alignment.centerRight,
-                        fit: BoxFit.scaleDown,
-                        child: Text(
-                          '${Ultils.currencyFormat(double.parse(_foodList[0].price.toString()))} ₫',
-                          style:
-                              kBodyStyle.copyWith(fontWeight: FontWeight.bold),
+                    Text(
+                      '${Ultils.currencyFormat(
+                        double.parse(
+                          cartState.totalPrice.toString(),
                         ),
-                      ),
+                      )} ₫',
+                      style: kBodyStyle.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.themeColor),
                     ),
                   ],
                 ),
               ),
-              Expanded(child: FittedBox(child: _buildPayButton())),
+              _buildPayButton(cartState, tableState),
             ],
           ),
         ),
       ),
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            pinned: true,
-            centerTitle: true,
-            title: FittedBox(child: Text(AppString.cart)),
-            leading: CommonBackButton(onTap: () => context.pop()),
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(defaultPadding),
-              child: Column(
-                children: [
-                  ListView.builder(
-                      itemCount: _foodList.length + 10,
-                      shrinkWrap: true,
-                      padding: EdgeInsets.zero,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        return _cartItem();
-                      }),
-                  30.verticalSpace,
-                ],
-              ),
+      body: cartState.orderDetail.isEmpty
+          ? const NoProduct()
+          : BlocListener<OrderBloc, OrderState>(
+              listener: (context, state) {
+                switch (state) {
+                  case OrderCreateInProgress():
+                    AppDialog.showLoadingDialog(context);
+                    break;
+                  case OrderCreateSuccess():
+                    context.read<CartCubit>().clearCart();
+                    context.read<TableCubit>().resetTable();
+                    context.go(AppRoute.createOrderSuccess);
+
+                    break;
+                  case OrderCreateFailure():
+                    showDialog(
+                        context: context,
+                        builder: (context) => ErrorDialog(
+                            title: state.error,
+                            onRetryText: 'Thử lại',
+                            onRetryPressed: () {
+                              context
+                                  .read<OrderBloc>()
+                                  .add(OrderCreated(cartState));
+                            }));
+                    break;
+                  default:
+                }
+              },
+              child: ListView.builder(
+                  itemCount: cartState.orderDetail.length,
+                  padding: const EdgeInsets.all(defaultPadding),
+                  physics: const BouncingScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    return _itemCart(cartState, cartState.orderDetail[index]);
+                  }),
             ),
-          ),
-        ],
+    );
+  }
+
+  Widget _buildPayButton(OrderModel order, TableModel table) {
+    return InkWell(
+      onTap: order.orderDetail.isEmpty
+          ? null
+          : () => submitCreateOrder(order, table),
+      child: Container(
+        height: 40,
+        alignment: Alignment.center,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: order.orderDetail.isEmpty ? Colors.grey : AppColors.themeColor,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Text(
+          AppString.pay,
+          style: kBodyWhiteStyle,
+        ),
       ),
     );
   }
 
-  Widget _buildPayButton() {
-    return FittedBox(
-      fit: BoxFit.scaleDown,
-      child: ElevatedButton(
-          style:
-              ElevatedButton.styleFrom(backgroundColor: AppColors.themeColor),
-          onPressed: () {},
-          child: Text(
-            AppString.pay,
-            style: kBodyWhiteStyle,
-          )),
+  void submitCreateOrder(OrderModel order, TableModel table) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AppDialog(
+            title: 'Lên đơn nhá!',
+            description:
+                'Đơn đã lên sẽ không thể sửa, kiểm tra kĩ trước khi lên đơn!',
+            confirmText: 'Ừ lên đi :v',
+            cancelText: 'Thôi!',
+            onPressedComfirm: () {
+              _handleCreateOrder(order, table);
+            });
+      },
     );
+  }
+
+  void _handleCreateOrder(OrderModel order, TableModel table) {
+    context.pop();
+    order = order.copyWith(tableID: table.id, tableName: table.name);
+
+    context.read<OrderBloc>().add(OrderCreated(order));
   }
 }

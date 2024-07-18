@@ -3,7 +3,7 @@ part of '../screens/home_view.dart';
 extension _CategoryWidget on _HomeViewState {
   Widget categoryListView() {
     return AspectRatio(
-      aspectRatio: 3 / 1,
+      aspectRatio: 16 / 7,
       child: BlocBuilder<CategoryBloc, CategoryState>(
         builder: (context, state) {
           return (switch (state) {
@@ -28,7 +28,7 @@ extension _CategoryWidget on _HomeViewState {
     return LayoutBuilder(
       builder: (context, constraints) {
         return AspectRatio(
-          aspectRatio: 7 / 12,
+          aspectRatio: 6.5 / 12,
           child: GestureDetector(
             onTap: () {
               context.push(AppRoute.categories, extra: categoryModel);
@@ -58,15 +58,11 @@ extension _CategoryWidget on _HomeViewState {
                   ),
                   5.verticalSpace,
                   Expanded(
-                    child: FittedBox(
-                      alignment: Alignment.topCenter,
-                      fit: BoxFit.scaleDown,
-                      child: Text(
-                        textAlign: TextAlign.center,
-                        categoryModel.name,
-                        style: kSubHeadingWhiteStyle.copyWith(
-                            fontSize: 14, fontWeight: FontWeight.w700),
-                      ),
+                    child: Text(
+                      textAlign: TextAlign.center,
+                      categoryModel.name,
+                      style: kBodyWhiteStyle.copyWith(
+                          fontSize: 11, fontWeight: FontWeight.w700),
                     ),
                   ),
                 ],

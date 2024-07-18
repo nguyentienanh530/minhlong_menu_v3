@@ -110,7 +110,7 @@ class Version1 implements Route {
     Router.group(
       () {
         Router.get('new-orders', _orderController.getOrders);
-        Router.post('create-order', _orderController.create);
+        Router.post('', _orderController.create);
         Router.get('new-orders-by-table', _orderController.getNewOrdersByTable);
         Router.get('orders-chart', _orderController.getOrdersDataChart);
         Router.patch('{id}', _orderController.update);

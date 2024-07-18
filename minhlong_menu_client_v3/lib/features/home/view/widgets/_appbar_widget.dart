@@ -39,17 +39,19 @@ extension _AppBarWidget on _HomeViewState {
   Widget _iconActionButtonAppBar({IconData? icon, void Function()? onPressed}) {
     return ValueListenableBuilder<bool>(
         valueListenable: _isScrolledNotifier,
-        builder: (context, isScrolled, child) => IconButton(
-              style: IconButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(defaultBorderRadius / 4),
-                ),
+        builder: (context, isScrolled, child) {
+          return IconButton(
+            style: IconButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(defaultBorderRadius / 4),
               ),
-              onPressed: onPressed,
-              icon: Icon(icon,
-                  color: isScrolled
-                      ? AppColors.themeColor
-                      : AppColors.secondTextColor),
-            ));
+            ),
+            onPressed: onPressed,
+            icon: Icon(icon,
+                color: _isScrolledNotifier.value
+                    ? AppColors.themeColor
+                    : AppColors.secondTextColor),
+          );
+        });
   }
 }
