@@ -2,10 +2,12 @@ import 'package:badges/badges.dart' as badges;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:minhlong_menu_client_v3/common/animations/add_to_card_animation_manager.dart';
 import 'package:minhlong_menu_client_v3/common/widget/common_item_food.dart';
 import 'package:minhlong_menu_client_v3/common/widget/empty_widget.dart';
 import 'package:minhlong_menu_client_v3/common/widget/error_widget.dart';
@@ -17,6 +19,7 @@ import 'package:minhlong_menu_client_v3/core/extensions.dart';
 import 'package:minhlong_menu_client_v3/core/utils.dart';
 import 'package:minhlong_menu_client_v3/features/food/bloc/food_bloc.dart';
 import 'package:minhlong_menu_client_v3/features/food/cubit/item_size_cubit.dart';
+import 'package:minhlong_menu_client_v3/features/food/data/dto/item_food_size_dto.dart';
 import 'package:minhlong_menu_client_v3/features/food/data/repositories/food_repository.dart';
 import 'package:minhlong_menu_client_v3/features/order/data/model/order_model.dart';
 import 'package:minhlong_menu_client_v3/features/table/data/model/table_model.dart';
@@ -34,6 +37,7 @@ import '../../../cart/cubit/cart_cubit.dart';
 import '../../../category/bloc/category_bloc.dart';
 import '../../../category/data/model/category_model.dart';
 import '../../../food/data/model/food_item.dart';
+import '../../../food/data/model/food_model.dart';
 import '../../../order/data/model/order_detail.dart';
 import '../../../table/cubit/table_cubit.dart';
 
@@ -50,9 +54,16 @@ class HomeView extends StatefulWidget {
   State<HomeView> createState() => _HomeViewState();
 }
 
-class _HomeViewState extends State<HomeView> {
+class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
   final TextEditingController _searchText = TextEditingController();
   final _indexPage = ValueNotifier(0);
+  late AddToCardAnimationManager _managerList;
+  final _foodItemSize = ValueNotifier(const Size(0, 0));
+  late final AnimationController _animationController =
+      AnimationController(vsync: this);
+  final _cartKey = GlobalKey();
+  var _foodPosition = Offset.zero;
+  var _path = Path();
 
   @override
   void initState() {
@@ -65,6 +76,14 @@ class _HomeViewState extends State<HomeView> {
     super.dispose();
     _indexPage.dispose();
     _searchText.dispose();
+    _foodItemSize.dispose();
+    _animationController.dispose();
+  }
+
+  void _resetAnimation() {
+    _foodItemSize.value = const Size(0, 0);
+    _foodPosition = Offset.zero;
+    _path = Path();
   }
 
   @override
@@ -147,12 +166,6 @@ class _HomeViewState extends State<HomeView> {
                           ],
                         ),
                       )),
-                  // flexibleSpace: FlexibleSpaceBar(
-                  //   stretchModes: const <StretchMode>[
-                  //     StretchMode.fadeTitle,
-                  //   ],
-                  //   background: _bannerHome(),
-                  // ),
                   actions: [
                     _iconActionButtonAppBar(
                         icon: Icons.tune,
@@ -160,20 +173,44 @@ class _HomeViewState extends State<HomeView> {
                     5.horizontalSpace
                   ],
                 ),
-                // const SliverToBoxAdapter(child: SizedBox(height: 10)),
                 SliverToBoxAdapter(
                   child: AspectRatio(aspectRatio: 16 / 9, child: _bannerHome()),
                 ),
                 SliverToBoxAdapter(
-                  child: Column(
+                  child: Stack(
                     children: [
-                      30.verticalSpace,
-                      categoryListView(),
-                      10.verticalSpace,
-                      _buildListNewFood(cartState, tableState),
-                      20.verticalSpace,
-                      _popularGridView(cartState, tableState),
-                      // Text("Scroll Offset: ${_scrollController.offset}"),
+                      Column(
+                        children: [
+                          30.verticalSpace,
+                          categoryListView(),
+                          10.verticalSpace,
+                          _buildListNewFood(cartState, tableState),
+                          20.verticalSpace,
+                          _popularGridView(cartState, tableState),
+                        ],
+                      ),
+                      ValueListenableBuilder(
+                        valueListenable: _foodItemSize,
+                        builder: (context, value, child) {
+                          return Container(
+                            height: _foodItemSize.value.height,
+                            width: _foodItemSize.value.width,
+                            color: AppColors.lavender,
+                          )
+                              .animate(
+                                autoPlay: false,
+                                controller: _animationController,
+                                onComplete: (controller) {
+                                  _resetAnimation();
+                                  _animationController.reset();
+                                },
+                              )
+                              .followPath(
+                                  path: _path,
+                                  duration: 1.seconds,
+                                  curve: Curves.easeInOutCubic);
+                        },
+                      )
                     ],
                   ),
                 ),
@@ -211,6 +248,7 @@ class _HomeViewState extends State<HomeView> {
 
   Widget _buildFloatingButton(OrderModel orderModel) {
     return FloatingActionButton(
+      key: _cartKey,
       backgroundColor: AppColors.themeColor,
       onPressed: () => context.push(AppRoute.carts),
       child: Padding(

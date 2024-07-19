@@ -45,11 +45,13 @@ class ItemFoodView extends StatelessWidget {
       required this.food,
       required this.height,
       required this.width,
-      this.addToCartOnTap});
+      this.addToCartOnTap,
+      this.keyItem});
   final FoodItem food;
   final double height;
   final double width;
   final void Function()? addToCartOnTap;
+  final GlobalKey? keyItem;
 
   @override
   Widget build(BuildContext context) {
@@ -57,43 +59,41 @@ class ItemFoodView extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(defaultBorderRadius / 2),
       ),
-      child: MouseRegion(
-        cursor: SystemMouseCursors.click,
-        child: GestureDetector(
-          onTap: () => context.push(AppRoute.foodsDetail, extra: food),
-          child: SizedBox(
-            height: height,
-            width: width,
-            child: Stack(children: [
-              Column(
-                children: [
-                  Container(
-                    clipBehavior: Clip.antiAlias,
-                    height: 0.7 * height,
-                    width: width,
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(defaultBorderRadius / 2),
-                          topLeft: Radius.circular(defaultBorderRadius / 2)),
-                    ),
-                    child: CachedNetworkImage(
-                      imageUrl: '${ApiConfig.host}${food.image1}',
-                      fit: BoxFit.cover,
-                      errorWidget: errorBuilderForImage,
-                    ),
+      child: GestureDetector(
+        onTap: () => context.push(AppRoute.foodsDetail, extra: food),
+        child: SizedBox(
+          key: keyItem,
+          height: height,
+          width: width,
+          child: Stack(children: [
+            Column(
+              children: [
+                Container(
+                  clipBehavior: Clip.antiAlias,
+                  height: 0.7 * height,
+                  width: width,
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(defaultBorderRadius / 2),
+                        topLeft: Radius.circular(defaultBorderRadius / 2)),
                   ),
-                  _buildNameFood(context, food),
-                  _buildPrice(context, food),
-                ],
-              ),
-              Positioned(top: 5, right: 5, child: _addToCard()),
-              if (food.isDiscount!)
-                Positioned(
-                    right: 5,
-                    top: 0.7 * height - 18,
-                    child: _buildDiscountItem(food)),
-            ]),
-          ),
+                  child: CachedNetworkImage(
+                    imageUrl: '${ApiConfig.host}${food.image1}',
+                    fit: BoxFit.cover,
+                    errorWidget: errorBuilderForImage,
+                  ),
+                ),
+                _buildNameFood(context, food),
+                _buildPrice(context, food),
+              ],
+            ),
+            Positioned(top: 5, right: 5, child: _addToCard()),
+            if (food.isDiscount!)
+              Positioned(
+                  right: 5,
+                  top: 0.7 * height - 18,
+                  child: _buildDiscountItem(food)),
+          ]),
         ),
       ),
     );

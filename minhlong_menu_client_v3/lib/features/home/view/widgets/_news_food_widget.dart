@@ -13,33 +13,54 @@ extension _NewsFoodWidget on _HomeViewState {
           Builder(builder: (context) {
             var foodState = context.watch<FoodBloc>().state;
             var sizeState = context.watch<ItemSizeCubit>().state;
+
             return (switch (foodState) {
               FoodFetchInProgress() => const Loading(),
               FoodFetchEmpty() => const EmptyWidget(),
               FoodFetchFailure() => ErrWidget(error: foodState.message),
-              FoodFetchSuccess() => SizedBox(
-                  width: context.sizeDevice.width,
-                  height: sizeState.height,
-                  child: ListView.builder(
-                      physics: const BouncingScrollPhysics(),
-                      scrollDirection: Axis.horizontal,
-                      itemCount: foodState.food.foodItems.length,
-                      itemBuilder: (context, index) {
-                        return ItemFoodView(
-                            addToCartOnTap: () {
-                              _handleOnTapAddToCart(orderModel, table,
-                                  foodState.food.foodItems[index]);
-                            },
-                            food: foodState.food.foodItems[index],
-                            height: sizeState.height ?? 0.0,
-                            width: sizeState.width ?? 0.0);
-                      }),
-                ),
+              FoodFetchSuccess() => _buildSuccessWidget(
+                  context, sizeState, foodState.food, orderModel, table),
               _ => const SizedBox(),
             });
           }),
         ],
       ),
+    );
+  }
+
+  SizedBox _buildSuccessWidget(BuildContext context, ItemFoodSizeDTO sizeState,
+      FoodModel food, OrderModel orderModel, TableModel table) {
+    _managerList = AddToCardAnimationManager(lenght: food.foodItems.length);
+    return SizedBox(
+      width: context.sizeDevice.width,
+      height: sizeState.height,
+      child: ListView.builder(
+          physics: const BouncingScrollPhysics(),
+          scrollDirection: Axis.horizontal,
+          itemCount: food.foodItems.length,
+          itemBuilder: (context, index) {
+            return ItemFoodView(
+                keyItem: _managerList.keys[index],
+                addToCartOnTap: () {
+                  // _handleOnTapAddToCart(
+                  //     orderModel, table, food.foodItems[index]);
+                  final cartPosition =
+                      (_cartKey.currentContext!.findRenderObject() as RenderBox)
+                          .localToGlobal(Offset.zero);
+                  final foodContext = _managerList.keys[index].currentContext!;
+                  _foodPosition = (foodContext.findRenderObject() as RenderBox)
+                      .localToGlobal(Offset.zero);
+                  _foodItemSize.value = foodContext.size!;
+                  _path = Path()
+                    ..moveTo(_foodPosition.dx, _foodPosition.dy)
+                    ..relativeLineTo(-20, -20)
+                    ..lineTo(cartPosition.dx, cartPosition.dy);
+                  _animationController.forward();
+                },
+                food: food.foodItems[index],
+                height: sizeState.height ?? 0.0,
+                width: sizeState.width ?? 0.0);
+          }),
     );
   }
 }

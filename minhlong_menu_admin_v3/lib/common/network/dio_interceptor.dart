@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:logger/logger.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/data/auth_local_datasource/auth_local_datasource.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/data/model/access_token.dart';
@@ -143,10 +142,6 @@ class DioInterceptor extends Interceptor {
     if (kDebugMode) {
       print(message);
     }
-  }
-
-  bool isTokenExpired(String token) {
-    return JwtDecoder.isExpired(token);
   }
 }
 
