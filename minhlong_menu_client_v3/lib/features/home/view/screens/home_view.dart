@@ -59,16 +59,31 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
   final _indexPage = ValueNotifier(0);
   late AddToCardAnimationManager _managerList;
   final _foodItemSize = ValueNotifier(const Size(0, 0));
-  late final AnimationController _animationController =
-      AnimationController(vsync: this);
+  late AnimationController _animationController;
   final _cartKey = GlobalKey();
   var _foodPosition = Offset.zero;
   var _path = Path();
+  final ScrollController _scrollController = ScrollController();
+  var cartPosition = Offset.zero;
+
+  var cartBottomRight = Offset.zero;
 
   @override
   void initState() {
     super.initState();
     context.read<UserBloc>().add(UserFetched());
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+    _managerList = AddToCardAnimationManager(lenght: 10);
+    _scrollController.addListener(() {
+      cartPosition = (_cartKey.currentContext!.findRenderObject() as RenderBox)
+          .localToGlobal(Offset.zero);
+      cartBottomRight =
+          _cartKey.currentContext!.size!.bottomRight(cartPosition);
+      print(cartBottomRight);
+    });
   }
 
   @override
@@ -78,12 +93,15 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
     _searchText.dispose();
     _foodItemSize.dispose();
     _animationController.dispose();
+    _cartKey.currentState?.dispose();
   }
 
   void _resetAnimation() {
     _foodItemSize.value = const Size(0, 0);
     _foodPosition = Offset.zero;
     _path = Path();
+
+    _cartKey.currentState?.dispose();
   }
 
   @override
@@ -95,6 +113,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
       floatingActionButton: _buildFloatingButton(cartState),
       body: userState is UserFecthSuccess
           ? CustomScrollView(
+              controller: _scrollController,
               physics: const BouncingScrollPhysics(),
               slivers: [
                 SliverAppBar(
@@ -189,13 +208,26 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                           _popularGridView(cartState, tableState),
                         ],
                       ),
-                      ValueListenableBuilder(
-                        valueListenable: _foodItemSize,
-                        builder: (context, value, child) {
-                          return Container(
+                      ListenableBuilder(
+                        listenable: _foodItemSize,
+                        builder: (context, _) {
+                          return SizedBox(
                             height: _foodItemSize.value.height,
                             width: _foodItemSize.value.width,
-                            color: AppColors.lavender,
+                            child: Container(
+                              height: _foodItemSize.value.height,
+                              width: _foodItemSize.value.width,
+                              color: AppColors.lavender,
+                            )
+                                .animate(
+                                  autoPlay: false,
+                                  controller: _animationController,
+                                )
+                                .scale(
+                                  duration: 2.seconds,
+                                  begin: const Offset(1, 1),
+                                  end: Offset.zero,
+                                ),
                           )
                               .animate(
                                 autoPlay: false,
@@ -207,7 +239,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                               )
                               .followPath(
                                   path: _path,
-                                  duration: 1.seconds,
+                                  duration: 2.seconds,
                                   curve: Curves.easeInOutCubic);
                         },
                       )
@@ -313,6 +345,34 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
         AppSnackbar.showSnackBar(context,
             msg: 'Món ăn đã được thêm.', isSuccess: true);
       }
+    }
+  }
+
+  void triggerAnimation() {
+    _animationController.reset();
+    _animationController.forward();
+  }
+
+// Example usage of RenderBox and localToGlobal
+  void calculatePathAndAnimate(int index) {
+    _resetAnimation();
+    if (_cartKey.currentContext != null &&
+        _managerList.keys[index].currentContext != null) {
+      var foodContext = _managerList.keys[index].currentContext!;
+
+      _foodPosition = (foodContext.findRenderObject() as RenderBox)
+          .localToGlobal(Offset.zero);
+      // print(_foodPosition);
+      _foodItemSize.value = foodContext.size!;
+
+      _path = Path()
+        ..moveTo(_foodPosition.dx, _foodPosition.dy)
+        ..relativeLineTo(-20, -20)
+        ..lineTo(cartBottomRight.dx - _foodItemSize.value.width / 2,
+            cartBottomRight.dy - _foodItemSize.value.height / 2);
+
+      // Trigger animation
+      triggerAnimation();
     }
   }
 }

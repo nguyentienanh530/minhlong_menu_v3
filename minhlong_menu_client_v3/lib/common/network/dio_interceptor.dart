@@ -55,13 +55,14 @@ class DioInterceptor extends Interceptor {
   }
 
   @override
-  void onError(DioException err, ErrorInterceptorHandler handler) {
+  void onError(DioException err, ErrorInterceptorHandler handler) async {
     final options = err.requestOptions;
-    // if (err.response?.statusCode != 401) {
-    //   return handler.next(err);
-    // } else {
-    //   _refreshTokenAndResolveError(err, handler);
-    // }
+    if (err.response?.statusCode != 401 &&
+        err.response?.data['message'] != 'Invalid token') {
+      return handler.next(err);
+    } else {
+      await _authLocalDatasource.removeAccessToken();
+    }
 
     logger.e(options.method); // Debug log
     logger.e(
@@ -73,39 +74,39 @@ class DioInterceptor extends Interceptor {
     super.onError(err, handler);
   }
 
-  void _refreshTokenAndResolveError(
-    DioException err,
-    ErrorInterceptorHandler handler,
-  ) async {
-    _debugPrint('### Refreshing token... ###');
-    final token = await _authLocalDatasource.getAccessToken();
-    // final refreshToken = token?.refreshToken;
+  // void _refreshTokenAndResolveError(
+  //   DioException err,
+  //   ErrorInterceptorHandler handler,
+  // ) async {
+  //   _debugPrint('### Refreshing token... ###');
+  //   final token = await _authLocalDatasource.getAccessToken();
+  //   // final refreshToken = token?.refreshToken;
 
-    if (token == null ||
-        token.accessToken.isEmpty ||
-        token.refreshToken.isEmpty) {
-      return handler.next(err);
-    }
+  //   if (token == null ||
+  //       token.accessToken.isEmpty ||
+  //       token.refreshToken.isEmpty) {
+  //     return handler.next(err);
+  //   }
 
-    late final AccessToken? accessToken;
+  //   late final AccessToken? accessToken;
 
-    try {
-      accessToken = await refreshTokenFuction(token: token) ?? token;
-    } on DioException catch (e) {
-      print('caching error $e');
-      await _authLocalDatasource.removeAccessToken();
+  //   try {
+  //     accessToken = await refreshTokenFuction(token: token) ?? token;
+  //   } on DioException catch (e) {
+  //     print('caching error $e');
+  //     await _authLocalDatasource.removeAccessToken();
 
-      return handler.next(e);
-    }
+  //     return handler.next(e);
+  //   }
 
-    _debugPrint('### Token refreshed! ###');
+  //   _debugPrint('### Token refreshed! ###');
 
-    err.requestOptions.headers['Authorization'] =
-        'Bearer ${accessToken.accessToken}';
+  //   err.requestOptions.headers['Authorization'] =
+  //       'Bearer ${accessToken.accessToken}';
 
-    final refreshResponse = await Dio().fetch(err.requestOptions);
-    return handler.resolve(refreshResponse);
-  }
+  //   final refreshResponse = await Dio().fetch(err.requestOptions);
+  //   return handler.resolve(refreshResponse);
+  // }
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {

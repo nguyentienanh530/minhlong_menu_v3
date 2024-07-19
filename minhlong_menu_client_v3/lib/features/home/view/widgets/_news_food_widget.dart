@@ -30,7 +30,6 @@ extension _NewsFoodWidget on _HomeViewState {
 
   SizedBox _buildSuccessWidget(BuildContext context, ItemFoodSizeDTO sizeState,
       FoodModel food, OrderModel orderModel, TableModel table) {
-    _managerList = AddToCardAnimationManager(lenght: food.foodItems.length);
     return SizedBox(
       width: context.sizeDevice.width,
       height: sizeState.height,
@@ -44,18 +43,7 @@ extension _NewsFoodWidget on _HomeViewState {
                 addToCartOnTap: () {
                   // _handleOnTapAddToCart(
                   //     orderModel, table, food.foodItems[index]);
-                  final cartPosition =
-                      (_cartKey.currentContext!.findRenderObject() as RenderBox)
-                          .localToGlobal(Offset.zero);
-                  final foodContext = _managerList.keys[index].currentContext!;
-                  _foodPosition = (foodContext.findRenderObject() as RenderBox)
-                      .localToGlobal(Offset.zero);
-                  _foodItemSize.value = foodContext.size!;
-                  _path = Path()
-                    ..moveTo(_foodPosition.dx, _foodPosition.dy)
-                    ..relativeLineTo(-20, -20)
-                    ..lineTo(cartPosition.dx, cartPosition.dy);
-                  _animationController.forward();
+                  calculatePathAndAnimate(index);
                 },
                 food: food.foodItems[index],
                 height: sizeState.height ?? 0.0,
