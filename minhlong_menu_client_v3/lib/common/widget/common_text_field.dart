@@ -72,7 +72,8 @@ class CommonTextField extends StatelessWidget {
             focusedErrorBorder: focusedErrorBorder ??
                 OutlineInputBorder(
                     borderRadius: BorderRadius.circular(textFieldBorderRadius),
-                    borderSide: const BorderSide(color: AppColors.black)),
+                    borderSide:
+                        const BorderSide(color: AppColors.secondTextColor)),
             errorBorder: errorBorder ??
                 OutlineInputBorder(
                     borderRadius: BorderRadius.circular(textFieldBorderRadius),
@@ -80,7 +81,8 @@ class CommonTextField extends StatelessWidget {
             enabledBorder: enabledBorder ??
                 OutlineInputBorder(
                     borderRadius: BorderRadius.circular(textFieldBorderRadius),
-                    borderSide: const BorderSide(color: AppColors.black)),
+                    borderSide:
+                        const BorderSide(color: AppColors.secondTextColor)),
             suffixIcon: suffixIcon,
             prefixIcon: prefixIcon,
             focusedBorder: focusedBorder ??
@@ -89,11 +91,11 @@ class CommonTextField extends StatelessWidget {
                     borderSide: const BorderSide(color: AppColors.black)),
             errorText: errorText,
             contentPadding:
-                contentPadding ?? const EdgeInsets.all(defaultPadding / 2),
+                contentPadding ?? const EdgeInsets.all(defaultPadding),
             filled: filled ?? false,
             hintText: hintText,
             labelText: labelText,
-            errorStyle: kBodyStyle.copyWith(color: AppColors.black),
+            errorStyle: kBodyStyle.copyWith(color: AppColors.red),
             hintStyle: hintStyle ?? kBodyStyle,
             labelStyle: labelStyle ?? kBodyStyle),
         onChanged: onChanged);

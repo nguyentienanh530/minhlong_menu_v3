@@ -1,51 +1,240 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
-import 'package:minhlong_menu_client_v3/common/widget/common_back_button.dart';
-import 'package:minhlong_menu_client_v3/core/app_style.dart';
-
+import '../../../../common/dialog/app_dialog.dart';
+import '../../../../common/snackbar/app_snackbar.dart';
 import '../../../../common/widget/common_text_field.dart';
 import '../../../../core/app_colors.dart';
 import '../../../../core/app_const.dart';
+import '../../../../core/app_key.dart';
 import '../../../../core/app_res.dart';
 import '../../../../core/app_string.dart';
+import '../../../../core/app_style.dart';
+import '../../../../core/extensions.dart';
+import '../../bloc/user_bloc.dart';
+import '../../data/repositories/user_repository.dart';
 
-part '../widget/_change_password_widget.dart';
-
-class ChangePassword extends StatefulWidget {
+class ChangePassword extends StatelessWidget {
   const ChangePassword({super.key});
 
   @override
-  State<ChangePassword> createState() => _ChangePasswordScreenState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) =>
+          UserBloc(userRepository: context.read<UserRepository>()),
+      child: const ChangePasswordView(),
+    );
+  }
 }
 
-class _ChangePasswordScreenState extends State<ChangePassword> {
-  final TextEditingController _newPwController = TextEditingController();
-  final TextEditingController _oldPwController = TextEditingController();
-  final TextEditingController _reNewPwController = TextEditingController();
+class ChangePasswordView extends StatefulWidget {
+  const ChangePasswordView({super.key});
+
+  @override
+  State<ChangePasswordView> createState() => _ChangePasswordViewState();
+}
+
+class _ChangePasswordViewState extends State<ChangePasswordView> {
+  final TextEditingController _oldPasswordController = TextEditingController();
+  final TextEditingController _newPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
+  final _isShowOldPassword = ValueNotifier(false);
+  final _isShowNewPassword = ValueNotifier(false);
+  final _isShowConfirmPassword = ValueNotifier(false);
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   void dispose() {
     super.dispose();
-    _newPwController.dispose();
-    _oldPwController.dispose();
-    _reNewPwController.dispose();
+    _isShowOldPassword.dispose();
+    _isShowNewPassword.dispose();
+    _isShowConfirmPassword.dispose();
+    _oldPasswordController.dispose();
+    _newPasswordController.dispose();
+    _confirmPasswordController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            leading: CommonBackButton(onTap: () => context.pop()),
-            title: FittedBox(
-                alignment: Alignment.center,
-                child: Text(AppString.changePassword)),
+        appBar: AppBar(
+          title: const Text('Đổi mật khẩu', style: kHeadingStyle),
+          centerTitle: true,
+        ),
+        body: _buildChangePassword());
+  }
+
+  Widget _buildChangePassword() {
+    return BlocListener<UserBloc, UserState>(
+      listener: (context, state) {
+        switch (state) {
+          case UserUpdatePasswordInProgress():
+            AppDialog.showLoadingDialog(context);
+            break;
+          case UserUpdatePasswordSuccess():
+            pop(context, 1);
+            AppSnackbar.showSnackBar(context,
+                msg: 'Thao tác thành công', isSuccess: true);
+            _oldPasswordController.clear();
+            _newPasswordController.clear();
+            _confirmPasswordController.clear();
+            break;
+          case UserUpdatePasswordFailure():
+            pop(context, 1);
+            AppSnackbar.showSnackBar(context,
+                msg: state.errorMessage, isSuccess: false);
+            break;
+          default:
+        }
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(defaultPadding),
+        child: Form(
+          key: AppKeys.updatePasswordKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _buildOldPassworTextField(),
+              20.verticalSpace,
+              _buildNewPassworTextField(),
+              20.verticalSpace,
+              _buildComfirmPassworTextField(),
+              20.verticalSpace,
+              Text(
+                  'Mật khẩu bao gồm (1 ký tự Hoa, 1 ký tự Thường, 1 ký tự số, 1 ký tự đặc biệt và tối thiểu 8 ký tự)',
+                  style:
+                      kCaptionStyle.copyWith(color: AppColors.secondTextColor)),
+              40.verticalSpace,
+              _buttonChangePassword(),
+            ],
           ),
-          SliverToBoxAdapter(child: _buildChangePasswordWidget())
-        ],
+        ),
       ),
+    );
+  }
+
+  Widget _buttonChangePassword() {
+    return Center(
+      child: ElevatedButton(
+          style:
+              ElevatedButton.styleFrom(backgroundColor: AppColors.themeColor),
+          onPressed: () {
+            if (AppKeys.updatePasswordKey.currentState!.validate()) {
+              context.read<UserBloc>().add(UserUpdatePasswordStarted(
+                    oldPassword: _oldPasswordController.text,
+                    newPassword: _newPasswordController.text,
+                  ));
+            }
+          },
+          child: const Text(
+            'Thay đổi mật khẩu',
+            style: kBodyWhiteStyle,
+          )),
+    );
+  }
+
+  Widget _buildOldPassworTextField() {
+    return ValueListenableBuilder(
+      valueListenable: _isShowOldPassword,
+      builder: (context, value, child) {
+        return CommonTextField(
+            maxLines: 1,
+            style: kBodyStyle,
+            controller: _oldPasswordController,
+            onFieldSubmitted: (p0) {},
+            labelText: '${AppString.oldPassword} *',
+            validator: (password) => AppRes.validatePassword(password)
+                ? null
+                : 'Mật khẩu không hợp lệ',
+            labelStyle:
+                kSubHeadingStyle.copyWith(color: AppColors.secondTextColor),
+            onChanged: (value) {},
+            obscureText: !value,
+            prefixIcon: Icon(
+              Icons.lock_outline,
+              color: AppColors.secondTextColor.withOpacity(0.5),
+            ),
+            suffixIcon: GestureDetector(
+                onTap: () =>
+                    _isShowOldPassword.value = !_isShowOldPassword.value,
+                child: Icon(
+                    !value ? Icons.visibility_off : Icons.remove_red_eye,
+                    color: AppColors.secondTextColor.withOpacity(0.5))));
+      },
+    );
+  }
+
+  Widget _buildNewPassworTextField() {
+    return ValueListenableBuilder(
+      valueListenable: _isShowNewPassword,
+      builder: (context, value, child) {
+        return CommonTextField(
+            maxLines: 1,
+            style: kBodyStyle,
+            controller: _newPasswordController,
+            onFieldSubmitted: (p0) {},
+            labelText: '${AppString.newPassword} *',
+            labelStyle:
+                kSubHeadingStyle.copyWith(color: AppColors.secondTextColor),
+            validator: (password) => AppRes.validatePassword(password)
+                ? null
+                : 'Mật khẩu không hợp lệ',
+            onChanged: (value) {},
+            obscureText: !value,
+            prefixIcon: Icon(
+              Icons.lock_outline,
+              color: AppColors.secondTextColor.withOpacity(0.5),
+            ),
+            suffixIcon: GestureDetector(
+                onTap: () =>
+                    _isShowNewPassword.value = !_isShowNewPassword.value,
+                child: Icon(
+                    !value ? Icons.visibility_off : Icons.remove_red_eye,
+                    color: AppColors.secondTextColor.withOpacity(0.5))));
+      },
+    );
+  }
+
+  Widget _buildComfirmPassworTextField() {
+    return ValueListenableBuilder(
+      valueListenable: _isShowConfirmPassword,
+      builder: (context, value, child) {
+        return CommonTextField(
+            maxLines: 1,
+            style: kBodyStyle,
+            controller: _confirmPasswordController,
+            onFieldSubmitted: (p0) {},
+            labelText: '${AppString.reNewPassword} *',
+            labelStyle:
+                kSubHeadingStyle.copyWith(color: AppColors.secondTextColor),
+            validator: (value) {
+              if (_newPasswordController.text !=
+                  _confirmPasswordController.text) {
+                return 'Xác nhận mật khẩu không khớp';
+              }
+              return AppRes.validatePassword(value)
+                  ? null
+                  : 'mật khẩu không hợp lệ';
+            },
+            onChanged: (value) {},
+            obscureText: !value,
+            prefixIcon: Icon(
+              Icons.lock_outline,
+              color: AppColors.secondTextColor.withOpacity(0.5),
+            ),
+            suffixIcon: GestureDetector(
+                onTap: () => _isShowConfirmPassword.value =
+                    !_isShowConfirmPassword.value,
+                child: Icon(
+                    !value ? Icons.visibility_off : Icons.remove_red_eye,
+                    color: AppColors.secondTextColor.withOpacity(0.5))));
+      },
     );
   }
 }

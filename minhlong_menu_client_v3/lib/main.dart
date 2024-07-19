@@ -17,6 +17,9 @@ import 'package:minhlong_menu_client_v3/features/order/bloc/order_bloc.dart';
 import 'package:minhlong_menu_client_v3/features/order/data/provider/order_api.dart';
 import 'package:minhlong_menu_client_v3/features/order/data/repositories/order_repository.dart';
 import 'package:minhlong_menu_client_v3/features/table/cubit/table_cubit.dart';
+import 'package:minhlong_menu_client_v3/features/user/bloc/user_bloc.dart';
+import 'package:minhlong_menu_client_v3/features/user/data/provider/user_api.dart';
+import 'package:minhlong_menu_client_v3/features/user/data/repositories/user_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'bloc_observer.dart';
@@ -31,8 +34,8 @@ void main() async {
   final sf = await SharedPreferences.getInstance();
   dio.interceptors.add(DioInterceptor(sf));
   runApp(DevicePreview(
-      enabled: !kReleaseMode,
-      // enabled: false,
+      // enabled: !kReleaseMode,
+      enabled: false,
       builder: (context) => MainApp(sf: sf)));
 }
 
@@ -71,6 +74,11 @@ class _MainAppState extends State<MainApp> {
             orderApi: OrderApi(dio),
           ),
         ),
+        RepositoryProvider(
+          create: (context) => UserRepository(
+            userApi: UserApi(dio: dio),
+          ),
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -89,6 +97,10 @@ class _MainAppState extends State<MainApp> {
           BlocProvider(
             create: (context) =>
                 OrderBloc(orderRepository: context.read<OrderRepository>()),
+          ),
+          BlocProvider(
+            create: (context) =>
+                UserBloc(userRepository: context.read<UserRepository>()),
           )
         ],
         child: const AppContent(),
@@ -135,7 +147,7 @@ class _AppContentState extends State<AppContent> {
           routerConfig: AppRoute.routes,
           scrollBehavior: MyCustomScrollBehavior(),
           theme: ThemeData(
-            fontFamily: GoogleFonts.roboto().fontFamily,
+            fontFamily: GoogleFonts.rubik().fontFamily,
             scaffoldBackgroundColor: AppColors.background,
             textTheme: const TextTheme(
                 displaySmall: TextStyle(color: AppColors.white),

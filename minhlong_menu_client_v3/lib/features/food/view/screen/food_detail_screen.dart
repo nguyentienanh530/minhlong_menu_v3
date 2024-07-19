@@ -175,38 +175,40 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
 
   Widget _buildQuantity() {
     return ValueListenableBuilder(
-        valueListenable: _quantity,
-        builder: (context, quantity, child) => Center(
-              child: Container(
-                height: 40,
-                width: 100,
-                decoration: BoxDecoration(
-                  color: AppColors.white,
-                  borderRadius: BorderRadius.circular(defaultBorderRadius * 3),
-                ),
-                child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      _buildCounter(context,
-                          icon: Icons.remove,
-                          iconColor: AppColors.themeColor, onTap: () {
-                        decrementQuaranty();
-                      }),
-                      Text(quantity.toString(),
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.black,
-                              fontSize: 20)),
-                      _buildCounter(context,
-                          icon: Icons.add,
-                          colorBg: AppColors.themeColor,
-                          iconColor: AppColors.white, onTap: () {
-                        incrementQuaranty();
-                      })
-                    ]),
-              ),
-            ));
+      valueListenable: _quantity,
+      builder: (context, quantity, child) => Center(
+        child: Container(
+          height: 40,
+          width: 120,
+          padding: const EdgeInsets.symmetric(horizontal: 5),
+          decoration: BoxDecoration(
+            color: AppColors.white,
+            borderRadius: BorderRadius.circular(defaultBorderRadius * 3),
+          ),
+          child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _buildCounter(context,
+                    icon: Icons.remove,
+                    iconColor: AppColors.themeColor, onTap: () {
+                  decrementQuaranty();
+                }),
+                Text(quantity.toString(),
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.black,
+                        fontSize: 20)),
+                _buildCounter(context,
+                    icon: Icons.add,
+                    colorBg: AppColors.themeColor,
+                    iconColor: AppColors.white, onTap: () {
+                  incrementQuaranty();
+                })
+              ]),
+        ),
+      ),
+    );
   }
 
   void decrementQuaranty() {
@@ -249,34 +251,24 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
 
   Widget _buildFoodImage(FoodItem food) {
     var images = [food.image1, food.image2, food.image3, food.image4];
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        CarouselSlider.builder(
-          itemBuilder: (context, index, realIndex) {
-            return CachedNetworkImage(
-              imageUrl: images[index]!.isEmpty
-                  ? ''
-                  : '${ApiConfig.host}${images[index]}',
-              fit: BoxFit.cover,
-              errorWidget: errorBuilderForImage,
-            );
-          },
-          options: CarouselOptions(
-              onPageChanged: (index, reason) => _indexImage.value = index,
-              reverse: false,
-              enlargeCenterPage: true,
-              autoPlay: false,
-              aspectRatio: 1,
-              autoPlayCurve: Curves.fastEaseInToSlowEaseOut,
-              enableInfiniteScroll: true,
-              autoPlayInterval: const Duration(seconds: 3),
-              autoPlayAnimationDuration: const Duration(milliseconds: 1000),
-              viewportFraction: 1,
-              clipBehavior: Clip.antiAlias),
-          itemCount: images.length,
-        ),
-      ],
+    return CarouselSlider.builder(
+      itemBuilder: (context, index, realIndex) {
+        return SizedBox(
+          width: double.infinity,
+          child: CachedNetworkImage(
+            imageUrl: images[index]!.isEmpty
+                ? ''
+                : '${ApiConfig.host}${images[index]}',
+            fit: BoxFit.cover,
+            errorWidget: errorBuilderForImage,
+          ),
+        );
+      },
+      options: CarouselOptions(
+          viewportFraction: 1,
+          aspectRatio: 1,
+          onPageChanged: (index, reason) => _indexImage.value = index),
+      itemCount: images.length,
     );
   }
 

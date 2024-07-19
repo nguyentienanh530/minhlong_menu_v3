@@ -14,6 +14,7 @@ class ApiConfig {
   static const String user = '/user';
   static const String updateUser = '/user/update';
   static const String uploadAvatar = '/user/upload-avatar';
+  static const String changePassword = '/user/change-password';
 
   //===== Auth =====
   static const String login = '/auth/login';

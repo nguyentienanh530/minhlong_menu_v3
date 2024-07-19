@@ -17,8 +17,9 @@ import '../../core/utils.dart';
 import '../../features/food/cubit/item_size_cubit.dart';
 
 class CommonItemFood extends StatelessWidget {
-  const CommonItemFood({super.key, required this.food});
+  const CommonItemFood({super.key, required this.food, this.addToCartOnTap});
   final FoodItem food;
+  final void Function()? addToCartOnTap;
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +31,7 @@ class CommonItemFood extends StatelessWidget {
       context.read<ItemSizeCubit>().setSize(ItemFoodSizeDTO(
           height: constraints.maxHeight, width: constraints.maxWidth));
       return ItemFoodView(
+          addToCartOnTap: addToCartOnTap,
           food: food,
           height: constraints.maxHeight,
           width: constraints.maxWidth);
@@ -42,10 +44,12 @@ class ItemFoodView extends StatelessWidget {
       {super.key,
       required this.food,
       required this.height,
-      required this.width});
+      required this.width,
+      this.addToCartOnTap});
   final FoodItem food;
   final double height;
   final double width;
+  final void Function()? addToCartOnTap;
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +101,7 @@ class ItemFoodView extends StatelessWidget {
 
   Widget _addToCard() {
     return InkWell(
-      onTap: () {},
+      onTap: addToCartOnTap,
       child: const Card(
         elevation: 4,
         shadowColor: AppColors.themeColor,

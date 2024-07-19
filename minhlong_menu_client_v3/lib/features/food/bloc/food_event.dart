@@ -6,9 +6,9 @@ sealed class FoodEvent {}
 final class FoodFetched extends FoodEvent {
   final int? page;
   final int? limit;
-  final String property;
+  final String? property;
 
-  FoodFetched({this.page, this.limit, required this.property});
+  FoodFetched({this.page, this.limit, this.property});
 }
 
 final class FoodOnCategoryFetched extends FoodEvent {

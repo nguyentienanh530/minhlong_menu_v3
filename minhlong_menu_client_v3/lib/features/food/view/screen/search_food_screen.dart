@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:minhlong_menu_client_v3/common/widget/error_screen.dart';
+import 'package:minhlong_menu_client_v3/common/widget/loading.dart';
+import 'package:minhlong_menu_client_v3/common/widget/no_product.dart';
 import 'package:minhlong_menu_client_v3/core/utils.dart';
+import 'package:minhlong_menu_client_v3/features/food/cubit/search_cubit.dart';
+import 'package:minhlong_menu_client_v3/features/food/data/repositories/food_repository.dart';
 import 'package:tiengviet/tiengviet.dart';
 
 import '../../../../Routes/app_route.dart';
@@ -10,65 +17,99 @@ import '../../../../core/api_config.dart';
 import '../../../../core/app_asset.dart';
 import '../../../../core/app_colors.dart';
 import '../../../../core/app_const.dart';
+import '../../bloc/food_bloc.dart';
 import '../../data/model/food_item.dart';
 
-class SearchFoodScreen extends StatefulWidget {
+class SearchFoodScreen extends StatelessWidget {
   const SearchFoodScreen({super.key});
 
   @override
-  State<SearchFoodScreen> createState() => _MyWidgetState();
+  Widget build(BuildContext context) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) =>
+              FoodBloc(foodRepository: context.read<FoodRepository>()),
+        ),
+        BlocProvider(
+          create: (context) => SearchCubit(),
+        ),
+      ],
+      child: const SearchFoodView(),
+    );
+  }
 }
 
-class _MyWidgetState extends State<SearchFoodScreen>
-    with AutomaticKeepAliveClientMixin {
+class SearchFoodView extends StatefulWidget {
+  const SearchFoodView({super.key});
+
+  @override
+  State<SearchFoodView> createState() => _MyWidgetState();
+}
+
+class _MyWidgetState extends State<SearchFoodView> {
   final TextEditingController _searchController = TextEditingController();
 
   @override
   void dispose() {
-    _searchController.clear();
     super.dispose();
+    _searchController.clear();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<FoodBloc>().add(FoodFetched());
   }
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return Scaffold(
-        backgroundColor: AppColors.themeColor,
-        body: Stack(children: [
+      backgroundColor: AppColors.themeColor,
+      body: Stack(
+        children: [
           Image.asset(AppAsset.background,
               color: AppColors.black.withOpacity(0.15)),
-          _buildAppbar(context),
-          Column(children: [
-            const SizedBox(height: 100),
-            Expanded(
+          _buildAppbar(),
+          Column(
+            children: [
+              const SizedBox(height: 100),
+              Expanded(
                 child: Container(
-                    decoration: const BoxDecoration(
-                        color: AppColors.smokeWhite,
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(defaultBorderRadius * 4),
-                            topRight:
-                                Radius.circular(defaultBorderRadius * 4))),
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: defaultPadding),
-                      child: SearchFoodView(
-                          textSearch: _searchController.value.toString()),
-                    )))
-          ])
-        ]));
+                  decoration: const BoxDecoration(
+                      color: AppColors.smokeWhite,
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(defaultBorderRadius * 4),
+                          topRight: Radius.circular(defaultBorderRadius * 4))),
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 30),
+                    child: const AfterSearchUI()
+                        .animate()
+                        .slideX(
+                            begin: -0.1,
+                            end: 0,
+                            curve: Curves.easeInOutCubic,
+                            duration: 500.ms)
+                        .fadeIn(curve: Curves.easeInOutCubic, duration: 500.ms),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
 
     // Scaffold(
     //     appBar: _buildAppbar(context),
     //     body: Obx(() => SearchFoodView(textSearch: foodCtrl.textSearch.value)));
   }
 
-  @override
-  bool get wantKeepAlive => true;
-
-  _buildAppbar(BuildContext context) {
+  _buildAppbar() {
     return AppBar(
         backgroundColor: AppColors.transparent,
         foregroundColor: AppColors.white,
-        title: _buildSearch(context)
+        title: _buildSearch()
             .animate()
             .slideX(
                 begin: 0.3,
@@ -78,40 +119,31 @@ class _MyWidgetState extends State<SearchFoodScreen>
             .fadeIn(curve: Curves.easeInOutCubic, duration: 500.ms));
   }
 
-  Widget _buildSearch(BuildContext context) {
-    return SizedBox(
-        height: 40,
-        child: CommonTextField(
-            controller: _searchController,
-            onChanged: (value) => _searchController.text = value,
-            hintText: "Tìm kiếm",
-            suffixIcon: IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () {
-                  // foodCtrl.textSearch.value = '';
-                  _searchController.clear();
-                }),
-            prefixIcon: const Icon(Icons.search)));
-  }
-}
-
-class SearchFoodView extends StatelessWidget {
-  const SearchFoodView({super.key, required this.textSearch});
-
-  final String textSearch;
-  @override
-  Widget build(BuildContext context) {
-    return AfterSearchUI(text: textSearch)
-        .animate()
-        .slideX(
-            begin: -0.1, end: 0, curve: Curves.easeInOutCubic, duration: 500.ms)
-        .fadeIn(curve: Curves.easeInOutCubic, duration: 500.ms);
+  Widget _buildSearch() {
+    return CommonTextField(
+        filled: true,
+        focusedBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: AppColors.white)),
+        enabledBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: AppColors.white)),
+        controller: _searchController,
+        onChanged: (value) {
+          _searchController.text = value;
+          context.read<SearchCubit>().onSearchChange(value);
+        },
+        hintText: "Tìm kiếm",
+        suffixIcon: IconButton(
+            icon: const Icon(Icons.close),
+            onPressed: () {
+              context.read<SearchCubit>().clearSearch();
+              _searchController.clear();
+            }),
+        prefixIcon: const Icon(Icons.search));
   }
 }
 
 class AfterSearchUI extends StatefulWidget {
-  const AfterSearchUI({super.key, this.text});
-  final String? text;
+  const AfterSearchUI({super.key});
 
   @override
   State<AfterSearchUI> createState() => _AfterSearchUIState();
@@ -120,10 +152,21 @@ class AfterSearchUI extends StatefulWidget {
 class _AfterSearchUIState extends State<AfterSearchUI> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return BlocBuilder<FoodBloc, FoodState>(
+      builder: (context, state) {
+        var searchCubit = context.watch<SearchCubit>().state;
+        return switch (state) {
+          FoodFetchInProgress() => const Loading(),
+          FoodFetchEmpty() => const NoProduct(),
+          FoodFetchFailure() => ErrorScreen(errorMessage: state.message),
+          FoodFetchSuccess() => _buildBody(state.food.foodItems, searchCubit),
+          _ => const SizedBox(),
+        };
+      },
+    );
   }
 
-  _buildBody(List<FoodItem> foods, String text) => ListView.builder(
+  Widget _buildBody(List<FoodItem> foods, String text) => ListView.builder(
       physics: const BouncingScrollPhysics(),
       itemCount: foods.length,
       itemBuilder: (context, i) {
@@ -141,56 +184,63 @@ class _AfterSearchUIState extends State<AfterSearchUI> {
 
   Widget _buildItemSearch(BuildContext context, FoodItem food) {
     return GestureDetector(
-        onTap: () => context.push(AppRoute.searchPage),
-        child: Padding(
-            padding: const EdgeInsets.symmetric(
-                horizontal: defaultPadding, vertical: defaultPadding / 5),
-            child: Card(
-                // color: AppColors.lavender,
-                shadowColor: AppColors.lavender,
-                elevation: 4,
-                borderOnForeground: false,
-                child: SizedBox(
-                    height: 80,
-                    child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          _buildImage(food),
-                          Expanded(
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  _buildTitle(context, food),
-                                  // _buildCategory(context, food),
-                                  _buildPrice(context, food)
-                                ]),
-                          ),
-                          const SizedBox(width: 8)
-                        ]
-                            .animate(interval: 50.ms)
-                            .slideX(
-                                begin: -0.1,
-                                end: 0,
-                                curve: Curves.easeInOutCubic,
-                                duration: 500.ms)
-                            .fadeIn(
-                                curve: Curves.easeInOutCubic,
-                                duration: 500.ms))))));
+      onTap: () => context.push(AppRoute.foodsDetail, extra: food),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+            horizontal: defaultPadding, vertical: defaultPadding / 5),
+        child: Card(
+          // color: AppColors.lavender,
+          shadowColor: AppColors.lavender,
+          elevation: 4,
+          borderOnForeground: false,
+          child: SizedBox(
+            height: 80,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _buildImage(food),
+                Expanded(
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        _buildTitle(context, food),
+                        // _buildCategory(context, food),
+                        _buildPrice(context, food)
+                      ]),
+                ),
+                const SizedBox(width: 8)
+              ]
+                  .animate(interval: 50.ms)
+                  .slideX(
+                      begin: -0.1,
+                      end: 0,
+                      curve: Curves.easeInOutCubic,
+                      duration: 500.ms)
+                  .fadeIn(
+                    curve: Curves.easeInOutCubic,
+                    duration: 500.ms,
+                  ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   Widget _buildImage(FoodItem food) {
     return Container(
-        margin: const EdgeInsets.all(defaultPadding / 2),
-        height: 80,
-        width: 80,
-        decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.black.withOpacity(0.3),
-            image: DecorationImage(
-                image: NetworkImage('${ApiConfig.host}${food.image1}'),
-                fit: BoxFit.cover)));
+      margin: const EdgeInsets.all(defaultPadding / 2),
+      height: 80,
+      width: 80,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: Colors.black.withOpacity(0.3),
+        image: DecorationImage(
+            image: NetworkImage('${ApiConfig.host}${food.image1}'),
+            fit: BoxFit.cover),
+      ),
+    );
   }
 
   Widget _buildTitle(BuildContext context, FoodItem food) {
@@ -230,18 +280,4 @@ class _AfterSearchUIState extends State<AfterSearchUI> {
             ])
           ]);
   }
-
-  // Widget _buildPercentDiscount(FoodModel food) {
-  //   return Container(
-  //       height: 80,
-  //       width: 80,
-  //       // decoration: BoxDecoration(color: redColor),
-  //       // child: Center(child: CommonLineText(value: "${food.discount}%")
-  //       child: Text("${food.discount}%",
-  //           style: TextStyle(
-  //               fontSize: 16,
-  //               // color: textColor,
-  //               // fontFamily: Constant.font,
-  //               fontWeight: FontWeight.w600)));
-  // }
 }

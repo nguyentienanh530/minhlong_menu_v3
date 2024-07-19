@@ -5,39 +5,52 @@ extension IndexFood on FoodController {
     var params = request.all();
     int? page = params['page'] != null ? int.tryParse(params['page']) : null;
     int? limit = params['limit'] != null ? int.tryParse(params['limit']) : null;
-    String property = request.input('property') ?? 'created_at';
+    String? property = params['property'] ?? '';
     print('params: $params');
 
     try {
       final userID = Auth().id();
+      Map<String, dynamic> response = <String, dynamic>{};
 
       if (userID == null) {
         return AppResponse().error(
             statusCode: HttpStatus.unauthorized, message: 'unauthorized');
       }
-      if (page == null && limit == null) {}
-
-      var totalItems = await _foodRepository.foodCount(userID: userID);
-      var totalPages = (totalItems / limit).ceil();
-      var startIndex = (page! - 1) * limit!;
-
-      List<Map<String, dynamic>> newFoods = <Map<String, dynamic>>[];
-      newFoods = await _foodRepository.get(
-          userID: userID,
-          limit: limit,
-          byProperty: property,
-          startIndex: startIndex);
-
-      return AppResponse().ok(
-        data: {
+      if (page == null && limit == null && property!.isEmpty) {
+        List<Map<String, dynamic>> foods = <Map<String, dynamic>>[];
+        foods = await _foodRepository.getAll(userID: userID);
+        response = {
+          'pagination': {
+            'page': 0,
+            'limit': 0,
+            'total_page': 0,
+            'total_item': 0,
+          },
+          'data': foods,
+        };
+      } else {
+        var totalItems = await _foodRepository.foodCount(userID: userID);
+        var totalPages = (totalItems / limit).ceil();
+        var startIndex = (page! - 1) * limit!;
+        List<Map<String, dynamic>> foods = <Map<String, dynamic>>[];
+        foods = await _foodRepository.get(
+            userID: userID,
+            limit: limit,
+            byProperty: property!,
+            startIndex: startIndex);
+        response = {
           'pagination': {
             'page': page,
             'limit': limit,
             'total_page': totalPages,
             'total_item': totalItems,
           },
-          'data': newFoods,
-        },
+          'data': foods,
+        };
+      }
+
+      return AppResponse().ok(
+        data: response,
         statusCode: HttpStatus.ok,
       );
     } catch (e) {

@@ -65,7 +65,7 @@ class AppString {
   static String editProfile = 'Thay đổi thông tin';
   static String fullName = 'Tên đầy đủ *';
   static String email = 'Email';
-  static String edit = 'Sửa';
+  static String edit = 'Cập nhật';
   static String usePrinter = 'Sử dụng máy in';
   static String settingPrinter = 'Cấu hình máy in';
   static String uploadImage = 'Tải lên ';

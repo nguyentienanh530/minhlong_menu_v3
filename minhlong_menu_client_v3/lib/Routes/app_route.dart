@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_client_v3/common/widget/no_product.dart';
 import 'package:minhlong_menu_client_v3/common/widget/success_screen.dart';
+
 import 'package:minhlong_menu_client_v3/features/auth/view/screens/forgot_password_screen.dart';
 import 'package:minhlong_menu_client_v3/features/auth/view/screens/login_screen.dart';
 import 'package:minhlong_menu_client_v3/features/cart/view/screen/cart_screen.dart';
@@ -10,6 +11,7 @@ import 'package:minhlong_menu_client_v3/features/category/data/model/category_mo
 import 'package:minhlong_menu_client_v3/features/category/view/screen/category_screen.dart';
 import 'package:minhlong_menu_client_v3/features/food/data/model/food_item.dart';
 import 'package:minhlong_menu_client_v3/features/food/view/screen/food_screen.dart';
+import 'package:minhlong_menu_client_v3/features/food/view/screen/search_food_screen.dart';
 import 'package:minhlong_menu_client_v3/features/home/view/screens/home_screen.dart';
 import 'package:minhlong_menu_client_v3/features/user/view/screen/change_password_screen.dart';
 import 'package:minhlong_menu_client_v3/features/user/view/screen/edit_profile_screen.dart';
@@ -18,6 +20,7 @@ import 'package:minhlong_menu_client_v3/features/table/view/screen/table_screen.
 
 import '../features/auth/bloc/auth_bloc.dart';
 import '../features/food/view/screen/food_detail_screen.dart';
+import '../features/user/data/model/user_model.dart';
 
 class AppRoute {
   AppRoute._();
@@ -39,6 +42,7 @@ class AppRoute {
   static const String noProductPage = '/no-product-page';
   static const String searchPage = '/search-page';
   static const String createOrderSuccess = '/create-order-success';
+  static const String search = '/search';
 
   static const publicRoute = [login, forgotPassword, signUp];
 
@@ -144,7 +148,9 @@ class AppRoute {
           return buildPageWithDefaultTransition(
             context: context,
             state: state,
-            child: const EditProfileScreen(),
+            child: EditProfileScreen(
+              userModel: state.extra as UserModel,
+            ),
           );
         },
       ),
@@ -195,6 +201,16 @@ class AppRoute {
             context: context,
             state: state,
             child: const SuccessScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        path: search,
+        pageBuilder: (context, state) {
+          return buildPageWithDefaultTransition(
+            context: context,
+            state: state,
+            child: const SearchFoodScreen(),
           );
         },
       ),

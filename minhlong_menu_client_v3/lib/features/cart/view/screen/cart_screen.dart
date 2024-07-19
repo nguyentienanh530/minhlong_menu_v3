@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -159,14 +160,17 @@ class _CartViewState extends State<CartView> {
   }
 
   void submitCreateOrder(OrderModel order, TableModel table) {
-    AppDialog.showErrorDialog(context,
-        title: 'Lên đơn nhó!',
-        description:
-            'Đơn không lên sẽ không thể sửa, kiểm tra kĩ trước khi lên đơn!',
-        confirmText: 'Ừ! lên đi',
-        cancelText: 'Thôi!', onPressedComfirm: () {
-      _handleCreateOrder(order, table);
-    });
+    AppDialog.showErrorDialog(
+      context,
+      title: 'Lên đơn nhó!',
+      description: 'Đơn lên sẽ không thể sửa, kiểm tra kĩ trước khi lên đơn!',
+      confirmText: 'Ừ! lên đi',
+      cancelText: 'Thôi!',
+      haveCancelButton: true,
+      onPressedComfirm: () {
+        _handleCreateOrder(order, table);
+      },
+    );
   }
 
   void _handleCreateOrder(OrderModel order, TableModel table) {

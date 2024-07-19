@@ -15,7 +15,12 @@ class CartCubit extends Cubit<OrderModel> {
   void removeOrderItem(OrderDetail orderItem) {
     List<OrderDetail> newList = List.from(state.orderDetail);
     newList.remove(orderItem);
-    emit(state.copyWith(orderDetail: newList));
+    var newTotalPrice = newList.fold(
+        0, (num total, currentFood) => total + currentFood.totalPrice);
+
+    emit(state.copyWith(
+        orderDetail: newList,
+        totalPrice: double.parse(newTotalPrice.toString())));
   }
 
   void clearCart() {

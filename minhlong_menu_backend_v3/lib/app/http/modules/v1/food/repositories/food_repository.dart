@@ -24,6 +24,17 @@ class FoodRepository {
     return foods;
   }
 
+  Future getAll({required int userID}) async {
+    var foods = await _food
+        .query()
+        .select(['foods.*', 'categories.name as category_name'])
+        .join('categories', 'categories.id', '=', 'foods.category_id')
+        .where('foods.user_id', '=', userID)
+        .orderBy('created_at', 'desc')
+        .get();
+    return foods;
+  }
+
   Future getFoodsOnCategory(
       {required int startIndex,
       required int limit,

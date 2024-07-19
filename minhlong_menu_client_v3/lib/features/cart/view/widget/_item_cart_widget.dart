@@ -97,7 +97,14 @@ extension _ItemCartWidget on _CartViewState {
                     ],
                   )
                 : const SizedBox()
-          ],
+          ]
+              .animate()
+              .slideX(
+                  begin: -0.1,
+                  end: 0,
+                  curve: Curves.easeInOutCubic,
+                  duration: 500.ms)
+              .fadeIn(curve: Curves.easeInOutCubic, duration: 500.ms),
         ),
       ),
     );

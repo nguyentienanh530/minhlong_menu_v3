@@ -10,29 +10,28 @@ extension _BannerWidget on _HomeViewState {
               valueListenable: _indexPage,
               builder: (context, value, child) {
                 return Stack(
-                  fit: StackFit.expand,
                   alignment: Alignment.bottomCenter,
                   children: [
                     CarouselSlider.builder(
                       itemBuilder: (context, index, realIndex) {
-                        return CachedNetworkImage(
-                          imageUrl:
-                              '${ApiConfig.host}${state.banners[index].image}',
-                          errorWidget: errorBuilderForImage,
-                          fit: BoxFit.cover,
-                          placeholder: (context, url) => const Loading(),
+                        return SizedBox(
+                          height: double.infinity,
+                          width: double.infinity,
+                          child: CachedNetworkImage(
+                            imageUrl:
+                                '${ApiConfig.host}${state.banners[index].image}',
+                            errorWidget: errorBuilderForImage,
+                            fit: BoxFit.cover,
+                            placeholder: (context, url) => const Loading(),
+                          ),
                         );
                       },
                       options: CarouselOptions(
                         onPageChanged: (index, reason) {
                           _indexPage.value = index;
                         },
-                        clipBehavior: Clip.antiAlias,
-                        reverse: false,
-                        // enlargeCenterPage: true,
                         autoPlay: true,
-                        aspectRatio: 1,
-                        autoPlayCurve: Curves.fastEaseInToSlowEaseOut,
+                        autoPlayCurve: Curves.ease,
                         enableInfiniteScroll: true,
                         autoPlayInterval: const Duration(seconds: 3),
                         autoPlayAnimationDuration:
@@ -42,8 +41,12 @@ extension _BannerWidget on _HomeViewState {
                       itemCount: state.banners.length,
                     ),
                     Positioned(
-                        bottom: 10,
-                        child: _buildIndicator(context, state.banners.length))
+                      bottom: 10,
+                      child: _buildIndicator(
+                        context,
+                        state.banners.length,
+                      ),
+                    ),
                   ],
                 );
               },

@@ -1,76 +1,43 @@
 part of '../screen/profile_screen.dart';
 
 extension _ProfileWidget on _ProfileScreenState {
-  Widget imageProfileWidget() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.end,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Container(
-          padding: const EdgeInsets.all(2),
-          width: double.infinity,
-          height: 0.25 * context.sizeDevice.height,
-          decoration: BoxDecoration(
-            color: AppColors.white,
-            shape: BoxShape.circle,
-            border: Border.all(color: AppColors.smokeWhite, width: 6),
-          ),
-          child: Container(
-            clipBehavior: Clip.antiAlias,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-            ),
-            child: CachedNetworkImage(
-              imageUrl: _userList[0].image ?? '',
-              errorWidget: errorBuilderForImage,
-              placeholder: (context, url) => const Loading(),
-            ),
-          ),
+  Widget _bodyInfoUser({required UserModel userModel}) {
+    return Card(
+      elevation: 4,
+      shadowColor: AppColors.lavender,
+      margin: EdgeInsets.zero,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(defaultBorderRadius * 2),
+          topRight: Radius.circular(defaultBorderRadius * 2),
         ),
-        10.verticalSpace,
-        _textBotton()
-      ],
-    );
-  }
-
-  Widget _textBotton() {
-    return Column(
-      children: [
-        Text(
-          _userList[0].name.toString(),
-          style:
-              kHeadingStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 20),
+      ),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(
+            horizontal: defaultPadding, vertical: defaultPadding * 2),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _ItemProfile(
+                onTap: () async => await context
+                        .push(AppRoute.editProfile, extra: userModel)
+                        .then((value) {
+                      context.read<UserBloc>().add(UserFetched());
+                    }),
+                svgPath: AppAsset.user,
+                title: AppString.editProfile),
+            _ItemProfile(
+                svgPath: AppAsset.lock,
+                title: AppString.changePassword,
+                onTap: () => context.push(AppRoute.changePassword)),
+            _buildItemPrint(context),
+            _ItemProfile(
+                svgPath: AppAsset.logout,
+                title: 'Đăng xuất',
+                onTap: () => _showDialogLogout()),
+          ],
         ),
-        Text(
-          '+84 ${_userList[0].phone}',
-          style: kBodyStyle.copyWith(
-              color: AppColors.secondTextColor, fontSize: 12),
-        ),
-      ],
-    );
-  }
-
-  Widget _bodyInfoUser() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(defaultPadding),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _ItemProfile(
-              onTap: () => context.push(AppRoute.editProfile),
-              svgPath: AppAsset.user,
-              title: AppString.editProfile),
-          _ItemProfile(
-              svgPath: AppAsset.lock,
-              title: AppString.changePassword,
-              onTap: () => context.push(AppRoute.changePassword)),
-          _buildItemPrint(context),
-          _ItemProfile(
-              svgPath: AppAsset.logout,
-              title: 'Đăng xuất',
-              onTap: () => _showDialogLogout()),
-        ],
       ),
     );
   }
@@ -81,6 +48,7 @@ extension _ProfileWidget on _ProfileScreenState {
       title: 'Đăng xuất nhó?',
       description: 'Ấy có muốn đăng xuất không?',
       cancelText: 'Thôi',
+      haveCancelButton: true,
       confirmText: 'Bái bai',
       onPressedComfirm: () {
         context.read<AuthBloc>().add(AuthLogoutStarted());

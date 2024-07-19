@@ -9,6 +9,7 @@ class GridItemFood extends StatelessWidget {
   final double aspectRatio;
   final int crossAxisCount;
   final Axis? scrollDirection;
+  final void Function()? addToCartOnTap;
 
   const GridItemFood({
     super.key,
@@ -17,6 +18,7 @@ class GridItemFood extends StatelessWidget {
     required this.aspectRatio,
     required this.crossAxisCount,
     this.scrollDirection,
+    this.addToCartOnTap,
   });
 
   Widget _buildGridItemFood(
@@ -34,7 +36,8 @@ class GridItemFood extends StatelessWidget {
             mainAxisSpacing: defaultPadding / 2,
             crossAxisSpacing: defaultPadding / 2,
             crossAxisCount: crossAxisCount),
-        itemBuilder: (context, index) => CommonItemFood(food: foods[index]));
+        itemBuilder: (context, index) =>
+            CommonItemFood(addToCartOnTap: addToCartOnTap, food: foods[index]));
   }
 
   @override

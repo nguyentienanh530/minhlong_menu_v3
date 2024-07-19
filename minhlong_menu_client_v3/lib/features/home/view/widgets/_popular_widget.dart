@@ -1,7 +1,7 @@
 part of '../screens/home_view.dart';
 
 extension _PopularWidget on _HomeViewState {
-  Widget _popularGridView() {
+  Widget _popularGridView(OrderModel order, TableModel table) {
     return Column(
       children: [
         _buildTitle(
@@ -20,10 +20,22 @@ extension _PopularWidget on _HomeViewState {
               FoodFetchInProgress() => const Loading(),
               FoodFetchEmpty() => const EmptyWidget(),
               FoodFetchFailure() => ErrWidget(error: foodState.message),
-              FoodFetchSuccess() => GridItemFood(
-                  crossAxisCount: 2,
-                  foods: foodState.food.foodItems,
-                  aspectRatio: 0.8,
+              FoodFetchSuccess() => GridView.builder(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: defaultPadding / 2),
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: foodState.food.foodItems.length,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      childAspectRatio: 9 / 11,
+                      mainAxisSpacing: defaultPadding / 2,
+                      crossAxisSpacing: defaultPadding / 2,
+                      crossAxisCount: 2),
+                  itemBuilder: (context, index) => CommonItemFood(
+                    addToCartOnTap: () => _handleOnTapAddToCart(
+                        order, table, foodState.food.foodItems[index]),
+                    food: foodState.food.foodItems[index],
+                  ),
                 ),
               _ => const SizedBox(),
             });
@@ -62,32 +74,5 @@ extension _PopularWidget on _HomeViewState {
                     size: 15, color: Colors.red)
               ]))
         ]));
-  }
-
-  Widget _buildFloatingButton() {
-    return FloatingActionButton(
-      backgroundColor: AppColors.themeColor,
-      onPressed: () => context.push(AppRoute.carts),
-      child: Builder(builder: (context) {
-        var cartState = context.watch<CartCubit>().state;
-        return Padding(
-          padding: const EdgeInsets.all(5),
-          child: badges.Badge(
-            badgeStyle:
-                const badges.BadgeStyle(badgeColor: AppColors.islamicGreen),
-            position: badges.BadgePosition.topEnd(top: -14),
-            badgeContent: Text(cartState.orderDetail.length.toString(),
-                style: kBodyWhiteStyle),
-            child: SvgPicture.asset(
-              AppAsset.shoppingCart,
-              height: double.infinity,
-              fit: BoxFit.cover,
-              colorFilter:
-                  const ColorFilter.mode(AppColors.white, BlendMode.srcIn),
-            ),
-          ),
-        );
-      }),
-    );
   }
 }

@@ -12,7 +12,8 @@ class AppDialog {
       String? title,
       String? description,
       String? cancelText,
-      String? confirmText}) {
+      String? confirmText,
+      bool haveCancelButton = false}) {
     return showDialog(
       barrierDismissible: false,
       context: context,
@@ -57,6 +58,26 @@ class AppDialog {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    haveCancelButton
+                        ? Expanded(
+                            child: OutlinedButton(
+                              style: OutlinedButton.styleFrom(
+                                side: const BorderSide(
+                                  color: AppColors.themeColor,
+                                ),
+                              ),
+                              onPressed: () => Navigator.pop(context),
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Text(
+                                  cancelText ?? "Huỷ",
+                                  style: kButtonStyle,
+                                ),
+                              ),
+                            ),
+                          )
+                        : const SizedBox(),
+                    haveCancelButton ? 10.horizontalSpace : 0.horizontalSpace,
                     Expanded(
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(

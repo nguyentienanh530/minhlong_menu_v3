@@ -1,6 +1,6 @@
 part of '../screen/edit_profile_screen.dart';
 
-extension _EditProfileWidget on _EditProfileScreenState {
+extension _EditProfileWidget on _EditProfileViewState {
   Widget _imageEditProfileWidget() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
@@ -9,27 +9,41 @@ extension _EditProfileWidget on _EditProfileScreenState {
         Stack(
           children: [
             Container(
-              padding: const EdgeInsets.all(2),
-              width: 0.25 * context.sizeDevice.height,
-              height: 0.25 * context.sizeDevice.height,
-              decoration: BoxDecoration(
-                color: AppColors.white,
-                shape: BoxShape.circle,
-                border: Border.all(color: AppColors.smokeWhite, width: 6),
-              ),
-              child: Container(
-                clipBehavior: Clip.antiAlias,
-                decoration: const BoxDecoration(
+                padding: const EdgeInsets.all(2),
+                width: 0.25 * context.sizeDevice.height,
+                height: 0.25 * context.sizeDevice.height,
+                decoration: BoxDecoration(
+                  color: AppColors.white,
                   shape: BoxShape.circle,
+                  border: Border.all(color: AppColors.smokeWhite, width: 6),
                 ),
-                child: CachedNetworkImage(
-                  imageUrl: _userList[0].image!,
-                  errorWidget: errorBuilderForImage,
-                  placeholder: (context, url) => const Loading(),
-                ),
-              ),
-            ),
-            Positioned(bottom: 10, right: 10, child: _uploadImage())
+                child: ValueListenableBuilder(
+                  valueListenable: _imageFile,
+                  builder: (context, _, __) {
+                    return Container(
+                      clipBehavior: Clip.antiAlias,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                      ),
+                      child: _imageFile.value.path.isEmpty
+                          ? CachedNetworkImage(
+                              imageUrl: '${ApiConfig.host}$_imageUrl',
+                              errorWidget: errorBuilderForImage,
+                              placeholder: (context, url) => const Loading(),
+                              fit: BoxFit.cover,
+                            )
+                          : Image.file(
+                              _imageFile.value,
+                              fit: BoxFit.cover,
+                            ),
+                    );
+                  },
+                )),
+            Positioned(
+              bottom: 10,
+              right: 35,
+              child: _uploadImage(),
+            )
           ],
         ),
         10.verticalSpace,
@@ -39,15 +53,20 @@ extension _EditProfileWidget on _EditProfileScreenState {
 
   Widget _uploadImage() {
     return InkWell(
-      borderRadius: BorderRadius.circular(100),
-      onTap: () {},
+      customBorder: const CircleBorder(),
+      onTap: () async => Ultils.pickImage().then((value) {
+        if (value != null) {
+          _imageFile.value = value;
+        }
+      }),
       child: Card(
+        shape: const CircleBorder(),
         elevation: 3,
         child: Container(
           padding: const EdgeInsets.all(5),
           child: const Icon(
-            Icons.camera_enhance,
-            size: 16,
+            Icons.photo_camera,
+            size: 20,
             color: AppColors.secondTextColor,
           ),
         ),
@@ -56,20 +75,47 @@ extension _EditProfileWidget on _EditProfileScreenState {
   }
 
   Widget _bodyEditInfoUser() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(defaultPadding),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _textProfile(AppString.fullName),
-          TextBoxProfile(controllers: _nameController),
-          10.verticalSpace,
-          _textProfile(AppString.phoneNumber),
-          TextBoxProfile(controllers: _phoneController),
-          20.verticalSpace,
-          _buttonEditProfile(),
-        ],
+    return Card(
+      elevation: 4,
+      margin: EdgeInsets.zero,
+      shadowColor: AppColors.lavender,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(defaultBorderRadius * 2),
+          topRight: Radius.circular(defaultBorderRadius * 2),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+            horizontal: defaultPadding, vertical: defaultPadding * 2),
+        child: Form(
+          key: AppKeys.updateUserKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextBoxProfile(
+                  controllers: _nameController,
+                  labelText: AppString.fullName,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Vui lòng nhập tên';
+                    }
+                    return null;
+                  }),
+              20.verticalSpace,
+              TextBoxProfile(
+                  controllers: _phoneController,
+                  labelText: '${AppString.phoneNumber} *',
+                  validator: (value) {
+                    return AppRes.validatePhoneNumber(_phoneController.text)
+                        ? null
+                        : 'Vui lòng nhập số điện thoại';
+                  }),
+              20.verticalSpace,
+              _buttonEditProfile(),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -80,18 +126,28 @@ extension _EditProfileWidget on _EditProfileScreenState {
       child: ElevatedButton(
           style:
               ElevatedButton.styleFrom(backgroundColor: AppColors.themeColor),
-          onPressed: () {},
+          onPressed: () async {
+            if (AppKeys.updateUserKey.currentState!.validate()) {
+              if (_imageFile.value.path.isNotEmpty) {
+                _imageUrl = await Ultils.uploadImage(
+                        file: _imageFile.value,
+                        path: 'users',
+                        loading: _loading) ??
+                    '';
+              }
+              _userModel = _userModel.copyWith(
+                fullName: _nameController.text,
+                phoneNumber: int.parse(_phoneController.text),
+                image: _imageUrl,
+              );
+              _updateUser(_userModel);
+            }
+          },
           child: Text(
             AppString.edit,
             style: kBodyWhiteStyle,
           )),
     );
-  }
-
-  Widget _textProfile(String stringText) {
-    return Text(stringText,
-        style: kBodyStyle.copyWith(
-            fontWeight: FontWeight.bold, color: AppColors.secondTextColor));
   }
 }
 
@@ -100,30 +156,21 @@ class TextBoxProfile extends StatelessWidget {
     super.key,
     required this.controllers,
     this.labelText,
-    this.labelStyle,
+    this.validator,
   });
   final TextEditingController controllers;
   final String? labelText;
-  final TextStyle? labelStyle;
+  final String? Function(String?)? validator;
 
   @override
   Widget build(BuildContext context) {
     return CommonTextField(
-      contentPadding: const EdgeInsets.symmetric(
-          horizontal: defaultPadding, vertical: defaultPadding - 6),
       onChanged: (p0) {},
       labelText: labelText,
-      labelStyle: labelStyle,
+      labelStyle: kBodyStyle.copyWith(color: AppColors.secondTextColor),
       controller: controllers,
-      style: kBodyStyle.copyWith(
-          color: AppColors.black, fontWeight: FontWeight.bold, fontSize: 18),
-      enabledBorder: const OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(defaultPadding - 4)),
-        borderSide: BorderSide(color: AppColors.secondTextColor),
-      ),
-      focusedBorder: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(defaultPadding - 4)),
-          borderSide: BorderSide(color: AppColors.themeColor)),
+      style: kBodyStyle,
+      validator: validator,
     );
   }
 }

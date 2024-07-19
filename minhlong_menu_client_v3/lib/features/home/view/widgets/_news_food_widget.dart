@@ -1,7 +1,7 @@
 part of '../screens/home_view.dart';
 
 extension _NewsFoodWidget on _HomeViewState {
-  Widget _buildListNewFood() {
+  Widget _buildListNewFood(OrderModel orderModel, TableModel table) {
     return BlocProvider(
       create: (context) =>
           FoodBloc(foodRepository: context.read<FoodRepository>())
@@ -26,6 +26,10 @@ extension _NewsFoodWidget on _HomeViewState {
                       itemCount: foodState.food.foodItems.length,
                       itemBuilder: (context, index) {
                         return ItemFoodView(
+                            addToCartOnTap: () {
+                              _handleOnTapAddToCart(orderModel, table,
+                                  foodState.food.foodItems[index]);
+                            },
                             food: foodState.food.foodItems[index],
                             height: sizeState.height ?? 0.0,
                             width: sizeState.width ?? 0.0);

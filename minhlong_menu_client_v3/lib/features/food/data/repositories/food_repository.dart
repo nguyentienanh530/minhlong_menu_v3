@@ -11,7 +11,7 @@ class FoodRepository {
   FoodRepository({required FoodApi foodApi}) : _foodApi = foodApi;
 
   Future<Result<FoodModel>> getFoods(
-      {int? page, int? limit, required String property}) async {
+      {int? page, int? limit, String? property}) async {
     FoodModel foods = FoodModel();
     try {
       foods =
