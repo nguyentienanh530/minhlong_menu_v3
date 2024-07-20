@@ -30,4 +30,5 @@ class AppAsset {
   static const String banner = 'assets/svg/banner.svg';
   static const String logo = 'assets/image/logo.png';
   static const String user = 'assets/svg/user.svg';
+  static const String warningAnimation = 'assets/animations/warning.json';
 }

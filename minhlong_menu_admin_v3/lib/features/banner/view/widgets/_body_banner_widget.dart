@@ -266,17 +266,27 @@ extension _BodyBannerWidget on _BannerViewState {
               alignment: Alignment.center,
               child: CommonIconButton(
                 onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => AppDialog(
-                      title: 'Xóa Banner',
-                      description: 'Xóa ${bannerItem.image}?',
-                      confirmText: 'Xác nhận',
-                      onTap: () {
-                        _handleDeleteBanner(tableID: bannerItem.id);
-                      },
-                    ),
+                  AppDialog.showWarningDialog(
+                    context,
+                    title: 'Xóa Banner',
+                    description: 'Xóa ${bannerItem.image}?',
+                    confirmText: 'Xác nhận',
+                    haveCancelButton: true,
+                    onPressedComfirm: () {
+                      _handleDeleteBanner(tableID: bannerItem.id);
+                    },
                   );
+                  // showDialog(
+                  //   context: context,
+                  //   builder: (context) => AppDialog(
+                  //     title: 'Xóa Banner',
+                  //     description: 'Xóa ${bannerItem.image}?',
+                  //     confirmText: 'Xác nhận',
+                  //     onTap: () {
+                  //       _handleDeleteBanner(tableID: bannerItem.id);
+                  //     },
+                  //   ),
+                  // );
                 },
                 icon: Icons.delete_outline,
                 color: AppColors.red,

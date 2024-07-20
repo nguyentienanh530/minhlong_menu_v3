@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -5,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 import '../common/network/dio_client.dart';
 import 'api_config.dart';
@@ -79,5 +81,43 @@ class Ultils {
     double discountedPrice = foodPrice - discountAmount;
 
     return isDiscount ? discountedPrice : foodPrice;
+  }
+
+  static void sendSocket(
+      WebSocketChannel channel, String event, dynamic payload) {
+    if (channel.closeCode != null) {
+      debugPrint('Not connected');
+      return;
+    }
+
+    Map<String, dynamic> data = {
+      'event': event,
+      'payload': payload,
+    };
+    channel.sink.add(jsonEncode(data));
+  }
+
+  static void joinRoom(WebSocketChannel channel, dynamic room) {
+    if (channel.closeCode != null) {
+      debugPrint('Not connected');
+      return;
+    }
+    Map<String, dynamic> data = {
+      'event': 'join-room',
+      'room': room,
+    };
+    channel.sink.add(jsonEncode(data));
+  }
+
+  static void leaveRoom(WebSocketChannel channel, dynamic room) {
+    if (channel.closeCode != null) {
+      debugPrint('Not connected');
+      return;
+    }
+    Map<String, dynamic> data = {
+      'event': 'left-room',
+      'room': room,
+    };
+    channel.sink.add(jsonEncode(data));
   }
 }

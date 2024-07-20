@@ -248,17 +248,23 @@ extension _FoodBodyWidget on _DinnerTableViewState {
               alignment: Alignment.center,
               child: CommonIconButton(
                 onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => AppDialog(
+                  AppDialog.showWarningDialog(context,
                       title: 'Xóa bàn',
                       description: 'Xóa bàn ${tableItem.name}?',
-                      confirmText: 'Xác nhận',
-                      onTap: () {
-                        _handleDeleteDinnerTable(tableID: tableItem.id);
-                      },
-                    ),
-                  );
+                      confirmText: 'Xác nhận', onPressedComfirm: () {
+                    _handleDeleteDinnerTable(tableID: tableItem.id);
+                  });
+                  // showDialog(
+                  //   context: context,
+                  //   builder: (context) => AppDialog(
+                  //     title: 'Xóa bàn',
+                  //     description: 'Xóa bàn ${tableItem.name}?',
+                  //     confirmText: 'Xác nhận',
+                  //     onTap: () {
+                  //       _handleDeleteDinnerTable(tableID: tableItem.id);
+                  //     },
+                  //   ),
+                  // );
                 },
                 icon: Icons.delete_outline,
                 color: AppColors.red,

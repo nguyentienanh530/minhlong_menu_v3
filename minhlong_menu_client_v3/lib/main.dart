@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:minhlong_menu_client_v3/Routes/app_route.dart';
 import 'package:minhlong_menu_client_v3/features/auth/bloc/auth_bloc.dart';
+import 'package:minhlong_menu_client_v3/features/auth/cubit/access_token_cubit.dart';
 import 'package:minhlong_menu_client_v3/features/auth/data/auth_local_datasource/auth_local_datasource.dart';
 import 'package:minhlong_menu_client_v3/features/auth/data/provider/remote/auth_api.dart';
 import 'package:minhlong_menu_client_v3/features/auth/data/respositories/auth_repository.dart';
@@ -101,6 +102,9 @@ class _MainAppState extends State<MainApp> {
           BlocProvider(
             create: (context) =>
                 UserBloc(userRepository: context.read<UserRepository>()),
+          ),
+          BlocProvider(
+            create: (context) => AccessTokenCubit(),
           )
         ],
         child: const AppContent(),
@@ -130,6 +134,9 @@ class _AppContentState extends State<AppContent> {
     final state = context.watch<AuthBloc>().state;
     if (state is AuthInitial) {
       return Container();
+    }
+    if (state is AuthAuthenticateSuccess) {
+      context.read<AccessTokenCubit>().setAccessToken(state.accessToken);
     }
 
     return ScreenUtilInit(

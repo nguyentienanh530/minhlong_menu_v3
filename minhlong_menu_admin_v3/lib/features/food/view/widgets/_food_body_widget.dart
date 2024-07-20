@@ -296,17 +296,23 @@ extension _FoodBodyWidget on _FoodViewState {
               alignment: Alignment.center,
               child: CommonIconButton(
                 onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => AppDialog(
+                  AppDialog.showWarningDialog(context,
                       title: 'Xóa món',
                       description: 'Xóa món ${foodItem.name}?',
-                      confirmText: 'Xác nhận',
-                      onTap: () {
-                        _handleDeleteFood(orderID: foodItem.id);
-                      },
-                    ),
-                  );
+                      confirmText: 'Xác nhận', onPressedComfirm: () {
+                    _handleDeleteFood(orderID: foodItem.id);
+                  });
+                  // showDialog(
+                  //   context: context,
+                  //   builder: (context) => AppDialog(
+                  //     title: 'Xóa món',
+                  //     description: 'Xóa món ${foodItem.name}?',
+                  //     confirmText: 'Xác nhận',
+                  //     onTap: () {
+                  //       _handleDeleteFood(orderID: foodItem.id);
+                  //     },
+                  //   ),
+                  // );
                 },
                 icon: Icons.delete_outline,
                 color: AppColors.red,

@@ -117,4 +117,28 @@ class Ultils {
     };
     channel.sink.add(jsonEncode(data));
   }
+
+  static void joinRoom(WebSocketChannel channel, dynamic room) {
+    if (channel.closeCode != null) {
+      debugPrint('Not connected');
+      return;
+    }
+    Map<String, dynamic> data = {
+      'event': 'join-room',
+      'room': room,
+    };
+    channel.sink.add(jsonEncode(data));
+  }
+
+  static void leaveRoom(WebSocketChannel channel, dynamic room) {
+    if (channel.closeCode != null) {
+      debugPrint('Not connected');
+      return;
+    }
+    Map<String, dynamic> data = {
+      'event': 'left-room',
+      'room': room,
+    };
+    channel.sink.add(jsonEncode(data));
+  }
 }

@@ -12,8 +12,11 @@ class FoodApi {
   FoodApi(Dio dio) : _dio = dio;
 
   Future<FoodModel> getFoods({required int page, limit}) async {
-    final response = await _dio
-        .get(ApiConfig.foods, queryParameters: {'page': page, 'limit': limit});
+    final response = await _dio.get(ApiConfig.foods, queryParameters: {
+      'page': page,
+      'limit': limit,
+      'property': 'created_at'
+    });
     log('food: ${response.data}');
     return FoodModel.fromJson(response.data['data']);
   }

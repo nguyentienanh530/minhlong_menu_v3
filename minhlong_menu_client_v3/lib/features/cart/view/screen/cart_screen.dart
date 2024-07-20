@@ -13,12 +13,15 @@ import 'package:minhlong_menu_client_v3/common/widget/loading.dart';
 import 'package:minhlong_menu_client_v3/core/app_colors.dart';
 import 'package:minhlong_menu_client_v3/core/app_const.dart';
 import 'package:minhlong_menu_client_v3/core/app_style.dart';
+import 'package:minhlong_menu_client_v3/features/auth/cubit/access_token_cubit.dart';
 import 'package:minhlong_menu_client_v3/features/cart/cubit/cart_cubit.dart';
 import 'package:minhlong_menu_client_v3/features/order/data/model/order_detail.dart';
 import 'package:minhlong_menu_client_v3/features/order/data/model/order_model.dart';
 import 'package:minhlong_menu_client_v3/features/order/data/repositories/order_repository.dart';
 import 'package:minhlong_menu_client_v3/features/table/cubit/table_cubit.dart';
 import 'package:minhlong_menu_client_v3/features/table/data/model/table_model.dart';
+import 'package:web_socket_channel/io.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 import '../../../../Routes/app_route.dart';
 import '../../../../common/widget/no_product.dart';
@@ -27,6 +30,8 @@ import '../../../../core/app_res.dart';
 import '../../../../core/app_string.dart';
 import '../../../../core/utils.dart';
 import '../../../order/bloc/order_bloc.dart';
+import '../../../user/bloc/user_bloc.dart';
+import '../../../user/data/model/user_model.dart';
 
 part '../widget/_item_cart_widget.dart';
 
@@ -35,26 +40,75 @@ class CartScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var accessToken = context.watch<AccessTokenCubit>().state;
     return BlocProvider(
       create: (context) =>
           OrderBloc(orderRepository: context.read<OrderRepository>()),
-      child: const CartView(),
+      child: CartView(
+        accessToken: accessToken.accessToken,
+      ),
     );
   }
 }
 
 class CartView extends StatefulWidget {
-  const CartView({super.key});
+  const CartView({super.key, required this.accessToken});
+  final String accessToken;
 
   @override
   State<CartView> createState() => _CartViewState();
 }
 
 class _CartViewState extends State<CartView> {
+  late final WebSocketChannel _tableChannel;
+  late final WebSocketChannel _orderChannel;
+  var _isFirstSendSocket = false;
+  late UserModel _user;
+  @override
+  void initState() {
+    super.initState();
+    _tableChannel = IOWebSocketChannel.connect(
+        Uri.parse(ApiConfig.tablesSocketUrl),
+        headers: {
+          'Authorization': 'Bearer ${widget.accessToken}',
+        });
+    _orderChannel = IOWebSocketChannel.connect(
+        Uri.parse(ApiConfig.ordersSocketUrl),
+        headers: {
+          'Authorization': 'Bearer ${widget.accessToken}',
+        });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    disconnect();
+  }
+
+  void disconnect() {
+    if (_tableChannel.closeCode != null || _tableChannel.closeCode != null) {
+      debugPrint('Not connected');
+      return;
+    }
+    Ultils.leaveRoom(_tableChannel, 'tables-${_user.id}');
+    Ultils.leaveRoom(_orderChannel, 'orders-${_user.id}');
+    _tableChannel.sink.close();
+    _orderChannel.sink.close();
+  }
+
   @override
   Widget build(BuildContext context) {
     var cartState = context.watch<CartCubit>().state;
     var tableState = context.watch<TableCubit>().state;
+    var user = context.watch<UserBloc>().state;
+    if (user is UserFecthSuccess) {
+      _user = user.userModel;
+      if (!_isFirstSendSocket) {
+        Ultils.joinRoom(_tableChannel, 'tables-${_user.id}');
+        Ultils.joinRoom(_orderChannel, 'orders-${_user.id}');
+        _isFirstSendSocket = true;
+      }
+    }
     return Scaffold(
       // backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -109,6 +163,10 @@ class _CartViewState extends State<CartView> {
                   case OrderCreateSuccess():
                     context.read<CartCubit>().clearCart();
                     context.read<TableCubit>().resetTable();
+
+                    Ultils.sendSocket(_tableChannel, 'tables', _user.id);
+                    Ultils.sendSocket(_orderChannel, 'orders',
+                        {'user_id': _user.id, 'table_id': 0});
                     context.go(AppRoute.createOrderSuccess);
 
                     break;

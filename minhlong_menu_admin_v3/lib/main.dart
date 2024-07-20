@@ -6,12 +6,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:minhlong_menu_admin_v3/Routes/app_route.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/bloc/auth_bloc.dart';
+import 'package:minhlong_menu_admin_v3/features/auth/cubit/access_token_cubit.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/data/auth_local_datasource/auth_local_datasource.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/data/provider/remote/auth_api.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/data/repositories/auth_repository.dart';
 import 'package:minhlong_menu_admin_v3/features/banner/bloc/banner_bloc.dart';
 import 'package:minhlong_menu_admin_v3/features/category/bloc/category_bloc.dart';
 import 'package:minhlong_menu_admin_v3/features/dinner_table/bloc/dinner_table_bloc.dart';
+import 'package:minhlong_menu_admin_v3/features/order/bloc/order_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'bloc_observer.dart';
@@ -31,7 +33,6 @@ import 'features/food/bloc/search_food_bloc/search_food_bloc.dart';
 import 'features/food/data/provider/food_api.dart';
 import 'features/food/data/repositories/food_repository.dart';
 import 'features/home/cubit/table_index_selected_cubit.dart';
-import 'features/order/cubit/order_socket_cubit.dart';
 import 'features/order/data/provider/order_api.dart';
 import 'features/order/data/repositories/order_repository.dart';
 import 'features/user/bloc/user_bloc.dart';
@@ -121,9 +122,6 @@ class MainApp extends StatelessWidget {
             create: (context) => TableIndexSelectedCubit(),
           ),
           BlocProvider(
-            create: (context) => OrderSocketCubit(),
-          ),
-          BlocProvider(
             create: (context) => FoodBloc(context.read<FoodRepository>()),
           ),
           BlocProvider(
@@ -150,6 +148,14 @@ class MainApp extends StatelessWidget {
             create: (context) => UserBloc(
               userRepository: context.read<UserRepository>(),
             ),
+          ),
+          BlocProvider(
+            create: (context) => OrderBloc(
+              context.read<OrderRepository>(),
+            ),
+          ),
+          BlocProvider(
+            create: (context) => AccessTokenCubit(),
           ),
         ],
         child: const AppContent(),
@@ -180,6 +186,9 @@ class _AppContentState extends State<AppContent> {
     final state = context.watch<AuthBloc>().state;
     if (state is AuthInitial) {
       return Container();
+    }
+    if (state is AuthAuthenticateSuccess) {
+      context.read<AccessTokenCubit>().setAccessToken(state.accessToken);
     }
 
     return ScreenUtilInit(

@@ -1,12 +1,74 @@
 part of '../screens/dashboard_screen.dart';
 
 extension _OrdersOnTableWidget on _DashboardViewState {
-  Widget _buildOrdersOnTable(List<OrderItem> orderList) {
-    return orderList.isEmpty
-        ? const Center(child: Text('No order'))
-        : StaggeredGrid.count(
-            crossAxisCount: _gridCount(),
-            children: orderList.map((e) => _buildItem(e)).toList());
+  Widget _buildOrdersOnTable() {
+    // return orderList.isEmpty
+    //     ? const Center(child: Text('No order'))
+    //     : StaggeredGrid.count(
+    //         crossAxisCount: _gridCount(),
+    //         children: orderList.map((e) => _buildItem(e)).toList());
+    return StreamBuilder(
+        stream: _orderChannel.stream,
+        builder: (context, snapshot) {
+          var tableIndexState = context.watch<TableIndexSelectedCubit>().state;
+          switch (snapshot.connectionState) {
+            case ConnectionState.waiting:
+              return const Loading();
+            default:
+              if (snapshot.hasError) {
+                return const ErrWidget(error: 'Error');
+              } else {
+                if (!snapshot.hasData) {
+                  return const EmptyWidget();
+                } else {
+                  List<OrderItem> orders = <OrderItem>[];
+                  List<OrderItem> orderList = <OrderItem>[];
+                  var res = jsonDecode(snapshot.data);
+
+                  String event = res['event'].toString();
+                  if (event.contains('orders-ws')) {
+                    var data = jsonDecode(res['payload']);
+                    print('data: $data');
+                    orders = List<OrderItem>.from(
+                      data.map(
+                        (x) => OrderItem.fromJson(x),
+                      ),
+                    );
+                    if (tableIndexState != 0) {
+                      for (var order in orders) {
+                        if (order.tableId == tableIndexState) {
+                          orderList.add(order);
+                        }
+                      }
+                    } else {
+                      orderList = orders;
+                    }
+
+                    return orderList.isEmpty
+                        ? SizedBox(
+                            height: 200,
+                            width: double.infinity,
+                            child: Center(
+                              child: Text(
+                                'không có đơn nào!',
+                                style: kBodyStyle.copyWith(
+                                  color: AppColors.secondTextColor,
+                                ),
+                              ),
+                            ),
+                          )
+                        : StaggeredGrid.count(
+                            crossAxisCount: _gridCount(),
+                            children:
+                                orderList.map((e) => _buildItem(e)).toList(),
+                          );
+                  } else {
+                    return const SizedBox();
+                  }
+                }
+              }
+          }
+        });
   }
 
   int _gridCount() {
@@ -22,7 +84,7 @@ extension _OrdersOnTableWidget on _DashboardViewState {
   Widget _buildItem(OrderItem order) {
     return FittedBox(
       child: Card(
-        elevation: 4,
+        elevation: 10,
         shadowColor: AppColors.lavender,
         child: Container(
           width: 270,
@@ -77,17 +139,33 @@ extension _OrdersOnTableWidget on _DashboardViewState {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             CommonIconButton(
-              onTap: () {},
+              onTap: () {
+                AppDialog.showWarningDialog(context,
+                    title: 'Hủy đơn',
+                    description: 'Bạn có muốn huỷ đơn ${order.id}?',
+                    onPressedComfirm: () {
+                  order = order.copyWith(status: 'cancel');
+                  _handleUpdateOrder(order);
+                });
+              },
               icon: Icons.clear_rounded,
               color: Colors.red,
-              tooltip: 'Xóa đơn',
+              tooltip: 'Hủy đơn',
             ),
             const SizedBox(
               width: defaultPadding / 2,
             ),
             CommonIconButton(
               tooltip: 'Xác nhận đơn',
-              onTap: () {},
+              onTap: () {
+                AppDialog.showWarningDialog(context,
+                    title: 'Xác nhận đơn!',
+                    description: 'Chuyển đơn ${order.id} sang đang làm?',
+                    onPressedComfirm: () {
+                  order = order.copyWith(status: 'processing');
+                  _handleUpdateOrder(order);
+                });
+              },
               icon: Icons.check,
               color: AppColors.islamicGreen,
             ),
@@ -95,6 +173,11 @@ extension _OrdersOnTableWidget on _DashboardViewState {
         ),
       ],
     );
+  }
+
+  void _handleUpdateOrder(OrderItem orderItem) {
+    context.read<OrderBloc>().add(OrderUpdated(order: orderItem));
+    context.pop();
   }
 
   Widget _buildHeader(BuildContext context, OrderItem order) {

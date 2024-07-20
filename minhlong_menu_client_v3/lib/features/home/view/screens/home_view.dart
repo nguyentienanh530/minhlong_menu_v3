@@ -63,7 +63,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
   final _cartKey = GlobalKey();
   var _foodPosition = Offset.zero;
   var _path = Path();
-  final ScrollController _scrollController = ScrollController();
+
   var cartPosition = Offset.zero;
 
   var cartBottomRight = Offset.zero;
@@ -77,13 +77,6 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
       duration: const Duration(milliseconds: 500),
     );
     _managerList = AddToCardAnimationManager(lenght: 10);
-    _scrollController.addListener(() {
-      cartPosition = (_cartKey.currentContext!.findRenderObject() as RenderBox)
-          .localToGlobal(Offset.zero);
-      cartBottomRight =
-          _cartKey.currentContext!.size!.bottomRight(cartPosition);
-      print(cartBottomRight);
-    });
   }
 
   @override
@@ -113,7 +106,6 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
       floatingActionButton: _buildFloatingButton(cartState),
       body: userState is UserFecthSuccess
           ? CustomScrollView(
-              controller: _scrollController,
               physics: const BouncingScrollPhysics(),
               slivers: [
                 SliverAppBar(

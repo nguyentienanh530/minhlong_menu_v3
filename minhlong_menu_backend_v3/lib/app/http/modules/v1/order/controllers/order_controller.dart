@@ -102,9 +102,16 @@ class OrderController extends Controller {
         return AppResponse().error(
             statusCode: HttpStatus.notFound, message: 'table id not found');
       }
+      final userID = Auth().id();
+      if (userID == null) {
+        return AppResponse().error(
+          statusCode: HttpStatus.unauthorized,
+          message: 'unauthorized',
+        );
+      }
 
-      var orders =
-          await _orderRepository.getNewOrdersByTable(int.parse(tableID));
+      var orders = await _orderRepository.getNewOrdersByTable(
+          tableID: int.parse(tableID), userID: userID);
 
       List<Map<String, dynamic>> formattedOrders = [];
 

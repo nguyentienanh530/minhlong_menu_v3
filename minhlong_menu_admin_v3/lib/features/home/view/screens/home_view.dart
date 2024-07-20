@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_admin_v3/core/api_config.dart';
 import 'package:minhlong_menu_admin_v3/core/extensions.dart';
+import 'package:minhlong_menu_admin_v3/features/auth/cubit/access_token_cubit.dart';
 import 'package:minhlong_menu_admin_v3/features/banner/view/screens/banner_screen.dart';
 import 'package:minhlong_menu_admin_v3/features/category/view/screens/category_screen.dart';
 import 'package:minhlong_menu_admin_v3/features/dashboard/view/screens/dashboard_screen.dart';
@@ -41,6 +42,7 @@ class HomeViewState extends State<HomeView>
 
   final SideMenuController _sideMenuCtrl = SideMenuController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   UserModel _userModel = UserModel();
 
   final _listIconMenu = [
@@ -106,11 +108,8 @@ class HomeViewState extends State<HomeView>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    var accessToken = context.watch<AccessTokenCubit>().state;
 
-    return _buildDesktopWidget();
-  }
-
-  Scaffold _buildDesktopWidget() {
     return Scaffold(
       appBar: context.isMobile ? _buildAppBar() : null,
       key: _scaffoldKey,
@@ -168,7 +167,10 @@ class HomeViewState extends State<HomeView>
                   Expanded(
                     child: PageView.builder(
                       itemCount: <Widget>[
-                        DashboardScreen(userModel: _userModel),
+                        DashboardScreen(
+                          userModel: _userModel,
+                          accessToken: accessToken.accessToken,
+                        ),
                         const OrderScreen(),
                         const FoodScreen(),
                         const DinnerTableScreen(),
@@ -179,7 +181,10 @@ class HomeViewState extends State<HomeView>
                       physics: const NeverScrollableScrollPhysics(),
                       itemBuilder: (context, index) {
                         return <Widget>[
-                          DashboardScreen(userModel: _userModel),
+                          DashboardScreen(
+                            userModel: _userModel,
+                            accessToken: accessToken.accessToken,
+                          ),
                           const OrderScreen(),
                           const FoodScreen(),
                           const DinnerTableScreen(),
@@ -201,17 +206,17 @@ class HomeViewState extends State<HomeView>
   }
 
   void _showDialogLogout() {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AppDialog(
-            title: 'Đăng xuất?',
-            description: 'Bạn có muốn đăng xuất?',
-            onTap: () {
-              context.read<AuthBloc>().add(AuthLogoutStarted());
-            },
-          );
-        });
+    AppDialog.showErrorDialog(
+      context,
+      title: 'Đăng xuất nhó?',
+      description: 'Ấy có muốn đăng xuất không?',
+      cancelText: 'Thôi',
+      haveCancelButton: true,
+      confirmText: 'Bái bai',
+      onPressedComfirm: () {
+        context.read<AuthBloc>().add(AuthLogoutStarted());
+      },
+    );
   }
 
   _buildAppBar() {

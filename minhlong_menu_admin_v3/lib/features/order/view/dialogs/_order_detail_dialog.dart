@@ -94,19 +94,14 @@ extension _OrderDetailDialog on _OrderViewState {
               child: _buttonAction(
                 title: 'Huỷ đơn',
                 onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => AppDialog(
+                  AppDialog.showWarningDialog(context,
                       title: 'Huỷ đơn',
                       description: 'Bạn có muốn huỷ đơn ${orderItem.id}?',
-                      confirmText: 'Xác nhận',
-                      onTap: () {
-                        orderItem = orderItem.copyWith(status: 'cancel');
+                      onPressedComfirm: () {
+                    orderItem = orderItem.copyWith(status: 'cancel');
 
-                        _handleUpdateOrder(orderItem);
-                      },
-                    ),
-                  );
+                    _handleUpdateOrder(orderItem);
+                  });
                 },
                 color: AppColors.red,
               ),
@@ -116,18 +111,13 @@ extension _OrderDetailDialog on _OrderViewState {
               child: _buttonAction(
                 title: 'Xác nhận',
                 onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => AppDialog(
+                  AppDialog.showWarningDialog(context,
                       title: 'Xác nhận đơn',
                       description: 'Chuyển đơn ${orderItem.id} sang đang làm',
-                      confirmText: 'Chuyển sang làm',
-                      onTap: () {
-                        orderItem = orderItem.copyWith(status: 'processing');
-                        _handleUpdateOrder(orderItem);
-                      },
-                    ),
-                  );
+                      onPressedComfirm: () {
+                    orderItem = orderItem.copyWith(status: 'processing');
+                    _handleUpdateOrder(orderItem);
+                  });
                 },
                 color: AppColors.blue,
               ),
@@ -143,19 +133,14 @@ extension _OrderDetailDialog on _OrderViewState {
               child: _buttonAction(
                 title: 'Hủy đơn',
                 onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => AppDialog(
+                  AppDialog.showWarningDialog(context,
                       title: 'Huỷ đơn',
                       description: 'Bạn có muốn huỷ đơn ${orderItem.id}?',
-                      confirmText: 'Xác nhận',
-                      onTap: () {
-                        orderItem = orderItem.copyWith(status: 'cancel');
+                      onPressedComfirm: () {
+                    orderItem = orderItem.copyWith(status: 'cancel');
 
-                        _handleUpdateOrder(orderItem);
-                      },
-                    ),
-                  );
+                    _handleUpdateOrder(orderItem);
+                  });
                 },
                 color: AppColors.red,
               ),
@@ -165,7 +150,15 @@ extension _OrderDetailDialog on _OrderViewState {
               child: _buttonAction(
                 title: 'Hoàn thành',
                 onTap: () {
-                  // _showOrderCancelDialog(orderItem);
+                  AppDialog.showWarningDialog(context,
+                      title: 'Hoàn thành!',
+                      description:
+                          'Đơn đã xong, chuyển đơn ${orderItem.id} tới hoàn thành?',
+                      onPressedComfirm: () {
+                    orderItem = orderItem.copyWith(status: 'completed');
+
+                    _handleUpdateOrder(orderItem);
+                  });
                 },
                 color: AppColors.blue,
               ),

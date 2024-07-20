@@ -15,7 +15,7 @@ class OrderRepository {
     return orders;
   }
 
-  Future getNewOrdersByTable(int tableID) async {
+  Future getNewOrdersByTable({int? tableID, int? userID}) async {
     if (tableID == 0) {
       return await _orders
           .query()
@@ -41,6 +41,7 @@ class OrderRepository {
           .join('order_details', 'orders.id', '=', 'order_details.order_id')
           .join('foods', 'foods.id', '=', 'order_details.food_id')
           .where('status', '=', 'new')
+          .where('orders.user_id', '=', userID)
           .get();
     } else {
       return await _orders
@@ -67,6 +68,7 @@ class OrderRepository {
           .join('order_details', 'orders.id', '=', 'order_details.order_id')
           .join('foods', 'foods.id', '=', 'order_details.food_id')
           .where('table_id', '=', tableID)
+          .where('orders.user_id', '=', userID)
           .where('status', '=', 'new')
           .get();
     }

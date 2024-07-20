@@ -8,7 +8,9 @@ class ApiConfig {
   static const Duration connectionTimeout = Duration(milliseconds: 15000);
 
   //===== Socket =====
-  static const String webSocketUrl = 'ws://192.168.1.96:8080/ws';
+  static const String socketbaseUrl = 'ws://192.168.1.96:8080';
+  static const String tablesSocketUrl = '$socketbaseUrl/tables';
+  static const String ordersSocketUrl = '$socketbaseUrl/orders';
 
   //===== User =====
   static const String user = '/user';

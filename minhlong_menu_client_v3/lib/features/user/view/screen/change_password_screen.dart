@@ -145,15 +145,12 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
       builder: (context, value, child) {
         return CommonTextField(
             maxLines: 1,
-            style: kBodyStyle,
             controller: _oldPasswordController,
             onFieldSubmitted: (p0) {},
             labelText: '${AppString.oldPassword} *',
             validator: (password) => AppRes.validatePassword(password)
                 ? null
                 : 'Mật khẩu không hợp lệ',
-            labelStyle:
-                kSubHeadingStyle.copyWith(color: AppColors.secondTextColor),
             onChanged: (value) {},
             obscureText: !value,
             prefixIcon: Icon(
@@ -176,12 +173,9 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
       builder: (context, value, child) {
         return CommonTextField(
             maxLines: 1,
-            style: kBodyStyle,
             controller: _newPasswordController,
             onFieldSubmitted: (p0) {},
             labelText: '${AppString.newPassword} *',
-            labelStyle:
-                kSubHeadingStyle.copyWith(color: AppColors.secondTextColor),
             validator: (password) => AppRes.validatePassword(password)
                 ? null
                 : 'Mật khẩu không hợp lệ',
@@ -211,8 +205,6 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
             controller: _confirmPasswordController,
             onFieldSubmitted: (p0) {},
             labelText: '${AppString.reNewPassword} *',
-            labelStyle:
-                kSubHeadingStyle.copyWith(color: AppColors.secondTextColor),
             validator: (value) {
               if (_newPasswordController.text !=
                   _confirmPasswordController.text) {

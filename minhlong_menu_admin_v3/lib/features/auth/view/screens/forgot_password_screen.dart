@@ -50,39 +50,24 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           AppDialog.showLoadingDialog(context);
         }
         if (state is AuthForgotPasswordSuccess) {
-          showDialog(
-            context: context,
-            builder: (context) => AppDialog(
-              icon: const Icon(
-                Icons.check_circle,
-                color: AppColors.islamicGreen,
-                size: 80,
-              ),
-              title: 'Thành công!',
-              confirmText: 'Về đăng nhập',
-              onTap: () {
-                context.read<AuthBloc>().add(AuthEventStarted());
-                context.pushReplacement(AppRoute.login);
-              },
-            ),
+          context.pop();
+          AppDialog.showSuccessDialog(
+            context,
+            title: 'Thành công!',
+            confirmText: 'Về đăng nhập',
+            onPressedComfirm: () {
+              context.read<AuthBloc>().add(AuthEventStarted());
+              context.pushReplacement(AppRoute.login);
+            },
           );
         }
         if (state is AuthForgotPasswordFailure) {
-          showDialog(
-            context: context,
-            builder: (context) => AppDialog(
-              icon: const Icon(
-                Icons.error_outline,
-                color: AppColors.red,
-                size: 80,
-              ),
-              title: state.message,
+          context.pop();
+          AppDialog.showErrorDialog(context,
               confirmText: 'Thử lại',
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-          );
+              description: state.message, onPressedComfirm: () {
+            Navigator.pop(context);
+          });
         }
       },
       child: Scaffold(

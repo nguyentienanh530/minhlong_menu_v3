@@ -5,7 +5,7 @@ extension IndexFood on FoodController {
     var params = request.all();
     int? page = params['page'] != null ? int.tryParse(params['page']) : null;
     int? limit = params['limit'] != null ? int.tryParse(params['limit']) : null;
-    String? property = params['property'] ?? '';
+    String? property = params['property'] ?? 'created_at';
     print('params: $params');
 
     try {
@@ -16,7 +16,7 @@ extension IndexFood on FoodController {
         return AppResponse().error(
             statusCode: HttpStatus.unauthorized, message: 'unauthorized');
       }
-      if (page == null && limit == null && property!.isEmpty) {
+      if (page == null && limit == null) {
         List<Map<String, dynamic>> foods = <Map<String, dynamic>>[];
         foods = await _foodRepository.getAll(userID: userID);
         response = {

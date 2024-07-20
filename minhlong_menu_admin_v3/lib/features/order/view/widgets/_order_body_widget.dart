@@ -271,17 +271,12 @@ extension _OrderBodyWidget on _OrderViewState {
               alignment: Alignment.center,
               child: CommonIconButton(
                 onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => AppDialog(
+                  AppDialog.showWarningDialog(context,
                       title: 'Xóa đơn',
                       description: 'Bạn có muốn xóa đơn ${orderItem.id}?',
-                      confirmText: 'Xác nhận',
-                      onTap: () {
-                        _handleDeleteOrder(orderID: orderItem.id);
-                      },
-                    ),
-                  );
+                      onPressedComfirm: () {
+                    _handleDeleteOrder(orderID: orderItem.id);
+                  });
                 },
                 icon: Icons.delete_outline,
                 color: AppColors.red,
@@ -297,17 +292,12 @@ extension _OrderBodyWidget on _OrderViewState {
           alignment: Alignment.center,
           child: CommonIconButton(
             onTap: () {
-              showDialog(
-                context: context,
-                builder: (context) => AppDialog(
+              AppDialog.showWarningDialog(context,
                   title: 'Xóa đơn',
                   description: 'Bạn có muốn xóa đơn ${orderItem.id}?',
-                  confirmText: 'Xác nhận',
-                  onTap: () {
-                    _handleDeleteOrder(orderID: orderItem.id);
-                  },
-                ),
-              );
+                  onPressedComfirm: () {
+                _handleDeleteOrder(orderID: orderItem.id);
+              });
             },
             icon: Icons.delete_outline,
             color: AppColors.red,

@@ -15,29 +15,53 @@ extension _InfoWidget on _DashboardViewState {
   }
 
   Widget _buildInfoFetchSuccess(InfoModel infoModel) {
-    return GridView(
-      shrinkWrap: true,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        childAspectRatio: 16 / 6,
-      ),
+    return ListView(
+      scrollDirection: Axis.horizontal,
       children: [
         _buildItemInfo(
+          backgroundColor: Colors.pink.shade100,
           icon: Icons.receipt_rounded,
           title: 'Tổng đơn hoàn thành',
           value: infoModel.orderCount.toString(),
         ),
+        20.horizontalSpace,
         _buildItemInfo(
+          backgroundColor: Colors.green.shade100,
+          icon: Icons.receipt_rounded,
+          title: 'Tổng đơn hoàn thành',
+          value: infoModel.orderCount.toString(),
+        ),
+        20.horizontalSpace,
+        _buildItemInfo(
+          backgroundColor: Colors.cyan.shade100,
+          icon: Icons.receipt_rounded,
+          title: 'Tổng đơn hoàn thành',
+          value: infoModel.orderCount.toString(),
+        ),
+        20.horizontalSpace,
+        _buildItemInfo(
+          backgroundColor: Colors.purple.shade100,
+          icon: Icons.receipt_rounded,
+          title: 'Tổng đơn hoàn thành',
+          value: infoModel.orderCount.toString(),
+        ),
+        20.horizontalSpace,
+        _buildItemInfo(
+          backgroundColor: Colors.blue.shade100,
           icon: Icons.fastfood_rounded,
           title: 'Số lượng món ăn',
           value: infoModel.foodCount.toString(),
         ),
+        20.horizontalSpace,
         _buildItemInfo(
-          icon: Icons.table_bar,
+          backgroundColor: Colors.red.shade100,
+          icon: Icons.table_restaurant,
           title: 'Tổng số bàn',
           value: infoModel.tableCount.toString(),
         ),
+        20.horizontalSpace,
         _buildItemInfo(
+          backgroundColor: Colors.orange.shade100,
           icon: Icons.category_rounded,
           title: 'Tổng số danh mục',
           value: infoModel.categoryCount.toString(),
@@ -53,29 +77,37 @@ extension _InfoWidget on _DashboardViewState {
   }
 
   Widget _buildItemInfo(
-      {required IconData icon, required String title, required String value}) {
+      {required Color backgroundColor,
+      required IconData icon,
+      required String title,
+      required String value}) {
     return Card(
-      child: Padding(
+      color: backgroundColor,
+      child: Container(
+        width: 180,
         padding: const EdgeInsets.all(defaultPadding / 2),
-        child: Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(child: LayoutBuilder(
+            LayoutBuilder(
               builder: (context, constraints) {
-                return SizedBox(
-                  height: constraints.maxWidth,
-                  width: constraints.maxWidth,
-                  child: CommonIconButton(
-                    onTap: null,
-                    icon: icon,
+                return Card(
+                  elevation: 10,
+                  child: SizedBox(
+                    height: 50,
+                    width: 50,
+                    child: Icon(
+                      icon,
+                    ),
                   ),
                 );
               },
-            )),
+            ),
             const SizedBox(
               width: defaultPadding / 2,
             ),
+            const Spacer(),
             Expanded(
-              flex: 3,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -105,6 +137,7 @@ extension _InfoWidget on _DashboardViewState {
                 ],
               ),
             ),
+            10.verticalSpace,
           ],
         ),
       ),

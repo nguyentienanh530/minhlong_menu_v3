@@ -243,17 +243,23 @@ extension _FoodBodyWidget on _CategoryViewState {
               alignment: Alignment.center,
               child: CommonIconButton(
                 onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => AppDialog(
+                  AppDialog.showWarningDialog(context,
                       title: 'Xóa Danh mục',
                       description: 'Xóa danh mục ${categoryItem.name}?',
-                      confirmText: 'Xác nhận',
-                      onTap: () {
-                        _handleDeleteCategory(categoryID: categoryItem.id);
-                      },
-                    ),
-                  );
+                      confirmText: 'Xác nhận', onPressedComfirm: () {
+                    _handleDeleteCategory(categoryID: categoryItem.id);
+                  });
+                  // showDialog(
+                  //   context: context,
+                  //   builder: (context) => AppDialog(
+                  //     title: 'Xóa Danh mục',
+                  //     description: 'Xóa danh mục ${categoryItem.name}?',
+                  //     confirmText: 'Xác nhận',
+                  //     onTap: () {
+                  //       _handleDeleteCategory(categoryID: categoryItem.id);
+                  //     },
+                  //   ),
+                  // );
                 },
                 icon: Icons.delete_outline,
                 color: AppColors.red,
