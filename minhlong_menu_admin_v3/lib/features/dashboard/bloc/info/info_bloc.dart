@@ -4,7 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:minhlong_menu_admin_v3/features/dashboard/data/respositories/info_respository.dart';
 
-import '../data/model/info_model.dart';
+import '../../data/model/info_model.dart';
 
 part 'info_event.dart';
 part 'info_state.dart';

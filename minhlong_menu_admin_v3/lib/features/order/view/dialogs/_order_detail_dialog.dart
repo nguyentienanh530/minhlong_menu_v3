@@ -155,7 +155,9 @@ extension _OrderDetailDialog on _OrderViewState {
                       description:
                           'Đơn đã xong, chuyển đơn ${orderItem.id} tới hoàn thành?',
                       onPressedComfirm: () {
-                    orderItem = orderItem.copyWith(status: 'completed');
+                    orderItem = orderItem.copyWith(
+                        status: 'completed',
+                        payedAt: DateTime.now().toString());
 
                     _handleUpdateOrder(orderItem);
                   });

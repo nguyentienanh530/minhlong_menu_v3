@@ -28,6 +28,12 @@ mixin _$InfoModel {
   int get foodCount => throw _privateConstructorUsedError;
   @JsonKey(name: 'table_count')
   int get tableCount => throw _privateConstructorUsedError;
+  @JsonKey(name: 'revenue_on_today')
+  double get revenueToday => throw _privateConstructorUsedError;
+  @JsonKey(name: 'revenue_on_yesterday')
+  double get revenueOnYesterday => throw _privateConstructorUsedError;
+  @JsonKey(name: 'total_revenue')
+  double get totalRevenue => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -44,7 +50,10 @@ abstract class $InfoModelCopyWith<$Res> {
       {@JsonKey(name: 'category_count') int categoryCount,
       @JsonKey(name: 'order_count') int orderCount,
       @JsonKey(name: 'food_count') int foodCount,
-      @JsonKey(name: 'table_count') int tableCount});
+      @JsonKey(name: 'table_count') int tableCount,
+      @JsonKey(name: 'revenue_on_today') double revenueToday,
+      @JsonKey(name: 'revenue_on_yesterday') double revenueOnYesterday,
+      @JsonKey(name: 'total_revenue') double totalRevenue});
 }
 
 /// @nodoc
@@ -64,6 +73,9 @@ class _$InfoModelCopyWithImpl<$Res, $Val extends InfoModel>
     Object? orderCount = null,
     Object? foodCount = null,
     Object? tableCount = null,
+    Object? revenueToday = null,
+    Object? revenueOnYesterday = null,
+    Object? totalRevenue = null,
   }) {
     return _then(_value.copyWith(
       categoryCount: null == categoryCount
@@ -82,6 +94,18 @@ class _$InfoModelCopyWithImpl<$Res, $Val extends InfoModel>
           ? _value.tableCount
           : tableCount // ignore: cast_nullable_to_non_nullable
               as int,
+      revenueToday: null == revenueToday
+          ? _value.revenueToday
+          : revenueToday // ignore: cast_nullable_to_non_nullable
+              as double,
+      revenueOnYesterday: null == revenueOnYesterday
+          ? _value.revenueOnYesterday
+          : revenueOnYesterday // ignore: cast_nullable_to_non_nullable
+              as double,
+      totalRevenue: null == totalRevenue
+          ? _value.totalRevenue
+          : totalRevenue // ignore: cast_nullable_to_non_nullable
+              as double,
     ) as $Val);
   }
 }
@@ -98,7 +122,10 @@ abstract class _$$InfoModelImplCopyWith<$Res>
       {@JsonKey(name: 'category_count') int categoryCount,
       @JsonKey(name: 'order_count') int orderCount,
       @JsonKey(name: 'food_count') int foodCount,
-      @JsonKey(name: 'table_count') int tableCount});
+      @JsonKey(name: 'table_count') int tableCount,
+      @JsonKey(name: 'revenue_on_today') double revenueToday,
+      @JsonKey(name: 'revenue_on_yesterday') double revenueOnYesterday,
+      @JsonKey(name: 'total_revenue') double totalRevenue});
 }
 
 /// @nodoc
@@ -116,6 +143,9 @@ class __$$InfoModelImplCopyWithImpl<$Res>
     Object? orderCount = null,
     Object? foodCount = null,
     Object? tableCount = null,
+    Object? revenueToday = null,
+    Object? revenueOnYesterday = null,
+    Object? totalRevenue = null,
   }) {
     return _then(_$InfoModelImpl(
       categoryCount: null == categoryCount
@@ -134,6 +164,18 @@ class __$$InfoModelImplCopyWithImpl<$Res>
           ? _value.tableCount
           : tableCount // ignore: cast_nullable_to_non_nullable
               as int,
+      revenueToday: null == revenueToday
+          ? _value.revenueToday
+          : revenueToday // ignore: cast_nullable_to_non_nullable
+              as double,
+      revenueOnYesterday: null == revenueOnYesterday
+          ? _value.revenueOnYesterday
+          : revenueOnYesterday // ignore: cast_nullable_to_non_nullable
+              as double,
+      totalRevenue: null == totalRevenue
+          ? _value.totalRevenue
+          : totalRevenue // ignore: cast_nullable_to_non_nullable
+              as double,
     ));
   }
 }
@@ -145,7 +187,10 @@ class _$InfoModelImpl implements _InfoModel {
       {@JsonKey(name: 'category_count') this.categoryCount = 0,
       @JsonKey(name: 'order_count') this.orderCount = 0,
       @JsonKey(name: 'food_count') this.foodCount = 0,
-      @JsonKey(name: 'table_count') this.tableCount = 0});
+      @JsonKey(name: 'table_count') this.tableCount = 0,
+      @JsonKey(name: 'revenue_on_today') this.revenueToday = 0,
+      @JsonKey(name: 'revenue_on_yesterday') this.revenueOnYesterday = 0,
+      @JsonKey(name: 'total_revenue') this.totalRevenue = 0});
 
   factory _$InfoModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$InfoModelImplFromJson(json);
@@ -162,10 +207,19 @@ class _$InfoModelImpl implements _InfoModel {
   @override
   @JsonKey(name: 'table_count')
   final int tableCount;
+  @override
+  @JsonKey(name: 'revenue_on_today')
+  final double revenueToday;
+  @override
+  @JsonKey(name: 'revenue_on_yesterday')
+  final double revenueOnYesterday;
+  @override
+  @JsonKey(name: 'total_revenue')
+  final double totalRevenue;
 
   @override
   String toString() {
-    return 'InfoModel(categoryCount: $categoryCount, orderCount: $orderCount, foodCount: $foodCount, tableCount: $tableCount)';
+    return 'InfoModel(categoryCount: $categoryCount, orderCount: $orderCount, foodCount: $foodCount, tableCount: $tableCount, revenueToday: $revenueToday, revenueOnYesterday: $revenueOnYesterday, totalRevenue: $totalRevenue)';
   }
 
   @override
@@ -180,13 +234,19 @@ class _$InfoModelImpl implements _InfoModel {
             (identical(other.foodCount, foodCount) ||
                 other.foodCount == foodCount) &&
             (identical(other.tableCount, tableCount) ||
-                other.tableCount == tableCount));
+                other.tableCount == tableCount) &&
+            (identical(other.revenueToday, revenueToday) ||
+                other.revenueToday == revenueToday) &&
+            (identical(other.revenueOnYesterday, revenueOnYesterday) ||
+                other.revenueOnYesterday == revenueOnYesterday) &&
+            (identical(other.totalRevenue, totalRevenue) ||
+                other.totalRevenue == totalRevenue));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, categoryCount, orderCount, foodCount, tableCount);
+  int get hashCode => Object.hash(runtimeType, categoryCount, orderCount,
+      foodCount, tableCount, revenueToday, revenueOnYesterday, totalRevenue);
 
   @JsonKey(ignore: true)
   @override
@@ -207,7 +267,11 @@ abstract class _InfoModel implements InfoModel {
       {@JsonKey(name: 'category_count') final int categoryCount,
       @JsonKey(name: 'order_count') final int orderCount,
       @JsonKey(name: 'food_count') final int foodCount,
-      @JsonKey(name: 'table_count') final int tableCount}) = _$InfoModelImpl;
+      @JsonKey(name: 'table_count') final int tableCount,
+      @JsonKey(name: 'revenue_on_today') final double revenueToday,
+      @JsonKey(name: 'revenue_on_yesterday') final double revenueOnYesterday,
+      @JsonKey(name: 'total_revenue')
+      final double totalRevenue}) = _$InfoModelImpl;
 
   factory _InfoModel.fromJson(Map<String, dynamic> json) =
       _$InfoModelImpl.fromJson;
@@ -224,6 +288,15 @@ abstract class _InfoModel implements InfoModel {
   @override
   @JsonKey(name: 'table_count')
   int get tableCount;
+  @override
+  @JsonKey(name: 'revenue_on_today')
+  double get revenueToday;
+  @override
+  @JsonKey(name: 'revenue_on_yesterday')
+  double get revenueOnYesterday;
+  @override
+  @JsonKey(name: 'total_revenue')
+  double get totalRevenue;
   @override
   @JsonKey(ignore: true)
   _$$InfoModelImplCopyWith<_$InfoModelImpl> get copyWith =>

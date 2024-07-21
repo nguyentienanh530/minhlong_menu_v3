@@ -28,7 +28,6 @@ extension _OrdersOnTableWidget on _DashboardViewState {
                   String event = res['event'].toString();
                   if (event.contains('orders-ws')) {
                     var data = jsonDecode(res['payload']);
-                    print('data: $data');
                     orders = List<OrderItem>.from(
                       data.map(
                         (x) => OrderItem.fromJson(x),

@@ -9,6 +9,11 @@ class InfoModel with _$InfoModel {
     @Default(0) @JsonKey(name: 'order_count') int orderCount,
     @Default(0) @JsonKey(name: 'food_count') int foodCount,
     @Default(0) @JsonKey(name: 'table_count') int tableCount,
+    @Default(0) @JsonKey(name: 'revenue_on_today') double revenueToday,
+    @Default(0)
+    @JsonKey(name: 'revenue_on_yesterday')
+    double revenueOnYesterday,
+    @Default(0) @JsonKey(name: 'total_revenue') double totalRevenue,
   }) = _InfoModel;
 
   factory InfoModel.fromJson(Map<String, dynamic> json) =>

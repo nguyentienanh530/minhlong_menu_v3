@@ -124,6 +124,7 @@ class Version1 implements Route {
     Router.group(
       () {
         Router.get('', _infoController.index);
+        Router.get('best-selling-food', _infoController.bestSellingFood);
       },
       prefix: '/info',
       middleware: [AuthenticateMiddleware()],

@@ -244,7 +244,10 @@ class HomeViewState extends State<HomeView>
                     style: kHeadingStyle.copyWith(
                         fontWeight: FontWeight.w700, fontSize: 25));
               }),
-          const SizedBox(),
+          const SizedBox(
+            height: 40,
+            width: 40,
+          ),
         ],
       ),
     );

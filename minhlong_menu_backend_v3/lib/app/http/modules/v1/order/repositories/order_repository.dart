@@ -15,6 +15,29 @@ class OrderRepository {
     return orders;
   }
 
+  Future getOrdersCompleted({
+    required int date,
+    required int userID,
+  }) async {
+    return await _orders
+        .query()
+        .where('status', '=', 'completed')
+        .whereDate('payed_at', '=', date)
+        .where('user_id', '=', userID)
+        .get();
+  }
+
+  Future getAllOrdersCompleted({
+    required int userID,
+  }) async {
+    return await _orders
+        .query()
+        .where('status', '=', 'completed')
+        .where('payed_at', '!=', null)
+        .where('user_id', '=', userID)
+        .get();
+  }
+
   Future getNewOrdersByTable({int? tableID, int? userID}) async {
     if (tableID == 0) {
       return await _orders

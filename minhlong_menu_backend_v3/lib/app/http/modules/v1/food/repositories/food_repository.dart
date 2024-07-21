@@ -96,4 +96,16 @@ class FoodRepository {
         .get();
     return foods;
   }
+
+  //get best selling food
+  Future getBestSellingFood({required int userID}) async {
+    var foods = await _food
+        .query()
+        .select(['foods.order_count as order_count', 'foods.name as name'])
+        .where('foods.user_id', '=', userID)
+        .orderBy('order_count', 'desc')
+        .limit(4)
+        .get();
+    return foods;
+  }
 }

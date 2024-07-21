@@ -15,55 +15,61 @@ extension _InfoWidget on _DashboardViewState {
   }
 
   Widget _buildInfoFetchSuccess(InfoModel infoModel) {
+    double percentProfit =
+        ((infoModel.revenueToday - infoModel.revenueOnYesterday) /
+                infoModel.revenueOnYesterday) *
+            100;
     return ListView(
+      physics: const BouncingScrollPhysics(),
       scrollDirection: Axis.horizontal,
       children: [
         _buildItemInfo(
-          backgroundColor: Colors.pink.shade100,
-          icon: Icons.receipt_rounded,
-          title: 'Tổng đơn hoàn thành',
-          value: infoModel.orderCount.toString(),
-        ),
+            backgroundColor: AppColors.lavender,
+            icon: Icons.payment,
+            title: 'Doanh thu ngày',
+            value: '${Ultils.currencyFormat(infoModel.revenueToday)} đ',
+            percent: true,
+            percentValue: percentProfit),
         20.horizontalSpace,
         _buildItemInfo(
           backgroundColor: Colors.green.shade100,
-          icon: Icons.receipt_rounded,
-          title: 'Tổng đơn hoàn thành',
-          value: infoModel.orderCount.toString(),
+          icon: Icons.credit_score_rounded,
+          title: 'Doanh thu hôm qua',
+          value: '${Ultils.currencyFormat(infoModel.revenueOnYesterday)} đ',
         ),
         20.horizontalSpace,
         _buildItemInfo(
           backgroundColor: Colors.cyan.shade100,
-          icon: Icons.receipt_rounded,
-          title: 'Tổng đơn hoàn thành',
-          value: infoModel.orderCount.toString(),
+          icon: Icons.paid_rounded,
+          title: 'Tổng doanh thu',
+          value: '${Ultils.currencyFormat(infoModel.totalRevenue)} đ',
         ),
         20.horizontalSpace,
         _buildItemInfo(
           backgroundColor: Colors.purple.shade100,
           icon: Icons.receipt_rounded,
-          title: 'Tổng đơn hoàn thành',
-          value: infoModel.orderCount.toString(),
+          title: 'Đơn hoàn thành',
+          value: '${infoModel.orderCount}',
         ),
         20.horizontalSpace,
         _buildItemInfo(
           backgroundColor: Colors.blue.shade100,
           icon: Icons.fastfood_rounded,
-          title: 'Số lượng món ăn',
+          title: 'Món ăn',
           value: infoModel.foodCount.toString(),
         ),
         20.horizontalSpace,
         _buildItemInfo(
           backgroundColor: Colors.red.shade100,
           icon: Icons.table_restaurant,
-          title: 'Tổng số bàn',
+          title: 'Bàn ăn',
           value: infoModel.tableCount.toString(),
         ),
         20.horizontalSpace,
         _buildItemInfo(
           backgroundColor: Colors.orange.shade100,
           icon: Icons.category_rounded,
-          title: 'Tổng số danh mục',
+          title: 'Danh mục',
           value: infoModel.categoryCount.toString(),
         ),
       ],
@@ -76,15 +82,19 @@ extension _InfoWidget on _DashboardViewState {
     );
   }
 
-  Widget _buildItemInfo(
-      {required Color backgroundColor,
-      required IconData icon,
-      required String title,
-      required String value}) {
+  Widget _buildItemInfo({
+    required Color backgroundColor,
+    required IconData icon,
+    required String title,
+    required String value,
+    bool percent = false,
+    double? percentValue,
+  }) {
     return Card(
+      elevation: 1,
       color: backgroundColor,
       child: Container(
-        width: 180,
+        width: 160,
         padding: const EdgeInsets.all(defaultPadding / 2),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -124,13 +134,22 @@ extension _InfoWidget on _DashboardViewState {
                     ),
                   ),
                   Expanded(
+                    flex: 2,
                     child: FittedBox(
                       fit: BoxFit.scaleDown,
-                      child: Text(
-                        value,
-                        style: kHeadingStyle.copyWith(
-                          fontWeight: FontWeight.w700,
-                        ),
+                      child: Row(
+                        children: [
+                          Text(
+                            value,
+                            style: kSubHeadingStyle.copyWith(
+                              fontWeight: FontWeight.w900,
+                            ),
+                          ),
+                          10.horizontalSpace,
+                          percent
+                              ? _buildPercentProfit(percent: percentValue!)
+                              : const SizedBox(),
+                        ],
                       ),
                     ),
                   ),
@@ -142,5 +161,50 @@ extension _InfoWidget on _DashboardViewState {
         ),
       ),
     );
+  }
+
+  Widget _buildPercentProfit({required double percent}) {
+    return (switch (percent) {
+      > 0.0 => Row(
+          children: [
+            const Icon(Icons.arrow_upward, size: 10, color: Colors.green),
+            Text(
+              '${Ultils.currencyFormat(percent)}%',
+              style: kCaptionStyle.copyWith(
+                fontSize: 10,
+                color: Colors.green,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ],
+        ),
+      < 0.0 => Row(
+          children: [
+            const Icon(Icons.arrow_downward, size: 10, color: Colors.red),
+            Text(
+              '${Ultils.currencyFormat(percent).replaceFirst('-', '')}%',
+              style: kCaptionStyle.copyWith(
+                fontSize: 10,
+                color: Colors.red,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ],
+        ),
+      == 0 => Row(
+          children: [
+            const Icon(Icons.arrow_back, size: 10, color: Colors.orange),
+            Text(
+              '${Ultils.currencyFormat(percent)}%',
+              style: kCaptionStyle.copyWith(
+                fontSize: 10,
+                color: Colors.orange,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ],
+        ),
+      _ => Container(),
+    });
   }
 }

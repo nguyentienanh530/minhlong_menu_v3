@@ -1,28 +1,24 @@
 import 'dart:convert';
-
 import 'package:cached_network_image/cached_network_image.dart';
-
 import 'package:flutter/material.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_admin_v3/common/dialog/app_dialog.dart';
-
 import 'package:minhlong_menu_admin_v3/common/widget/empty_widget.dart';
 import 'package:minhlong_menu_admin_v3/common/widget/error_build_image.dart';
 import 'package:minhlong_menu_admin_v3/common/widget/error_widget.dart';
 import 'package:minhlong_menu_admin_v3/common/widget/loading.dart';
 import 'package:minhlong_menu_admin_v3/core/extensions.dart';
 import 'package:badges/badges.dart' as badges;
-import 'package:minhlong_menu_admin_v3/features/dashboard/bloc/info_bloc.dart';
+import 'package:minhlong_menu_admin_v3/features/dashboard/bloc/best_selling_food/best_selling_food_bloc.dart';
+import 'package:minhlong_menu_admin_v3/features/dashboard/bloc/info/info_bloc.dart';
 import 'package:minhlong_menu_admin_v3/features/dashboard/data/model/info_model.dart';
 import 'package:minhlong_menu_admin_v3/features/dashboard/data/respositories/info_respository.dart';
 import 'package:minhlong_menu_admin_v3/features/dashboard/view/widgets/line_chart_revenue.dart';
 import 'package:minhlong_menu_admin_v3/features/dinner_table/data/model/table_item.dart';
 import 'package:minhlong_menu_admin_v3/features/home/cubit/table_index_selected_cubit.dart';
-
 import 'package:minhlong_menu_admin_v3/features/user/bloc/user_bloc.dart';
 import 'package:minhlong_menu_admin_v3/features/user/data/model/user_model.dart';
 import 'package:web_socket_channel/io.dart';
@@ -38,7 +34,6 @@ import '../../../dinner_table/cubit/dinner_table_cubit.dart';
 import '../../../order/bloc/order_bloc.dart';
 import '../../../order/data/model/order_item.dart';
 import '../widgets/chart_revenue.dart';
-
 part '../widgets/_table_widget.dart';
 part '../widgets/_orders_on_table_widget.dart';
 part '../widgets/_info_widget.dart';
@@ -60,7 +55,14 @@ class DashboardScreen extends StatelessWidget {
           create: (context) => DinnerTableCubit(),
         ),
         BlocProvider(
-          create: (context) => InfoBloc(context.read<InfoRespository>()),
+          create: (context) => InfoBloc(
+            context.read<InfoRespository>(),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => BestSellingFoodBloc(
+            infoRespository: context.read<InfoRespository>(),
+          ),
         )
       ],
       child: DashboardView(
@@ -88,6 +90,9 @@ class _DashboardViewState extends State<DashboardView>
   final _indexSelectedTable = ValueNotifier(0);
   var _isFirstSendSocket = false;
   late UserModel _user;
+  final _listDateDropdown = ['Tuần này', 'Tháng này', 'Năm nay'];
+  final _valueDropdown = ValueNotifier('');
+
   @override
   void initState() {
     super.initState();
@@ -104,6 +109,15 @@ class _DashboardViewState extends State<DashboardView>
         })
       ..ready;
     context.read<InfoBloc>().add(InfoFetchStarted());
+    context.read<BestSellingFoodBloc>().add(BestSellingFoodFetched());
+    _valueDropdown.value = _listDateDropdown.first;
+  }
+
+  void _getDataDashboard() {
+    context.read<InfoBloc>().add(InfoFetchStarted());
+    context.read<BestSellingFoodBloc>().add(BestSellingFoodFetched());
+    Ultils.joinRoom(_tableChannel, 'tables-${_user.id}');
+    Ultils.joinRoom(_orderChannel, 'orders-${_user.id}');
   }
 
   @override
@@ -111,6 +125,7 @@ class _DashboardViewState extends State<DashboardView>
     super.dispose();
     disconnect();
     _indexSelectedTable.dispose();
+    _valueDropdown.dispose();
   }
 
   void disconnect() {
@@ -127,275 +142,203 @@ class _DashboardViewState extends State<DashboardView>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final user = context.watch<UserBloc>().state;
     final tableIndexSelectedState =
         context.watch<TableIndexSelectedCubit>().state;
-    if (user is UserFecthSuccess) {
-      _user = user.userModel;
-      if (!_isFirstSendSocket) {
-        Ultils.joinRoom(_orderChannel, 'orders-${_user.id}');
-        Ultils.joinRoom(_tableChannel, 'tables-${_user.id}');
+    return BlocListener<OrderBloc, OrderState>(
+      listener: (context, state) {
+        if (state is OrderUpdateInProgress) {
+          AppDialog.showLoadingDialog(context);
+        }
+        if (state is OrderUpdateSuccess) {
+          pop(context, 1);
+          OverlaySnackbar.show(context, 'Cập nhật thành công');
+          Ultils.sendSocket(_orderChannel, 'orders',
+              {'user_id': _user.id, 'table_id': tableIndexSelectedState});
+          Ultils.sendSocket(_tableChannel, 'tables', _user.id);
+        }
 
-        Ultils.sendSocket(_tableChannel, 'tables', _user.id);
-        Ultils.sendSocket(_orderChannel, 'orders',
-            {'user_id': _user.id, 'table_id': tableIndexSelectedState});
+        if (state is OrderUpdateFailure) {
+          pop(context, 1);
+          OverlaySnackbar.show(context, 'Có lỗi xảy ra',
+              type: OverlaySnackbarType.error);
+        }
+      },
+      child: Builder(builder: (context) {
+        final user = context.watch<UserBloc>().state;
 
-        _isFirstSendSocket = true;
-      }
-    }
-    return Scaffold(
-      body: BlocListener<OrderBloc, OrderState>(
-        listener: (context, state) {
-          if (state is OrderUpdateInProgress) {
-            AppDialog.showLoadingDialog(context);
-          }
-          if (state is OrderUpdateSuccess) {
-            pop(context, 1);
-            OverlaySnackbar.show(context, 'Cập nhật thành công');
+        if (user is UserFecthSuccess) {
+          _user = user.userModel;
+          if (!_isFirstSendSocket) {
+            Ultils.joinRoom(_orderChannel, 'orders-${_user.id}');
+            Ultils.joinRoom(_tableChannel, 'tables-${_user.id}');
+
+            Ultils.sendSocket(_tableChannel, 'tables', _user.id);
             Ultils.sendSocket(_orderChannel, 'orders',
                 {'user_id': _user.id, 'table_id': tableIndexSelectedState});
-            Ultils.sendSocket(_tableChannel, 'tables', _user.id);
-          }
 
-          if (state is OrderUpdateFailure) {
-            pop(context, 1);
-            OverlaySnackbar.show(context, 'Có lỗi xảy ra',
-                type: OverlaySnackbarType.error);
+            _isFirstSendSocket = true;
           }
-        },
-        child: SizedBox(
-          height: context.sizeDevice.height,
-          width: context.sizeDevice.width,
-          child: Padding(
-            padding: const EdgeInsets.all(30).r,
+        }
+        return Padding(
+          padding: const EdgeInsets.all(30).r,
+          child: RefreshIndicator(
+            onRefresh: () async {
+              _getDataDashboard();
+            },
             child: SingleChildScrollView(
-              child: Expanded(
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 0.2 * context.sizeDevice.height,
-                      width: double.infinity,
-                      child: _buildInfoWidget(),
-                    ),
-                    15.verticalSpace,
-                    SizedBox(
-                      height: 0.5 * context.sizeDevice.height,
-                      width: double.infinity,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            flex: 3,
-                            child: _lineChartRevenueWidget(),
+              physics: const BouncingScrollPhysics(),
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 180,
+                    width: double.infinity,
+                    child: _buildInfoWidget(),
+                  ),
+                  15.verticalSpace,
+                  context.isDesktop
+                      ? SizedBox(
+                          height: 0.5 * context.sizeDevice.height,
+                          width: double.infinity,
+                          child: Row(
+                            children: [
+                              Expanded(
+                                flex: 3,
+                                child: _lineChartRevenueWidget(),
+                              ),
+                              15.horizontalSpace,
+                              Expanded(
+                                child: _chartBestSellingFoodWidget(),
+                              )
+                            ],
                           ),
-                          15.horizontalSpace,
-                          Expanded(
-                            child: _chartRevenueWidget(),
-                          )
+                        )
+                      : Column(
+                          children: [
+                            SizedBox(
+                                height: 0.5 * context.sizeDevice.height,
+                                child: _lineChartRevenueWidget()),
+                            15.horizontalSpace,
+                            SizedBox(
+                                height: 0.5 * context.sizeDevice.height,
+                                child: _chartBestSellingFoodWidget())
+                          ],
+                        ),
+                  Card(
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(defaultPadding).r,
+                      // constraints: const BoxConstraints(minHeight: 500),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Đơn hàng mới',
+                            style: kHeadingStyle.copyWith(
+                                fontWeight: FontWeight.w700),
+                          ),
+                          const SizedBox(height: defaultPadding),
+                          _buildTablesWidget(index: tableIndexSelectedState),
+                          const SizedBox(height: defaultPadding),
+                          _buildOrdersOnTable(),
                         ],
                       ),
                     ),
-                    Card(
-                      child: Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(defaultPadding).r,
-                        // constraints: const BoxConstraints(minHeight: 500),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Đơn hàng mới',
-                              style: kHeadingStyle.copyWith(
-                                  fontWeight: FontWeight.w700),
-                            ),
-                            const SizedBox(height: defaultPadding),
-                            _buildTablesWidget(index: tableIndexSelectedState),
-                            const SizedBox(height: defaultPadding),
-                            _buildOrdersOnTable(),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-            // child: Row(
-            //   crossAxisAlignment: CrossAxisAlignment.start,
-            //   children: [
-            //     Expanded(
-            //       child: Column(
-            //         crossAxisAlignment: CrossAxisAlignment.start,
-            //         children: [
-            //           // _buildTableWidget(index: state, dinnerTable: dinnerTable),
-            //           _buildTablesWidget(index: tableIndexSelectedState),
-            //           const SizedBox(height: defaultPadding),
-            //           Expanded(
-            //             child: SingleChildScrollView(
-            //               child: _buildOrdersOnTable(),
-            //             ),
-            //           ),
-            //         ],
-            //       ),
-            //     ),
-            //     context.isDesktop
-            //         ? Container(
-            //             padding: const EdgeInsets.only(left: 30).r,
-            //             width: 450.w,
-            //             height: double.infinity,
-            //             child: SingleChildScrollView(
-            //               child: Column(
-            //                 children: [
-            //                   _buildInfoWidget(),
-            //                   const SizedBox(height: defaultPadding),
-            //                   _lineChartRevenueWidget(),
-            //                   const SizedBox(height: defaultPadding),
-            //                   _chartRevenueWidget()
-            //                 ],
-            //               ),
-            //             ),
-            //           )
-            //         : Container(),
-            //   ],
-            // ),
           ),
-        ),
-      ),
+        );
+      }),
     );
   }
 
   Widget _lineChartRevenueWidget() {
     return Card(
-      child: AspectRatio(
-        aspectRatio: 0.8,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Doanh thu',
-                      style: kSubHeadingStyle.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const Row(
-                      children: [
-                        // Text(
-                        //     Ultils().formatDateToString(
-                        //         controller.date.value.toString(),
-                        //         isShort: true),
-                        //     style: kBodyStyle),
-                        SizedBox(
-                          width: defaultPadding / 2,
-                        ),
-                        // DropdownButton(
-                        //   items: controller.listDateDropdown
-                        //       .map(
-                        //           (e) => DropdownMenuItem(value: e, child: Text(e)))
-                        //       .toList(),
-                        //   onChanged: (value) {
-                        //     controller.onChangeDateDropDown(value ?? '');
-                        //   },
-                        //   isDense: true,
-                        //   underline: Container(),
-                        //   value: controller.valueDateDropDown.value,
-                        //   icon: const Icon(Icons.keyboard_arrow_down_rounded),
-                        //   dropdownColor: AppColors.white,
-                        //   style: kBodyStyle,
-                        //   focusColor: AppColors.white,
-                        //   borderRadius: BorderRadius.circular(5),
-                        //   menuMaxHeight: 300,
-                        //   alignment: Alignment.center,
-                        //   iconSize: 20,
-                        // ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Text(
-                  Ultils.currencyFormat(double.parse('500000000')),
-                  style: kBodyStyle.copyWith(
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.themeColor,
-                  ),
-                ),
-              ),
-              10.verticalSpace,
-              const Expanded(
-                flex: 8,
-                child: LineChartRevenue(),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _chartRevenueWidget() {
-    return Card(
-      child: Container(
-        padding: const EdgeInsets.all(defaultPadding),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
         child: Column(
-          // mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                Text(
-                  'Doanh thu',
-                  style: kSubHeadingStyle.copyWith(fontWeight: FontWeight.bold),
-                ),
-                const Spacer(),
-                // Obx(
-                //   () {
-                //     return DropdownButton(
-                //       items: controller.listDateDropdown
-                //           .map(
-                //               (e) => DropdownMenuItem(value: e, child: Text(e)))
-                //           .toList(),
-                //       onChanged: (value) {
-                //         controller.valueDateDropDown.value = value!;
-                //       },
-                //       isDense: true,
-                //       underline: Container(),
-                //       value: controller.valueDateDropDown.value,
-                //       icon: const Icon(Icons.keyboard_arrow_down_rounded),
-                //       dropdownColor: AppColors.white,
-                //       style: kBodyStyle,
-                //       focusColor: AppColors.white,
-                //       borderRadius: BorderRadius.circular(5),
-                //       menuMaxHeight: 300,
-                //       alignment: Alignment.center,
-                //       iconSize: 20,
-                //     );
-                //   },
-                // ),
-              ],
-            ),
-            const SizedBox(
-              height: defaultPadding / 2,
-            ),
-            Text(
-              Ultils.currencyFormat(double.parse('500000000')),
-              style: kBodyStyle.copyWith(
-                fontWeight: FontWeight.bold,
-                color: AppColors.themeColor,
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Doanh thu',
+                    style: kSubHeadingStyle.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  ListenableBuilder(
+                      listenable: _valueDropdown,
+                      builder: (context, _) {
+                        return DropdownButton(
+                          items: _listDateDropdown
+                              .map((e) =>
+                                  DropdownMenuItem(value: e, child: Text(e)))
+                              .toList(),
+                          onChanged: (value) {
+                            _valueDropdown.value = value!;
+                          },
+                          isDense: true,
+                          underline: Container(),
+                          value: _valueDropdown.value,
+                          icon: const Icon(Icons.keyboard_arrow_down_rounded),
+                          dropdownColor: AppColors.white,
+                          style: kBodyStyle,
+                          focusColor: AppColors.white,
+                          borderRadius: BorderRadius.circular(5),
+                          menuMaxHeight: 300,
+                          alignment: Alignment.center,
+                          iconSize: 20,
+                        );
+                      }),
+                ],
               ),
             ),
+            10.verticalSpace,
             const Expanded(
-              child: PieChartSample2(),
+              flex: 8,
+              child: LineChartRevenue(),
             ),
           ],
         ),
       ),
     );
+  }
+
+  Widget _chartBestSellingFoodWidget() {
+    return Builder(builder: (context) {
+      var bestSellingFoodState = context.watch<BestSellingFoodBloc>().state;
+      return (switch (bestSellingFoodState) {
+        BestSellingFoodFetchInProgress() => const Loading(),
+        BestSellingFoodFetchEmpty() => const EmptyWidget(),
+        BestSellingFoodFetchFailure() =>
+          ErrWidget(error: bestSellingFoodState.message),
+        BestSellingFoodFetchSuccess() => Card(
+            child: Container(
+              padding: const EdgeInsets.all(defaultPadding),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Bán chạy',
+                    style:
+                        kSubHeadingStyle.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  Expanded(
+                    child: PieChartBestSellingFood(
+                      bestSellingFood: bestSellingFoodState.bestSellingFoods,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        _ => const SizedBox(),
+      });
+    });
   }
 
   @override
