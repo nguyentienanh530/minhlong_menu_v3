@@ -27,13 +27,16 @@ class InfoController extends Controller {
     try {
       var now = DateTime.now();
 
-      // get to day
+      // get today
       int dateRepresentation = now.year * 10000 + now.month * 100 + now.day;
 
       // get yesterday
       DateTime yesterday = now.subtract(Duration(days: 1));
       int dateRepresentationYesterday =
           yesterday.year * 10000 + yesterday.month * 100 + yesterday.day;
+
+      print('today: $dateRepresentation');
+      print('yesterday: $dateRepresentationYesterday');
 
       // get user id
       final userID = Auth().id();
@@ -123,4 +126,152 @@ class InfoController extends Controller {
       );
     }
   }
+
+  // get revenue filter on date
+  Future<Response> revenueFilterOnDate(Request request) async {
+    var now = DateTime.now();
+    var params = request.all();
+
+    try {
+      final userID = Auth().id();
+      List<Map<String, dynamic>> responseData = [];
+      if (userID == null) {
+        return AppResponse().error(
+          statusCode: HttpStatus.unauthorized,
+          message: 'unauthorized',
+        );
+      }
+      switch (params['type']) {
+        case 'week':
+          DateTime startOfWeek =
+              getDate(now.subtract(Duration(days: now.weekday - 1)));
+          DateTime endOfWeek =
+              now.add(Duration(days: DateTime.daysPerWeek - now.weekday));
+
+          int startOfWeekInt = startOfWeek.year * 10000 +
+              startOfWeek.month * 100 +
+              startOfWeek.day;
+          int endOfWeekInt =
+              endOfWeek.year * 10000 + endOfWeek.month * 100 + endOfWeek.day;
+          print('startOfWeek: $startOfWeekInt');
+          print('endOfWeek: $endOfWeekInt');
+
+          var response = await _orderRepository.getRevenueFiller(
+            userID: userID,
+            startDate: startOfWeekInt,
+            endDate: endOfWeekInt,
+          );
+          List<dynamic> transactions = response;
+
+          Map<String, double> totalByDay = {};
+
+          for (var transaction in transactions) {
+            String payedAt = transaction['payed_at'].substring(8, 10);
+            double totalPrice = transaction['total_price'];
+
+            if (totalByDay.containsKey(payedAt)) {
+              totalByDay[payedAt] = totalByDay[payedAt]! + totalPrice;
+            } else {
+              totalByDay[payedAt] = totalPrice;
+            }
+          }
+
+          totalByDay.forEach((key, value) {
+            responseData.add({
+              "total_price": value,
+              "date": key,
+            });
+          });
+
+          break;
+        case 'month':
+          DateTime firstDayOfMonth = DateTime(now.year, now.month, 1);
+          DateTime lastDayOfMonth = DateTime(now.year, now.month + 1, 0);
+          int firstDayOfMonthInt = firstDayOfMonth.year * 10000 +
+              firstDayOfMonth.month * 100 +
+              firstDayOfMonth.day;
+          int lastDayOfMonthInt = lastDayOfMonth.year * 10000 +
+              lastDayOfMonth.month * 100 +
+              lastDayOfMonth.day;
+
+          var response = await _orderRepository.getRevenueFiller(
+            userID: userID,
+            startDate: firstDayOfMonthInt,
+            endDate: lastDayOfMonthInt,
+          );
+          List<dynamic> transactions = response;
+          Map<String, double> totalByDay = {};
+
+          for (var transaction in transactions) {
+            String payedAt = transaction['payed_at'].substring(8, 10);
+            double totalPrice = transaction['total_price'];
+
+            if (totalByDay.containsKey(payedAt)) {
+              totalByDay[payedAt] = totalByDay[payedAt]! + totalPrice;
+            } else {
+              totalByDay[payedAt] = totalPrice;
+            }
+          }
+
+          totalByDay.forEach((key, value) {
+            responseData.add({
+              "total_price": value,
+              "date": key,
+            });
+          });
+          break;
+        case 'year':
+          DateTime firstDayOfYear = DateTime(now.year, 1, 1);
+          DateTime lastDayOfYear = DateTime(now.year + 1, 1, 1);
+          int firstDayOfYearInt = firstDayOfYear.year * 10000 +
+              firstDayOfYear.month * 100 +
+              firstDayOfYear.day;
+          int lastDayOfYearInt = lastDayOfYear.year * 10000 +
+              lastDayOfYear.month * 100 +
+              lastDayOfYear.day;
+          print('firstDayOfYearInt: $firstDayOfYearInt');
+          print('lastDayOfYearInt: $lastDayOfYearInt');
+          var response = await _orderRepository.getRevenueFiller(
+            userID: userID,
+            startDate: firstDayOfYearInt,
+            endDate: lastDayOfYearInt,
+          );
+          List<dynamic> transactions = response;
+          Map<String, double> totalByMonth = {};
+
+          for (var transaction in transactions) {
+            String payedAt = transaction['payed_at'].substring(5, 7);
+            double totalPrice = transaction['total_price'];
+
+            if (totalByMonth.containsKey(payedAt)) {
+              totalByMonth[payedAt] = totalByMonth[payedAt]! + totalPrice;
+            } else {
+              totalByMonth[payedAt] = totalPrice;
+            }
+          }
+          totalByMonth.forEach((key, value) {
+            responseData.add({
+              "total_price": value,
+              "date": key,
+            });
+          });
+          break;
+        default:
+      }
+
+      return AppResponse().ok(
+        statusCode: HttpStatus.ok,
+        message: 'success',
+        data: responseData,
+      );
+    } catch (e) {
+      print('get info error: $e');
+      return AppResponse().error(
+        statusCode: HttpStatus.internalServerError,
+        message: 'connection error',
+      );
+    }
+  }
+
+  DateTime getDate(DateTime d) => DateTime(d.year, d.month, d.day);
 }

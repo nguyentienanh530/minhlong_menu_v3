@@ -13,10 +13,10 @@ import 'package:minhlong_menu_admin_v3/common/widget/loading.dart';
 import 'package:minhlong_menu_admin_v3/core/extensions.dart';
 import 'package:badges/badges.dart' as badges;
 import 'package:minhlong_menu_admin_v3/features/dashboard/bloc/best_selling_food/best_selling_food_bloc.dart';
+import 'package:minhlong_menu_admin_v3/features/dashboard/bloc/data_chart/data_chart_bloc.dart';
 import 'package:minhlong_menu_admin_v3/features/dashboard/bloc/info/info_bloc.dart';
 import 'package:minhlong_menu_admin_v3/features/dashboard/data/model/info_model.dart';
 import 'package:minhlong_menu_admin_v3/features/dashboard/data/respositories/info_respository.dart';
-import 'package:minhlong_menu_admin_v3/features/dashboard/view/widgets/line_chart_revenue.dart';
 import 'package:minhlong_menu_admin_v3/features/dinner_table/data/model/table_item.dart';
 import 'package:minhlong_menu_admin_v3/features/home/cubit/table_index_selected_cubit.dart';
 import 'package:minhlong_menu_admin_v3/features/user/bloc/user_bloc.dart';
@@ -33,6 +33,8 @@ import '../../../../core/utils.dart';
 import '../../../dinner_table/cubit/dinner_table_cubit.dart';
 import '../../../order/bloc/order_bloc.dart';
 import '../../../order/data/model/order_item.dart';
+import '../../data/model/data_chart.dart';
+import '../widgets/_column_revenue_chart.dart';
 import '../widgets/chart_revenue.dart';
 part '../widgets/_table_widget.dart';
 part '../widgets/_orders_on_table_widget.dart';
@@ -61,6 +63,11 @@ class DashboardScreen extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => BestSellingFoodBloc(
+            infoRespository: context.read<InfoRespository>(),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => DataChartBloc(
             infoRespository: context.read<InfoRespository>(),
           ),
         )
@@ -110,12 +117,14 @@ class _DashboardViewState extends State<DashboardView>
       ..ready;
     context.read<InfoBloc>().add(InfoFetchStarted());
     context.read<BestSellingFoodBloc>().add(BestSellingFoodFetched());
+    context.read<DataChartBloc>().add(DataChartFetched('week'));
     _valueDropdown.value = _listDateDropdown.first;
   }
 
   void _getDataDashboard() {
     context.read<InfoBloc>().add(InfoFetchStarted());
     context.read<BestSellingFoodBloc>().add(BestSellingFoodFetched());
+    context.read<DataChartBloc>().add(DataChartFetched('week'));
     Ultils.joinRoom(_tableChannel, 'tables-${_user.id}');
     Ultils.joinRoom(_orderChannel, 'orders-${_user.id}');
   }
@@ -223,6 +232,7 @@ class _DashboardViewState extends State<DashboardView>
                                 child: _chartBestSellingFoodWidget())
                           ],
                         ),
+                  15.verticalSpace,
                   Card(
                     child: Container(
                       width: double.infinity,
@@ -255,55 +265,89 @@ class _DashboardViewState extends State<DashboardView>
 
   Widget _lineChartRevenueWidget() {
     return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Doanh thu',
-                    style: kSubHeadingStyle.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
+      child: Builder(builder: (context) {
+        var dataChartState = context.watch<DataChartBloc>().state;
+        return (switch (dataChartState) {
+          DataChartFetchInProgress() => const Loading(),
+          DataChartFetchEmpty() => const EmptyWidget(),
+          DataChartFetchFailure() => ErrWidget(error: dataChartState.message),
+          DataChartFetchSuccess() =>
+            _buildChartRevenueFetchSuccess(dataChartState.dataCharts),
+          _ => const SizedBox(),
+        });
+      }),
+    );
+  }
+
+  Widget _buildChartRevenueFetchSuccess(List<DataChart> dataCharts) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Doanh thu',
+                  style: kSubHeadingStyle.copyWith(
+                    fontWeight: FontWeight.w700,
                   ),
-                  ListenableBuilder(
-                      listenable: _valueDropdown,
-                      builder: (context, _) {
-                        return DropdownButton(
-                          items: _listDateDropdown
-                              .map((e) =>
-                                  DropdownMenuItem(value: e, child: Text(e)))
-                              .toList(),
-                          onChanged: (value) {
-                            _valueDropdown.value = value!;
-                          },
-                          isDense: true,
-                          underline: Container(),
-                          value: _valueDropdown.value,
-                          icon: const Icon(Icons.keyboard_arrow_down_rounded),
-                          dropdownColor: AppColors.white,
-                          style: kBodyStyle,
-                          focusColor: AppColors.white,
-                          borderRadius: BorderRadius.circular(5),
-                          menuMaxHeight: 300,
-                          alignment: Alignment.center,
-                          iconSize: 20,
-                        );
-                      }),
-                ],
-              ),
+                ),
+                ListenableBuilder(
+                    listenable: _valueDropdown,
+                    builder: (context, _) {
+                      return DropdownButton(
+                        items: _listDateDropdown
+                            .map((e) =>
+                                DropdownMenuItem(value: e, child: Text(e)))
+                            .toList(),
+                        onChanged: (value) {
+                          switch (value) {
+                            case 'Tuần này':
+                              context
+                                  .read<DataChartBloc>()
+                                  .add(DataChartFetched('week'));
+                              break;
+                            case 'Tháng này':
+                              context
+                                  .read<DataChartBloc>()
+                                  .add(DataChartFetched('month'));
+                              break;
+                            case 'Năm nay':
+                              context
+                                  .read<DataChartBloc>()
+                                  .add(DataChartFetched('year'));
+                              break;
+                            default:
+                          }
+                          _valueDropdown.value = value!;
+                        },
+                        isDense: true,
+                        underline: Container(),
+                        value: _valueDropdown.value,
+                        icon: const Icon(Icons.keyboard_arrow_down_rounded),
+                        dropdownColor: AppColors.white,
+                        style: kBodyStyle,
+                        focusColor: AppColors.white,
+                        borderRadius: BorderRadius.circular(5),
+                        menuMaxHeight: 300,
+                        alignment: Alignment.center,
+                        iconSize: 20,
+                      );
+                    }),
+              ],
             ),
-            10.verticalSpace,
-            const Expanded(
-              flex: 8,
-              child: LineChartRevenue(),
+          ),
+          10.verticalSpace,
+          Expanded(
+            flex: 8,
+            child: ColumnRevenueChart(
+              dataCharts: dataCharts,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

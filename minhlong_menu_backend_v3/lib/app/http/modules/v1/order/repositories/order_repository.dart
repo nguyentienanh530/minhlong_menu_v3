@@ -125,6 +125,27 @@ class OrderRepository {
         .get();
   }
 
+// get revenua filter on date
+  Future getRevenueFiller({
+    required int userID,
+    required int startDate,
+    required int endDate,
+  }) async {
+    return await _orders
+        .query()
+        .select([
+          'orders.total_price as total_price',
+          'orders.payed_at as payed_at',
+        ])
+        .whereNotNull('payed_at')
+        .where('status', 'completed')
+        .where('payed_at', '>=', startDate)
+        .where('payed_at', '<=', endDate)
+        .where('user_id', '=', userID)
+        .groupBy('payed_at')
+        .get();
+  }
+
   Future updateOrder(int id, Map<String, dynamic> orderDataUpdate) async {
     return await _orders.query().where('id', '=', id).update(orderDataUpdate);
   }

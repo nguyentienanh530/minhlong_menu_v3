@@ -125,6 +125,8 @@ class Version1 implements Route {
       () {
         Router.get('', _infoController.index);
         Router.get('best-selling-food', _infoController.bestSellingFood);
+        Router.get(
+            'revenue-filter-on-date', _infoController.revenueFilterOnDate);
       },
       prefix: '/info',
       middleware: [AuthenticateMiddleware()],

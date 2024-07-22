@@ -5,6 +5,7 @@ import 'package:minhlong_menu_admin_v3/features/dashboard/data/model/info_model.
 import '../../../../common/network/dio_exception.dart';
 import '../../../../common/network/result.dart';
 import '../model/best_selling_food.dart';
+import '../model/data_chart.dart';
 import '../provider/info_api.dart';
 
 class InfoRespository {
@@ -29,6 +30,17 @@ class InfoRespository {
       return Result.success(bestSellingFood);
     } on DioException catch (e) {
       Logger().e('get best selling food error: $e');
+      var message = DioExceptions.fromDioError(e).toString();
+      return Result.failure(message);
+    }
+  }
+
+  Future<Result<List<DataChart>>> getDataChart({required String type}) async {
+    try {
+      final dataChart = await infoApi.getDataChart(type: type);
+      return Result.success(dataChart);
+    } on DioException catch (e) {
+      Logger().e('get data chart error: $e');
       var message = DioExceptions.fromDioError(e).toString();
       return Result.failure(message);
     }

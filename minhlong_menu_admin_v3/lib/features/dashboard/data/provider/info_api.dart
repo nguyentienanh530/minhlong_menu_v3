@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:minhlong_menu_admin_v3/features/dashboard/data/model/data_chart.dart';
 
 import '../../../../core/api_config.dart';
 import '../model/best_selling_food.dart';
@@ -19,6 +20,16 @@ class InfoApi {
     return (List<BestSellingFood>.from(
       response.data['data'].map(
         (bestSellingFood) => BestSellingFood.fromJson(bestSellingFood),
+      ),
+    ));
+  }
+
+  Future<List<DataChart>> getDataChart({required String type}) async {
+    final response =
+        await dio.get(ApiConfig.dataChart, queryParameters: {'type': type});
+    return (List<DataChart>.from(
+      response.data['data'].map(
+        (dataChart) => DataChart.fromJson(dataChart),
       ),
     ));
   }

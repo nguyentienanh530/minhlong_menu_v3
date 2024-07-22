@@ -56,6 +56,7 @@ class ApiConfig {
   //===== Info =====
   static const String info = '/info';
   static const String bestSellingFood = '/$info/best-selling-food';
+  static const String dataChart = '/$info/revenue-filter-on-date';
 
   //===== Upload image =====
   static const String uploadImage = '/upload-image';

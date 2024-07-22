@@ -64,12 +64,12 @@ class PieChart2State extends State<PieChartBestSellingFood> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Indicator(
-                  color: Colors.blue,
+                  color: Colors.redAccent,
                   text: _bestSellingFood.first.name,
                   isSquare: true,
                 ),
                 Indicator(
-                  color: Colors.yellow,
+                  color: Colors.blueAccent,
                   text: _bestSellingFood[1].name,
                   isSquare: true,
                 ),
@@ -79,12 +79,12 @@ class PieChart2State extends State<PieChartBestSellingFood> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Indicator(
-                  color: Colors.purple,
+                  color: Colors.purpleAccent,
                   text: _bestSellingFood[2].name,
                   isSquare: true,
                 ),
                 Indicator(
-                  color: Colors.green,
+                  color: Colors.amberAccent,
                   text: _bestSellingFood.last.name,
                   isSquare: true,
                 ),
@@ -118,7 +118,7 @@ class PieChart2State extends State<PieChartBestSellingFood> {
       switch (i) {
         case 0:
           return PieChartSectionData(
-            color: Colors.blue,
+            color: Colors.redAccent,
             value: persentFirst,
             title: '${persentFirst.toStringAsFixed(0)}%',
             radius: radius,
@@ -131,7 +131,7 @@ class PieChart2State extends State<PieChartBestSellingFood> {
           );
         case 1:
           return PieChartSectionData(
-            color: Colors.yellow,
+            color: Colors.blueAccent,
             value: persentSecond,
             title: '${persentSecond.toStringAsFixed(0)}%',
             radius: radius,
@@ -144,7 +144,7 @@ class PieChart2State extends State<PieChartBestSellingFood> {
           );
         case 2:
           return PieChartSectionData(
-            color: Colors.purple,
+            color: Colors.purpleAccent,
             value: persentThird,
             title: '${persentThird.toStringAsFixed(0)}%',
             radius: radius,
@@ -157,7 +157,7 @@ class PieChart2State extends State<PieChartBestSellingFood> {
           );
         case 3:
           return PieChartSectionData(
-            color: Colors.green,
+            color: Colors.amberAccent,
             value: persentFourth,
             title: '${persentFourth.toStringAsFixed(0)}%',
             radius: radius,
