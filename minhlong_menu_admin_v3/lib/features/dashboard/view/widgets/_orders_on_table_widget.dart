@@ -2,11 +2,6 @@ part of '../screens/dashboard_screen.dart';
 
 extension _OrdersOnTableWidget on _DashboardViewState {
   Widget _buildOrdersOnTable() {
-    // return orderList.isEmpty
-    //     ? const Center(child: Text('No order'))
-    //     : StaggeredGrid.count(
-    //         crossAxisCount: _gridCount(),
-    //         children: orderList.map((e) => _buildItem(e)).toList());
     return StreamBuilder(
         stream: _orderChannel.stream,
         builder: (context, snapshot) {
@@ -212,66 +207,60 @@ extension _OrdersOnTableWidget on _DashboardViewState {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(
-                    width: double.infinity,
-                    child: Row(
-                      children: [
-                        Container(
-                          clipBehavior: Clip.hardEdge,
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 45,
+                        height: 45,
+                        child: CachedNetworkImage(
+                          imageUrl: '${ApiConfig.host}${e.image1 ?? ''}',
+                          fit: BoxFit.cover,
+                          errorWidget: errorBuilderForImage,
                           width: 45,
                           height: 45,
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                          ),
-                          child: CachedNetworkImage(
-                            imageUrl: '${ApiConfig.host}${e.image1 ?? ''}',
-                            fit: BoxFit.cover,
-                            errorWidget: errorBuilderForImage,
-                          ),
                         ),
-                        const SizedBox(height: 10),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                e.name,
-                                style: kBodyStyle.copyWith(
-                                  fontWeight: FontWeight.w700,
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              e.name,
+                              style: kBodyStyle.copyWith(
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  Ultils.currencyFormat(e.totalAmount),
+                                  style: kBodyStyle.copyWith(
+                                    color: AppColors.secondTextColor,
+                                  ),
                                 ),
-                              ),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    Ultils.currencyFormat(e.totalAmount),
-                                    style: kBodyStyle.copyWith(
-                                      color: AppColors.secondTextColor,
-                                    ),
+                                Text(
+                                  'x${e.quantity}',
+                                  style: kBodyStyle.copyWith(
+                                    fontWeight: FontWeight.w700,
                                   ),
-                                  Text(
-                                    'x${e.quantity}',
-                                    style: kBodyStyle.copyWith(
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              e.note.isNotEmpty
-                                  ? Divider(
-                                      height: 1,
-                                      color: AppColors.secondTextColor
-                                          .withOpacity(0.5),
-                                    )
-                                  : const SizedBox(),
-                            ],
-                          ),
+                                ),
+                              ],
+                            ),
+                            e.note.isNotEmpty
+                                ? Divider(
+                                    height: 1,
+                                    color: AppColors.secondTextColor
+                                        .withOpacity(0.5),
+                                  )
+                                : const SizedBox(),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 5),
                   _buildNote(e.note),

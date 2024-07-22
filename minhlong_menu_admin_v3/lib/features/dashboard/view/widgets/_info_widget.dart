@@ -15,12 +15,20 @@ extension _InfoWidget on _DashboardViewState {
   }
 
   Widget _buildInfoFetchSuccess(InfoModel infoModel) {
-    double percentProfit =
-        ((infoModel.revenueToday - infoModel.revenueOnYesterday) /
-                infoModel.revenueOnYesterday) *
-            100;
+    double percentProfit = 0.0;
+
+    if (infoModel.revenueOnYesterday != 0) {
+      percentProfit = ((infoModel.revenueToday - infoModel.revenueOnYesterday) /
+              infoModel.revenueOnYesterday) *
+          100;
+    } else {
+      if (infoModel.revenueToday != 0) {
+        percentProfit = 100;
+      }
+    }
+// infoModel.revenueToday
     return ListView(
-      physics: const BouncingScrollPhysics(),
+      // physics: const BouncingScrollPhysics(),
       scrollDirection: Axis.horizontal,
       children: [
         _buildItemInfo(

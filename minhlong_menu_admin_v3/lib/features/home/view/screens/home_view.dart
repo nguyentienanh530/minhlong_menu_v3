@@ -266,32 +266,27 @@ class HomeViewState extends State<HomeView>
   }
 
   Widget _buildAvatar(String imageUrl) {
-    return Container(
-      margin: const EdgeInsets.only(left: 10),
-      constraints: BoxConstraints(
-        maxHeight: 50.h,
-        maxWidth: 50.h,
-      ),
-      decoration: BoxDecoration(
-          color: AppColors.white,
-          shape: BoxShape.circle,
-          border: Border.all(color: AppColors.white, width: 1)),
-      child: SizedBox.expand(
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(50),
-          child: CachedNetworkImage(
+    return SizedBox(
+      height: 45,
+      width: 45,
+      child: CircleAvatar(
+        radius: 40,
+        backgroundColor: AppColors.white,
+        child: Padding(
+          padding: const EdgeInsets.all(3), // Border radius
+          child: ClipOval(
+              child: CachedNetworkImage(
             imageUrl: imageUrl,
             fit: BoxFit.cover,
             errorWidget: errorBuilderForImage,
             placeholder: (context, url) => const Loading(),
-          ),
+            height: 45,
+            width: 45,
+          )),
         ),
       ),
     );
   }
-
-  @override
-  bool get wantKeepAlive => true;
 
   _buildUserInfo(UserModel user) {
     return Row(
@@ -303,6 +298,7 @@ class HomeViewState extends State<HomeView>
           style: kSubHeadingStyle.copyWith(
               fontWeight: FontWeight.w700, fontSize: 20),
         ),
+        10.horizontalSpace,
         _buildAvatar('${ApiConfig.host}${user.image}'),
       ],
     );
@@ -312,14 +308,13 @@ class HomeViewState extends State<HomeView>
     _userModel = user;
     return SizedBox(
       height: 115.h,
-      width: double.infinity,
       child: Row(
         children: [
           30.horizontalSpace,
-          ValueListenableBuilder(
-              valueListenable: _title,
-              builder: (context, value, child) {
-                return Text(value,
+          ListenableBuilder(
+              listenable: _title,
+              builder: (context, _) {
+                return Text(_title.value,
                     style: kHeadingStyle.copyWith(
                         fontWeight: FontWeight.w700,
                         fontSize: context.isMobile ? 25 : 36));
@@ -331,4 +326,7 @@ class HomeViewState extends State<HomeView>
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

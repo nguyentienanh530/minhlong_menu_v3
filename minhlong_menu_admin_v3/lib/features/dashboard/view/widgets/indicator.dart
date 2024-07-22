@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:minhlong_menu_admin_v3/core/app_style.dart';
+
 class Indicator extends StatelessWidget {
   const Indicator({
     super.key,
@@ -24,6 +26,7 @@ class Indicator extends StatelessWidget {
           height: size,
           decoration: BoxDecoration(
             shape: isSquare ? BoxShape.rectangle : BoxShape.circle,
+            borderRadius: BorderRadius.circular(2),
             color: color,
           ),
         ),
@@ -32,12 +35,12 @@ class Indicator extends StatelessWidget {
         ),
         Text(
           text,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: textColor,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: kBodyStyle.copyWith(
+            fontWeight: FontWeight.w900,
           ),
-        )
+        ),
       ],
     );
   }

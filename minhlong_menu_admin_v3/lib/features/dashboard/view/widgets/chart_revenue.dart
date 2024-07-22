@@ -56,40 +56,29 @@ class PieChart2State extends State<PieChartBestSellingFood> {
             ),
           ),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+        Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Indicator(
-                  color: Colors.redAccent,
-                  text: _bestSellingFood.first.name,
-                  isSquare: true,
-                ),
-                Indicator(
-                  color: Colors.blueAccent,
-                  text: _bestSellingFood[1].name,
-                  isSquare: true,
-                ),
-              ],
+          children: [
+            Indicator(
+              color: Colors.redAccent,
+              text: _bestSellingFood.first.name,
+              isSquare: true,
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Indicator(
-                  color: Colors.purpleAccent,
-                  text: _bestSellingFood[2].name,
-                  isSquare: true,
-                ),
-                Indicator(
-                  color: Colors.amberAccent,
-                  text: _bestSellingFood.last.name,
-                  isSquare: true,
-                ),
-              ],
-            )
+            Indicator(
+              color: Colors.blueAccent,
+              text: _bestSellingFood[1].name,
+              isSquare: true,
+            ),
+            Indicator(
+              color: Colors.purpleAccent,
+              text: _bestSellingFood[2].name,
+              isSquare: true,
+            ),
+            Indicator(
+              color: Colors.amberAccent,
+              text: _bestSellingFood.last.name,
+              isSquare: true,
+            ),
           ],
         ),
         const SizedBox(

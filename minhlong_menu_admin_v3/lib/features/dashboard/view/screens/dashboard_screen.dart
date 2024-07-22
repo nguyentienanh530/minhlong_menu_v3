@@ -188,6 +188,7 @@ class _DashboardViewState extends State<DashboardView>
             _isFirstSendSocket = true;
           }
         }
+
         return Padding(
           padding: const EdgeInsets.all(30).r,
           child: RefreshIndicator(
@@ -200,7 +201,6 @@ class _DashboardViewState extends State<DashboardView>
                 children: [
                   SizedBox(
                     height: 180,
-                    width: double.infinity,
                     child: _buildInfoWidget(),
                   ),
                   15.verticalSpace,
