@@ -124,9 +124,21 @@ class _DashboardViewState extends State<DashboardView>
   void _getDataDashboard() {
     context.read<InfoBloc>().add(InfoFetchStarted());
     context.read<BestSellingFoodBloc>().add(BestSellingFoodFetched());
-    context.read<DataChartBloc>().add(DataChartFetched('week'));
+    context
+        .read<DataChartBloc>()
+        .add(DataChartFetched(_handleTypeChart(_valueDropdown.value)));
     Ultils.joinRoom(_tableChannel, 'tables-${_user.id}');
     Ultils.joinRoom(_orderChannel, 'orders-${_user.id}');
+  }
+
+  String _handleTypeChart(String type) {
+    if (type == 'Tuần này') {
+      return 'week';
+    } else if (type == 'Tháng này') {
+      return 'month';
+    } else {
+      return 'year';
+    }
   }
 
   @override
@@ -172,94 +184,96 @@ class _DashboardViewState extends State<DashboardView>
               type: OverlaySnackbarType.error);
         }
       },
-      child: Builder(builder: (context) {
-        final user = context.watch<UserBloc>().state;
+      child: Builder(
+        builder: (context) {
+          final user = context.watch<UserBloc>().state;
 
-        if (user is UserFecthSuccess) {
-          _user = user.userModel;
-          if (!_isFirstSendSocket) {
-            Ultils.joinRoom(_orderChannel, 'orders-${_user.id}');
-            Ultils.joinRoom(_tableChannel, 'tables-${_user.id}');
+          if (user is UserFecthSuccess) {
+            _user = user.userModel;
+            if (!_isFirstSendSocket) {
+              Ultils.joinRoom(_orderChannel, 'orders-${_user.id}');
+              Ultils.joinRoom(_tableChannel, 'tables-${_user.id}');
 
-            Ultils.sendSocket(_tableChannel, 'tables', _user.id);
-            Ultils.sendSocket(_orderChannel, 'orders',
-                {'user_id': _user.id, 'table_id': tableIndexSelectedState});
+              Ultils.sendSocket(_tableChannel, 'tables', _user.id);
+              Ultils.sendSocket(_orderChannel, 'orders',
+                  {'user_id': _user.id, 'table_id': tableIndexSelectedState});
 
-            _isFirstSendSocket = true;
+              _isFirstSendSocket = true;
+            }
           }
-        }
 
-        return Padding(
-          padding: const EdgeInsets.all(30).r,
-          child: RefreshIndicator(
-            onRefresh: () async {
-              _getDataDashboard();
-            },
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: 180,
-                    child: _buildInfoWidget(),
-                  ),
-                  15.verticalSpace,
-                  context.isDesktop
-                      ? SizedBox(
-                          height: 0.5 * context.sizeDevice.height,
-                          width: double.infinity,
-                          child: Row(
+          return Padding(
+            padding: const EdgeInsets.all(30).r,
+            child: RefreshIndicator(
+              onRefresh: () async {
+                _getDataDashboard();
+              },
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 180,
+                      child: _buildInfoWidget(),
+                    ),
+                    15.verticalSpace,
+                    context.isDesktop
+                        ? SizedBox(
+                            height: 0.5 * context.sizeDevice.height,
+                            width: double.infinity,
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  flex: 3,
+                                  child: _lineChartRevenueWidget(),
+                                ),
+                                15.horizontalSpace,
+                                Expanded(
+                                  child: _chartBestSellingFoodWidget(),
+                                )
+                              ],
+                            ),
+                          )
+                        : Column(
                             children: [
-                              Expanded(
-                                flex: 3,
-                                child: _lineChartRevenueWidget(),
-                              ),
+                              SizedBox(
+                                  height: 0.5 * context.sizeDevice.height,
+                                  child: _lineChartRevenueWidget()),
                               15.horizontalSpace,
-                              Expanded(
-                                child: _chartBestSellingFoodWidget(),
-                              )
+                              SizedBox(
+                                  height: 0.5 * context.sizeDevice.height,
+                                  child: _chartBestSellingFoodWidget())
                             ],
                           ),
-                        )
-                      : Column(
+                    15.verticalSpace,
+                    Card(
+                      child: Container(
+                        width: double.infinity,
+                        constraints: const BoxConstraints(minHeight: 500),
+                        padding: const EdgeInsets.all(defaultPadding).r,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SizedBox(
-                                height: 0.5 * context.sizeDevice.height,
-                                child: _lineChartRevenueWidget()),
-                            15.horizontalSpace,
-                            SizedBox(
-                                height: 0.5 * context.sizeDevice.height,
-                                child: _chartBestSellingFoodWidget())
+                            Text(
+                              'Đơn hàng mới',
+                              style: kHeadingStyle.copyWith(
+                                  fontWeight: FontWeight.w700),
+                            ),
+                            const SizedBox(height: defaultPadding),
+                            _buildTablesWidget(index: tableIndexSelectedState),
+                            const SizedBox(height: defaultPadding),
+                            _buildOrdersOnTable(),
                           ],
                         ),
-                  15.verticalSpace,
-                  Card(
-                    child: Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(defaultPadding).r,
-                      // constraints: const BoxConstraints(minHeight: 500),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Đơn hàng mới',
-                            style: kHeadingStyle.copyWith(
-                                fontWeight: FontWeight.w700),
-                          ),
-                          const SizedBox(height: defaultPadding),
-                          _buildTablesWidget(index: tableIndexSelectedState),
-                          const SizedBox(height: defaultPadding),
-                          _buildOrdersOnTable(),
-                        ],
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-        );
-      }),
+          );
+        },
+      ),
     );
   }
 

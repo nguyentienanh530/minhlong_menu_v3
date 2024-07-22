@@ -41,14 +41,26 @@ extension _OrderDetailDialog on _OrderViewState {
           ),
         ),
         Expanded(
-          child: Align(
-            alignment: Alignment.centerRight,
-            child: IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: const Icon(Icons.close),
-            ),
+          child: Row(
+            children: [
+              CommonIconButton(
+                onTap: () {
+                  context.push(AppRoute.printScreen);
+                },
+                icon: Icons.print,
+                color: AppColors.sun,
+              ),
+              10.horizontalSpace,
+              Align(
+                alignment: Alignment.centerRight,
+                child: IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: const Icon(Icons.close),
+                ),
+              ),
+            ],
           ),
         )
       ],

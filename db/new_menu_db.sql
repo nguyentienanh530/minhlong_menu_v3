@@ -27,33 +27,33 @@ SET time_zone = "+00:00";
 -- Table structure for table `foods`
 --
 
-CREATE TABLE `foods` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `user_id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `image1` text DEFAULT NULL,
-  `image2` text DEFAULT NULL,
-  `image3` text DEFAULT NULL,
-  `image4` text DEFAULT NULL,
-  `category_id` bigint(20) UNSIGNED NOT NULL,
-  `order_count` bigint(20) DEFAULT NULL,
-  `description` longtext DEFAULT NULL,
-  `discount` int(10) DEFAULT NULL,
-  `is_discount` tinyint(1) NOT NULL DEFAULT 0,
-  `is_show` tinyint(1) NOT NULL DEFAULT 1,
-  `price` float NOT NULL,
-  `created_at` timestamp NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+-- CREATE TABLE `foods` (
+--   `id` bigint(20) UNSIGNED NOT NULL,
+--   `user_id` bigint(20) UNSIGNED NOT NULL,
+--   `name` varchar(255) NOT NULL,
+--   `image1` text DEFAULT NULL,
+--   `image2` text DEFAULT NULL,
+--   `image3` text DEFAULT NULL,
+--   `image4` text DEFAULT NULL,
+--   `category_id` bigint(20) UNSIGNED NOT NULL,
+--   `order_count` bigint(20) DEFAULT NULL,
+--   `description` longtext DEFAULT NULL,
+--   `discount` int(10) DEFAULT NULL,
+--   `is_discount` tinyint(1) NOT NULL DEFAULT 0,
+--   `is_show` tinyint(1) NOT NULL DEFAULT 1,
+--   `price` float NOT NULL,
+--   `created_at` timestamp NULL DEFAULT current_timestamp(),
+--   `updated_at` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp()
+-- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `foods`
 --
 
 INSERT INTO `foods` (`id`, `user_id`, `name`, `image1`, `image2`, `image3`, `image4`, `category_id`, `order_count`, `description`, `discount`, `is_discount`, `is_show`, `price`, `created_at`, `updated_at`) VALUES
-(25, 1, 'an nhanh', '/foods/1/Breakfast-board28-500x500.jpg', '', '', '', 8, 14, 'Food is any substance consumed by an organism for nutritional support. Food is usually of plant, animal, or fungal origin and contains essential nutrients such as carbohydrates, fats, proteins, vitamins, or minerals. The substance is ingested by an organism and assimilated by the organism\'s cells to provide energy, maintain life, or stimulate growth. Different species of animals have different feeding behaviours that satisfy the needs of their metabolisms and have evolved to fill a specific ecological niche within specific geographical contexts.\n\nOmnivorous humans are highly adaptable and have adapted to obtain food in many different ecosystems. Humans generally use cooking to prepare food for consumption. The majority of the food energy required is supplied by the industrial food industry, which produces food through intensive agriculture and distributes it through complex food processing and food distribution systems. This system of conventional agriculture relies heavily on fossil fuels, which means that the food and agricultural systems are one of the major contributors to climate change, accounting for as much as 37% of total greenhouse gas emissions.[1]\n\nThe food system has significant impacts on a wide range of other social and political issues, including sustainability, biological diversity, economics, population growth, water supply, and food security. Food safety and security are monitored by international agencies like the International Association for Food Protection, the World Resources Institute, the World Food Programme, the Food and Agriculture Organization, and the International Food Information Council.', 1, 1, 1, 21000, '2024-07-17 05:37:55', '2024-07-20 11:06:35'),
-(26, 1, 'com', '/foods/1/party-food-500x500.jpg', '', '', '', 9, 18, '', 5, 1, 1, 30000, '2024-07-17 05:38:48', '2024-07-20 11:06:35'),
-(27, 1, 'asdasd', '/foods/1/dinner-ideas-2-500x500.jpg', '', '', '', 7, 13, 'Every time that I want to refactor a name of a class in my code I need to change the class name and also change the file name. I think this is a waste of time to change the name of the same thing twice, this is an another step to make refactor harder. For example, I have a class that have the name of NodeKey and I want to change the class name to FileKey I need to change the class name and the file name from node_key.dart to file_key.dart.\n\nI thing that this process need to be automated and it will same time for many users and make refactoring easier. On Change Symble that change class name the extension will check if the file name have the same name as the changed class name (taking into consideration the name conventions of UpperCamelCase for class names and lowercase_with_underscores for file names) and if they have the same name change also the file name to the new name (with the name conventions).\n\nAlternative solutions are: use existing extensions that does it, if you know any, or this is already possible in this extension and I don\'t know about it or make a new extension that does it.\n\nI will be happy to implement this if it is possible :) If possible you know any file/files you think that I need to change to make this feature?', 0, 0, 1, 25000, '2024-07-17 05:55:50', '2024-07-20 11:06:35'),
+-- (25, 1, 'an nhanh', '/foods/1/Breakfast-board28-500x500.jpg', '', '', '', 8, 14, 'Food is any substance consumed by an organism for nutritional support. Food is usually of plant, animal, or fungal origin and contains essential nutrients such as carbohydrates, fats, proteins, vitamins, or minerals. The substance is ingested by an organism and assimilated by the organism\'s cells to provide energy, maintain life, or stimulate growth. Different species of animals have different feeding behaviours that satisfy the needs of their metabolisms and have evolved to fill a specific ecological niche within specific geographical contexts.\n\nOmnivorous humans are highly adaptable and have adapted to obtain food in many different ecosystems. Humans generally use cooking to prepare food for consumption. The majority of the food energy required is supplied by the industrial food industry, which produces food through intensive agriculture and distributes it through complex food processing and food distribution systems. This system of conventional agriculture relies heavily on fossil fuels, which means that the food and agricultural systems are one of the major contributors to climate change, accounting for as much as 37% of total greenhouse gas emissions.[1]\n\nThe food system has significant impacts on a wide range of other social and political issues, including sustainability, biological diversity, economics, population growth, water supply, and food security. Food safety and security are monitored by international agencies like the International Association for Food Protection, the World Resources Institute, the World Food Programme, the Food and Agriculture Organization, and the International Food Information Council.', 1, 1, 1, 21000, '2024-07-17 05:37:55', '2024-07-20 11:06:35'),
+-- (26, 1, 'com', '/foods/1/party-food-500x500.jpg', '', '', '', 9, 18, '', 5, 1, 1, 30000, '2024-07-17 05:38:48', '2024-07-20 11:06:35'),
+-- (27, 1, 'asdasd', '/foods/1/dinner-ideas-2-500x500.jpg', '', '', '', 7, 13, 'Every time that I want to refactor a name of a class in my code I need to change the class name and also change the file name. I think this is a waste of time to change the name of the same thing twice, this is an another step to make refactor harder. For example, I have a class that have the name of NodeKey and I want to change the class name to FileKey I need to change the class name and the file name from node_key.dart to file_key.dart.\n\nI thing that this process need to be automated and it will same time for many users and make refactoring easier. On Change Symble that change class name the extension will check if the file name have the same name as the changed class name (taking into consideration the name conventions of UpperCamelCase for class names and lowercase_with_underscores for file names) and if they have the same name change also the file name to the new name (with the name conventions).\n\nAlternative solutions are: use existing extensions that does it, if you know any, or this is already possible in this extension and I don\'t know about it or make a new extension that does it.\n\nI will be happy to implement this if it is possible :) If possible you know any file/files you think that I need to change to make this feature?', 0, 0, 1, 25000, '2024-07-17 05:55:50', '2024-07-20 11:06:35'),
 (28, 1, 'Nước giải khát Coca Cola', '/foods/1/1721635906704.webp', '/foods/1/1721635906712.webp', '/foods/1/1721635702296.webp', '/foods/1/1721635702321.webp', 6, 2, '- Là loại nước ngọt được nhiều người yêu thích với hương vị thơm ngon, sảng khoái. Nước ngọt Cocacola vị nguyên bản với lượng gas lớn sẽ giúp bạn xua tan mọi cảm giác mệt mỏi, căng thẳng, đem lại cảm giác thoải mái sau khi hoạt động ngoài trời.', 0, 0, 1, 20000, '2024-07-22 08:08:22', '2024-07-22 09:15:06'),
 (29, 1, 'Nước uống giải khát Pepsi', '/foods/1/1721636150342.webp', '/foods/1/1721636150350.webp', '/foods/1/1721636150356.webp', '/foods/1/1721636150362.webp', 6, 0, '- Sản phẩm nước ngọt chính hãng từ thương hiệu Pepsi nổi tiếng toàn cầuvới hương vị thơm ngon, sảng khoái. Sản phẩm với lượng gas lớn sẽ giúp bạn bổ sung năng lượng làm việc mỗi ngày', 10, 1, 1, 20000, '2024-07-22 08:15:50', NULL),
 (30, 1, 'Sinh tố bơ', '/foods/1/1721636339935.webp', '/foods/1/1721636339944.webp', '/foods/1/1721636339950.webp', '/foods/1/1721636339956.webp', 6, 0, 'Bạn lo ngại mình chế biến không được giống với hương vị của quán và sẽ làm mất đi vị ngon vốn có của món sinh tố này. Đừng lo, bạn chỉ cần làm theo công thức dưới đây vừa đơn giản lại chẳng kém cạnh gì so với ngoài quán.', 0, 0, 1, 30000, '2024-07-22 08:18:59', NULL),

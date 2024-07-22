@@ -7,26 +7,37 @@ import '../../../../core/utils.dart';
 import '../../data/model/data_chart.dart';
 
 class ColumnRevenueChart extends StatelessWidget {
-  const ColumnRevenueChart({super.key, required this.dataCharts});
+  ColumnRevenueChart({super.key, required this.dataCharts});
   final List<DataChart> dataCharts;
+  final _touchedIndex = ValueNotifier(-1);
 
   @override
   Widget build(BuildContext context) {
-    double maxTotalPrice = dataCharts
-        .map((e) => e.totalPrice)
-        .reduce((max, current) => max > current ? max : current)
-        .toDouble();
-    return BarChart(
-      BarChartData(
-        barTouchData: barTouchData,
-        titlesData: titlesData,
-        borderData: borderData,
-        barGroups: barGroups(),
-        gridData: const FlGridData(show: false),
-        alignment: BarChartAlignment.spaceAround,
-        maxY: maxTotalPrice + 1000000,
-      ),
-    );
+    double maxTotalPrice;
+
+    if (dataCharts.isNotEmpty) {
+      maxTotalPrice = dataCharts
+          .map((e) => e.totalPrice)
+          .reduce((max, current) => max > current ? max : current)
+          .toDouble();
+    } else {
+      maxTotalPrice = 0.0;
+    }
+    return ListenableBuilder(
+        listenable: _touchedIndex,
+        builder: (context, _) {
+          return BarChart(
+            BarChartData(
+              barTouchData: barTouchData,
+              titlesData: titlesData,
+              borderData: borderData,
+              barGroups: barGroups(),
+              gridData: const FlGridData(show: false),
+              alignment: BarChartAlignment.spaceAround,
+              maxY: maxTotalPrice + 1000000,
+            ),
+          );
+        });
   }
 
   BarTouchData get barTouchData => BarTouchData(
@@ -43,39 +54,25 @@ class ColumnRevenueChart extends StatelessWidget {
           ) {
             return BarTooltipItem(
               Ultils.currencyFormat(rod.toY),
-              kBodyStyle.copyWith(fontWeight: FontWeight.w700),
+              kBodyStyle.copyWith(
+                fontWeight: FontWeight.w700,
+                color: AppColors.themeColor,
+              ),
             );
           },
         ),
+        touchCallback: (FlTouchEvent event, barTouchResponse) {
+          if (!event.isInterestedForInteractions ||
+              barTouchResponse == null ||
+              barTouchResponse.spot == null) {
+            _touchedIndex.value = -1;
+            return;
+          }
+          _touchedIndex.value = barTouchResponse.spot!.touchedBarGroupIndex;
+        },
       );
 
   Widget getTitles(double value, TitleMeta meta) {
-    // switch (value.toInt()) {
-    //   case 0:
-    //     text = 'T2';
-    //     break;
-    //   case 1:
-    //     text = 'T3';
-    //     break;
-    //   case 2:
-    //     text = 'T4';
-    //     break;
-    //   case 3:
-    //     text = 'T5';
-    //     break;
-    //   case 4:
-    //     text = 'T6';
-    //     break;
-    //   case 5:
-    //     text = 'T7';
-    //     break;
-    //   case 6:
-    //     text = 'CN';
-    //     break;
-    //   default:
-    //     text = '';
-    //     break;
-    // }
     return SideTitleWidget(
       axisSide: meta.axisSide,
       space: 4,
@@ -108,9 +105,7 @@ class ColumnRevenueChart extends StatelessWidget {
         ),
       );
 
-  FlBorderData get borderData => FlBorderData(
-        show: false,
-      );
+  FlBorderData get borderData => FlBorderData(show: false);
 
   LinearGradient get _barsGradient => LinearGradient(
         colors: [
@@ -121,15 +116,24 @@ class ColumnRevenueChart extends StatelessWidget {
         end: Alignment.topCenter,
       );
 
-  BarChartGroupData itemChart({required int x, required double toY}) {
+  BarChartGroupData itemChart({
+    required int x,
+    required double toY,
+    bool isTouched = false,
+  }) {
     return BarChartGroupData(
       x: x,
       groupVertically: true,
       barRods: [
         BarChartRodData(
           width: 30,
-          borderRadius: BorderRadius.circular(5),
+          borderRadius:
+              isTouched ? BorderRadius.circular(10) : BorderRadius.circular(5),
           toY: toY,
+          color: isTouched ? AppColors.themeColor : AppColors.lavender,
+          borderSide: isTouched
+              ? const BorderSide(color: AppColors.themeColor, width: 2)
+              : const BorderSide(color: Colors.white, width: 0),
           gradient: _barsGradient,
         )
       ],
@@ -140,9 +144,15 @@ class ColumnRevenueChart extends StatelessWidget {
   List<BarChartGroupData> barGroups() {
     return dataCharts
         .asMap()
-        .map((key, value) {
-          return MapEntry(key, itemChart(x: key, toY: value.totalPrice));
-        })
+        .map(
+          (key, value) => MapEntry(
+            key,
+            itemChart(
+                x: key,
+                toY: value.totalPrice,
+                isTouched: key == _touchedIndex.value),
+          ),
+        )
         .values
         .toList();
   }

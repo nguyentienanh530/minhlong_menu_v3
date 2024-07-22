@@ -11,6 +11,7 @@ import 'package:minhlong_menu_admin_v3/features/dinner_table/view/screens/dinner
 import 'package:minhlong_menu_admin_v3/features/food/view/screens/food_screen.dart';
 import 'package:minhlong_menu_admin_v3/features/home/view/screens/home_screen.dart';
 import 'package:minhlong_menu_admin_v3/features/order/view/screens/order_screen.dart';
+import 'package:minhlong_menu_admin_v3/features/print/view/screens/print_screen.dart';
 import 'package:minhlong_menu_admin_v3/features/user/data/model/user_model.dart';
 import 'package:minhlong_menu_admin_v3/features/user/view/widgets/change_password.dart';
 
@@ -31,9 +32,9 @@ class AppRoute {
   static const String banners = '/banners';
   static const String settings = '/settings';
   static const String orders = '/orders';
-
   static const String updatePassword = '/update-password';
   static const String editProfile = '/edit-profile';
+  static const String printScreen = '/print-screen';
 
   static const publicRoute = [login, forgotPassword, signUp];
 
@@ -158,6 +159,16 @@ class AppRoute {
             context: context,
             state: state,
             child: const ChangePassword(),
+          );
+        },
+      ),
+      GoRoute(
+        path: printScreen,
+        pageBuilder: (context, state) {
+          return buildPageWithDefaultTransition(
+            context: context,
+            state: state,
+            child: const PrintScreen('title'),
           );
         },
       ),

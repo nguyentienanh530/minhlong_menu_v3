@@ -40,7 +40,7 @@ extension _OrdersOnTableWidget on _DashboardViewState {
 
                     return orderList.isEmpty
                         ? SizedBox(
-                            height: 200,
+                            height: 500,
                             width: double.infinity,
                             child: Center(
                               child: Text(
