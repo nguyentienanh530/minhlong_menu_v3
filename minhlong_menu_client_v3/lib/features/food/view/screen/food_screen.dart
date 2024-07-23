@@ -49,15 +49,46 @@ class FoodView extends StatefulWidget {
 
 class _FoodViewState extends State<FoodView> {
   late String property;
+  final _scrollController = ScrollController();
+  int _page = 1;
+  var _isLoadMore = false;
+  var _isMaxData = false;
+
   @override
   void initState() {
     super.initState();
 
     property = widget.property;
     getData(property);
+
+    _scrollController.addListener(_scrollListener);
   }
 
-  void getData(String property, {int limit = 10}) {
+  @override
+  void dispose() {
+    super.dispose();
+    _scrollController.dispose();
+  }
+
+  void _scrollListener() {
+    if (_isLoadMore) return;
+    if (_isMaxData) return;
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
+      _isLoadMore = true;
+      _page = _page + 1;
+      context.read<FoodBloc>().add(
+            FoodLoadMore(
+              20,
+              property,
+              page: _page,
+            ),
+          );
+      _isLoadMore = false;
+    }
+  }
+
+  void getData(String property, {int limit = 20}) {
     context.read<FoodBloc>().add(
           FoodFetched(
             page: 1,
@@ -107,34 +138,46 @@ class _FoodViewState extends State<FoodView> {
               return const EmptyWidget();
             } else {
               var food = state.food;
-              return GridView.builder(
-                controller: context.read<FoodBloc>().controller
-                  ..addListener(() {
-                    context
-                        .read<FoodBloc>()
-                        .add(FoodLoadMore(10, property, page: 1));
-                  }),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: defaultPadding / 2),
-                itemCount: state is FoodLoadMoreState
-                    ? food.foodItems.length + 2
-                    : food.foodItems.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    childAspectRatio: 9 / 11,
-                    mainAxisSpacing: defaultPadding / 2,
-                    crossAxisSpacing: defaultPadding / 2,
-                    crossAxisCount: 2),
-                itemBuilder: (context, index) {
-                  if (index < food.foodItems.length) {
-                    return CommonItemFood(
-                      addToCartOnTap: () => _handleOnTapAddToCart(
-                          cart, table, state.food.foodItems[index]),
-                      food: state.food.foodItems[index],
-                    );
-                  } else {
-                    return const Loading();
-                  }
-                },
+              if (food.paginationModel != null) {
+                _page > food.paginationModel!.totalPage
+                    ? _isMaxData = true
+                    : _isMaxData = false;
+              }
+
+              return CustomScrollView(
+                controller: _scrollController,
+                // physics: const BouncingScrollPhysics(),
+                slivers: [
+                  SliverPadding(
+                    padding: const EdgeInsets.all(defaultPadding),
+                    sliver: SliverGrid(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) => CommonItemFood(
+                          addToCartOnTap: () => _handleOnTapAddToCart(
+                              cart, table, state.food.foodItems[index]),
+                          food: state.food.foodItems[index],
+                        ),
+                        childCount: food.foodItems.length,
+                      ),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        childAspectRatio: 9 / 11,
+                        mainAxisSpacing: defaultPadding / 2,
+                        crossAxisSpacing: defaultPadding / 2,
+                        crossAxisCount: 2,
+                      ),
+                    ),
+                  ),
+                  SliverToBoxAdapter(
+                    child: state is FoodLoadMoreState
+                        ? Container(
+                            padding: const EdgeInsets.only(bottom: 16),
+                            alignment: Alignment.center,
+                            child: const Loading(),
+                          )
+                        : const SizedBox(),
+                  ),
+                ],
               );
             }
           },

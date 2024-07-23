@@ -20,6 +20,15 @@ final class FoodOnCategoryFetched extends FoodEvent {
       {required this.page, required this.limit, required this.categoryID});
 }
 
+final class FoodOnCategoryLoadMore extends FoodEvent {
+  final int page;
+  final int limit;
+  final int categoryID;
+
+  FoodOnCategoryLoadMore(
+      {required this.page, required this.limit, required this.categoryID});
+}
+
 final class FoodLoadMore extends FoodEvent {
   final int page;
   final int? limit;

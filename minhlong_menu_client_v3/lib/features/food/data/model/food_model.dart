@@ -8,7 +8,7 @@ part 'food_model.g.dart';
 @freezed
 class FoodModel with _$FoodModel {
   factory FoodModel(
-      {@JsonKey(name: 'pagination') PaginationModel? paginationModel,
+      {@JsonKey(name: 'pagination') final PaginationModel? paginationModel,
       @Default(<FoodItem>[])
       @JsonKey(name: 'data')
       List<FoodItem> foodItems}) = _FoodModel;

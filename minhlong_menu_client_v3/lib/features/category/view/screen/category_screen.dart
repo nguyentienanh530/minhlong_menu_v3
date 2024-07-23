@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_client_v3/Routes/app_route.dart';
@@ -56,13 +57,15 @@ class _CategoryViewState extends State<CategoryView> {
   late final CategoryModel _categoryModel;
   final _foodCount = ValueNotifier(0);
   late ScrollController controller;
-  var page = 1;
+  var _page = 1;
+  var _isLoadMore = false;
+  var _isMaxData = false;
 
   @override
   void initState() {
     super.initState();
     _categoryModel = widget.categoryModel;
-    _getData(page: page);
+    _getData(page: _page);
     controller = ScrollController()..addListener(_scrollListener);
   }
 
@@ -71,21 +74,25 @@ class _CategoryViewState extends State<CategoryView> {
     super.dispose();
     _foodCount.dispose();
     controller.removeListener(_scrollListener);
+    controller.dispose();
   }
 
   void _getData({required int page}) {
     context.read<FoodBloc>().add(FoodOnCategoryFetched(
-        page: page, limit: 10, categoryID: _categoryModel.id));
+        page: page, limit: 20, categoryID: _categoryModel.id));
   }
 
   void _scrollListener() {
+    if (_isLoadMore) return;
+    if (_isMaxData) return;
+
     if (controller.position.pixels == controller.position.maxScrollExtent) {
-      print('reach the bottom');
-      // setState(() {
-      //   items.addAll(List.generate(42, (index) => 'Inserted $index'));
-      // });
-      page = page + 1;
-      _getData(page: page);
+      _isLoadMore = true;
+      _page = _page + 1;
+      context.read<FoodBloc>().add(FoodOnCategoryLoadMore(
+          page: _page, limit: 20, categoryID: _categoryModel.id));
+
+      _isLoadMore = false;
     }
   }
 
@@ -117,9 +124,9 @@ class _CategoryViewState extends State<CategoryView> {
             const SizedBox(width: 10),
           ],
         ),
-        SliverToBoxAdapter(
-          child: _buildBody(cart, table),
-        ),
+        SliverPadding(
+            padding: const EdgeInsets.all(defaultPadding),
+            sliver: _buildBody(cart, table)),
       ],
     ));
   }
@@ -178,18 +185,24 @@ class _CategoryViewState extends State<CategoryView> {
   }
 
   Widget _buildBody(OrderModel order, TableModel table) {
-    return BlocBuilder<FoodBloc, FoodState>(
-      builder: (context, state) {
-        return (switch (state) {
-          FoodOnCategoryFetchInProgress() => const Loading(),
-          FoodOnCategoryFetchEmpty() => const EmptyWidget(),
-          FoodOnCategoryFetchFailure() => ErrWidget(error: state.message),
-          FoodOnCategoryFetchSuccess() =>
-            _buildWidgetWhenFetchSuccess(order, table, state.food),
-          _ => const SizedBox()
-        });
-      },
-    );
+    return BlocBuilder<FoodBloc, FoodState>(builder: (context, state) {
+      if (state.food.paginationModel != null) {
+        _page > state.food.paginationModel!.totalPage
+            ? _isMaxData = true
+            : _isMaxData = false;
+      }
+      return (switch (state) {
+        FoodOnCategoryFetchInProgress() =>
+          const SliverToBoxAdapter(child: Loading()),
+        FoodOnCategoryFetchEmpty() =>
+          const SliverToBoxAdapter(child: EmptyWidget()),
+        FoodOnCategoryFetchFailure() =>
+          SliverToBoxAdapter(child: ErrWidget(error: state.message)),
+        FoodOnCategoryFetchSuccess() =>
+          _buildWidgetWhenFetchSuccess(order, table, state.food),
+        _ => const SliverToBoxAdapter(child: SizedBox())
+      });
+    });
   }
 
   Widget _buildWidgetWhenFetchSuccess(
@@ -198,20 +211,20 @@ class _CategoryViewState extends State<CategoryView> {
       _foodCount.value = food.paginationModel?.totalItem ?? 0;
     });
 
-    return GridView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: defaultPadding / 2),
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
+    return SliverGrid.builder(
       itemCount: food.foodItems.length,
+      itemBuilder: (context, index) {
+        return CommonItemFood(
+          addToCartOnTap: () =>
+              _handleOnTapAddToCart(order, table, food.foodItems[index]),
+          food: food.foodItems[index],
+        );
+      },
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          childAspectRatio: 9 / 11,
-          mainAxisSpacing: defaultPadding / 2,
-          crossAxisSpacing: defaultPadding / 2,
-          crossAxisCount: 2),
-      itemBuilder: (context, index) => CommonItemFood(
-        addToCartOnTap: () =>
-            _handleOnTapAddToCart(order, table, food.foodItems[index]),
-        food: food.foodItems[index],
+        childAspectRatio: 9 / 11,
+        mainAxisSpacing: defaultPadding / 2,
+        crossAxisSpacing: defaultPadding / 2,
+        crossAxisCount: 2,
       ),
     );
   }

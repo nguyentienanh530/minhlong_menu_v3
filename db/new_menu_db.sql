@@ -15,27 +15,11 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 
--- Dumping database structure for menu_db
-DROP DATABASE IF EXISTS `menu_db`;
-CREATE DATABASE IF NOT EXISTS `menu_db` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `menu_db`;
 
--- Dumping structure for table menu_db.banners
-DROP TABLE IF EXISTS `banners`;
-CREATE TABLE IF NOT EXISTS `banners` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` bigint unsigned DEFAULT NULL,
-  `image` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `show` tinyint(1) NOT NULL DEFAULT '1',
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`) USING BTREE,
-  KEY `user_id` (`user_id`),
-  CONSTRAINT `fk_users_banners` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 
 -- Dumping data for table menu_db.banners: ~5 rows (approximately)
-DELETE FROM `banners`;
+
 INSERT INTO `banners` (`id`, `user_id`, `image`, `show`, `created_at`, `updated_at`) VALUES
 	(10, 1, '/banners/1/1721315983555.webp', 1, '2024-07-17 02:54:05', '2024-07-23 04:33:54'),
 	(11, 1, '/banners/1/1721316009109.webp', 0, '2024-07-17 02:54:11', '2024-07-23 08:39:37'),
@@ -43,23 +27,10 @@ INSERT INTO `banners` (`id`, `user_id`, `image`, `show`, `created_at`, `updated_
 	(13, 1, '/banners/1/1721706994521.webp', 1, '2024-07-23 03:44:45', '2024-07-23 03:56:34'),
 	(14, 1, '/banners/1/1721708023652.webp', 1, '2024-07-23 03:57:11', '2024-07-23 04:30:50');
 
--- Dumping structure for table menu_db.categories
-DROP TABLE IF EXISTS `categories`;
-CREATE TABLE IF NOT EXISTS `categories` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` bigint unsigned NOT NULL,
-  `name` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `image` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `serial` int NOT NULL,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`) USING BTREE,
-  KEY `user_id` (`user_id`),
-  CONSTRAINT `fk_users_categories` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 
 -- Dumping data for table menu_db.categories: ~10 rows (approximately)
-DELETE FROM `categories`;
+
 INSERT INTO `categories` (`id`, `user_id`, `name`, `image`, `serial`, `created_at`, `updated_at`) VALUES
 	(6, 1, 'Nước uống', '/categories/1/coffe.png', 85, '2024-07-17 03:38:05', '2024-07-23 03:27:29'),
 	(7, 1, 'Sushi', '/categories/1/1721638113710.webp', 9, '2024-07-17 03:38:49', '2024-07-22 09:10:51'),
@@ -72,33 +43,10 @@ INSERT INTO `categories` (`id`, `user_id`, `name`, `image`, `serial`, `created_a
 	(16, 1, 'Lẩu', '/categories/1/1721633835563.webp', 8, '2024-07-22 07:37:14', '2024-07-22 09:41:00'),
 	(18, 1, 'Sashimi', '/categories/1/1721638127809.webp', 33, '2024-07-22 08:48:47', '2024-07-22 10:39:04');
 
--- Dumping structure for table menu_db.foods
-DROP TABLE IF EXISTS `foods`;
-CREATE TABLE IF NOT EXISTS `foods` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` bigint unsigned NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `image1` text COLLATE utf8mb4_general_ci,
-  `image2` text COLLATE utf8mb4_general_ci,
-  `image3` text COLLATE utf8mb4_general_ci,
-  `image4` text COLLATE utf8mb4_general_ci,
-  `category_id` bigint unsigned NOT NULL,
-  `order_count` bigint DEFAULT NULL,
-  `description` longtext COLLATE utf8mb4_general_ci,
-  `discount` int DEFAULT NULL,
-  `is_discount` tinyint(1) NOT NULL DEFAULT '0',
-  `is_show` tinyint(1) NOT NULL DEFAULT '1',
-  `price` float NOT NULL,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`) USING BTREE,
-  KEY `FK_food_category` (`category_id`),
-  KEY `fk_users_foods` (`user_id`),
-  CONSTRAINT `fk_users_foods` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=183 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 
 -- Dumping data for table menu_db.foods: ~134 rows (approximately)
-DELETE FROM `foods`;
+
 INSERT INTO `foods` (`id`, `user_id`, `name`, `image1`, `image2`, `image3`, `image4`, `category_id`, `order_count`, `description`, `discount`, `is_discount`, `is_show`, `price`, `created_at`, `updated_at`) VALUES
 	(25, 1, 'an nhanh', '/foods/1/Breakfast-board28-500x500.jpg', '', '', '', 8, 14, 'Food is any substance consumed by an organism for nutritional support. Food is usually of plant, animal, or fungal origin and contains essential nutrients such as carbohydrates, fats, proteins, vitamins, or minerals. The substance is ingested by an organism and assimilated by the organism\'s cells to provide energy, maintain life, or stimulate growth. Different species of animals have different feeding behaviours that satisfy the needs of their metabolisms and have evolved to fill a specific ecological niche within specific geographical contexts.\n\nOmnivorous humans are highly adaptable and have adapted to obtain food in many different ecosystems. Humans generally use cooking to prepare food for consumption. The majority of the food energy required is supplied by the industrial food industry, which produces food through intensive agriculture and distributes it through complex food processing and food distribution systems. This system of conventional agriculture relies heavily on fossil fuels, which means that the food and agricultural systems are one of the major contributors to climate change, accounting for as much as 37% of total greenhouse gas emissions.[1]\n\nThe food system has significant impacts on a wide range of other social and political issues, including sustainability, biological diversity, economics, population growth, water supply, and food security. Food safety and security are monitored by international agencies like the International Association for Food Protection, the World Resources Institute, the World Food Programme, the Food and Agriculture Organization, and the International Food Information Council.', 1, 1, 1, 21000, '2024-07-17 05:37:55', '2024-07-20 11:06:35'),
 	(26, 1, 'com', '/foods/1/party-food-500x500.jpg', '', '', '', 9, 18, '', 5, 1, 1, 30000, '2024-07-17 05:38:48', '2024-07-20 11:06:35'),
@@ -259,26 +207,10 @@ INSERT INTO `foods` (`id`, `user_id`, `name`, `image1`, `image2`, `image3`, `ima
 	(181, 1, 'Greek salad', '/foods/1/1721706130525.webp', '', '', '', 14, 1, 'Greek salad chính là lựa chọn tuyệt vời đối với các bạn đang muốn "tăng cơ, giảm mỡ" bởi hàm lượng đạm trong Greek salad khá thấp nên đây là món ăn rất thích hợp để hỗ trợ cải thiện vóc dáng.\r\n\r\nXà lách thấm vị thơm từ dầu oliu và vị chua của giấm, dưa leo và hành tây giòn có chút hăng nhẹ, chút cay nồng từ ớt chuông được trung hòa bởi vị thơm béo từ phô mai Feta. Tất cả tạo nên một món salad vừa đẹp mắt vừa dinh dưỡng.', 0, 0, 1, 40000, '2024-07-23 03:42:10', '2024-07-23 07:28:30'),
 	(182, 1, 'Salad  cam đậu đỏ', '/foods/1/1721706201580.webp', '', '', '', 14, 1, 'Thêm một cách chế biến món salad nữa mà bạn không thể bỏ qua đó là salad cam đậu đỏ. Món ăn này độc đáo bởi sự kết hợp của các nguyên liệu như lòng đỏ trứng, húng lũi, giá sống, thịt nguội,... đặc biệt là đậu đỏ, đậu bi Hà Lan, đậu cove và cam vàng. Tất cả nguyên liệu hòa quyện cùng nước sốt mayonnaise beo béo ngon miệng.', 0, 0, 1, 40000, '2024-07-23 03:43:21', '2024-07-23 07:28:30');
 
--- Dumping structure for table menu_db.orders
-DROP TABLE IF EXISTS `orders`;
-CREATE TABLE IF NOT EXISTS `orders` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` bigint unsigned NOT NULL,
-  `status` enum('new','processing','completed','cancel') COLLATE utf8mb4_general_ci DEFAULT 'new',
-  `total_price` float DEFAULT NULL,
-  `table_id` bigint NOT NULL,
-  `payed_at` timestamp NULL DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  KEY `FK_order_table` (`table_id`),
-  KEY `status` (`status`,`created_at`) USING BTREE,
-  KEY `fk_users_orders` (`user_id`),
-  CONSTRAINT `fk_users_orders` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=72 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 
 -- Dumping data for table menu_db.orders: ~17 rows (approximately)
-DELETE FROM `orders`;
+
 INSERT INTO `orders` (`id`, `user_id`, `status`, `total_price`, `table_id`, `payed_at`, `created_at`, `updated_at`) VALUES
 	(52, 1, 'cancel', 28500, 5, NULL, '2024-07-20 02:47:04', '2024-07-20 08:51:17'),
 	(53, 1, 'cancel', 85500, 5, NULL, '2024-07-20 02:47:04', '2024-07-20 08:51:55'),
@@ -299,27 +231,10 @@ INSERT INTO `orders` (`id`, `user_id`, `status`, `total_price`, `table_id`, `pay
 	(70, 1, 'new', 74290, 7, NULL, '2024-07-20 11:06:35', '2024-07-20 11:06:35'),
 	(71, 1, 'completed', 1602000, 6, '2024-07-23 07:28:51', '2024-07-23 07:28:30', '2024-07-23 07:28:51');
 
--- Dumping structure for table menu_db.order_details
-DROP TABLE IF EXISTS `order_details`;
-CREATE TABLE IF NOT EXISTS `order_details` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `order_id` bigint unsigned NOT NULL,
-  `food_id` bigint unsigned NOT NULL,
-  `quantity` int NOT NULL,
-  `price` float NOT NULL,
-  `total_amount` float NOT NULL,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  `note` text COLLATE utf8mb4_general_ci,
-  PRIMARY KEY (`id`),
-  KEY `food_id` (`food_id`),
-  KEY `order_id` (`order_id`),
-  CONSTRAINT `fk_orders_foods` FOREIGN KEY (`food_id`) REFERENCES `foods` (`id`),
-  CONSTRAINT `fk_orders_order_details` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=130 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 
 -- Dumping data for table menu_db.order_details: ~36 rows (approximately)
-DELETE FROM `order_details`;
+
 INSERT INTO `order_details` (`id`, `order_id`, `food_id`, `quantity`, `price`, `total_amount`, `created_at`, `updated_at`, `note`) VALUES
 	(75, 52, 26, 1, 30000, 28500, '2024-07-18 11:13:47', NULL, ''),
 	(76, 53, 26, 3, 30000, 85500, '2024-07-18 11:16:30', NULL, ''),
@@ -371,22 +286,9 @@ INSERT INTO `order_details` (`id`, `order_id`, `food_id`, `quantity`, `price`, `
 	(128, 71, 140, 1, 430000, 430000, '2024-07-23 07:28:30', NULL, ''),
 	(129, 71, 138, 1, 430000, 430000, '2024-07-23 07:28:30', NULL, '');
 
--- Dumping structure for table menu_db.personal_access_tokens
-DROP TABLE IF EXISTS `personal_access_tokens`;
-CREATE TABLE IF NOT EXISTS `personal_access_tokens` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `name` tinytext COLLATE utf8mb4_general_ci NOT NULL,
-  `tokenable_id` bigint NOT NULL,
-  `token` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `last_used_at` timestamp NULL DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `deleted_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE KEY `token` (`token`)
-) ENGINE=InnoDB AUTO_INCREMENT=322 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Dumping data for table menu_db.personal_access_tokens: ~123 rows (approximately)
-DELETE FROM `personal_access_tokens`;
+
 INSERT INTO `personal_access_tokens` (`id`, `name`, `tokenable_id`, `token`, `last_used_at`, `created_at`, `deleted_at`) VALUES
 	(161, 'default', 1, '306fb750759458309bb809f80695359d', '2024-07-16 03:50:20', '2024-07-16 02:51:56', NULL),
 	(162, 'default', 1, 'e0e2b53991a87e9527d857219d4cc3a8', '2024-07-16 03:57:05', '2024-07-16 03:57:05', '2024-07-16 04:03:11'),
@@ -521,43 +423,19 @@ INSERT INTO `personal_access_tokens` (`id`, `name`, `tokenable_id`, `token`, `la
 	(320, 'default', 1, '3bfae1871e10085c5e679871f0498b71', '2024-07-23 11:32:56', '2024-07-23 05:36:02', NULL),
 	(321, 'default', 1, '701c1f91deb4e66aaa66550eb7ea5f18', '2024-07-23 11:28:59', '2024-07-23 07:27:17', NULL);
 
--- Dumping structure for table menu_db.tables
-DROP TABLE IF EXISTS `tables`;
-CREATE TABLE IF NOT EXISTS `tables` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `name` text COLLATE utf8mb4_general_ci NOT NULL,
-  `seats` int NOT NULL,
-  `is_use` tinyint(1) NOT NULL,
-  `user_id` bigint unsigned NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  KEY `fk_users_tables` (`user_id`),
-  CONSTRAINT `fk_users_tables` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 
 -- Dumping data for table menu_db.tables: ~3 rows (approximately)
-DELETE FROM `tables`;
+
 INSERT INTO `tables` (`id`, `name`, `seats`, `is_use`, `user_id`, `created_at`, `updated_at`) VALUES
 	(5, 'ban 1', 2, 1, 1, '2024-07-17 04:23:25', '2024-07-18 11:13:47'),
 	(6, 'ban 2', 2, 1, 1, '2024-07-17 04:23:49', '2024-07-20 02:44:13'),
 	(7, 'ban 3', 3, 1, 1, '2024-07-17 04:23:56', '2024-07-18 11:18:06');
 
--- Dumping structure for table menu_db.users
-DROP TABLE IF EXISTS `users`;
-CREATE TABLE IF NOT EXISTS `users` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `full_name` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `phone_number` int NOT NULL,
-  `password` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `image` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 
 -- Dumping data for table menu_db.users: ~3 rows (approximately)
-DELETE FROM `users`;
+
 INSERT INTO `users` (`id`, `full_name`, `phone_number`, `password`, `image`, `created_at`, `updated_at`) VALUES
 	(1, 'Nguyen Tien Anh', 328023993, 'Io6x4kQrdfsifmhAWqoHDNAmCB0z71LMdlps/wA00AQeeG4mFfs8Ye5ZiN7wQk/3Nu2EAEAUFGTn8LUWZm2Pyz5JRg==', '/users/1/1721380675493.webp', '2024-06-14 07:21:57', '2024-07-20 08:16:41'),
 	(4, 'Nguyen Tien Anh', 123456789, 'Io6x4kQrdfsifmhAWqoHDNAmCB0z71LMdlps/wA00AQeeG4mFfs8Ye5ZiN7wQk/3Nu2EAEAUFGTn8LUWZm2Pyz5JRg==', NULL, '2024-07-17 06:08:41', '2024-07-20 08:16:41'),

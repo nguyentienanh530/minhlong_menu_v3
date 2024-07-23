@@ -17,10 +17,10 @@ class FoodBloc extends Bloc<FoodEvent, FoodState> {
     on<FoodFetched>(_onFoodFetched);
     on<FoodOnCategoryFetched>(_onFoodOnCategoryFetched);
     on<FoodLoadMore>(_onFoodLoadMore);
+    on<FoodOnCategoryLoadMore>(_foodOnCategoryLoadMore);
   }
 
   final FoodRepository _foodRepository;
-  ScrollController controller = ScrollController();
 
   FutureOr<void> _onFoodFetched(
       FoodFetched event, Emitter<FoodState> emit) async {
@@ -42,6 +42,25 @@ class FoodBloc extends Bloc<FoodEvent, FoodState> {
         emit(FoodFetchFailure(failure));
       },
     );
+  }
+
+  FutureOr<void> _foodOnCategoryLoadMore(
+      FoodOnCategoryLoadMore event, Emitter<FoodState> emit) async {
+    emit(FoodLoadMoreState(food: state.food));
+
+    final f = await _foodRepository.getFoodsOnCategory(
+      limit: event.limit,
+      page: event.page,
+      categoryID: event.categoryID,
+    );
+    f.when(success: (f) {
+      emit(FoodOnCategoryFetchSuccess(
+          food: state.food.copyWith(
+        foodItems: [...state.food.foodItems, ...f.foodItems],
+      )));
+    }, failure: (f) {
+      emit(FoodOnCategoryFetchFailure(f));
+    });
   }
 
   FutureOr<void> _onFoodOnCategoryFetched(
@@ -68,25 +87,17 @@ class FoodBloc extends Bloc<FoodEvent, FoodState> {
 
   FutureOr<void> _onFoodLoadMore(
       FoodLoadMore event, Emitter<FoodState> emit) async {
-    if (controller.position.pixels == controller.position.maxScrollExtent) {
-      print('reach the bottom');
-      var page = event.page;
-      page++;
-      if (page > state.food.paginationModel!.totalPage) return;
-      emit(FoodLoadMoreState(food: state.food));
+    emit(FoodLoadMoreState(food: state.food));
 
-      final f = await _foodRepository.getFoods(
-          page: page, limit: event.limit, property: event.property);
-      f.when(success: (f) {
-        emit(FoodFetchSuccess(
-            food: FoodModel(
-          foodItems: [...state.food.foodItems, ...f.foodItems],
-        )));
-      }, failure: (f) {
-        emit(FoodFetchFailure(f));
-      });
-    } else {
-      print("not called");
-    }
+    final f = await _foodRepository.getFoods(
+        page: event.page, limit: event.limit, property: event.property);
+    f.when(success: (f) {
+      emit(FoodFetchSuccess(
+          food: state.food.copyWith(
+        foodItems: [...state.food.foodItems, ...f.foodItems],
+      )));
+    }, failure: (f) {
+      emit(FoodFetchFailure(f));
+    });
   }
 }
