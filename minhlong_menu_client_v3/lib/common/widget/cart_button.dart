@@ -1,7 +1,6 @@
 import 'package:badges/badges.dart' as badges;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:minhlong_menu_client_v3/core/app_const.dart';
 
 import '../../core/app_asset.dart';
 import '../../core/app_colors.dart';
@@ -19,14 +18,13 @@ class CartButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Container(
-        alignment: Alignment.center,
-        width: 40,
-        height: 40,
-        child: InkWell(
-          onTap: onPressed,
-          borderRadius: BorderRadius.circular(defaultBorderRadius / 2),
+    return GestureDetector(
+      onTap: onPressed,
+      child: Card(
+        child: Container(
+          alignment: Alignment.center,
+          width: 40,
+          height: 40,
           child: badges.Badge(
             badgeStyle:
                 const badges.BadgeStyle(badgeColor: AppColors.islamicGreen),

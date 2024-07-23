@@ -56,13 +56,12 @@ class DioInterceptor extends Interceptor {
   }
 
   @override
-  void onError(DioException err, ErrorInterceptorHandler handler) {
+  void onError(DioException err, ErrorInterceptorHandler handler) async {
     final options = err.requestOptions;
-    // if (err.response?.statusCode != 401) {
-    //   return handler.next(err);
-    // } else {
-    //   _refreshTokenAndResolveError(err, handler);
-    // }
+    if (err.response?.statusCode == 401 &&
+        err.response?.data['message'] == 'Token expired') {
+      await _authLocalDatasource.removeAccessToken();
+    }
 
     logger.e(options.method); // Debug log
     logger.e(
@@ -94,7 +93,6 @@ class DioInterceptor extends Interceptor {
       accessToken = await refreshTokenFuction(token: token) ?? token;
     } on DioException catch (e) {
       print('caching error $e');
-      await _authLocalDatasource.removeAccessToken();
 
       return handler.next(e);
     }

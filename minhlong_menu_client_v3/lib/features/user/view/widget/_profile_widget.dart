@@ -31,7 +31,7 @@ extension _ProfileWidget on _ProfileScreenState {
                 svgPath: AppAsset.lock,
                 title: AppString.changePassword,
                 onTap: () => context.push(AppRoute.changePassword)),
-            _buildItemPrint(context),
+            // _buildItemPrint(context),
             _ItemProfile(
                 svgPath: AppAsset.logout,
                 title: 'Đăng xuất',
@@ -67,77 +67,77 @@ extension _ProfileWidget on _ProfileScreenState {
     //     });
   }
 
-  Widget _buildItemPrint(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: _isUsePrinter,
-      builder: (context, value, child) {
-        return Column(
-          children: [
-            Card(
-                elevation: 4,
-                shadowColor: AppColors.lavender,
-                child: SizedBox(
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                      Expanded(
-                        child: FittedBox(
-                          alignment: Alignment.centerLeft,
-                          fit: BoxFit.scaleDown,
-                          child: Row(children: [
-                            Padding(
-                                padding: const EdgeInsets.all(defaultPadding),
-                                child: SvgPicture.asset(AppAsset.print,
-                                    colorFilter: const ColorFilter.mode(
-                                        AppColors.themeColor,
-                                        BlendMode.srcIn))),
-                            Text(
-                              AppString.usePrinter,
-                              style: kBodyStyle.copyWith(
-                                  color: AppColors.secondTextColor),
-                            )
-                          ]),
-                        ),
-                      ),
-                      Expanded(
-                        child: FittedBox(
-                          alignment: Alignment.centerRight,
-                          fit: BoxFit.scaleDown,
-                          child: Transform.scale(
-                            scale: 0.8,
-                            child: Switch(
-                              activeTrackColor: AppColors.themeColor,
-                              inactiveTrackColor:
-                                  AppColors.themeColor.withOpacity(0.5),
-                              inactiveThumbColor: AppColors.white,
-                              value: _isUsePrinter.value,
-                              onChanged: (value) {
-                                _isUsePrinter.value = !_isUsePrinter.value;
-                              },
-                            ),
-                          ),
-                        ),
-                      ),
-                    ]))),
-            _isUsePrinter.value
-                ? Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: defaultPadding),
-                    child: _ItemProfile(
-                        svgPath: AppAsset.fileConfig,
-                        title: AppString.settingPrinter,
-                        titleStyle: kBodyStyle.copyWith(
-                            color: AppColors.secondTextColor),
-                        onTap: () {
-                          //  context.push(RouteName.printSeting)
-                        }),
-                  )
-                : const SizedBox()
-          ],
-        );
-      },
-    );
-  }
+//   Widget _buildItemPrint(BuildContext context) {
+//     return ValueListenableBuilder(
+//       valueListenable: _isUsePrinter,
+//       builder: (context, value, child) {
+//         return Column(
+//           children: [
+//             Card(
+//                 elevation: 4,
+//                 shadowColor: AppColors.lavender,
+//                 child: SizedBox(
+//                     child: Row(
+//                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                         children: [
+//                       Expanded(
+//                         child: FittedBox(
+//                           alignment: Alignment.centerLeft,
+//                           fit: BoxFit.scaleDown,
+//                           child: Row(children: [
+//                             Padding(
+//                                 padding: const EdgeInsets.all(defaultPadding),
+//                                 child: SvgPicture.asset(AppAsset.print,
+//                                     colorFilter: const ColorFilter.mode(
+//                                         AppColors.themeColor,
+//                                         BlendMode.srcIn))),
+//                             Text(
+//                               AppString.usePrinter,
+//                               style: kBodyStyle.copyWith(
+//                                   color: AppColors.secondTextColor),
+//                             )
+//                           ]),
+//                         ),
+//                       ),
+//                       Expanded(
+//                         child: FittedBox(
+//                           alignment: Alignment.centerRight,
+//                           fit: BoxFit.scaleDown,
+//                           child: Transform.scale(
+//                             scale: 0.8,
+//                             child: Switch(
+//                               activeTrackColor: AppColors.themeColor,
+//                               inactiveTrackColor:
+//                                   AppColors.themeColor.withOpacity(0.5),
+//                               inactiveThumbColor: AppColors.white,
+//                               value: _isUsePrinter.value,
+//                               onChanged: (value) {
+//                                 _isUsePrinter.value = !_isUsePrinter.value;
+//                               },
+//                             ),
+//                           ),
+//                         ),
+//                       ),
+//                     ]))),
+//             _isUsePrinter.value
+//                 ? Padding(
+//                     padding:
+//                         const EdgeInsets.symmetric(horizontal: defaultPadding),
+//                     child: _ItemProfile(
+//                         svgPath: AppAsset.fileConfig,
+//                         title: AppString.settingPrinter,
+//                         titleStyle: kBodyStyle.copyWith(
+//                             color: AppColors.secondTextColor),
+//                         onTap: () {
+//                           //  context.push(RouteName.printSeting)
+//                         }),
+//                   )
+//                 : const SizedBox()
+//           ],
+//         );
+//       },
+//     );
+//   }
 }
 
 class _ItemProfile extends StatelessWidget {

@@ -10,6 +10,7 @@ class OrderItem with _$OrderItem {
     @Default(0) int id,
     @Default('') String status,
     @Default(0) @JsonKey(name: 'table_id') int tableId,
+    @Default('') @JsonKey(name: 'table_name') String tableName,
     @Default(0) @JsonKey(name: 'total_price') double totalPrice,
     @JsonKey(name: 'payed_at') String? payedAt,
     @JsonKey(name: 'created_at') String? createdAt,

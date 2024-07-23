@@ -6,7 +6,7 @@ extension _OrderDetailDialog on _OrderViewState {
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(32.0))),
       contentPadding: const EdgeInsets.only(top: 10.0),
-      title: _buildHeaderDialog(orderItem.id),
+      title: _buildHeaderDialog(orderItem),
       backgroundColor: AppColors.background,
       content: SizedBox(
           height: 890.h,
@@ -23,7 +23,7 @@ extension _OrderDetailDialog on _OrderViewState {
     );
   }
 
-  Widget _buildHeaderDialog(int id) {
+  Widget _buildHeaderDialog(OrderItem orderItem) {
     return Row(
       children: [
         const Spacer(),
@@ -32,7 +32,7 @@ extension _OrderDetailDialog on _OrderViewState {
           child: FittedBox(
             fit: BoxFit.scaleDown,
             child: Text(
-              "Chi tiết đơn hàng #$id",
+              "Chi tiết đơn hàng #${orderItem.id}",
               style: kSubHeadingStyle.copyWith(
                 fontWeight: FontWeight.w700,
                 fontSize: 20,
@@ -45,7 +45,7 @@ extension _OrderDetailDialog on _OrderViewState {
             children: [
               CommonIconButton(
                 onTap: () {
-                  context.push(AppRoute.printScreen);
+                  context.push(AppRoute.printScreen, extra: orderItem);
                 },
                 icon: Icons.print,
                 color: AppColors.sun,

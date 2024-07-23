@@ -116,32 +116,44 @@ class HomeViewState extends State<HomeView>
       drawer: context.isMobile
           ? _buildSideMenuWidget(displayMode: SideMenuDisplayMode.open)
           : null,
-      body: BlocListener<AuthBloc, AuthState>(
-        listener: (context, state) {
-          switch (state) {
-            case AuthLogoutSuccess():
-              context.read<AuthBloc>().add(AuthEventStarted());
-              context.pushReplacement(AppRoute.login);
+      body: MultiBlocListener(
+        listeners: [
+          BlocListener<AuthBloc, AuthState>(
+            listener: (context, state) {
+              switch (state) {
+                case AuthLogoutSuccess():
+                  context.read<AuthBloc>().add(AuthEventStarted());
+                  context.pushReplacement(AppRoute.login);
 
-              break;
-            case AuthLogoutFailure(message: final msg):
-              showDialog(
-                context: context,
-                builder: (context) {
-                  return ErrorDialog(
-                    title: msg,
-                    onRetryText: 'Thử lại',
-                    onRetryPressed: () {
-                      context.pop();
-                      context.read<AuthBloc>().add(AuthLogoutStarted());
+                  break;
+                case AuthLogoutFailure(message: final msg):
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return ErrorDialog(
+                        title: msg,
+                        onRetryText: 'Thử lại',
+                        onRetryPressed: () {
+                          context.pop();
+                          context.read<AuthBloc>().add(AuthLogoutStarted());
+                        },
+                      );
                     },
                   );
-                },
-              );
-              break;
-            default:
-          }
-        },
+                  break;
+                default:
+              }
+            },
+          ),
+          BlocListener<UserBloc, UserState>(
+            listener: (context, state) {
+              if (state is UserFecthFailure) {
+                context.read<AuthBloc>().add(AuthEventStarted());
+                context.go(AppRoute.login);
+              }
+            },
+          ),
+        ],
         child: Row(
           children: [
             context.isMobile

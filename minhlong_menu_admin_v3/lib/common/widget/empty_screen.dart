@@ -25,7 +25,7 @@ class EmptyScreen extends StatelessWidget {
                   style: kSubHeadingStyle.copyWith(
                       fontWeight: FontWeight.bold, fontSize: 20))),
           const SizedBox(height: 16),
-          Center(
+          const Center(
               child: Text(
                   "Xin lỗi, chúng tôi không thể tìm thấy bất kỳ kết quả nào cho mặt hàng của bạn.",
                   style: kSubHeadingStyle,

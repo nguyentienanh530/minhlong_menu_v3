@@ -265,7 +265,7 @@ class InfoController extends Controller {
         data: responseData,
       );
     } catch (e) {
-      print('get info error: $e');
+      print('revenueFilterOnDate: $e');
       return AppResponse().error(
         statusCode: HttpStatus.internalServerError,
         message: 'connection error',

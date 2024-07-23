@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:minhlong_menu_admin_v3/core/utils.dart';
+import 'package:minhlong_menu_admin_v3/features/order/data/model/food_order_model.dart';
+import 'package:minhlong_menu_admin_v3/features/order/data/model/order_item.dart';
+
 import 'dart:typed_data';
 
 import 'package:pdf/pdf.dart';
@@ -6,86 +10,115 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
 class PrintScreen extends StatelessWidget {
-  const PrintScreen(this.title, {super.key});
+  const PrintScreen({super.key, required this.order});
 
-  final String title;
+  final OrderItem order;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(title)),
+      appBar: AppBar(title: const Text('In hóa đơn')),
       body: PdfPreview(
         // useActions: false,
-        build: (format) => _generatePdf(format, title),
+        build: (format) => _generatePdf(format),
       ),
     );
   }
 
-  Future<Uint8List> _generatePdf(PdfPageFormat format, String title) async {
+  Future<Uint8List> _generatePdf(PdfPageFormat format) async {
     final pdf = pw.Document(version: PdfVersion.pdf_1_5, compress: true);
     final font = await PdfGoogleFonts.robotoRegular();
-
+    final fontTitle = await PdfGoogleFonts.robotoBold();
+    double? bodySize = 11;
+    var bodyStyle = pw.TextStyle(font: font, fontSize: bodySize);
     pdf.addPage(
       pw.Page(
         pageFormat: format,
         build: (context) {
           return pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.center,
-            // mainAxisAlignment: pw.MainAxisAlignment.center,
             children: [
               pw.Text(
                 "OverCooked",
-                style:
-                    pw.TextStyle(fontSize: 50, fontWeight: pw.FontWeight.bold),
+                style: pw.TextStyle(fontSize: 25, font: fontTitle),
               ),
+              pw.SizedBox(height: 10),
               pw.Text(
                 "To 21 - Finom - Hiep Binh - Ha Noi",
-                style: const pw.TextStyle(fontSize: 14),
+                style: bodyStyle,
               ),
-              pw.SizedBox(height: 20),
-              pw.Text('Phiếu Thanh Toán'.toUpperCase(),
-                  style: pw.TextStyle(
-                      font: font,
-                      fontSize: 20,
-                      fontWeight: pw.FontWeight.bold)),
+              pw.SizedBox(height: 10),
+              pw.Text(
+                'Phiếu Thanh Toán'.toUpperCase(),
+                style: pw.TextStyle(
+                  font: fontTitle,
+                  fontSize: 14,
+                ),
+              ),
+              pw.SizedBox(height: 10),
+              pw.Text(
+                'Bàn: ${order.tableName}',
+                style: pw.TextStyle(
+                    font: font,
+                    fontSize: bodySize,
+                    fontWeight: pw.FontWeight.bold),
+              ),
+              pw.SizedBox(height: 10),
+              pw.Row(children: [
+                pw.Text(
+                    'Ngày: ${Ultils.formatDateToString(DateTime.now().toString(), isShort: true)}',
+                    style: bodyStyle),
+              ]),
+              pw.SizedBox(height: 10),
+              pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                  children: [
+                    pw.Text(
+                        'Giờ vào: ${Ultils.formatStringToTime(order.createdAt.toString(), isShort: true)}',
+                        style: bodyStyle),
+                    order.payedAt != null
+                        ? pw.Text(
+                            'Giờ ra: ${Ultils.formatStringToTime(order.payedAt.toString(), isShort: true)}',
+                            style: bodyStyle)
+                        : pw.Text(''),
+                  ]),
               pw.SizedBox(height: 20),
               pw.Table(children: [
-                pw.TableRow(children: [
-                  pw.Text("Tên món", style: pw.TextStyle(font: font)),
-                  pw.Text("SL", style: pw.TextStyle(font: font)),
-                  pw.Text("ĐG", style: pw.TextStyle(font: font)),
-                  pw.Text("T.Tiền", style: pw.TextStyle(font: font)),
-                ]),
+                pw.TableRow(
+                    verticalAlignment: pw.TableCellVerticalAlignment.middle,
+                    children: [
+                      pw.Expanded(
+                          flex: 3, child: pw.Text("Tên món", style: bodyStyle)),
+                      pw.Expanded(child: pw.Text("SL", style: bodyStyle)),
+                      pw.Expanded(
+                          flex: 2, child: pw.Text("Giá", style: bodyStyle)),
+                      pw.Expanded(
+                          flex: 2, child: pw.Text("T.Tiền", style: bodyStyle)),
+                    ]),
               ]),
               pw.Table(
                 border: const pw.TableBorder(
                     top: pw.BorderSide(style: pw.BorderStyle.dotted),
                     bottom: pw.BorderSide(style: pw.BorderStyle.dotted)),
-                children: [
-                  pw.TableRow(children: [
-                    pw.Text("Title", style: pw.TextStyle(font: font)),
-                    pw.Text("Content", style: pw.TextStyle(font: font)),
-                  ]),
-                  pw.TableRow(children: [
-                    pw.Text("Title", style: pw.TextStyle(font: font)),
-                    pw.Text("Content", style: pw.TextStyle(font: font)),
-                  ]),
-                  pw.TableRow(children: [
-                    pw.Text("Title", style: pw.TextStyle(font: font)),
-                    pw.Text("Content", style: pw.TextStyle(font: font)),
-                  ]),
-                ],
+                children: order.foodOrders
+                    .map((e) => _buildRowData(e, bodyStyle))
+                    .toList(),
               ),
-              // pw.SizedBox(height: 20),
-              // pw.Flexible(child: pw.FlutterLogo()),
-              pw.Column(children: [
-                pw.SizedBox(height: 20),
-                pw.Text("Hello World", style: pw.TextStyle(font: font)),
-                pw.Text("Hello World", style: pw.TextStyle(font: font)),
-                pw.Text("Hello World", style: pw.TextStyle(font: font)),
-                pw.Text("Hello World", style: pw.TextStyle(font: font)),
-                pw.Text("Hello World", style: pw.TextStyle(font: font)),
-              ])
+              pw.SizedBox(height: 10),
+              pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                  children: [
+                    pw.Text('Tổng tiền:',
+                        style: pw.TextStyle(font: fontTitle, fontSize: 14)),
+                    pw.Text(' ${Ultils.currencyFormat(order.totalPrice)}',
+                        style: pw.TextStyle(font: fontTitle, fontSize: 14)),
+                  ]),
+              pw.SizedBox(height: 10),
+              pw.Text('Cảm ơn Quý khách. Hẹn gặp lại.!',
+                  style: pw.TextStyle(
+                      font: font,
+                      fontSize: 11,
+                      fontStyle: pw.FontStyle.italic)),
             ],
           );
         },
@@ -95,12 +128,20 @@ class PrintScreen extends StatelessWidget {
     return pdf.save();
   }
 
-  pw.TableRow _buildRowData(pw.Font font) {
+  pw.TableRow _buildRowData(FoodOrderModel foodOrder, pw.TextStyle bodyStyle) {
     return pw.TableRow(children: [
-      pw.Text("Tên món", style: pw.TextStyle(font: font)),
-      pw.Text("SL", style: pw.TextStyle(font: font)),
-      pw.Text("ĐG", style: pw.TextStyle(font: font)),
-      pw.Text("T.Tiền", style: pw.TextStyle(font: font)),
+      _buildItem(foodOrder.name, bodyStyle, flex: 3),
+      _buildItem(foodOrder.quantity.toString(), bodyStyle),
+      _buildItem(Ultils.currencyFormat(foodOrder.price), bodyStyle, flex: 2),
+      _buildItem(Ultils.currencyFormat(foodOrder.totalAmount), bodyStyle,
+          flex: 2),
     ]);
+  }
+
+  pw.Widget _buildItem(String value, pw.TextStyle bodyStyle, {int flex = 1}) {
+    return pw.Expanded(
+      flex: flex,
+      child: pw.Text(value, style: bodyStyle),
+    );
   }
 }

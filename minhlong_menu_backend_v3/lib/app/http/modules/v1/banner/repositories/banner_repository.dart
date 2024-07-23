@@ -4,7 +4,11 @@ class BannerRepository {
   final Banner _banner;
   BannerRepository({required Banner banner}) : _banner = banner;
   Future getAll({required int userID}) async {
-    return await _banner.query().where('user_id', '=', userID).get();
+    return await _banner
+        .query()
+        .where('user_id', '=', userID)
+        .where('show', '=', 1)
+        .get();
   }
 
   Future get(

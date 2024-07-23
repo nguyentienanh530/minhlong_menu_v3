@@ -97,7 +97,7 @@ class OrderRepository {
     }
   }
 
-  Future getOrders(String status) async {
+  Future getOrders(String status, int userID) async {
     return await _orders
         .query()
         .select([
@@ -116,12 +116,15 @@ class OrderRepository {
           'foods.image4',
           'orders.total_price',
           'orders.payed_at',
+          'tables.name as table_name',
           'orders.created_at',
           'orders.updated_at'
         ])
         .join('order_details', 'orders.id', '=', 'order_details.order_id')
         .join('foods', 'foods.id', '=', 'order_details.food_id')
+        .join('tables', 'tables.id', '=', 'orders.table_id')
         .where('status', '=', status)
+        .where('orders.user_id', '=', userID)
         .get();
   }
 
@@ -142,7 +145,7 @@ class OrderRepository {
         .where('payed_at', '>=', startDate)
         .where('payed_at', '<=', endDate)
         .where('user_id', '=', userID)
-        .groupBy('payed_at')
+        // .groupBy('payed_at')
         .get();
   }
 

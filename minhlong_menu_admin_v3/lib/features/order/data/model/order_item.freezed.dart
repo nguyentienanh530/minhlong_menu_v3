@@ -24,6 +24,8 @@ mixin _$OrderItem {
   String get status => throw _privateConstructorUsedError;
   @JsonKey(name: 'table_id')
   int get tableId => throw _privateConstructorUsedError;
+  @JsonKey(name: 'table_name')
+  String get tableName => throw _privateConstructorUsedError;
   @JsonKey(name: 'total_price')
   double get totalPrice => throw _privateConstructorUsedError;
   @JsonKey(name: 'payed_at')
@@ -52,6 +54,7 @@ abstract class $OrderItemCopyWith<$Res> {
       {int id,
       String status,
       @JsonKey(name: 'table_id') int tableId,
+      @JsonKey(name: 'table_name') String tableName,
       @JsonKey(name: 'total_price') double totalPrice,
       @JsonKey(name: 'payed_at') String? payedAt,
       @JsonKey(name: 'created_at') String? createdAt,
@@ -76,6 +79,7 @@ class _$OrderItemCopyWithImpl<$Res, $Val extends OrderItem>
     Object? id = null,
     Object? status = null,
     Object? tableId = null,
+    Object? tableName = null,
     Object? totalPrice = null,
     Object? payedAt = freezed,
     Object? createdAt = freezed,
@@ -96,6 +100,10 @@ class _$OrderItemCopyWithImpl<$Res, $Val extends OrderItem>
           ? _value.tableId
           : tableId // ignore: cast_nullable_to_non_nullable
               as int,
+      tableName: null == tableName
+          ? _value.tableName
+          : tableName // ignore: cast_nullable_to_non_nullable
+              as String,
       totalPrice: null == totalPrice
           ? _value.totalPrice
           : totalPrice // ignore: cast_nullable_to_non_nullable
@@ -136,6 +144,7 @@ abstract class _$$OrderItemImplCopyWith<$Res>
       {int id,
       String status,
       @JsonKey(name: 'table_id') int tableId,
+      @JsonKey(name: 'table_name') String tableName,
       @JsonKey(name: 'total_price') double totalPrice,
       @JsonKey(name: 'payed_at') String? payedAt,
       @JsonKey(name: 'created_at') String? createdAt,
@@ -158,6 +167,7 @@ class __$$OrderItemImplCopyWithImpl<$Res>
     Object? id = null,
     Object? status = null,
     Object? tableId = null,
+    Object? tableName = null,
     Object? totalPrice = null,
     Object? payedAt = freezed,
     Object? createdAt = freezed,
@@ -178,6 +188,10 @@ class __$$OrderItemImplCopyWithImpl<$Res>
           ? _value.tableId
           : tableId // ignore: cast_nullable_to_non_nullable
               as int,
+      tableName: null == tableName
+          ? _value.tableName
+          : tableName // ignore: cast_nullable_to_non_nullable
+              as String,
       totalPrice: null == totalPrice
           ? _value.totalPrice
           : totalPrice // ignore: cast_nullable_to_non_nullable
@@ -213,6 +227,7 @@ class _$OrderItemImpl implements _OrderItem {
       {this.id = 0,
       this.status = '',
       @JsonKey(name: 'table_id') this.tableId = 0,
+      @JsonKey(name: 'table_name') this.tableName = '',
       @JsonKey(name: 'total_price') this.totalPrice = 0,
       @JsonKey(name: 'payed_at') this.payedAt,
       @JsonKey(name: 'created_at') this.createdAt,
@@ -234,6 +249,9 @@ class _$OrderItemImpl implements _OrderItem {
   @override
   @JsonKey(name: 'table_id')
   final int tableId;
+  @override
+  @JsonKey(name: 'table_name')
+  final String tableName;
   @override
   @JsonKey(name: 'total_price')
   final double totalPrice;
@@ -260,7 +278,7 @@ class _$OrderItemImpl implements _OrderItem {
 
   @override
   String toString() {
-    return 'OrderItem(id: $id, status: $status, tableId: $tableId, totalPrice: $totalPrice, payedAt: $payedAt, createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt, foodOrders: $foodOrders)';
+    return 'OrderItem(id: $id, status: $status, tableId: $tableId, tableName: $tableName, totalPrice: $totalPrice, payedAt: $payedAt, createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt, foodOrders: $foodOrders)';
   }
 
   @override
@@ -271,6 +289,8 @@ class _$OrderItemImpl implements _OrderItem {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.status, status) || other.status == status) &&
             (identical(other.tableId, tableId) || other.tableId == tableId) &&
+            (identical(other.tableName, tableName) ||
+                other.tableName == tableName) &&
             (identical(other.totalPrice, totalPrice) ||
                 other.totalPrice == totalPrice) &&
             (identical(other.payedAt, payedAt) || other.payedAt == payedAt) &&
@@ -291,6 +311,7 @@ class _$OrderItemImpl implements _OrderItem {
       id,
       status,
       tableId,
+      tableName,
       totalPrice,
       payedAt,
       createdAt,
@@ -317,6 +338,7 @@ abstract class _OrderItem implements OrderItem {
           {final int id,
           final String status,
           @JsonKey(name: 'table_id') final int tableId,
+          @JsonKey(name: 'table_name') final String tableName,
           @JsonKey(name: 'total_price') final double totalPrice,
           @JsonKey(name: 'payed_at') final String? payedAt,
           @JsonKey(name: 'created_at') final String? createdAt,
@@ -335,6 +357,9 @@ abstract class _OrderItem implements OrderItem {
   @override
   @JsonKey(name: 'table_id')
   int get tableId;
+  @override
+  @JsonKey(name: 'table_name')
+  String get tableName;
   @override
   @JsonKey(name: 'total_price')
   double get totalPrice;

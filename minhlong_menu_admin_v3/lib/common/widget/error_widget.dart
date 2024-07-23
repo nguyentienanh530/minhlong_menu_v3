@@ -39,7 +39,7 @@ class ErrWidget extends StatelessWidget {
                     ),
                     icon: const Icon(Icons.refresh, size: 15),
                     onPressed: onRetryPressed,
-                    label: Text('Thử lại', style: kButtonWhiteStyle))
+                    label: const Text('Thử lại', style: kButtonWhiteStyle))
               ],
             ),
           ),

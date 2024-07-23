@@ -99,6 +99,14 @@ class Ultils {
     return 'Ngày ${dateTime.day} tháng ${dateTime.month} năm ${dateTime.year}';
   }
 
+  static String formatStringToTime(String date,
+      {bool isShort = false, bool isTime = false}) {
+    DateTime dateTime = DateTime.parse(date);
+
+    final formattedDate = DateFormat('HH:mm');
+    return formattedDate.format(dateTime);
+  }
+
   static String currencyFormat(double double) {
     final oCcy = NumberFormat("###,###,###", "vi");
     return oCcy.format(double);

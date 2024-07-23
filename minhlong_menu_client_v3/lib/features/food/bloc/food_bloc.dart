@@ -1,7 +1,8 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter/material.dart';
+
 import 'package:minhlong_menu_client_v3/features/food/data/repositories/food_repository.dart';
 
 import '../data/model/food_model.dart';
@@ -15,9 +16,11 @@ class FoodBloc extends Bloc<FoodEvent, FoodState> {
         super(FoodInitial()) {
     on<FoodFetched>(_onFoodFetched);
     on<FoodOnCategoryFetched>(_onFoodOnCategoryFetched);
+    on<FoodLoadMore>(_onFoodLoadMore);
   }
 
   final FoodRepository _foodRepository;
+  ScrollController controller = ScrollController();
 
   FutureOr<void> _onFoodFetched(
       FoodFetched event, Emitter<FoodState> emit) async {
@@ -32,7 +35,7 @@ class FoodBloc extends Bloc<FoodEvent, FoodState> {
         if (food.foodItems.isEmpty) {
           emit(FoodFetchEmpty());
         } else {
-          emit(FoodFetchSuccess(food));
+          emit(FoodFetchSuccess(food: food));
         }
       },
       failure: (String failure) {
@@ -54,12 +57,36 @@ class FoodBloc extends Bloc<FoodEvent, FoodState> {
         if (food.foodItems.isEmpty) {
           emit(FoodOnCategoryFetchEmpty());
         } else {
-          emit(FoodOnCategoryFetchSuccess(food));
+          emit(FoodOnCategoryFetchSuccess(food: food));
         }
       },
       failure: (String failure) {
         emit(FoodOnCategoryFetchFailure(failure));
       },
     );
+  }
+
+  FutureOr<void> _onFoodLoadMore(
+      FoodLoadMore event, Emitter<FoodState> emit) async {
+    if (controller.position.pixels == controller.position.maxScrollExtent) {
+      print('reach the bottom');
+      var page = event.page;
+      page++;
+      if (page > state.food.paginationModel!.totalPage) return;
+      emit(FoodLoadMoreState(food: state.food));
+
+      final f = await _foodRepository.getFoods(
+          page: page, limit: event.limit, property: event.property);
+      f.when(success: (f) {
+        emit(FoodFetchSuccess(
+            food: FoodModel(
+          foodItems: [...state.food.foodItems, ...f.foodItems],
+        )));
+      }, failure: (f) {
+        emit(FoodFetchFailure(f));
+      });
+    } else {
+      print("not called");
+    }
   }
 }

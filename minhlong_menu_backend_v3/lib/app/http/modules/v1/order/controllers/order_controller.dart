@@ -154,8 +154,15 @@ class OrderController extends Controller {
       String status = request.input('status') ?? 'new';
       int page = request.input('page') ?? 1;
       int limit = request.input('limit') ?? 10;
+      final userID = Auth().id();
+      if (userID == null) {
+        return AppResponse().error(
+          statusCode: HttpStatus.unauthorized,
+          message: 'unauthorized',
+        );
+      }
 
-      var orders = await _orderRepository.getOrders(status);
+      var orders = await _orderRepository.getOrders(status, userID);
 
       List<Map<String, dynamic>> formattedOrders = [];
 
@@ -166,6 +173,7 @@ class OrderController extends Controller {
           'id': id,
           'status': ordersList.first['status'],
           'total_price': ordersList.first['total_price'],
+          'table_name': ordersList.first['table_name'],
           'payed_at': ordersList.first['payed_at'],
           'table_id': ordersList.first['table_id'],
           'created_at': ordersList.first['created_at'],
@@ -177,7 +185,10 @@ class OrderController extends Controller {
               'price': order['price'],
               'note': order['note'],
               'total_amount': order['total_amount'],
-              'photo_gallery': order['photo_gallery'],
+              'image1': order['image1'],
+              'image2': order['image2'],
+              'image3': order['image3'],
+              'image4': order['image4'],
             };
           }).toList(),
         };
