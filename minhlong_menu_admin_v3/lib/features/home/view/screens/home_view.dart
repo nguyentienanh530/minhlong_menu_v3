@@ -27,7 +27,6 @@ import '../../../../core/app_asset.dart';
 import '../../../../core/app_colors.dart';
 import '../../../../core/app_style.dart';
 import '../../../auth/bloc/auth_bloc.dart';
-import '../../../setting/view/screens/setting_loading_screen.dart';
 
 part '../widgets/_side_menu.dart';
 
@@ -84,11 +83,6 @@ class HomeViewState extends State<HomeView>
       'icon': Icons.settings,
       'route': AppRoute.settings,
     },
-    {
-      'title': 'Cài đặt',
-      'icon': Icons.settings,
-      'route': AppRoute.loadScreen,
-    }
   ];
   final _title = ValueNotifier('');
 
@@ -185,7 +179,6 @@ class HomeViewState extends State<HomeView>
                         const CategoryScreen(),
                         const BannerScreen(),
                         const SettingScreen(),
-                        const SettingLoadingScreen(),
                       ].length,
                       physics: const NeverScrollableScrollPhysics(),
                       itemBuilder: (context, index) {
@@ -200,7 +193,6 @@ class HomeViewState extends State<HomeView>
                           const CategoryScreen(),
                           const BannerScreen(),
                           const SettingScreen(),
-                          const SettingLoadingScreen(),
                         ][index];
                       },
                       controller: _pageCtrl,
