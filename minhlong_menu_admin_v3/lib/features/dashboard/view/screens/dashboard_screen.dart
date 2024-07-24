@@ -1,4 +1,6 @@
 import 'dart:convert';
+
+import 'package:badges/badges.dart' as badges;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,7 +13,6 @@ import 'package:minhlong_menu_admin_v3/common/widget/error_build_image.dart';
 import 'package:minhlong_menu_admin_v3/common/widget/error_widget.dart';
 import 'package:minhlong_menu_admin_v3/common/widget/loading.dart';
 import 'package:minhlong_menu_admin_v3/core/extensions.dart';
-import 'package:badges/badges.dart' as badges;
 import 'package:minhlong_menu_admin_v3/features/dashboard/bloc/best_selling_food/best_selling_food_bloc.dart';
 import 'package:minhlong_menu_admin_v3/features/dashboard/bloc/data_chart/data_chart_bloc.dart';
 import 'package:minhlong_menu_admin_v3/features/dashboard/bloc/info/info_bloc.dart';
@@ -23,6 +24,7 @@ import 'package:minhlong_menu_admin_v3/features/user/bloc/user_bloc.dart';
 import 'package:minhlong_menu_admin_v3/features/user/data/model/user_model.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
+
 import '../../../../common/snackbar/overlay_snackbar.dart';
 import '../../../../common/widget/common_icon_button.dart';
 import '../../../../core/api_config.dart';
@@ -36,9 +38,10 @@ import '../../../order/data/model/order_item.dart';
 import '../../data/model/data_chart.dart';
 import '../widgets/_column_revenue_chart.dart';
 import '../widgets/chart_revenue.dart';
-part '../widgets/_table_widget.dart';
-part '../widgets/_orders_on_table_widget.dart';
+
 part '../widgets/_info_widget.dart';
+part '../widgets/_orders_on_table_widget.dart';
+part '../widgets/_table_widget.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen(

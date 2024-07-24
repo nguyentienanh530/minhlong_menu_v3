@@ -9,12 +9,13 @@ import 'package:minhlong_menu_admin_v3/features/category/view/screens/category_s
 // import 'package:minhlong_menu_admin_v3/features/dashboard/view/screens/dashboard_screen.dart';
 import 'package:minhlong_menu_admin_v3/features/dinner_table/view/screens/dinner_table_screen.dart';
 import 'package:minhlong_menu_admin_v3/features/food/view/screens/food_screen.dart';
-import 'package:minhlong_menu_admin_v3/features/home/view/screens/home_screen.dart';
+import 'package:minhlong_menu_admin_v3/features/home/view/screens/home_view.dart';
 import 'package:minhlong_menu_admin_v3/features/order/view/screens/order_screen.dart';
 import 'package:minhlong_menu_admin_v3/features/print/view/screens/print_screen.dart';
 import 'package:minhlong_menu_admin_v3/features/user/data/model/user_model.dart';
 import 'package:minhlong_menu_admin_v3/features/user/view/widgets/change_password.dart';
 
+import '../features/setting/view/screens/setting_loading_screen.dart';
 import '../features/user/view/screens/edit_profile_screen.dart';
 // import 'package:minhlong_menu_admin_v3/features/setting/view/screens/setting_screen.dart';
 
@@ -35,6 +36,7 @@ class AppRoute {
   static const String updatePassword = '/update-password';
   static const String editProfile = '/edit-profile';
   static const String printScreen = '/print-screen';
+  static const String loadScreen = '/load-screen';
 
   static const publicRoute = [login, forgotPassword, signUp];
 
@@ -56,7 +58,7 @@ class AppRoute {
           return buildPageWithDefaultTransition(
             context: context,
             state: state,
-            child: const HomeScreen(),
+            child: const HomeView(),
           );
         },
       ),
@@ -169,6 +171,16 @@ class AppRoute {
             context: context,
             state: state,
             child: const PrintScreen('title'),
+          );
+        },
+      ),
+      GoRoute(
+        path: loadScreen,
+        pageBuilder: (context, state) {
+          return buildPageWithDefaultTransition(
+            context: context,
+            state: state,
+            child: const SettingLoadingScreen(),
           );
         },
       ),
