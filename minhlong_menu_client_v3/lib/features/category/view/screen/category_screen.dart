@@ -58,8 +58,9 @@ class _CategoryViewState extends State<CategoryView> {
   final _foodCount = ValueNotifier(0);
   late ScrollController controller;
   var _page = 1;
-  var _isLoadMore = false;
+  final _isLoadMore = ValueNotifier(false);
   var _isMaxData = false;
+  final _limit = 10;
 
   @override
   void initState() {
@@ -79,20 +80,20 @@ class _CategoryViewState extends State<CategoryView> {
 
   void _getData({required int page}) {
     context.read<FoodBloc>().add(FoodOnCategoryFetched(
-        page: page, limit: 20, categoryID: _categoryModel.id));
+        page: page, limit: _limit, categoryID: _categoryModel.id));
   }
 
   void _scrollListener() {
-    if (_isLoadMore) return;
+    if (_isLoadMore.value) return;
     if (_isMaxData) return;
 
     if (controller.position.pixels == controller.position.maxScrollExtent) {
-      _isLoadMore = true;
+      _isLoadMore.value = true;
       _page = _page + 1;
       context.read<FoodBloc>().add(FoodOnCategoryLoadMore(
-          page: _page, limit: 20, categoryID: _categoryModel.id));
+          page: _page, limit: _limit, categoryID: _categoryModel.id));
 
-      _isLoadMore = false;
+      _isLoadMore.value = false;
     }
   }
 
@@ -100,34 +101,60 @@ class _CategoryViewState extends State<CategoryView> {
   Widget build(BuildContext context) {
     var cart = context.watch<CartCubit>().state;
     var table = context.watch<TableCubit>().state;
-    return Scaffold(
-        body: CustomScrollView(
-      controller: controller,
-      physics: const BouncingScrollPhysics(),
-      slivers: [
-        SliverAppBar(
-          pinned: true,
-          stretch: true,
-          leading: CommonBackButton(onTap: () => context.pop()),
-          backgroundColor: AppColors.transparent,
-          expandedHeight: context.isPortrait
-              ? 0.4 * context.sizeDevice.height
-              : 0.4 * context.sizeDevice.width,
-          flexibleSpace: FlexibleSpaceBar(
-            background: _buildHeader(_categoryModel),
-          ),
-          actions: [
-            CartButton(
-                onPressed: () => context.push(AppRoute.carts),
-                number: cart.orderDetail.length.toString(),
-                colorIcon: AppColors.themeColor),
-            const SizedBox(width: 10),
-          ],
-        ),
-        SliverPadding(
-            padding: const EdgeInsets.all(defaultPadding),
-            sliver: _buildBody(cart, table)),
-      ],
+    return Scaffold(body: BlocBuilder<FoodBloc, FoodState>(
+      builder: (context, state) {
+        if (state.food.paginationModel != null) {
+          _page > state.food.paginationModel!.totalPage
+              ? _isMaxData = true
+              : _isMaxData = false;
+        }
+
+        if (state is FoodOnCategoryFetchInProgress) {
+          return const SliverToBoxAdapter(child: Loading());
+        } else if (state is FoodOnCategoryFetchFailure) {
+          return SliverToBoxAdapter(child: ErrWidget(error: state.message));
+        } else {
+          // return _buildWidgetWhenFetchSuccess(order, table, state.food);
+          return CustomScrollView(
+            controller: controller,
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              SliverAppBar(
+                pinned: true,
+                stretch: true,
+                leading: CommonBackButton(onTap: () => context.pop()),
+                backgroundColor: AppColors.transparent,
+                expandedHeight: context.isPortrait
+                    ? 0.4 * context.sizeDevice.height
+                    : 0.4 * context.sizeDevice.width,
+                flexibleSpace: FlexibleSpaceBar(
+                  background: _buildHeader(_categoryModel),
+                ),
+                actions: [
+                  CartButton(
+                      onPressed: () => context.push(AppRoute.carts),
+                      number: cart.orderDetail.length.toString(),
+                      colorIcon: AppColors.themeColor),
+                  const SizedBox(width: 10),
+                ],
+              ),
+              SliverMainAxisGroup(
+                slivers: [
+                  _buildWidgetWhenFetchSuccess(cart, table, state.food),
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: defaultPadding),
+                      child: state is FoodOnCategoryLoadMore
+                          ? const Loading()
+                          : const SizedBox(),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          );
+        }
+      },
     ));
   }
 
@@ -184,26 +211,21 @@ class _CategoryViewState extends State<CategoryView> {
     );
   }
 
-  Widget _buildBody(OrderModel order, TableModel table) {
-    return BlocBuilder<FoodBloc, FoodState>(builder: (context, state) {
-      if (state.food.paginationModel != null) {
-        _page > state.food.paginationModel!.totalPage
-            ? _isMaxData = true
-            : _isMaxData = false;
-      }
-      return (switch (state) {
-        FoodOnCategoryFetchInProgress() =>
-          const SliverToBoxAdapter(child: Loading()),
-        FoodOnCategoryFetchEmpty() =>
-          const SliverToBoxAdapter(child: EmptyWidget()),
-        FoodOnCategoryFetchFailure() =>
-          SliverToBoxAdapter(child: ErrWidget(error: state.message)),
-        FoodOnCategoryFetchSuccess() =>
-          _buildWidgetWhenFetchSuccess(order, table, state.food),
-        _ => const SliverToBoxAdapter(child: SizedBox())
-      });
-    });
-  }
+  // Widget _buildBody(OrderModel order, TableModel table) {
+  //   return BlocBuilder<FoodBloc, FoodState>(builder: (context, state) {
+  //     // return (switch (state) {
+  //     //   FoodOnCategoryFetchInProgress() =>
+  //     //     const SliverToBoxAdapter(child: Loading()),
+  //     //   FoodOnCategoryFetchEmpty() =>
+  //     //     const SliverToBoxAdapter(child: EmptyWidget()),
+  //     //   FoodOnCategoryFetchFailure() =>
+  //     //     SliverToBoxAdapter(child: ErrWidget(error: state.message)),
+  //     //   FoodOnCategoryFetchSuccess() =>
+
+  //     //   _ => const SliverToBoxAdapter(child: Loading())
+  //     // });
+  //   });
+  // }
 
   Widget _buildWidgetWhenFetchSuccess(
       OrderModel order, TableModel table, FoodModel food) {
