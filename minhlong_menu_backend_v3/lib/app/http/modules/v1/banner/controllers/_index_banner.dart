@@ -2,11 +2,13 @@ part of '../controllers/banner_controller.dart';
 
 extension IndexBannerCtrl on BannerController {
   Future<Response> index(Request request) async {
+    int? userID = request.headers[ConstRes.userID] != null
+        ? int.tryParse(request.headers[ConstRes.userID])
+        : -1;
     var params = request.all();
 
     try {
-      final userID = Auth().id();
-      if (userID == null) {
+      if (userID == null || userID == -1) {
         return AppResponse().error(
             statusCode: HttpStatus.unauthorized, message: 'unauthorized');
       }

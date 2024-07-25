@@ -9,10 +9,12 @@ class UserController extends Controller {
     try {
       Map? user = Auth().user();
       print('user: $user');
+      print('user: $user');
       user?.remove('password');
 
       return AppResponse().ok(statusCode: HttpStatus.ok, data: user);
     } catch (e) {
+      print('connection error: $e');
       return AppResponse().error(
           statusCode: HttpStatus.internalServerError,
           message: 'connection error');

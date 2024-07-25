@@ -4,7 +4,7 @@ extension CreateBannerCtrl on BannerController {
   Future<Response> create(Request request) async {
     Map<String, dynamic> data = request.all();
     try {
-      print(data);
+      // int? userID =;
 
       var userID = Auth().id();
       if (userID == null) {

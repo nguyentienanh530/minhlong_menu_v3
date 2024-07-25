@@ -1,59 +1,54 @@
 import 'package:device_preview/device_preview.dart';
-// import 'package:flutter/foundation.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:minhlong_menu_client_v3/Routes/app_route.dart';
+
 import 'package:minhlong_menu_client_v3/features/auth/bloc/auth_bloc.dart';
-import 'package:minhlong_menu_client_v3/features/auth/cubit/access_token_cubit.dart';
 import 'package:minhlong_menu_client_v3/features/auth/data/auth_local_datasource/auth_local_datasource.dart';
 import 'package:minhlong_menu_client_v3/features/auth/data/provider/remote/auth_api.dart';
 import 'package:minhlong_menu_client_v3/features/auth/data/respositories/auth_repository.dart';
-import 'package:minhlong_menu_client_v3/features/cart/cubit/cart_cubit.dart';
-import 'package:minhlong_menu_client_v3/features/food/cubit/item_size_cubit.dart';
-import 'package:minhlong_menu_client_v3/features/food/data/provider/food_api.dart';
-import 'package:minhlong_menu_client_v3/features/order/bloc/order_bloc.dart';
-import 'package:minhlong_menu_client_v3/features/order/data/provider/order_api.dart';
-import 'package:minhlong_menu_client_v3/features/order/data/repositories/order_repository.dart';
-import 'package:minhlong_menu_client_v3/features/table/cubit/table_cubit.dart';
-import 'package:minhlong_menu_client_v3/features/user/bloc/user_bloc.dart';
-import 'package:minhlong_menu_client_v3/features/user/data/provider/user_api.dart';
-import 'package:minhlong_menu_client_v3/features/user/data/repositories/user_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'bloc_observer.dart';
 import 'common/network/dio_client.dart';
 import 'common/network/dio_interceptor.dart';
+import 'core/api_config.dart';
 import 'core/app_colors.dart';
-import 'features/food/data/repositories/food_repository.dart';
+import 'features/user/bloc/user_bloc.dart';
+import 'features/user/data/provider/user_api.dart';
+import 'features/user/data/repositories/user_repository.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = const AppBlocObserver();
   final sf = await SharedPreferences.getInstance();
-  dio.interceptors.add(DioInterceptor(sf));
+  dio = Dio(BaseOptions(
+    baseUrl: ApiConfig.baseUrl,
+    // headers: {
+    //   'Content-Type': 'application/json',
+    //   'Accept': 'application/json',
+    //   'Authorization': ''
+    // },
+    connectTimeout: ApiConfig.connectionTimeout,
+    receiveTimeout: ApiConfig.receiveTimeout,
+    responseType: ResponseType.json,
+  ));
+  dio.interceptors.add(
+    DioInterceptor(sf),
+  );
   runApp(DevicePreview(
       // enabled: !kReleaseMode,
       enabled: false,
       builder: (context) => MainApp(sf: sf)));
 }
 
-class MainApp extends StatefulWidget {
+class MainApp extends StatelessWidget {
   const MainApp({super.key, required this.sf});
 
   final SharedPreferences sf;
-
-  @override
-  State<MainApp> createState() => _MainAppState();
-}
-
-class _MainAppState extends State<MainApp> {
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,61 +57,39 @@ class _MainAppState extends State<MainApp> {
         RepositoryProvider(
           create: (context) => AuthRepository(
             authApi: AuthApi(dio: dio),
-            authLocalDatasource: AuthLocalDatasource(widget.sf),
-          ),
-        ),
-        RepositoryProvider(
-          create: (context) => FoodRepository(
-            foodApi: FoodApi(dio: dio),
-          ),
-        ),
-        RepositoryProvider(
-          create: (context) => OrderRepository(
-            orderApi: OrderApi(dio),
+            authLocalDatasource: AuthLocalDatasource(sf),
           ),
         ),
         RepositoryProvider(
           create: (context) => UserRepository(
-            userApi: UserApi(dio: dio),
+            userApi: UserApi(
+              dio: dio,
+            ),
           ),
         ),
       ],
       child: MultiBlocProvider(
         providers: [
           BlocProvider(
-            create: (context) => AuthBloc(context.read<AuthRepository>()),
+            create: (context) => AuthBloc(
+              context.read<AuthRepository>(),
+            ),
           ),
           BlocProvider(
-            create: (context) => ItemSizeCubit(),
+            create: (context) => UserBloc(
+              userRepository: context.read<UserRepository>(),
+            ),
           ),
-          BlocProvider(
-            create: (context) => CartCubit(),
-          ),
-          BlocProvider(
-            create: (context) => TableCubit(),
-          ),
-          BlocProvider(
-            create: (context) =>
-                OrderBloc(orderRepository: context.read<OrderRepository>()),
-          ),
-          BlocProvider(
-            create: (context) =>
-                UserBloc(userRepository: context.read<UserRepository>()),
-          ),
-          BlocProvider(
-            create: (context) => AccessTokenCubit(),
-          )
         ],
-        child: const AppContent(),
+        child: AppContent(sf: sf),
       ),
     );
   }
 }
 
 class AppContent extends StatefulWidget {
-  const AppContent({
-    super.key,
-  });
+  const AppContent({super.key, required this.sf});
+  final SharedPreferences sf;
 
   @override
   State<AppContent> createState() => _AppContentState();
@@ -125,8 +98,8 @@ class AppContent extends StatefulWidget {
 class _AppContentState extends State<AppContent> {
   @override
   void initState() {
-    context.read<AuthBloc>().add(AuthAuthenticateStarted());
     super.initState();
+    context.read<AuthBloc>().add(AuthAuthenticateStarted());
   }
 
   @override
@@ -136,7 +109,8 @@ class _AppContentState extends State<AppContent> {
       return Container();
     }
     if (state is AuthAuthenticateSuccess) {
-      context.read<AccessTokenCubit>().setAccessToken(state.accessToken);
+      print('accessToken: ${state.accessToken}');
+      context.read<UserBloc>().add(UserFetched(state.accessToken));
     }
 
     return ScreenUtilInit(
@@ -147,8 +121,6 @@ class _AppContentState extends State<AppContent> {
       builder: (_, child) {
         return MaterialApp.router(
           debugShowCheckedModeBanner: false,
-          // ignore: deprecated_member_use
-          useInheritedMediaQuery: true,
           locale: DevicePreview.locale(context),
           builder: DevicePreview.appBuilder,
           routerConfig: AppRoute.routes,
@@ -207,7 +179,6 @@ class _AppContentState extends State<AppContent> {
 }
 
 class MyCustomScrollBehavior extends MaterialScrollBehavior {
-  // Override behavior methods and getters like dragDevices
   @override
   Set<PointerDeviceKind> get dragDevices =>
       {PointerDeviceKind.touch, PointerDeviceKind.mouse};

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:minhlong_menu_client_v3/features/auth/data/model/access_token.dart';
 import '../data/model/user_model.dart';
 import '../data/repositories/user_repository.dart';
 part 'user_event.dart';
@@ -20,7 +21,9 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
   FutureOr<void> _onUserFetched(UserFetched event, Emit emit) async {
     emit(UserFecthInProgress());
-    final result = await _userRepository.getUser();
+    final result = await _userRepository.getUser(
+      accessToken: event.accessToken,
+    );
     result.when(
       success: (user) {
         emit(UserFecthSuccess(user));

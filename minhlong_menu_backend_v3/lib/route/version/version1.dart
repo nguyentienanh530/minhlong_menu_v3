@@ -103,7 +103,7 @@ class Version1 implements Route {
         Router.delete("{id}", _bannerController.destroy);
       },
       prefix: '/banners',
-      middleware: [AuthenticateMiddleware()],
+      // middleware: [AuthenticateMiddleware()],
     );
 
     //======= Order route =======

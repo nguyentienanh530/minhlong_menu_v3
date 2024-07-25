@@ -1,11 +1,8 @@
 import 'dart:async';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../data/dto/login_dto.dart';
 import '../data/model/access_token.dart';
 import '../data/respositories/auth_repository.dart';
-
 part 'auth_event.dart';
 part 'auth_state.dart';
 

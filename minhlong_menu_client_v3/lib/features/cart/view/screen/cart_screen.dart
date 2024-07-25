@@ -13,7 +13,8 @@ import 'package:minhlong_menu_client_v3/common/widget/loading.dart';
 import 'package:minhlong_menu_client_v3/core/app_colors.dart';
 import 'package:minhlong_menu_client_v3/core/app_const.dart';
 import 'package:minhlong_menu_client_v3/core/app_style.dart';
-import 'package:minhlong_menu_client_v3/features/auth/cubit/access_token_cubit.dart';
+import 'package:minhlong_menu_client_v3/core/const_res.dart';
+
 import 'package:minhlong_menu_client_v3/features/cart/cubit/cart_cubit.dart';
 import 'package:minhlong_menu_client_v3/features/order/data/model/order_detail.dart';
 import 'package:minhlong_menu_client_v3/features/order/data/model/order_model.dart';
@@ -40,20 +41,16 @@ class CartScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var accessToken = context.watch<AccessTokenCubit>().state;
     return BlocProvider(
       create: (context) =>
           OrderBloc(orderRepository: context.read<OrderRepository>()),
-      child: CartView(
-        accessToken: accessToken.accessToken,
-      ),
+      child: const CartView(),
     );
   }
 }
 
 class CartView extends StatefulWidget {
-  const CartView({super.key, required this.accessToken});
-  final String accessToken;
+  const CartView({super.key});
 
   @override
   State<CartView> createState() => _CartViewState();
@@ -70,12 +67,12 @@ class _CartViewState extends State<CartView> {
     _tableChannel = IOWebSocketChannel.connect(
         Uri.parse(ApiConfig.tablesSocketUrl),
         headers: {
-          'Authorization': 'Bearer ${widget.accessToken}',
+          ConstRes.userID: _user.id.toString(),
         });
     _orderChannel = IOWebSocketChannel.connect(
         Uri.parse(ApiConfig.ordersSocketUrl),
         headers: {
-          'Authorization': 'Bearer ${widget.accessToken}',
+          ConstRes.userID: _user.id.toString(),
         });
   }
 

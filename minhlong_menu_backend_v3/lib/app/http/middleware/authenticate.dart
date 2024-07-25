@@ -9,7 +9,7 @@ class AuthenticateWebSocketMiddleware extends WebSocketMiddleware {
   @override
   Future handle(HttpRequest req) async {
     String? token =
-        req.headers['authorization']?.first.replaceFirst('Bearer ', '');
+        req.headers['Authorization']?.first.replaceFirst('Bearer ', '');
     try {
       await Auth().check(token ?? '');
 

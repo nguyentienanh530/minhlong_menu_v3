@@ -3,6 +3,7 @@ import 'package:logger/logger.dart';
 
 import '../../../../common/network/dio_exception.dart';
 import '../../../../common/network/result.dart';
+import '../../../auth/data/model/access_token.dart';
 import '../model/user_model.dart';
 import '../provider/user_api.dart';
 
@@ -11,16 +12,15 @@ class UserRepository {
 
   UserRepository({required UserApi userApi}) : _userApi = userApi;
 
-  Future<Result<UserModel>> getUser() async {
-    var userModel = UserModel();
+  Future<Result<UserModel>> getUser({required AccessToken accessToken}) async {
     try {
-      userModel = await _userApi.getUser();
+      var userModel = await _userApi.getUser(accessToken: accessToken);
+      return Result.success(userModel);
     } on DioException catch (e) {
       Logger().e('get user error: $e');
       final errorMessage = DioExceptions.fromDioError(e).toString();
       return Result.failure(errorMessage);
     }
-    return Result.success(userModel);
   }
 
   Future<Result<bool>> updateUser({required UserModel userModel}) async {

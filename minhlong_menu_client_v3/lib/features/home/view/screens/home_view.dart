@@ -17,7 +17,7 @@ import 'package:minhlong_menu_client_v3/core/app_string.dart';
 import 'package:minhlong_menu_client_v3/core/app_style.dart';
 import 'package:minhlong_menu_client_v3/core/extensions.dart';
 import 'package:minhlong_menu_client_v3/core/utils.dart';
-import 'package:minhlong_menu_client_v3/features/auth/bloc/auth_bloc.dart';
+
 import 'package:minhlong_menu_client_v3/features/food/bloc/food_bloc.dart';
 import 'package:minhlong_menu_client_v3/features/food/cubit/item_size_cubit.dart';
 import 'package:minhlong_menu_client_v3/features/food/data/dto/item_food_size_dto.dart';
@@ -73,7 +73,7 @@ class _HomeViewState extends State<HomeView>
   @override
   void initState() {
     super.initState();
-    context.read<UserBloc>().add(UserFetched());
+
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
@@ -108,150 +108,141 @@ class _HomeViewState extends State<HomeView>
     return Scaffold(
       floatingActionButton: _buildFloatingButton(cartState),
       body: userState is UserFecthSuccess
-          ? BlocListener<UserBloc, UserState>(
-              listener: (context, state) {
-                if (userState is UserFecthFailure) {
-                  context.read<AuthBloc>().add(AuthEventStarted());
-                  context.go(ApiConfig.login);
-                }
-              },
-              child: CustomScrollView(
-                physics: const BouncingScrollPhysics(),
-                slivers: [
-                  SliverAppBar(
-                    stretch: true,
-                    pinned: true,
-                    titleSpacing: 10,
-                    toolbarHeight: 80.h,
-                    leadingWidth: 0,
-                    backgroundColor: AppColors.lavender,
-                    title: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          Card(
-                            elevation: 4,
-                            shape: const CircleBorder(),
-                            child: Container(
-                              width: 40,
-                              height: 40,
-                              clipBehavior: Clip.antiAlias,
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                              ),
-                              child: ClipRRect(
-                                child: CachedNetworkImage(
-                                    imageUrl:
-                                        '${ApiConfig.host}${userState.userModel.image}',
-                                    placeholder: (context, url) =>
-                                        const Loading(),
-                                    errorWidget: errorBuilderForImage,
-                                    fit: BoxFit.cover),
-                              ),
+          ? CustomScrollView(
+              physics: const BouncingScrollPhysics(),
+              slivers: [
+                SliverAppBar(
+                  stretch: true,
+                  pinned: true,
+                  titleSpacing: 10,
+                  toolbarHeight: 80.h,
+                  leadingWidth: 0,
+                  backgroundColor: AppColors.lavender,
+                  title: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        Card(
+                          elevation: 4,
+                          shape: const CircleBorder(),
+                          child: Container(
+                            width: 40,
+                            height: 40,
+                            clipBehavior: Clip.antiAlias,
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                            ),
+                            child: ClipRRect(
+                              child: CachedNetworkImage(
+                                  imageUrl:
+                                      '${ApiConfig.host}${userState.userModel.image}',
+                                  placeholder: (context, url) =>
+                                      const Loading(),
+                                  errorWidget: errorBuilderForImage,
+                                  fit: BoxFit.cover),
                             ),
                           ),
-                          10.horizontalSpace,
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Xin chào!',
-                                style: kCaptionStyle.copyWith(
-                                  fontWeight: FontWeight.w500,
-                                  color: AppColors.secondTextColor,
-                                ),
-                              ),
-                              Text(
-                                userState.userModel.fullName,
-                                style: kBodyStyle.copyWith(
-                                  fontWeight: FontWeight.w900,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    bottom: PreferredSize(
-                        preferredSize: const Size(double.infinity, 40),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: defaultPadding / 2),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              5.horizontalSpace,
-                              Expanded(child: _buildSearchWidget()),
-                              10.horizontalSpace,
-                              _buildIconTableWidget(tableState),
-                              5.horizontalSpace
-                            ],
-                          ),
-                        )),
-                    actions: [
-                      _iconActionButtonAppBar(
-                          icon: Icons.tune,
-                          onPressed: () => context.push(AppRoute.profile)),
-                      5.horizontalSpace
-                    ],
-                  ),
-                  SliverToBoxAdapter(
-                    child:
-                        AspectRatio(aspectRatio: 16 / 9, child: _bannerHome()),
-                  ),
-                  SliverToBoxAdapter(
-                    child: Stack(
-                      children: [
+                        ),
+                        10.horizontalSpace,
                         Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            30.verticalSpace,
-                            categoryListView(),
-                            10.verticalSpace,
-                            _buildListNewFood(cartState, tableState),
-                            20.verticalSpace,
-                            _popularGridView(cartState, tableState),
+                            Text(
+                              'Xin chào!',
+                              style: kCaptionStyle.copyWith(
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.secondTextColor,
+                              ),
+                            ),
+                            Text(
+                              userState.userModel.fullName,
+                              style: kBodyStyle.copyWith(
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
                           ],
                         ),
-                        ListenableBuilder(
-                          listenable: _foodItemSize,
-                          builder: (context, _) {
-                            return SizedBox(
+                      ],
+                    ),
+                  ),
+                  bottom: PreferredSize(
+                      preferredSize: const Size(double.infinity, 40),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: defaultPadding / 2),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            5.horizontalSpace,
+                            Expanded(child: _buildSearchWidget()),
+                            10.horizontalSpace,
+                            _buildIconTableWidget(tableState),
+                            5.horizontalSpace
+                          ],
+                        ),
+                      )),
+                  actions: [
+                    _iconActionButtonAppBar(
+                        icon: Icons.tune,
+                        onPressed: () => context.push(AppRoute.profile)),
+                    5.horizontalSpace
+                  ],
+                ),
+                SliverToBoxAdapter(
+                  child: AspectRatio(aspectRatio: 16 / 9, child: _bannerHome()),
+                ),
+                SliverToBoxAdapter(
+                  child: Stack(
+                    children: [
+                      Column(
+                        children: [
+                          30.verticalSpace,
+                          categoryListView(),
+                          10.verticalSpace,
+                          _buildListNewFood(cartState, tableState),
+                          20.verticalSpace,
+                          _popularGridView(cartState, tableState),
+                        ],
+                      ),
+                      ListenableBuilder(
+                        listenable: _foodItemSize,
+                        builder: (context, _) {
+                          return SizedBox(
+                            height: _foodItemSize.value.height,
+                            width: _foodItemSize.value.width,
+                            child: Container(
                               height: _foodItemSize.value.height,
                               width: _foodItemSize.value.width,
-                              child: Container(
-                                height: _foodItemSize.value.height,
-                                width: _foodItemSize.value.width,
-                                color: AppColors.lavender,
-                              )
-                                  .animate(
-                                    autoPlay: false,
-                                    controller: _animationController,
-                                  )
-                                  .scale(
-                                    duration: 2.seconds,
-                                    begin: const Offset(1, 1),
-                                    end: Offset.zero,
-                                  ),
+                              color: AppColors.lavender,
                             )
                                 .animate(
                                   autoPlay: false,
                                   controller: _animationController,
-                                  onComplete: (controller) {
-                                    _resetAnimation();
-                                    _animationController.reset();
-                                  },
                                 )
-                                .followPath(
-                                    path: _path,
-                                    duration: 2.seconds,
-                                    curve: Curves.easeInOutCubic);
-                          },
-                        )
-                      ],
-                    ),
+                                .scale(
+                                  duration: 2.seconds,
+                                  begin: const Offset(1, 1),
+                                  end: Offset.zero,
+                                ),
+                          )
+                              .animate(
+                                autoPlay: false,
+                                controller: _animationController,
+                                onComplete: (controller) {
+                                  _resetAnimation();
+                                  _animationController.reset();
+                                },
+                              )
+                              .followPath(
+                                  path: _path,
+                                  duration: 2.seconds,
+                                  curve: Curves.easeInOutCubic);
+                        },
+                      )
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             )
           : const SizedBox(),
     );

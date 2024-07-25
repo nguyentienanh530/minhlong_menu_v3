@@ -22,8 +22,14 @@ extension _ProfileWidget on _ProfileScreenState {
             _ItemProfile(
                 onTap: () async => await context
                         .push(AppRoute.editProfile, extra: userModel)
-                        .then((value) {
-                      context.read<UserBloc>().add(UserFetched());
+                        .then((value) async {
+                      final SharedPreferences sf =
+                          await SharedPreferences.getInstance();
+                      var accessToken =
+                          await AuthLocalDatasource(sf).getAccessToken();
+                      if (accessToken != null) {
+                        getUser(accessToken);
+                      }
                     }),
                 svgPath: AppAsset.user,
                 title: AppString.editProfile),
@@ -40,6 +46,10 @@ extension _ProfileWidget on _ProfileScreenState {
         ),
       ),
     );
+  }
+
+  void getUser(AccessToken accessToken) {
+    context.read<UserBloc>().add(UserFetched(accessToken));
   }
 
   void _showDialogLogout() {

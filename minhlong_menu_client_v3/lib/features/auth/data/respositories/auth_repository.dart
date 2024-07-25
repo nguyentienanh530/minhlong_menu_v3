@@ -57,4 +57,17 @@ class AuthRepository {
       return Result.failure(errorMessage);
     }
   }
+
+  Future<Result<AccessToken>> refreshToken(
+      {required String refreshToken}) async {
+    try {
+      final result = await authApi.refreshToken(refreshToken: refreshToken);
+      await authLocalDatasource.saveAccessToken(result);
+      return Result.success(result);
+    } on DioException catch (e) {
+      Logger().e('refresh token error: $e');
+      final errorMessage = DioExceptions.fromDioError(e).toString();
+      return Result.failure(errorMessage);
+    }
+  }
 }

@@ -3,7 +3,10 @@ part of 'user_bloc.dart';
 @immutable
 sealed class UserEvent {}
 
-final class UserFetched extends UserEvent {}
+final class UserFetched extends UserEvent {
+  final AccessToken accessToken;
+  UserFetched(this.accessToken);
+}
 
 final class UserUpdated extends UserEvent {
   final UserModel userModel;
