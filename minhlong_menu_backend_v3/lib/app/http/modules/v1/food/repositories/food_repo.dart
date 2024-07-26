@@ -2,17 +2,17 @@ import 'dart:async';
 
 import '../models/foods.dart';
 
-class FoodRepository {
-  final Foods _food;
+class FoodRepo {
+  final Foods food;
 
-  FoodRepository({required Foods food}) : _food = food;
+  FoodRepo(this.food);
 
   Future get(
       {required String byProperty,
       required int startIndex,
       required int limit,
       required int userID}) async {
-    var foods = await _food
+    var foods = await food
         .query()
         .select(['foods.*', 'categories.name as category_name'])
         .offset(startIndex)
@@ -25,7 +25,7 @@ class FoodRepository {
   }
 
   Future getAll({required int userID}) async {
-    var foods = await _food
+    var foods = await food
         .query()
         .select(['foods.*', 'categories.name as category_name'])
         .join('categories', 'categories.id', '=', 'foods.category_id')
@@ -40,7 +40,7 @@ class FoodRepository {
       required int limit,
       required int categoryID,
       required int userID}) async {
-    var foods = await _food
+    var foods = await food
         .query()
         .offset(startIndex)
         .where('is_show', '=', 1)
@@ -53,7 +53,7 @@ class FoodRepository {
 
   Future foodsCountOnCategory(
       {required int categoryID, required int userID}) async {
-    var count = await _food
+    var count = await food
         .query()
         .where('is_show', '=', 1)
         .where('category_id', '=', categoryID)
@@ -63,32 +63,32 @@ class FoodRepository {
   }
 
   Future getTotalNumberOfFoods({required int userID}) async {
-    var quantity = await _food.query().where('user_id', '=', userID).count();
+    var quantity = await food.query().where('user_id', '=', userID).count();
     return quantity;
   }
 
   Future update({required int id, required Map<String, dynamic> data}) async {
-    return await _food.query().where('id', '=', id).update(data);
+    return await food.query().where('id', '=', id).update(data);
   }
 
   Future find({required int id}) async {
-    return await _food.query().where('id', '=', id).first();
+    return await food.query().where('id', '=', id).first();
   }
 
   Future create({required Map<String, dynamic> data}) async {
-    return await _food.query().insertGetId(data);
+    return await food.query().insertGetId(data);
   }
 
   Future foodCount({required int userID}) async {
-    return await _food.query().where('user_id', '=', userID).count();
+    return await food.query().where('user_id', '=', userID).count();
   }
 
   Future delete({required int id}) async {
-    return await _food.query().where('id', '=', id).delete();
+    return await food.query().where('id', '=', id).delete();
   }
 
   Future search({required String query, required int userID}) async {
-    var foods = await _food
+    var foods = await food
         .query()
         .limit(10)
         .where('user_id', '=', userID)
@@ -99,7 +99,7 @@ class FoodRepository {
 
   //get best selling food
   Future getBestSellingFood({required int userID}) async {
-    var foods = await _food
+    var foods = await food
         .query()
         .select(['foods.order_count as order_count', 'foods.name as name'])
         .where('foods.user_id', '=', userID)

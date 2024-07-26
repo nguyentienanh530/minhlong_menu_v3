@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:minhlong_menu_admin_v3/common/widget/error_widget.dart';
+import 'package:minhlong_menu_admin_v3/features/user/data/model/user_model.dart';
 import '../../../../common/widget/loading.dart';
 import '../../../banner/bloc/banner_bloc.dart';
 import '../../../banner/data/repositories/banner_repository.dart';
@@ -34,10 +35,10 @@ class HomeScreen extends StatelessWidget {
         return BlocBuilder<UserBloc, UserState>(
           builder: (context, state) {
             return (switch (state) {
-              UserFecthSuccess() => _userFetchSuccess(context),
+              UserFecthSuccess() => _userFetchSuccess(context, state.user),
               UserFecthFailure() => ErrWidget(error: state.errorMessage),
               UserFecthInProgress() => const Loading(),
-              _ => const SizedBox.shrink(),
+              _ => Container(),
             });
           },
         );
@@ -45,7 +46,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _userFetchSuccess(BuildContext context) {
+  Widget _userFetchSuccess(BuildContext context, UserModel user) {
     return MultiBlocProvider(
       providers: [
         BlocProvider(

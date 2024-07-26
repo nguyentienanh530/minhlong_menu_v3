@@ -1,13 +1,12 @@
 import 'dart:convert';
 import 'package:minhlong_menu_backend_v3/app/http/modules/v1/order/models/order.dart';
 import 'package:vania/vania.dart';
-import '../../modules/v1/table/repositories/table_repository.dart';
+import '../../modules/v1/table/repositories/table_repo.dart';
 
 class TableWebSocketController extends Controller {
-  final TableRepository _tableRepository;
+  final TableRepo tableRepo;
 
-  TableWebSocketController({required TableRepository tableRepository})
-      : _tableRepository = tableRepository;
+  TableWebSocketController(this.tableRepo);
   Future getTable(WebSocketClient client, dynamic userID) async {
     if (userID == null) {
       return;
@@ -20,7 +19,7 @@ class TableWebSocketController extends Controller {
       'is_use': false,
     };
 
-    var tables = await _tableRepository.getAllTables(userID: userID);
+    var tables = await tableRepo.getAllTables(userID: userID);
     tables = [tableAll, ...tables];
     var newTables = [];
     for (var table in tables) {

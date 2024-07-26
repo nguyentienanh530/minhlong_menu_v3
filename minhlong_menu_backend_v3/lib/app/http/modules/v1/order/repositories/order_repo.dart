@@ -2,24 +2,23 @@ import 'dart:async';
 
 import '../models/order.dart';
 
-class OrderRepository {
-  final Orders _orders;
+class OrderRepo {
+  final Orders orders;
 
-  OrderRepository({required Orders orders}) : _orders = orders;
+  OrderRepo(this.orders);
   Future getOrderSuccess() async {
-    var orders = await _orders
+    return await orders
         .query()
         .where('status', '=', 'completed')
         .orderBy('created_at', 'desc')
         .get();
-    return orders;
   }
 
   Future getOrdersCompleted({
     required int date,
     required int userID,
   }) async {
-    return await _orders
+    return await orders
         .query()
         .where('status', '=', 'completed')
         .whereDate('payed_at', '=', date)
@@ -30,7 +29,7 @@ class OrderRepository {
   Future getAllOrdersCompleted({
     required int userID,
   }) async {
-    return await _orders
+    return await orders
         .query()
         .where('status', '=', 'completed')
         .where('payed_at', '!=', null)
@@ -40,7 +39,7 @@ class OrderRepository {
 
   Future getNewOrdersByTable({int? tableID, int? userID}) async {
     if (tableID == 0) {
-      return await _orders
+      return await orders
           .query()
           .select([
             'orders.id',
@@ -67,7 +66,7 @@ class OrderRepository {
           .where('orders.user_id', '=', userID)
           .get();
     } else {
-      return await _orders
+      return await orders
           .query()
           .select([
             'orders.id',
@@ -98,7 +97,7 @@ class OrderRepository {
   }
 
   Future getOrders(String status, int userID) async {
-    return await _orders
+    return await orders
         .query()
         .select([
           'orders.id',
@@ -134,7 +133,7 @@ class OrderRepository {
     required int startDate,
     required int endDate,
   }) async {
-    return await _orders
+    return await orders
         .query()
         .select([
           'orders.total_price as total_price',
@@ -150,18 +149,18 @@ class OrderRepository {
   }
 
   Future updateOrder(int id, Map<String, dynamic> orderDataUpdate) async {
-    return await _orders.query().where('id', '=', id).update(orderDataUpdate);
+    return await orders.query().where('id', '=', id).update(orderDataUpdate);
   }
 
   Future findOrderByID(int id) async {
-    return await _orders.query().where('id', '=', id).first();
+    return await orders.query().where('id', '=', id).first();
   }
 
   Future deleteOrder(int id) async {
-    return await _orders.query().where('id', '=', id).delete();
+    return await orders.query().where('id', '=', id).delete();
   }
 
   Future<int> createOrder(Map<String, dynamic> data) async {
-    return await _orders.query().insertGetId(data);
+    return await orders.query().insertGetId(data);
   }
 }

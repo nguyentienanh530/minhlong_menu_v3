@@ -4,10 +4,12 @@ import 'package:vania/vania.dart';
 
 import '../../../../common/const_res.dart';
 import '../models/user.dart';
-import '../repositories/user_repository.dart';
+import '../repositories/user_repo.dart';
 
 class UserController extends Controller {
-  final UserRepository _userRepository = UserRepository();
+  final UserRepo userRepo;
+
+  UserController(this.userRepo);
   Future<Response> index() async {
     try {
       Map? user = Auth().user();
@@ -22,22 +24,6 @@ class UserController extends Controller {
           statusCode: HttpStatus.internalServerError,
           message: 'connection error');
     }
-  }
-
-  Future<Response> create() async {
-    return Response.json({});
-  }
-
-  Future<Response> store(Request request) async {
-    return Response.json({});
-  }
-
-  Future<Response> show(int id) async {
-    return Response.json({});
-  }
-
-  Future<Response> edit(int id) async {
-    return Response.json({});
   }
 
   Future<Response> update(Request request) async {
@@ -55,19 +41,24 @@ class UserController extends Controller {
     String? image = request.input('image');
 
     try {
-      var user = await _userRepository.findUser(id: userID!);
+      if (userID == null || userID == -1) {
+        return AppResponse().error(
+            statusCode: HttpStatus.unauthorized, message: 'unauthorized');
+      }
+
+      var user = await userRepo.findUser(id: userID);
 
       if (user == null) {
         return AppResponse()
             .error(statusCode: HttpStatus.notFound, message: 'user not found');
       }
 
-      await Users().query().where('id', '=', user['id']).update({
+      var userUpdateData = {
         'full_name': fullName ?? user['full_name'],
         'phone_number': phoneNumber ?? user['phone_number'],
         'image': image ?? user['image'],
-        'updated_at': DateTime.now(),
-      });
+      };
+      await userRepo.updateUser(userID: userID, data: userUpdateData);
 
       return AppResponse().ok(statusCode: HttpStatus.ok, data: true);
     } catch (e) {
@@ -85,7 +76,7 @@ class UserController extends Controller {
     String oldPassword = request.input('old_password');
     String newPassword = request.input('new_password');
     try {
-      var user = await _userRepository.findUser(id: userID!);
+      var user = await userRepo.findUser(id: userID!);
       if (user == null) {
         return AppResponse()
             .error(statusCode: HttpStatus.notFound, message: 'user not found');
@@ -96,9 +87,9 @@ class UserController extends Controller {
             statusCode: HttpStatus.unauthorized, message: 'wrong password');
       }
 
-      await Users().query().where('id', '=', user['id']).update({
-        'password': Hash().make(newPassword),
-      });
+      var userUpdateData = {'password': Hash().make(newPassword)};
+
+      await userRepo.updateUser(userID: userID, data: userUpdateData);
 
       return AppResponse().ok(
           statusCode: HttpStatus.ok, data: true, message: 'Password updated');
@@ -115,4 +106,4 @@ class UserController extends Controller {
   }
 }
 
-final UserController userController = UserController();
+final UserController userCtrl = UserController(UserRepo(Users()));

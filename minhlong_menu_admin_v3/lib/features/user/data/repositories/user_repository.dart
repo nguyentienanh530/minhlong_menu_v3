@@ -7,11 +7,11 @@ import '../model/user_model.dart';
 import '../provider/user_api.dart';
 import '../user_local_datasource/user_local_datasource.dart';
 
-class UserRepository {
+class UserRepo {
   final UserApi _userApi;
   final UserLocalDatasource _userLocalDatasource;
 
-  UserRepository(
+  UserRepo(
       {required UserApi userApi,
       required UserLocalDatasource userLocalDatasource})
       : _userApi = userApi,

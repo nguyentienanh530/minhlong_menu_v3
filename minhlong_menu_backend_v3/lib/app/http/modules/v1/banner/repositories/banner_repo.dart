@@ -1,10 +1,10 @@
 import '../models/banners.dart';
 
-class BannerRepository {
-  final Banners _banner;
-  BannerRepository({required Banners banner}) : _banner = banner;
+class BannerRepo {
+  final Banners banner;
+  BannerRepo(this.banner);
   Future getAllForUsers({required int userID}) async {
-    return await _banner
+    return await banner
         .query()
         .where('user_id', '=', userID)
         .where('show', '=', 1)
@@ -15,7 +15,7 @@ class BannerRepository {
       {required int startIndex,
       required int limit,
       required int userID}) async {
-    return await _banner
+    return await banner
         .query()
         .offset(startIndex)
         .limit(limit)
@@ -25,22 +25,22 @@ class BannerRepository {
   }
 
   Future bannerCount({required int userID}) async {
-    return await _banner.query().where('user_id', '=', userID).count();
+    return await banner.query().where('user_id', '=', userID).count();
   }
 
   Future delete({required int id}) async {
-    return await _banner.query().where('id', '=', id).delete();
+    return await banner.query().where('id', '=', id).delete();
   }
 
   Future create({required Map<String, dynamic> data}) async {
-    return await _banner.query().insertGetId(data);
+    return await banner.query().insertGetId(data);
   }
 
   Future update({required int id, required Map<String, dynamic> data}) async {
-    return await _banner.query().where('id', '=', id).update(data);
+    return await banner.query().where('id', '=', id).update(data);
   }
 
   Future find({required int id}) async {
-    return await _banner.query().where('id', '=', id).first();
+    return await banner.query().where('id', '=', id).first();
   }
 }

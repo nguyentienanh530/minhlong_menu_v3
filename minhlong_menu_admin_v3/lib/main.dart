@@ -27,7 +27,6 @@ import 'features/dinner_table/data/provider/dinner_table_api.dart';
 import 'features/dinner_table/data/repositories/table_repository.dart';
 import 'features/food/data/provider/food_api.dart';
 import 'features/food/data/repositories/food_repository.dart';
-
 import 'features/order/data/provider/order_api.dart';
 import 'features/order/data/repositories/order_repository.dart';
 import 'features/user/bloc/user_bloc.dart';
@@ -92,7 +91,7 @@ class MainApp extends StatelessWidget {
           ),
         ),
         RepositoryProvider(
-          create: (context) => UserRepository(
+          create: (context) => UserRepo(
             userLocalDatasource: UserLocalDatasource(sf),
             userApi: UserApi(
               dio: dio,
@@ -112,7 +111,7 @@ class MainApp extends StatelessWidget {
           ),
           BlocProvider(
             create: (context) => UserBloc(
-              userRepository: context.read<UserRepository>(),
+              userRepository: context.read<UserRepo>(),
             ),
           ),
           BlocProvider(

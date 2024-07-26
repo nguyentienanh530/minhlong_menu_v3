@@ -8,13 +8,14 @@ import 'package:minhlong_menu_admin_v3/features/banner/view/screens/banner_scree
 import 'package:minhlong_menu_admin_v3/features/category/view/screens/category_screen.dart';
 import 'package:minhlong_menu_admin_v3/features/dinner_table/view/screens/dinner_table_screen.dart';
 import 'package:minhlong_menu_admin_v3/features/food/view/screens/food_screen.dart';
+import 'package:minhlong_menu_admin_v3/features/home/view/screens/home_screen.dart';
 
 import 'package:minhlong_menu_admin_v3/features/order/data/model/order_item.dart';
 import 'package:minhlong_menu_admin_v3/features/order/view/screens/order_screen.dart';
 import 'package:minhlong_menu_admin_v3/features/print/view/screens/print_screen.dart';
 import 'package:minhlong_menu_admin_v3/features/user/data/model/user_model.dart';
 import 'package:minhlong_menu_admin_v3/features/user/view/widgets/change_password.dart';
-import '../features/home/view/screens/home_view.dart';
+
 import '../features/user/view/screens/edit_profile_screen.dart';
 
 class AppRoute {
@@ -56,7 +57,7 @@ class AppRoute {
           return buildPageWithDefaultTransition(
             context: context,
             state: state,
-            child: const HomeView(),
+            child: const HomeScreen(),
           );
         },
       ),

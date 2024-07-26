@@ -27,14 +27,14 @@ class ApiConfig {
   static const String logout = '/$auth/logout';
 
   //===== Banner =====
-  static const String banners = '/banners';
+  static const String banners = '/admin/banners';
 
   //===== Category =====
   static const String categories = '/categories';
   static const String quantityCategories = '/$categories/quantity';
 
   //===== Food =====
-  static const String foods = '/foods';
+  static const String foods = '/admin/foods';
   static const String newFoods = '/$foods/new-foods';
   static const String popularFoods = '/$foods/popular-foods';
   static const String foodsOnCategory = '/$foods/category/';
@@ -46,15 +46,15 @@ class ApiConfig {
   static const String quantityTables = '/$tables/quantity';
 
   //===== Order =====
-  static const String orders = '/orders';
+  static const String orders = '/admin/orders';
   static const String newOrders = '/$orders/new-orders';
   static const String newOrdersByTable = '/$orders/new-orders-by-table';
   static const String createOrder = '/$orders/create-order';
   static const String orderCompleted = '/$orders/orders-completed';
   static const String ordersChart = '/$orders/orders-chart';
 
-  //===== Info =====
-  static const String info = '/info';
+  //===== Home =====
+  static const String info = '/admin/home';
   static const String bestSellingFood = '/$info/best-selling-food';
   static const String dataChart = '/$info/revenue-filter-on-date';
 

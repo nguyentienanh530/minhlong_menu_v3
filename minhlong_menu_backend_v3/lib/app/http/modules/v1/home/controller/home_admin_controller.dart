@@ -1,29 +1,29 @@
 import 'dart:io';
-
 import 'package:minhlong_menu_backend_v3/app/http/common/app_response.dart';
-import 'package:minhlong_menu_backend_v3/app/http/modules/v1/food/repositories/food_repository.dart';
-import 'package:minhlong_menu_backend_v3/app/http/modules/v1/order/repositories/order_repository.dart';
-import 'package:minhlong_menu_backend_v3/app/http/modules/v1/table/repositories/table_repository.dart';
+import 'package:minhlong_menu_backend_v3/app/http/modules/v1/food/repositories/food_repo.dart';
+import 'package:minhlong_menu_backend_v3/app/http/modules/v1/order/models/order.dart';
+import 'package:minhlong_menu_backend_v3/app/http/modules/v1/order/repositories/order_repo.dart';
+import 'package:minhlong_menu_backend_v3/app/http/modules/v1/table/models/table.dart';
+import 'package:minhlong_menu_backend_v3/app/http/modules/v1/table/repositories/table_repo.dart';
 import 'package:vania/vania.dart';
-
 import '../../../../common/const_res.dart';
-import '../../category/repositories/category_repository.dart';
+import '../../category/models/categories.dart';
+import '../../category/repositories/category_repo.dart';
+import '../../food/models/foods.dart';
 
-class InfoController extends Controller {
-  final CategoryRepository _categoryRepository;
-  final OrderRepository _orderRepository;
-  final FoodRepository _foodRepository;
-  final TableRepository _tableRepository;
+class HomeAdminController extends Controller {
+  final CategoryRepo categoryRepo;
+  final OrderRepo orderRepo;
+  final FoodRepo foodRepo;
+  final TableRepo tableRepo;
 
-  InfoController(
-      {required CategoryRepository categoryRepository,
-      required OrderRepository orderRepository,
-      required FoodRepository foodRepository,
-      required TableRepository tableRepository})
-      : _categoryRepository = categoryRepository,
-        _orderRepository = orderRepository,
-        _foodRepository = foodRepository,
-        _tableRepository = tableRepository;
+  HomeAdminController(
+    this.categoryRepo,
+    this.orderRepo,
+    this.foodRepo,
+    this.tableRepo,
+  );
+
   Future<Response> index(Request request) async {
     int? userID = request.headers[ConstRes.userID] != null
         ? int.tryParse(request.headers[ConstRes.userID])
@@ -53,36 +53,34 @@ class InfoController extends Controller {
 
       // get today's revenue
       List<Map<String, dynamic>> ordersOnToday = [];
-      ordersOnToday = await _orderRepository.getOrdersCompleted(
+      ordersOnToday = await orderRepo.getOrdersCompleted(
           userID: userID, date: dateRepresentation);
       var revenueOnToday = ordersOnToday.fold<double>(
           0.0, (double total, order) => total + order['total_price']);
 
       // get yesterday's revenue
       List<Map<String, dynamic>> ordersOnYesterday = [];
-      ordersOnYesterday = await _orderRepository.getOrdersCompleted(
+      ordersOnYesterday = await orderRepo.getOrdersCompleted(
           userID: userID, date: dateRepresentationYesterday);
       var revenueOnYesterday = ordersOnYesterday.fold<double>(
           0.0, (double total, order) => total + order['total_price']);
 
       // get total revenue
-      var orders = await _orderRepository.getAllOrdersCompleted(userID: userID);
+      var orders = await orderRepo.getAllOrdersCompleted(userID: userID);
       var totalRevenue = orders.fold<double>(
           0.0, (double total, order) => total + order['total_price']);
 
       // get the number of categories
-      var categoryCount =
-          await _categoryRepository.getCategoryCount(userID: userID);
+      var categoryCount = await categoryRepo.getCategoryCount(userID: userID);
 
       // Get the number of completed orders
-      var orderCount = await _orderRepository.getOrderSuccess();
+      var orderCount = await orderRepo.getOrderSuccess();
 
       // get the number of foods
-      var foodCount =
-          await _foodRepository.getTotalNumberOfFoods(userID: userID);
+      var foodCount = await foodRepo.getTotalNumberOfFoods(userID: userID);
 
       // get the number of tables
-      var tableCount = await _tableRepository.getTableCount(userID: userID);
+      var tableCount = await tableRepo.getTableCount(userID: userID);
 
       return AppResponse().ok(
         statusCode: HttpStatus.ok,
@@ -117,7 +115,7 @@ class InfoController extends Controller {
         );
       }
 
-      var food = await _foodRepository.getBestSellingFood(userID: userID);
+      var food = await foodRepo.getBestSellingFood(userID: userID);
       return AppResponse().ok(
         statusCode: HttpStatus.ok,
         message: 'success',
@@ -162,7 +160,7 @@ class InfoController extends Controller {
           print('startOfWeek: $startOfWeekInt');
           print('endOfWeek: $endOfWeekInt');
 
-          var response = await _orderRepository.getRevenueFiller(
+          var response = await orderRepo.getRevenueFiller(
             userID: userID,
             startDate: startOfWeekInt,
             endDate: endOfWeekInt,
@@ -200,7 +198,7 @@ class InfoController extends Controller {
               lastDayOfMonth.month * 100 +
               lastDayOfMonth.day;
 
-          var response = await _orderRepository.getRevenueFiller(
+          var response = await orderRepo.getRevenueFiller(
             userID: userID,
             startDate: firstDayOfMonthInt,
             endDate: lastDayOfMonthInt,
@@ -237,7 +235,7 @@ class InfoController extends Controller {
               lastDayOfYear.day;
           print('firstDayOfYearInt: $firstDayOfYearInt');
           print('lastDayOfYearInt: $lastDayOfYearInt');
-          var response = await _orderRepository.getRevenueFiller(
+          var response = await orderRepo.getRevenueFiller(
             userID: userID,
             startDate: firstDayOfYearInt,
             endDate: lastDayOfYearInt,
@@ -281,3 +279,10 @@ class InfoController extends Controller {
 
   DateTime getDate(DateTime d) => DateTime(d.year, d.month, d.day);
 }
+
+final HomeAdminController homeAdminCtrl = HomeAdminController(
+  CategoryRepo(Categories()),
+  OrderRepo(Orders()),
+  FoodRepo(Foods()),
+  TableRepo(Tables()),
+);

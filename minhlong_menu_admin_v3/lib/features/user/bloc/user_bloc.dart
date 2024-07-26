@@ -11,14 +11,14 @@ part 'user_state.dart';
 typedef Emit = Emitter<UserState>;
 
 class UserBloc extends Bloc<UserEvent, UserState> {
-  UserBloc({required UserRepository userRepository})
+  UserBloc({required UserRepo userRepository})
       : _userRepository = userRepository,
         super(UserInitial()) {
     on<UserFetched>(_onUserFetched);
     on<UserUpdated>(_onUserUpdated);
     on<UserUpdatePasswordStarted>(_onUserUpdatedPassword);
   }
-  final UserRepository _userRepository;
+  final UserRepo _userRepository;
 
   FutureOr<void> _onUserFetched(UserFetched event, Emit emit) async {
     emit(UserFecthInProgress());

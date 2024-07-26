@@ -21,8 +21,7 @@ class ChangePassword extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          UserBloc(userRepository: context.read<UserRepository>()),
+      create: (context) => UserBloc(userRepository: context.read<UserRepo>()),
       child: const ChangePasswordView(),
     );
   }

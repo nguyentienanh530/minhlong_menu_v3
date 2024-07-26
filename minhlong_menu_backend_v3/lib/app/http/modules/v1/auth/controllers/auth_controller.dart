@@ -190,4 +190,4 @@ class AuthController extends Controller {
   }
 }
 
-final AuthController authController = AuthController();
+final AuthController authCtrl = AuthController();

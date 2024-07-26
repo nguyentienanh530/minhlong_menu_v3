@@ -1,22 +1,20 @@
 import 'dart:io';
 
 import 'package:minhlong_menu_backend_v3/app/http/modules/v1/banner/models/banners.dart';
-import 'package:minhlong_menu_backend_v3/app/http/modules/v1/banner/repositories/banner_repository.dart';
+import 'package:minhlong_menu_backend_v3/app/http/modules/v1/banner/repositories/banner_repo.dart';
 import 'package:minhlong_menu_backend_v3/app/http/modules/v1/category/models/categories.dart';
-import 'package:minhlong_menu_backend_v3/app/http/modules/v1/category/repositories/category_repository.dart';
-import 'package:minhlong_menu_backend_v3/app/http/modules/v1/food/repositories/food_repository.dart';
+import 'package:minhlong_menu_backend_v3/app/http/modules/v1/food/repositories/food_repo.dart';
 import 'package:vania/vania.dart';
 
 import '../../../../common/app_response.dart';
 import '../../../../common/const_res.dart';
+import '../../category/repositories/category_repo.dart';
 import '../../food/models/foods.dart';
 
 class HomeClientController extends Controller {
-  final BannerRepository _bannerRepository =
-      BannerRepository(banner: Banners());
-  final CategoryRepository _categoryRepository =
-      CategoryRepository(category: Categories());
-  final FoodRepository _foodRepository = FoodRepository(food: Foods());
+  final BannerRepo bannerRepo = BannerRepo(Banners());
+  final CategoryRepo _categoryRepo = CategoryRepo(Categories());
+  final FoodRepo _foodRepo = FoodRepo(Foods());
   Future<Response> getHomeDataForUser(Request request) async {
     int? userID = request.headers[ConstRes.userID] != null
         ? int.tryParse(request.headers[ConstRes.userID])
@@ -29,11 +27,11 @@ class HomeClientController extends Controller {
           message: 'unauthorized',
         );
       } else {
-        var banner = await _bannerRepository.getAllForUsers(userID: userID);
-        var category = await _categoryRepository.getAllForUsers(userID: userID);
-        var newFoods = await _foodRepository.get(
+        var banner = await bannerRepo.getAllForUsers(userID: userID);
+        var category = await _categoryRepo.getAllForUsers(userID: userID);
+        var newFoods = await _foodRepo.get(
             byProperty: 'created_at', startIndex: 1, limit: 10, userID: userID);
-        var popularFoods = await _foodRepository.get(
+        var popularFoods = await _foodRepo.get(
             byProperty: 'order_count',
             startIndex: 1,
             limit: 10,

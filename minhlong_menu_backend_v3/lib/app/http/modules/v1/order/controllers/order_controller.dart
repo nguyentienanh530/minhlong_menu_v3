@@ -1,32 +1,43 @@
 import 'dart:io';
 import 'package:minhlong_menu_backend_v3/app/http/common/app_response.dart';
+import 'package:minhlong_menu_backend_v3/app/http/modules/v1/food/repositories/food_repo.dart';
 import 'package:minhlong_menu_backend_v3/app/http/modules/v1/order/models/order_details.dart';
-import 'package:minhlong_menu_backend_v3/app/http/modules/v1/order/repositories/order_details_repository.dart';
-import 'package:minhlong_menu_backend_v3/app/http/modules/v1/order/repositories/order_repository.dart';
+
+import 'package:minhlong_menu_backend_v3/app/http/modules/v1/order/repositories/order_repo.dart';
 import 'package:minhlong_menu_backend_v3/app/http/modules/v1/table/models/table.dart';
+import 'package:minhlong_menu_backend_v3/app/http/modules/v1/table/repositories/table_repo.dart';
 import 'package:vania/vania.dart';
 import '../../../../common/const_res.dart';
 import '../../food/models/foods.dart';
+import '../models/order.dart';
+import '../repositories/order_details_repo.dart';
 
 class OrderController extends Controller {
-  final OrderRepository _orderRepository;
-  final OrderDetailsRepository _orderDetailsRepository;
+  final OrderRepo orderRepo;
+  final OrderDetailsRepo orderDetailsRepo;
+  final FoodRepo foodRepo;
+  final TableRepo tableRepo;
 
   OrderController(
-      {required OrderRepository orderRepository,
-      required OrderDetailsRepository orderDetailsRepository})
-      : _orderRepository = orderRepository,
-        _orderDetailsRepository = orderDetailsRepository;
+    this.orderRepo,
+    this.orderDetailsRepo,
+    this.foodRepo,
+    this.tableRepo,
+  );
+
   Future<Response> index() async {
     return Response.json({'message': 'Hello World'});
   }
 
   Future<Response> create(Request request) async {
+    int? userID = request.headers[ConstRes.userID] != null
+        ? int.tryParse(request.headers[ConstRes.userID])
+        : -1;
     try {
       var tableID = request.input('table_id');
       var listFood = request.input('order_detail') as List;
-      var userID = Auth().id();
-      if (userID == null) {
+
+      if (userID == null || userID == -1) {
         return AppResponse().error(
           statusCode: HttpStatus.unauthorized,
           message: 'unauthorized',
@@ -37,7 +48,7 @@ class OrderController extends Controller {
         'table_id': tableID,
         'user_id': userID,
       };
-      var orderID = await _orderRepository.createOrder(order);
+      var orderID = await orderRepo.createOrder(order);
 
       if (orderID != 0) {
         var totalPrice = 0.0;
@@ -57,29 +68,30 @@ class OrderController extends Controller {
             totalAmount = price * quantity;
           }
 
-          await OrderDetails().query().insert({
+          var orderDetailsData = {
             'order_id': orderID,
             'food_id': foodID,
             'quantity': quantity,
             'price': price,
             'total_amount': totalAmount,
             'note': food['note']
-          });
+          };
 
-          await Foods()
-              .query()
-              .where('id', '=', foodID)
-              .update({'order_count': foodDB['order_count'] + 1});
+          await orderDetailsRepo.createOrderDetails(orderDetailsData);
+
+          await foodRepo.update(
+              id: foodID, data: {'order_count': foodDB['order_count'] + 1});
 
           totalPrice = totalPrice + totalAmount;
         }
-        await Tables().query().where('id', '=', tableID).update({'is_use': 1});
-        await _orderRepository
-            .updateOrder(orderID, {'total_price': totalPrice});
+
+        await tableRepo.update(id: tableID, tableDataUpdate: {'is_use': 1});
+        await orderRepo.updateOrder(orderID, {'total_price': totalPrice});
       } else {
-        // return Response.json({'error': 'create order failed'});
         return AppResponse().error(
-            statusCode: HttpStatus.badRequest, message: 'create order failed');
+          statusCode: HttpStatus.badRequest,
+          message: 'create order failed',
+        );
       }
 
       return AppResponse().ok(data: true, statusCode: HttpStatus.ok);
@@ -107,14 +119,14 @@ class OrderController extends Controller {
             statusCode: HttpStatus.notFound, message: 'table id not found');
       }
 
-      if (userID == null) {
+      if (userID == null || userID == -1) {
         return AppResponse().error(
           statusCode: HttpStatus.unauthorized,
           message: 'unauthorized',
         );
       }
 
-      var orders = await _orderRepository.getNewOrdersByTable(
+      var orders = await orderRepo.getNewOrdersByTable(
           tableID: int.parse(tableID), userID: userID);
 
       List<Map<String, dynamic>> formattedOrders = [];
@@ -162,14 +174,14 @@ class OrderController extends Controller {
       int page = request.input('page') ?? 1;
       int limit = request.input('limit') ?? 10;
 
-      if (userID == null) {
+      if (userID == null || userID == -1) {
         return AppResponse().error(
           statusCode: HttpStatus.unauthorized,
           message: 'unauthorized',
         );
       }
 
-      var orders = await _orderRepository.getOrders(status, userID);
+      var orders = await orderRepo.getOrders(status, userID);
 
       List<Map<String, dynamic>> formattedOrders = [];
 
@@ -260,21 +272,9 @@ class OrderController extends Controller {
     }
   }
 
-  Future<Response> store(Request request) async {
-    return Response.json({});
-  }
-
-  Future<Response> show(int id) async {
-    return Response.json({});
-  }
-
-  Future<Response> edit(int id) async {
-    return Response.json({});
-  }
-
   Future<Response> update(Request request, int id) async {
     try {
-      var order = await _orderRepository.findOrderByID(id);
+      var order = await orderRepo.findOrderByID(id);
       if (order == null) {
         return AppResponse().error(
           statusCode: HttpStatus.notFound,
@@ -289,7 +289,7 @@ class OrderController extends Controller {
       };
 
       // print(orderUpdate);
-      await _orderRepository.updateOrder(id, orderUpdate);
+      await orderRepo.updateOrder(id, orderUpdate);
 
       return AppResponse().ok(
         statusCode: HttpStatus.ok,
@@ -307,14 +307,14 @@ class OrderController extends Controller {
 
   Future<Response> destroy(int id) async {
     try {
-      var order = await _orderRepository.findOrderByID(id);
+      var order = await orderRepo.findOrderByID(id);
       if (order == null) {
         return AppResponse().error(
           statusCode: HttpStatus.notFound,
           message: 'order not found',
         );
       }
-      await _orderRepository.deleteOrder(id);
+      await orderRepo.deleteOrder(id);
       return AppResponse().ok(
         statusCode: HttpStatus.ok,
         message: 'deleted successfully',
@@ -329,3 +329,10 @@ class OrderController extends Controller {
     }
   }
 }
+
+final OrderController orderCtrl = OrderController(
+  OrderRepo(Orders()),
+  OrderDetailsRepo(OrderDetails()),
+  FoodRepo(Foods()),
+  TableRepo(Tables()),
+);

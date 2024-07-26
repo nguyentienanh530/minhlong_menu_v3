@@ -1,19 +1,19 @@
 import 'package:minhlong_menu_backend_v3/app/http/modules/v1/category/models/categories.dart';
 
-class CategoryRepository {
-  final Categories _category;
+class CategoryRepo {
+  final Categories category;
 
-  CategoryRepository({required Categories category}) : _category = category;
+  CategoryRepo(this.category);
 
   Future getCategoryCount({required int userID}) async {
-    return await _category.query().where('user_id', '=', userID).count();
+    return await category.query().where('user_id', '=', userID).count();
   }
 
   Future get(
       {required int startIndex,
       required int limit,
       required int userID}) async {
-    return _category
+    return category
         .query()
         .offset(startIndex)
         .limit(limit)
@@ -23,7 +23,7 @@ class CategoryRepository {
   }
 
   Future getAllForUsers({required int userID}) async {
-    return _category
+    return category
         .query()
         .where('user_id', '=', userID)
         .orderBy('serial', 'asc')
@@ -31,18 +31,18 @@ class CategoryRepository {
   }
 
   Future find({required int id}) async {
-    return await _category.query().where('id', '=', id).first();
+    return await category.query().where('id', '=', id).first();
   }
 
   Future create({required Map<String, dynamic> data}) async {
-    return await _category.query().insertGetId(data);
+    return await category.query().insertGetId(data);
   }
 
   Future update({required int id, required Map<String, dynamic> data}) async {
-    return await _category.query().where('id', '=', id).update(data);
+    return await category.query().where('id', '=', id).update(data);
   }
 
   Future destroy({required int id}) async {
-    return await _category.query().where('id', '=', id).delete();
+    return await category.query().where('id', '=', id).delete();
   }
 }

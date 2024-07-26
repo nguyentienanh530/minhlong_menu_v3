@@ -2,30 +2,25 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:minhlong_menu_backend_v3/app/http/common/app_response.dart';
 import 'package:minhlong_menu_backend_v3/app/http/modules/v1/order/controllers/order_controller.dart';
-import 'package:minhlong_menu_backend_v3/app/http/modules/v1/order/repositories/order_repository.dart';
+import 'package:minhlong_menu_backend_v3/app/http/modules/v1/order/repositories/order_repo.dart';
 import 'package:vania/vania.dart';
 
 class OrderWebSocketController extends Controller {
-  final OrderRepository _orderRepository;
+  final OrderRepo orderRepository;
   final OrderController orderController;
 
-  OrderWebSocketController(
-      {required OrderRepository orderRepository, required this.orderController})
-      : _orderRepository = orderRepository;
+  OrderWebSocketController(this.orderRepository, this.orderController);
+
   Future getNewOrders(WebSocketClient client, dynamic payload) async {
     var userID = payload['user_id'];
     var tableID = payload['table_id'];
 
-    if (userID == null) {
-      return;
-    }
+    if (userID == null) return;
 
-    if (tableID == null) {
-      return;
-    }
+    if (tableID == null) return;
 
     try {
-      var payloadData = await await _orderRepository.getNewOrdersByTable(
+      var payloadData = await await orderRepository.getNewOrdersByTable(
           tableID: tableID, userID: userID);
       List<Map<String, dynamic>> formattedOrders = [];
 
