@@ -5,12 +5,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_client_v3/common/widget/loading_widget.dart';
+import 'package:minhlong_menu_client_v3/core/app_asset.dart';
 import 'package:minhlong_menu_client_v3/core/extensions.dart';
 
 import '../../../../Routes/app_route.dart';
 import '../../../../common/widget/common_text_field.dart';
 import '../../../../common/widget/error_widget.dart';
-import '../../../../core/app_asset.dart';
 import '../../../../core/app_colors.dart';
 import '../../../../core/app_const.dart';
 import '../../../../core/app_res.dart';
@@ -50,23 +50,17 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            expandedHeight: context.isPortrait
-                ? 0.2 * context.sizeDevice.height
-                : 0.2 * context.sizeDevice.width,
-            flexibleSpace: FlexibleSpaceBar(
-              background: SizedBox(
-                  width: double.infinity,
-                  height: 0.2.sh,
-                  child: Image.asset(AppAsset.backgroundLogin,
-                      colorBlendMode: BlendMode.srcIn, fit: BoxFit.cover)),
+      body: Stack(
+        children: [
+          SizedBox(
+            height: context.sizeDevice.height,
+            width: context.sizeDevice.width,
+            child: Image.asset(
+              AppAsset.background,
+              fit: BoxFit.cover,
             ),
           ),
-          SliverToBoxAdapter(
-            child: _buildBody(),
-          ),
+          _buildBody(),
         ],
       ),
     );
@@ -192,14 +186,10 @@ class _Wellcome extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 52,
-      child: FittedBox(
-        fit: BoxFit.scaleDown,
-        child: Text(AppString.welcomeBack,
-            style: kHeadingStyle.copyWith(
-                fontSize: 48.sp, fontWeight: FontWeight.w700)),
-      ),
+    return FittedBox(
+      child: Text(AppString.welcomeBack,
+          style: kHeadingStyle.copyWith(
+              fontSize: 35, fontWeight: FontWeight.w700)),
     );
   }
 }

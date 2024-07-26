@@ -13,6 +13,8 @@ import 'package:minhlong_menu_client_v3/core/app_style.dart';
 import 'package:minhlong_menu_client_v3/core/extensions.dart';
 import 'package:minhlong_menu_client_v3/features/food/data/model/food_model.dart';
 import 'package:minhlong_menu_client_v3/features/food/data/repositories/food_repository.dart';
+import 'package:minhlong_menu_client_v3/features/user/cubit/user_cubit.dart';
+
 import '../../../../common/snackbar/app_snackbar.dart';
 import '../../../../common/widget/common_item_food.dart';
 // import '../../../../common/widget/empty_widget.dart';
@@ -99,6 +101,7 @@ class _CategoryViewState extends State<CategoryView> {
   Widget build(BuildContext context) {
     var cart = context.watch<CartCubit>().state;
     var table = context.watch<TableCubit>().state;
+    var user = context.watch<UserCubit>().state;
     return Scaffold(body: BlocBuilder<FoodBloc, FoodState>(
       builder: (context, state) {
         if (state.food.paginationModel != null) {
@@ -129,7 +132,8 @@ class _CategoryViewState extends State<CategoryView> {
                 ),
                 actions: [
                   CartButton(
-                      onPressed: () => context.push(AppRoute.carts),
+                      onPressed: () =>
+                          context.push(AppRoute.carts, extra: user),
                       number: cart.orderDetail.length.toString(),
                       colorIcon: AppColors.themeColor),
                   const SizedBox(width: 10),
