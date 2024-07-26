@@ -1,6 +1,7 @@
+import 'dart:io';
 import 'package:dio/dio.dart';
-import 'package:minhlong_menu_admin_v3/features/auth/data/dto/login_dto.dart';
 import '../../../../../core/api_config.dart';
+import '../../dto/login_dto.dart';
 import '../../model/access_token.dart';
 
 class AuthApi {
@@ -18,8 +19,22 @@ class AuthApi {
   }
 
   Future<bool> logout() async {
-    final response = await dio.post(ApiConfig.logout);
-    return response.data['data'];
+    var isLogOut = false;
+    try {
+      final response = await dio.post(ApiConfig.logout);
+      if (response.statusCode == HttpStatus.ok) {
+        isLogOut = true;
+      }
+      return isLogOut;
+    } catch (e) {
+      return isLogOut;
+    }
+  }
+
+  Future<AccessToken> refreshToken({required String refreshToken}) async {
+    final response = await dio
+        .post(ApiConfig.refreshToken, data: {'refresh_token': refreshToken});
+    return AccessToken.fromJson(response.data['data']);
   }
 
   Future<bool> forgotPassword({required LoginDto login}) async {

@@ -1,26 +1,33 @@
 import 'package:dio/dio.dart';
 import 'package:logger/logger.dart';
-import 'package:minhlong_menu_admin_v3/features/user/data/model/user_model.dart';
-import 'package:minhlong_menu_admin_v3/features/user/data/provider/user_api.dart';
-
 import '../../../../common/network/dio_exception.dart';
 import '../../../../common/network/result.dart';
+import '../../../auth/data/model/access_token.dart';
+import '../model/user_model.dart';
+import '../provider/user_api.dart';
+import '../user_local_datasource/user_local_datasource.dart';
 
 class UserRepository {
   final UserApi _userApi;
+  final UserLocalDatasource _userLocalDatasource;
 
-  UserRepository({required UserApi userApi}) : _userApi = userApi;
+  UserRepository(
+      {required UserApi userApi,
+      required UserLocalDatasource userLocalDatasource})
+      : _userApi = userApi,
+        _userLocalDatasource = userLocalDatasource;
 
-  Future<Result<UserModel>> getUser() async {
-    var userModel = UserModel();
+  Future<Result<UserModel>> getUser({required AccessToken accessToken}) async {
     try {
-      userModel = await _userApi.getUser();
+      var userModel = await _userApi.getUser(accessToken: accessToken);
+      await _userLocalDatasource.saveUserID(userModel.id);
+      Logger().i('user: $userModel');
+      return Result.success(userModel);
     } on DioException catch (e) {
       Logger().e('get user error: $e');
       final errorMessage = DioExceptions.fromDioError(e).toString();
       return Result.failure(errorMessage);
     }
-    return Result.success(userModel);
   }
 
   Future<Result<bool>> updateUser({required UserModel userModel}) async {

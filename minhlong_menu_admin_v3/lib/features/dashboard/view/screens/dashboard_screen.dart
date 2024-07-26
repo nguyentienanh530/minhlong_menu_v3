@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:badges/badges.dart' as badges;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +11,7 @@ import 'package:minhlong_menu_admin_v3/common/widget/empty_widget.dart';
 import 'package:minhlong_menu_admin_v3/common/widget/error_build_image.dart';
 import 'package:minhlong_menu_admin_v3/common/widget/error_widget.dart';
 import 'package:minhlong_menu_admin_v3/common/widget/loading.dart';
+import 'package:minhlong_menu_admin_v3/core/const_res.dart';
 import 'package:minhlong_menu_admin_v3/core/extensions.dart';
 import 'package:minhlong_menu_admin_v3/features/dashboard/bloc/best_selling_food/best_selling_food_bloc.dart';
 import 'package:minhlong_menu_admin_v3/features/dashboard/bloc/data_chart/data_chart_bloc.dart';
@@ -20,11 +20,10 @@ import 'package:minhlong_menu_admin_v3/features/dashboard/data/model/info_model.
 import 'package:minhlong_menu_admin_v3/features/dashboard/data/respositories/info_respository.dart';
 import 'package:minhlong_menu_admin_v3/features/dinner_table/data/model/table_item.dart';
 import 'package:minhlong_menu_admin_v3/features/home/cubit/table_index_selected_cubit.dart';
-import 'package:minhlong_menu_admin_v3/features/user/bloc/user_bloc.dart';
+import 'package:minhlong_menu_admin_v3/features/order/data/repositories/order_repository.dart';
 import 'package:minhlong_menu_admin_v3/features/user/data/model/user_model.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
-
 import '../../../../common/snackbar/overlay_snackbar.dart';
 import '../../../../common/widget/common_icon_button.dart';
 import '../../../../core/api_config.dart';
@@ -44,10 +43,8 @@ part '../widgets/_orders_on_table_widget.dart';
 part '../widgets/_table_widget.dart';
 
 class DashboardScreen extends StatelessWidget {
-  const DashboardScreen(
-      {super.key, required this.userModel, required this.accessToken});
+  const DashboardScreen({super.key, required this.userModel});
   final UserModel userModel;
-  final String accessToken;
 
   @override
   Widget build(BuildContext context) {
@@ -73,21 +70,21 @@ class DashboardScreen extends StatelessWidget {
           create: (context) => DataChartBloc(
             infoRespository: context.read<InfoRespository>(),
           ),
+        ),
+        BlocProvider(
+          create: (context) => OrderBloc(
+            context.read<OrderRepository>(),
+          ),
         )
       ],
-      child: DashboardView(
-        userModel: userModel,
-        accessToken: accessToken,
-      ),
+      child: DashboardView(userModel: userModel),
     );
   }
 }
 
 class DashboardView extends StatefulWidget {
-  const DashboardView(
-      {super.key, required this.userModel, required this.accessToken});
+  const DashboardView({super.key, required this.userModel});
   final UserModel userModel;
-  final String accessToken;
 
   @override
   State<DashboardView> createState() => _DashboardViewState();
@@ -109,13 +106,13 @@ class _DashboardViewState extends State<DashboardView>
     _tableChannel = IOWebSocketChannel.connect(
         Uri.parse(ApiConfig.tablesSocketUrl),
         headers: {
-          'Authorization': 'Bearer ${widget.accessToken}',
+          ConstRes.userID: '${widget.userModel.id}',
         })
       ..ready;
     _orderChannel = IOWebSocketChannel.connect(
         Uri.parse(ApiConfig.ordersSocketUrl),
         headers: {
-          'Authorization': 'Bearer ${widget.accessToken}',
+          ConstRes.userID: '${widget.userModel.id}',
         })
       ..ready;
     context.read<InfoBloc>().add(InfoFetchStarted());
@@ -166,8 +163,20 @@ class _DashboardViewState extends State<DashboardView>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    _user = widget.userModel;
     final tableIndexSelectedState =
         context.watch<TableIndexSelectedCubit>().state;
+
+    if (!_isFirstSendSocket) {
+      Ultils.joinRoom(_orderChannel, 'orders-${_user.id}');
+      Ultils.joinRoom(_tableChannel, 'tables-${_user.id}');
+
+      Ultils.sendSocket(_tableChannel, 'tables', _user.id);
+      Ultils.sendSocket(_orderChannel, 'orders',
+          {'user_id': _user.id, 'table_id': tableIndexSelectedState});
+
+      _isFirstSendSocket = true;
+    }
     return BlocListener<OrderBloc, OrderState>(
       listener: (context, state) {
         if (state is OrderUpdateInProgress) {
@@ -187,95 +196,75 @@ class _DashboardViewState extends State<DashboardView>
               type: OverlaySnackbarType.error);
         }
       },
-      child: Builder(
-        builder: (context) {
-          final user = context.watch<UserBloc>().state;
-
-          if (user is UserFecthSuccess) {
-            _user = user.userModel;
-            if (!_isFirstSendSocket) {
-              Ultils.joinRoom(_orderChannel, 'orders-${_user.id}');
-              Ultils.joinRoom(_tableChannel, 'tables-${_user.id}');
-
-              Ultils.sendSocket(_tableChannel, 'tables', _user.id);
-              Ultils.sendSocket(_orderChannel, 'orders',
-                  {'user_id': _user.id, 'table_id': tableIndexSelectedState});
-
-              _isFirstSendSocket = true;
-            }
-          }
-
-          return Padding(
-            padding: const EdgeInsets.all(30).r,
-            child: RefreshIndicator(
-              onRefresh: () async {
-                _getDataDashboard();
-              },
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 180,
-                      child: _buildInfoWidget(),
-                    ),
-                    15.verticalSpace,
-                    context.isDesktop
-                        ? SizedBox(
-                            height: 0.5 * context.sizeDevice.height,
-                            width: double.infinity,
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  flex: 3,
-                                  child: _lineChartRevenueWidget(),
-                                ),
-                                15.horizontalSpace,
-                                Expanded(
-                                  child: _chartBestSellingFoodWidget(),
-                                )
-                              ],
-                            ),
-                          )
-                        : Column(
-                            children: [
-                              SizedBox(
-                                  height: 0.5 * context.sizeDevice.height,
-                                  child: _lineChartRevenueWidget()),
-                              15.horizontalSpace,
-                              SizedBox(
-                                  height: 0.5 * context.sizeDevice.height,
-                                  child: _chartBestSellingFoodWidget())
-                            ],
-                          ),
-                    15.verticalSpace,
-                    Card(
-                      child: Container(
+      child: Padding(
+        padding: const EdgeInsets.all(30).r,
+        child: RefreshIndicator(
+          onRefresh: () async {
+            _getDataDashboard();
+          },
+          child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 180,
+                  child: _buildInfoWidget(),
+                ),
+                15.verticalSpace,
+                context.isDesktop
+                    ? SizedBox(
+                        height: 0.5 * context.sizeDevice.height,
                         width: double.infinity,
-                        constraints: const BoxConstraints(minHeight: 500),
-                        padding: const EdgeInsets.all(defaultPadding).r,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        child: Row(
                           children: [
-                            Text(
-                              'Đơn hàng mới',
-                              style: kHeadingStyle.copyWith(
-                                  fontWeight: FontWeight.w700),
+                            Expanded(
+                              flex: 3,
+                              child: _lineChartRevenueWidget(),
                             ),
-                            const SizedBox(height: defaultPadding),
-                            _buildTablesWidget(index: tableIndexSelectedState),
-                            const SizedBox(height: defaultPadding),
-                            _buildOrdersOnTable(),
+                            15.horizontalSpace,
+                            Expanded(
+                              child: _chartBestSellingFoodWidget(),
+                            )
                           ],
                         ),
+                      )
+                    : Column(
+                        children: [
+                          SizedBox(
+                              height: 0.5 * context.sizeDevice.height,
+                              child: _lineChartRevenueWidget()),
+                          15.horizontalSpace,
+                          SizedBox(
+                              height: 0.5 * context.sizeDevice.height,
+                              child: _chartBestSellingFoodWidget())
+                        ],
                       ),
+                15.verticalSpace,
+                Card(
+                  child: Container(
+                    width: double.infinity,
+                    constraints: const BoxConstraints(minHeight: 500),
+                    padding: const EdgeInsets.all(defaultPadding).r,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Đơn hàng mới',
+                          style: kHeadingStyle.copyWith(
+                              fontWeight: FontWeight.w700),
+                        ),
+                        const SizedBox(height: defaultPadding),
+                        _buildTablesWidget(index: tableIndexSelectedState),
+                        const SizedBox(height: defaultPadding),
+                        _buildOrdersOnTable(),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
+              ],
             ),
-          );
-        },
+          ),
+        ),
       ),
     );
   }
@@ -338,6 +327,7 @@ class _DashboardViewState extends State<DashboardView>
                                   .add(DataChartFetched('year'));
                               break;
                             default:
+                              break;
                           }
                           _valueDropdown.value = value!;
                         },

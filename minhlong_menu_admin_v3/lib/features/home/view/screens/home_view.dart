@@ -6,7 +6,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_admin_v3/core/api_config.dart';
 import 'package:minhlong_menu_admin_v3/core/extensions.dart';
-import 'package:minhlong_menu_admin_v3/features/auth/cubit/access_token_cubit.dart';
 import 'package:minhlong_menu_admin_v3/features/banner/view/screens/banner_screen.dart';
 import 'package:minhlong_menu_admin_v3/features/category/view/screens/category_screen.dart';
 import 'package:minhlong_menu_admin_v3/features/dashboard/view/screens/dashboard_screen.dart';
@@ -14,19 +13,18 @@ import 'package:minhlong_menu_admin_v3/features/dinner_table/view/screens/dinner
 import 'package:minhlong_menu_admin_v3/features/food/view/screens/food_screen.dart';
 import 'package:minhlong_menu_admin_v3/features/order/view/screens/order_screen.dart';
 import 'package:minhlong_menu_admin_v3/features/setting/view/screens/setting_screen.dart';
-import 'package:minhlong_menu_admin_v3/features/user/bloc/user_bloc.dart';
-import 'package:minhlong_menu_admin_v3/features/user/data/model/user_model.dart';
 
+import 'package:minhlong_menu_admin_v3/features/user/data/model/user_model.dart';
 import '../../../../Routes/app_route.dart';
 import '../../../../common/dialog/app_dialog.dart';
 import '../../../../common/widget/error_build_image.dart';
 import '../../../../common/widget/error_dialog.dart';
-import '../../../../common/widget/error_widget.dart';
 import '../../../../common/widget/loading.dart';
 import '../../../../core/app_asset.dart';
 import '../../../../core/app_colors.dart';
 import '../../../../core/app_style.dart';
 import '../../../auth/bloc/auth_bloc.dart';
+import '../../../user/cubit/user_cubit.dart';
 
 part '../widgets/_side_menu.dart';
 
@@ -44,8 +42,6 @@ class HomeViewState extends State<HomeView>
 
   final SideMenuController _sideMenuCtrl = SideMenuController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
-  UserModel _userModel = UserModel();
 
   final _listIconMenu = [
     {
@@ -89,7 +85,7 @@ class HomeViewState extends State<HomeView>
   @override
   void initState() {
     super.initState();
-    context.read<UserBloc>().add(UserFetched());
+
     _title.value = _listIconMenu[0]['title'].toString();
     _sideMenuCtrl.addListener((index) {
       _pageCtrl.animateToPage(index,
@@ -110,7 +106,7 @@ class HomeViewState extends State<HomeView>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    var accessToken = context.watch<AccessTokenCubit>().state;
+    var user = context.watch<UserCubit>().state;
 
     return Scaffold(
       appBar: context.isMobile ? _buildAppBar() : null,
@@ -147,14 +143,6 @@ class HomeViewState extends State<HomeView>
               }
             },
           ),
-          BlocListener<UserBloc, UserState>(
-            listener: (context, state) {
-              if (state is UserFecthFailure) {
-                context.read<AuthBloc>().add(AuthEventStarted());
-                context.go(AppRoute.login);
-              }
-            },
-          ),
         ],
         child: Row(
           children: [
@@ -167,7 +155,7 @@ class HomeViewState extends State<HomeView>
             Expanded(
               child: Column(
                 children: [
-                  context.isMobile ? const SizedBox() : _buildHeader(),
+                  context.isMobile ? const SizedBox() : _buildHeader(user),
                   // Expanded(
                   //   child: ValueListenableBuilder(
                   //     valueListenable: _pageIndex,
@@ -181,10 +169,7 @@ class HomeViewState extends State<HomeView>
                   Expanded(
                     child: PageView.builder(
                       itemCount: <Widget>[
-                        DashboardScreen(
-                          userModel: _userModel,
-                          accessToken: accessToken.accessToken,
-                        ),
+                        DashboardScreen(userModel: user),
                         const OrderScreen(),
                         const FoodScreen(),
                         const DinnerTableScreen(),
@@ -195,10 +180,7 @@ class HomeViewState extends State<HomeView>
                       physics: const NeverScrollableScrollPhysics(),
                       itemBuilder: (context, index) {
                         return <Widget>[
-                          DashboardScreen(
-                            userModel: _userModel,
-                            accessToken: accessToken.accessToken,
-                          ),
+                          DashboardScreen(userModel: user),
                           const OrderScreen(),
                           const FoodScreen(),
                           const DinnerTableScreen(),
@@ -267,16 +249,8 @@ class HomeViewState extends State<HomeView>
     );
   }
 
-  Widget _buildHeader() {
-    return Builder(builder: (context) {
-      var userState = context.watch<UserBloc>().state;
-      return (switch (userState) {
-        UserFecthInProgress() => const Loading(),
-        UserFecthFailure() => ErrWidget(error: userState.errorMessage),
-        UserFecthSuccess() => _buildFechUserSuccess(userState.userModel),
-        _ => const SizedBox(),
-      });
-    });
+  Widget _buildHeader(UserModel user) {
+    return _buildFechUserSuccess(user);
   }
 
   Widget _buildAvatar(String imageUrl) {
@@ -319,7 +293,6 @@ class HomeViewState extends State<HomeView>
   }
 
   _buildFechUserSuccess(UserModel user) {
-    _userModel = user;
     return SizedBox(
       height: 115.h,
       child: Row(

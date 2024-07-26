@@ -19,3 +19,8 @@ final class AuthForgotPasswordStarted extends AuthEvent {
   AuthForgotPasswordStarted(this.login);
   final LoginDto login;
 }
+
+class AuthEventRefreshTokenStarted extends AuthEvent {
+  AuthEventRefreshTokenStarted(this.refreshToken);
+  final String refreshToken;
+}

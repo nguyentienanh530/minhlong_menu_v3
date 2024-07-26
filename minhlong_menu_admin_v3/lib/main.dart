@@ -1,25 +1,22 @@
-// import 'package:dio/dio.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:minhlong_menu_admin_v3/Routes/app_route.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/bloc/auth_bloc.dart';
-import 'package:minhlong_menu_admin_v3/features/auth/cubit/access_token_cubit.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/data/auth_local_datasource/auth_local_datasource.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/data/provider/remote/auth_api.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/data/repositories/auth_repository.dart';
-import 'package:minhlong_menu_admin_v3/features/banner/bloc/banner_bloc.dart';
-import 'package:minhlong_menu_admin_v3/features/category/bloc/category_bloc.dart';
-import 'package:minhlong_menu_admin_v3/features/dinner_table/bloc/dinner_table_bloc.dart';
-import 'package:minhlong_menu_admin_v3/features/order/bloc/order_bloc.dart';
+import 'package:minhlong_menu_admin_v3/features/user/cubit/user_cubit.dart';
+import 'package:minhlong_menu_admin_v3/features/user/data/user_local_datasource/user_local_datasource.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'bloc_observer.dart';
 import 'common/network/dio_client.dart';
 import 'common/network/dio_interceptor.dart';
 import 'core/app_colors.dart';
+import 'features/auth/data/model/access_token.dart';
 import 'features/banner/data/provider/banner_api.dart';
 import 'features/banner/data/repositories/banner_repository.dart';
 import 'features/category/data/provider/category_api.dart';
@@ -28,17 +25,14 @@ import 'features/dashboard/data/provider/info_api.dart';
 import 'features/dashboard/data/respositories/info_respository.dart';
 import 'features/dinner_table/data/provider/dinner_table_api.dart';
 import 'features/dinner_table/data/repositories/table_repository.dart';
-import 'features/food/bloc/food_bloc/food_bloc.dart';
-import 'features/food/bloc/search_food_bloc/search_food_bloc.dart';
 import 'features/food/data/provider/food_api.dart';
 import 'features/food/data/repositories/food_repository.dart';
-import 'features/home/cubit/table_index_selected_cubit.dart';
+
 import 'features/order/data/provider/order_api.dart';
 import 'features/order/data/repositories/order_repository.dart';
 import 'features/user/bloc/user_bloc.dart';
 import 'features/user/data/provider/user_api.dart';
 import 'features/user/data/repositories/user_repository.dart';
-import 'features/web_socket_client/cubit/web_socket_client_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -62,9 +56,9 @@ class MainApp extends StatelessWidget {
       providers: [
         RepositoryProvider(
           create: (context) => AuthRepository(
-            authApi: AuthApi(dio: dio),
-            authLocalDatasource: AuthLocalDatasource(sf),
-          ),
+              authApi: AuthApi(dio: dio),
+              authLocalDatasource: AuthLocalDatasource(sf),
+              userLocalDatasource: UserLocalDatasource(sf)),
         ),
         RepositoryProvider(
           create: (context) => FoodRepository(
@@ -99,6 +93,7 @@ class MainApp extends StatelessWidget {
         ),
         RepositoryProvider(
           create: (context) => UserRepository(
+            userLocalDatasource: UserLocalDatasource(sf),
             userApi: UserApi(
               dio: dio,
             ),
@@ -116,49 +111,15 @@ class MainApp extends StatelessWidget {
             create: (context) => AuthBloc(context.read<AuthRepository>()),
           ),
           BlocProvider(
-            create: (context) => WebSocketClientCubit(),
-          ),
-          BlocProvider(
-            create: (context) => TableIndexSelectedCubit(),
-          ),
-          BlocProvider(
-            create: (context) => FoodBloc(context.read<FoodRepository>()),
-          ),
-          BlocProvider(
-            create: (context) => SearchFoodBloc(
-              context.read<FoodRepository>(),
-            ),
-          ),
-          BlocProvider(
-            create: (context) => DinnerTableBloc(
-              context.read<DinnerTableRepository>(),
-            ),
-          ),
-          BlocProvider(
-            create: (context) => CategoryBloc(
-              categoryRepository: context.read<CategoryRepository>(),
-            ),
-          ),
-          BlocProvider(
-            create: (context) => BannerBloc(
-              bannerRepository: context.read<BannerRepository>(),
-            ),
-          ),
-          BlocProvider(
             create: (context) => UserBloc(
               userRepository: context.read<UserRepository>(),
             ),
           ),
           BlocProvider(
-            create: (context) => OrderBloc(
-              context.read<OrderRepository>(),
-            ),
-          ),
-          BlocProvider(
-            create: (context) => AccessTokenCubit(),
+            create: (context) => UserCubit(),
           ),
         ],
-        child: const AppContent(),
+        child: AppContent(sf: sf),
       ),
     );
   }
@@ -167,8 +128,9 @@ class MainApp extends StatelessWidget {
 class AppContent extends StatefulWidget {
   const AppContent({
     super.key,
+    required this.sf,
   });
-
+  final SharedPreferences sf;
   @override
   State<AppContent> createState() => _AppContentState();
 }
@@ -181,6 +143,28 @@ class _AppContentState extends State<AppContent> {
     super.initState();
   }
 
+  void _handleGetUser(AccessToken accessToken) async {
+    // check token is expired
+    var hasExpired = JwtDecoder.isExpired(accessToken.accessToken);
+    var hasExpiredRefresh = JwtDecoder.isExpired(accessToken.refreshToken);
+    print('hasExpired: $hasExpired');
+    print('hasExpiredRefresh: $hasExpiredRefresh');
+    if (!hasExpired && !hasExpiredRefresh) {
+      context.read<UserBloc>().add(UserFetched(accessToken));
+    }
+    if (hasExpiredRefresh) {
+      await AuthLocalDatasource(widget.sf).removeAccessToken();
+      if (!mounted) return;
+      context.read<AuthBloc>().add(AuthAuthenticateStarted());
+    }
+    if (hasExpired) {
+      if (!mounted) return;
+      context
+          .read<AuthBloc>()
+          .add(AuthEventRefreshTokenStarted(accessToken.refreshToken));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final state = context.watch<AuthBloc>().state;
@@ -188,37 +172,50 @@ class _AppContentState extends State<AppContent> {
       return Container();
     }
     if (state is AuthAuthenticateSuccess) {
-      context.read<AccessTokenCubit>().setAccessToken(state.accessToken);
+      _handleGetUser(state.accessToken);
     }
 
-    return ScreenUtilInit(
-      designSize: const Size(1920, 1024),
-      minTextAdapt: true,
-      splitScreenMode: true,
-      // Use builder only if you need to use library outside ScreenUtilInit context
-      builder: (_, child) {
-        return MaterialApp.router(
-          title: 'Minh Long Menu',
-          debugShowCheckedModeBanner: false,
-          routerConfig: AppRoute.routes,
-          scrollBehavior: MyCustomScrollBehavior(),
-          theme: ThemeData(
-            useMaterial3: true,
-            fontFamily: GoogleFonts.roboto().fontFamily,
-            scaffoldBackgroundColor: AppColors.background,
-            // textTheme: const TextTheme(
-            //     displaySmall: TextStyle(color: AppColors.white),
-            //     displayLarge: TextStyle(color: AppColors.white),
-            //     displayMedium: TextStyle(color: AppColors.white)),
-            colorScheme: ColorScheme.fromSwatch(
-              primarySwatch: MaterialColor(
-                AppColors.themeColor.value,
-                getSwatch(AppColors.themeColor),
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (context, state) async {
+        if (state is AuthRefreshTokenSuccess) {
+          context.read<AuthBloc>().add(AuthAuthenticateStarted());
+          context.read<UserBloc>().add(UserFetched(state.accessToken));
+        }
+        if (state is AuthRefreshTokenFailure) {
+          await AuthLocalDatasource(widget.sf).removeAccessToken();
+          if (!context.mounted) return;
+          context.read<AuthBloc>().add(AuthAuthenticateStarted());
+        }
+      },
+      child: ScreenUtilInit(
+        designSize: const Size(1920, 1024),
+        minTextAdapt: true,
+        splitScreenMode: true,
+        // Use builder only if you need to use library outside ScreenUtilInit context
+        builder: (_, child) {
+          return MaterialApp.router(
+            title: 'Minh Long Menu',
+            debugShowCheckedModeBanner: false,
+            routerConfig: AppRoute.routes,
+            scrollBehavior: MyCustomScrollBehavior(),
+            theme: ThemeData(
+              useMaterial3: true,
+              fontFamily: GoogleFonts.roboto().fontFamily,
+              scaffoldBackgroundColor: AppColors.background,
+              // textTheme: const TextTheme(
+              //     displaySmall: TextStyle(color: AppColors.white),
+              //     displayLarge: TextStyle(color: AppColors.white),
+              //     displayMedium: TextStyle(color: AppColors.white)),
+              colorScheme: ColorScheme.fromSwatch(
+                primarySwatch: MaterialColor(
+                  AppColors.themeColor.value,
+                  getSwatch(AppColors.themeColor),
+                ),
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 

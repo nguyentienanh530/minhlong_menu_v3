@@ -7,9 +7,8 @@ import '../../../../core/utils.dart';
 import '../../data/model/data_chart.dart';
 
 class ColumnRevenueChart extends StatelessWidget {
-  ColumnRevenueChart({super.key, required this.dataCharts});
+  const ColumnRevenueChart({super.key, required this.dataCharts});
   final List<DataChart> dataCharts;
-  final _touchedIndex = ValueNotifier(-1);
 
   @override
   Widget build(BuildContext context) {
@@ -23,21 +22,18 @@ class ColumnRevenueChart extends StatelessWidget {
     } else {
       maxTotalPrice = 0.0;
     }
-    return ListenableBuilder(
-        listenable: _touchedIndex,
-        builder: (context, _) {
-          return BarChart(
-            BarChartData(
-              barTouchData: barTouchData,
-              titlesData: titlesData,
-              borderData: borderData,
-              barGroups: barGroups(),
-              gridData: const FlGridData(show: false),
-              alignment: BarChartAlignment.spaceAround,
-              maxY: maxTotalPrice + 1000000,
-            ),
-          );
-        });
+    dataCharts.sort((a, b) => a.date.compareTo(b.date));
+    return BarChart(
+      BarChartData(
+        barTouchData: barTouchData,
+        titlesData: titlesData,
+        borderData: borderData,
+        barGroups: barGroups(),
+        gridData: const FlGridData(show: false),
+        alignment: BarChartAlignment.spaceAround,
+        maxY: maxTotalPrice + 1000000,
+      ),
+    );
   }
 
   BarTouchData get barTouchData => BarTouchData(
@@ -61,15 +57,15 @@ class ColumnRevenueChart extends StatelessWidget {
             );
           },
         ),
-        touchCallback: (FlTouchEvent event, barTouchResponse) {
-          if (!event.isInterestedForInteractions ||
-              barTouchResponse == null ||
-              barTouchResponse.spot == null) {
-            _touchedIndex.value = -1;
-            return;
-          }
-          _touchedIndex.value = barTouchResponse.spot!.touchedBarGroupIndex;
-        },
+        // touchCallback: (FlTouchEvent event, barTouchResponse) {
+        //   if (!event.isInterestedForInteractions ||
+        //       barTouchResponse == null ||
+        //       barTouchResponse.spot == null) {
+        //     _touchedIndex.value = -1;
+        //     return;
+        //   }
+        //   _touchedIndex.value = barTouchResponse.spot!.touchedBarGroupIndex;
+        // },
       );
 
   Widget getTitles(double value, TitleMeta meta) {
@@ -147,10 +143,7 @@ class ColumnRevenueChart extends StatelessWidget {
         .map(
           (key, value) => MapEntry(
             key,
-            itemChart(
-                x: key,
-                toY: value.totalPrice,
-                isTouched: key == _touchedIndex.value),
+            itemChart(x: key, toY: value.totalPrice),
           ),
         )
         .values

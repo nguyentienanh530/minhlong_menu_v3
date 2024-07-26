@@ -52,12 +52,7 @@ extension _SettingWidgets on _SettingScreenState {
 
   Widget _editInfoUser(UserModel user) {
     return _ItemProfile(
-      onTap: () async =>
-          context.push<bool>(AppRoute.editProfile, extra: user).then((value) {
-        if (value != null && value) {
-          context.read<UserBloc>().add(UserFetched());
-        }
-      }),
+      onTap: () => context.push<bool>(AppRoute.editProfile, extra: user),
       colorIcon: AppColors.themeColor,
       svgPath: AppAsset.user,
       title: AppString.editProfile,
