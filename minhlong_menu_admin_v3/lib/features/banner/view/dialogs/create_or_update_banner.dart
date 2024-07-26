@@ -201,7 +201,7 @@ class _CreateOrUpdateBannerState extends State<CreateOrUpdateBanner> {
                               size: 20,
                             ),
                             Text(
-                              '1000 x 500',
+                              '900 x 500',
                               style: kCaptionStyle.copyWith(
                                 color: AppColors.secondTextColor,
                               ),

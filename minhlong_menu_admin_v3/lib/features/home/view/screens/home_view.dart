@@ -16,6 +16,7 @@ import 'package:minhlong_menu_admin_v3/features/order/view/screens/order_screen.
 import 'package:minhlong_menu_admin_v3/features/setting/view/screens/setting_screen.dart';
 import 'package:minhlong_menu_admin_v3/features/user/bloc/user_bloc.dart';
 import 'package:minhlong_menu_admin_v3/features/user/data/model/user_model.dart';
+
 import '../../../../Routes/app_route.dart';
 import '../../../../common/dialog/app_dialog.dart';
 import '../../../../common/widget/error_build_image.dart';
@@ -26,6 +27,7 @@ import '../../../../core/app_asset.dart';
 import '../../../../core/app_colors.dart';
 import '../../../../core/app_style.dart';
 import '../../../auth/bloc/auth_bloc.dart';
+
 part '../widgets/_side_menu.dart';
 
 class HomeView extends StatefulWidget {
@@ -80,7 +82,7 @@ class HomeViewState extends State<HomeView>
       'title': 'Cài đặt',
       'icon': Icons.settings,
       'route': AppRoute.settings,
-    }
+    },
   ];
   final _title = ValueNotifier('');
 
