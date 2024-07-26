@@ -10,9 +10,7 @@ import 'package:minhlong_menu_client_v3/core/app_colors.dart';
 import 'package:minhlong_menu_client_v3/core/app_const.dart';
 import 'package:minhlong_menu_client_v3/core/app_style.dart';
 import 'package:minhlong_menu_client_v3/core/extensions.dart';
-import 'package:minhlong_menu_client_v3/features/auth/data/auth_local_datasource/auth_local_datasource.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:minhlong_menu_client_v3/features/user/cubit/user_cubit.dart';
 import '../../../../Routes/app_route.dart';
 import '../../../../common/dialog/app_dialog.dart';
 import '../../../../common/widget/common_back_button.dart';
@@ -21,10 +19,7 @@ import '../../../../core/api_config.dart';
 import '../../../../core/app_asset.dart';
 import '../../../../core/app_string.dart';
 import '../../../auth/bloc/auth_bloc.dart';
-import '../../../auth/data/model/access_token.dart';
-import '../../bloc/user_bloc.dart';
 import '../../data/model/user_model.dart';
-
 part '../widget/_profile_widget.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -46,7 +41,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var userState = context.watch<UserBloc>().state;
+    var user = context.watch<UserCubit>().state;
     return Scaffold(
       appBar: AppBar(
         leading: CommonBackButton(onTap: () => context.pop()),
@@ -60,91 +55,89 @@ class _ProfileScreenState extends State<ProfileScreen> {
         centerTitle: true,
       ),
       body: SingleChildScrollView(
-        child: userState is UserFecthSuccess
-            ? SizedBox(
-                height: context.sizeDevice.height,
+        child: SizedBox(
+          height: context.sizeDevice.height,
+          child: Column(
+            children: [
+              20.verticalSpace,
+              SizedBox(
+                height: 250,
+                width: double.infinity,
                 child: Column(
                   children: [
-                    20.verticalSpace,
-                    SizedBox(
-                      height: 250,
-                      width: double.infinity,
-                      child: Column(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(2),
-                            width: 200,
-                            height: 200,
-                            decoration: BoxDecoration(
-                              color: AppColors.white,
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                  color: AppColors.smokeWhite, width: 6),
-                            ),
-                            child: Container(
-                              clipBehavior: Clip.antiAlias,
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                              ),
-                              child: CachedNetworkImage(
-                                imageUrl:
-                                    '${ApiConfig.host}${userState.userModel.image}',
-                                errorWidget: errorBuilderForImage,
-                                fit: BoxFit.cover,
-                                placeholder: (context, url) => const Loading(),
-                              ),
-                            ),
-                          ),
-                          Text(
-                            userState.userModel.fullName,
-                            style: kHeadingStyle.copyWith(
-                                fontWeight: FontWeight.bold, fontSize: 20),
-                          ),
-                          Text(
-                            '+84 ${userState.userModel.phoneNumber}',
-                            style: kBodyStyle.copyWith(
-                                color: AppColors.secondTextColor, fontSize: 12),
-                          ),
-                        ],
+                    Container(
+                      padding: const EdgeInsets.all(2),
+                      width: 200,
+                      height: 200,
+                      decoration: BoxDecoration(
+                        color: AppColors.white,
+                        shape: BoxShape.circle,
+                        border:
+                            Border.all(color: AppColors.smokeWhite, width: 6),
+                      ),
+                      child: Container(
+                        clipBehavior: Clip.antiAlias,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                        ),
+                        child: CachedNetworkImage(
+                          imageUrl: '${ApiConfig.host}${user.image}',
+                          errorWidget: errorBuilderForImage,
+                          fit: BoxFit.cover,
+                          placeholder: (context, url) => const Loading(),
+                        ),
                       ),
                     ),
-                    20.verticalSpace,
-                    Expanded(
-                      child: BlocListener<AuthBloc, AuthState>(
-                        listener: (context, state) {
-                          switch (state) {
-                            case AuthLogoutSuccess():
-                              context.read<AuthBloc>().add(AuthEventStarted());
-                              context.go(AppRoute.login);
-
-                              break;
-                            case AuthLogoutFailure(message: final msg):
-                              showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return ErrorDialog(
-                                    title: msg,
-                                    onRetryText: 'Thử lại',
-                                    onRetryPressed: () {
-                                      context.pop();
-                                      context
-                                          .read<AuthBloc>()
-                                          .add(AuthLogoutStarted());
-                                    },
-                                  );
-                                },
-                              );
-                              break;
-                            default:
-                          }
-                        },
-                        child: _bodyInfoUser(userModel: userState.userModel),
-                      ),
-                    )
+                    Text(
+                      user.fullName,
+                      style: kHeadingStyle.copyWith(
+                          fontWeight: FontWeight.bold, fontSize: 20),
+                    ),
+                    Text(
+                      '+84 ${user.phoneNumber}',
+                      style: kBodyStyle.copyWith(
+                          color: AppColors.secondTextColor, fontSize: 12),
+                    ),
                   ],
                 ),
-              )
-            : const SizedBox(),
+              ),
+              20.verticalSpace,
+              Expanded(
+                child: BlocListener<AuthBloc, AuthState>(
+                  listener: (context, state) {
+                    switch (state) {
+                      case AuthLogoutSuccess():
+                        context.read<AuthBloc>().add(AuthEventStarted());
+                        context.go(AppRoute.login);
+
+                        break;
+                      case AuthLogoutFailure(message: final msg):
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return ErrorDialog(
+                              title: msg,
+                              onRetryText: 'Thử lại',
+                              onRetryPressed: () {
+                                context.pop();
+                                context
+                                    .read<AuthBloc>()
+                                    .add(AuthLogoutStarted());
+                              },
+                            );
+                          },
+                        );
+                        break;
+                      default:
+                        break;
+                    }
+                  },
+                  child: _bodyInfoUser(userModel: user),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

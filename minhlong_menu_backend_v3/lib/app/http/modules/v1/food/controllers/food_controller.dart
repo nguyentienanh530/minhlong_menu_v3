@@ -4,6 +4,8 @@ import 'package:minhlong_menu_backend_v3/app/http/common/app_response.dart';
 import 'package:minhlong_menu_backend_v3/app/http/modules/v1/food/repositories/food_repository.dart';
 import 'package:vania/vania.dart';
 
+import '../../../../common/const_res.dart';
+
 part '../controllers/_index_food.dart';
 part '../controllers/_create_food.dart';
 part '../controllers/_update_food.dart';
@@ -17,13 +19,15 @@ class FoodController extends Controller {
       : _foodRepository = foodRepository;
 
   Future<Response> getFoodsOnCategory(Request request, int id) async {
+    int? userID = request.headers[ConstRes.userID] != null
+        ? int.tryParse(request.headers[ConstRes.userID])
+        : -1;
     var params = request.all();
     int? page = params['page'] != null ? int.tryParse(params['page']) : null;
     int? limit = params['limit'] != null ? int.tryParse(params['limit']) : null;
     int totalPages = 0;
     int startIndex = 0;
     try {
-      final userID = Auth().id();
       if (userID == null) {
         return AppResponse().error(
             statusCode: HttpStatus.unauthorized, message: 'unauthorized');
@@ -58,9 +62,11 @@ class FoodController extends Controller {
     }
   }
 
-  Future<Response> getTotalNumberOfFoods() async {
+  Future<Response> getTotalNumberOfFoods(Request request) async {
+    int? userID = request.headers[ConstRes.userID] != null
+        ? int.tryParse(request.headers[ConstRes.userID])
+        : -1;
     try {
-      final userID = Auth().id();
       if (userID == null) {
         return AppResponse().error(
             statusCode: HttpStatus.unauthorized, message: 'unauthorized');

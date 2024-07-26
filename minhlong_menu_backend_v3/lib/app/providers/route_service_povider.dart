@@ -34,7 +34,7 @@ class RouteServiceProvider extends ServiceProvider {
     Version1(
         bannerController: BannerController(
           bannerRepository: BannerRepository(
-            banner: Banner(),
+            banner: Banners(),
           ),
         ),
         categoryController: CategoryController(

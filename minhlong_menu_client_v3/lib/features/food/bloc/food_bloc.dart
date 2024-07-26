@@ -47,7 +47,7 @@ class FoodBloc extends Bloc<FoodEvent, FoodState> {
   FutureOr<void> _foodOnCategoryLoadMore(
       FoodOnCategoryLoadMore event, Emitter<FoodState> emit) async {
     emit(FoodLoadMoreState(food: state.food));
-    await Future.delayed(const Duration(seconds: 5));
+
     final f = await _foodRepository.getFoodsOnCategory(
       limit: event.limit,
       page: event.page,

@@ -1,9 +1,9 @@
 import '../models/banners.dart';
 
 class BannerRepository {
-  final Banner _banner;
-  BannerRepository({required Banner banner}) : _banner = banner;
-  Future getAll({required int userID}) async {
+  final Banners _banner;
+  BannerRepository({required Banners banner}) : _banner = banner;
+  Future getAllForUsers({required int userID}) async {
     return await _banner
         .query()
         .where('user_id', '=', userID)

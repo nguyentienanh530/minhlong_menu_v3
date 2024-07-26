@@ -2,9 +2,11 @@ part of '../controllers/category_controller.dart';
 
 extension CreateCategory on CategoryController {
   Future<Response> create(Request request) async {
+    int? userID = request.headers[ConstRes.userID] != null
+        ? int.tryParse(request.headers[ConstRes.userID])
+        : -1;
     Map<String, dynamic> data = request.all();
     try {
-      final userID = Auth().id();
       if (userID == null) {
         return AppResponse().error(
             statusCode: HttpStatus.unauthorized, message: 'unauthorized');

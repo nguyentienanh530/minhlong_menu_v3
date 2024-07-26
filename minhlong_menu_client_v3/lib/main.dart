@@ -5,18 +5,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:minhlong_menu_client_v3/Routes/app_route.dart';
-
 import 'package:minhlong_menu_client_v3/features/auth/bloc/auth_bloc.dart';
 import 'package:minhlong_menu_client_v3/features/auth/data/auth_local_datasource/auth_local_datasource.dart';
+import 'package:minhlong_menu_client_v3/features/auth/data/model/access_token.dart';
 import 'package:minhlong_menu_client_v3/features/auth/data/provider/remote/auth_api.dart';
 import 'package:minhlong_menu_client_v3/features/auth/data/respositories/auth_repository.dart';
+import 'package:minhlong_menu_client_v3/features/home/data/provider/home_api.dart';
+import 'package:minhlong_menu_client_v3/features/home/data/repository/home_repo.dart';
+import 'package:minhlong_menu_client_v3/features/user/cubit/user_cubit.dart';
+import 'package:minhlong_menu_client_v3/features/user/data/user_local_datasource/user_local_datasource.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'bloc_observer.dart';
 import 'common/network/dio_client.dart';
 import 'common/network/dio_interceptor.dart';
 import 'core/api_config.dart';
 import 'core/app_colors.dart';
+import 'features/cart/cubit/cart_cubit.dart';
+import 'features/food/cubit/item_size_cubit.dart';
+import 'features/food/data/provider/food_api.dart';
+import 'features/food/data/repositories/food_repository.dart';
+import 'features/order/data/provider/order_api.dart';
+import 'features/order/data/repositories/order_repository.dart';
+import 'features/table/cubit/table_cubit.dart';
 import 'features/user/bloc/user_bloc.dart';
 import 'features/user/data/provider/user_api.dart';
 import 'features/user/data/repositories/user_repository.dart';
@@ -27,11 +39,6 @@ void main() async {
   final sf = await SharedPreferences.getInstance();
   dio = Dio(BaseOptions(
     baseUrl: ApiConfig.baseUrl,
-    // headers: {
-    //   'Content-Type': 'application/json',
-    //   'Accept': 'application/json',
-    //   'Authorization': ''
-    // },
     connectTimeout: ApiConfig.connectionTimeout,
     receiveTimeout: ApiConfig.receiveTimeout,
     responseType: ResponseType.json,
@@ -58,6 +65,7 @@ class MainApp extends StatelessWidget {
           create: (context) => AuthRepository(
             authApi: AuthApi(dio: dio),
             authLocalDatasource: AuthLocalDatasource(sf),
+            userLocalDatasource: UserLocalDatasource(sf),
           ),
         ),
         RepositoryProvider(
@@ -65,6 +73,18 @@ class MainApp extends StatelessWidget {
             userApi: UserApi(
               dio: dio,
             ),
+            userLocalDatasource: UserLocalDatasource(sf),
+          ),
+        ),
+        RepositoryProvider(
+          create: (context) => FoodRepository(
+            foodApi: FoodApi(dio: dio),
+          ),
+        ),
+        RepositoryProvider(create: (context) => HomeRepo(HomeApi(dio))),
+        RepositoryProvider(
+          create: (context) => OrderRepository(
+            orderApi: OrderApi(dio),
           ),
         ),
       ],
@@ -79,6 +99,18 @@ class MainApp extends StatelessWidget {
             create: (context) => UserBloc(
               userRepository: context.read<UserRepository>(),
             ),
+          ),
+          BlocProvider(
+            create: (context) => CartCubit(),
+          ),
+          BlocProvider(
+            create: (context) => TableCubit(),
+          ),
+          BlocProvider(
+            create: (context) => ItemSizeCubit(),
+          ),
+          BlocProvider(
+            create: (context) => UserCubit(),
           ),
         ],
         child: AppContent(sf: sf),
@@ -102,6 +134,26 @@ class _AppContentState extends State<AppContent> {
     context.read<AuthBloc>().add(AuthAuthenticateStarted());
   }
 
+  void _handleGetUser(AccessToken accessToken) async {
+    // check token is expired
+    var hasExpired = JwtDecoder.isExpired(accessToken.accessToken);
+    var hasExpiredRefresh = JwtDecoder.isExpired(accessToken.refreshToken);
+    if (!hasExpired && !hasExpiredRefresh) {
+      context.read<UserBloc>().add(UserFetched(accessToken));
+    }
+    if (hasExpiredRefresh) {
+      await AuthLocalDatasource(widget.sf).removeAccessToken();
+      if (!mounted) return;
+      context.read<AuthBloc>().add(AuthAuthenticateStarted());
+    }
+    if (hasExpired) {
+      if (!mounted) return;
+      context
+          .read<AuthBloc>()
+          .add(AuthEventRefreshTokenStarted(accessToken.refreshToken));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final state = context.watch<AuthBloc>().state;
@@ -109,38 +161,50 @@ class _AppContentState extends State<AppContent> {
       return Container();
     }
     if (state is AuthAuthenticateSuccess) {
-      print('accessToken: ${state.accessToken}');
-      context.read<UserBloc>().add(UserFetched(state.accessToken));
+      _handleGetUser(state.accessToken);
     }
 
-    return ScreenUtilInit(
-      designSize: const Size(430, 932),
-      minTextAdapt: true,
-      splitScreenMode: true,
-      // Use builder only if you need to use library outside ScreenUtilInit context
-      builder: (_, child) {
-        return MaterialApp.router(
-          debugShowCheckedModeBanner: false,
-          locale: DevicePreview.locale(context),
-          builder: DevicePreview.appBuilder,
-          routerConfig: AppRoute.routes,
-          scrollBehavior: MyCustomScrollBehavior(),
-          theme: ThemeData(
-            fontFamily: GoogleFonts.rubik().fontFamily,
-            scaffoldBackgroundColor: AppColors.background,
-            textTheme: const TextTheme(
-                displaySmall: TextStyle(color: AppColors.white),
-                displayLarge: TextStyle(color: AppColors.white),
-                displayMedium: TextStyle(color: AppColors.white)),
-            colorScheme: ColorScheme.fromSwatch(
-              primarySwatch: MaterialColor(
-                AppColors.themeColor.value,
-                getSwatch(AppColors.themeColor),
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (context, state) async {
+        if (state is AuthRefreshTokenSuccess) {
+          context.read<AuthBloc>().add(AuthAuthenticateStarted());
+          context.read<UserBloc>().add(UserFetched(state.accessToken));
+        }
+        if (state is AuthRefreshTokenFailure) {
+          await AuthLocalDatasource(widget.sf).removeAccessToken();
+          if (!context.mounted) return;
+          context.read<AuthBloc>().add(AuthAuthenticateStarted());
+        }
+      },
+      child: ScreenUtilInit(
+        designSize: const Size(430, 932),
+        minTextAdapt: true,
+        splitScreenMode: true,
+        // Use builder only if you need to use library outside ScreenUtilInit context
+        builder: (_, child) {
+          return MaterialApp.router(
+            debugShowCheckedModeBanner: false,
+            locale: DevicePreview.locale(context),
+            builder: DevicePreview.appBuilder,
+            routerConfig: AppRoute.routes,
+            scrollBehavior: MyCustomScrollBehavior(),
+            theme: ThemeData(
+              fontFamily: GoogleFonts.rubik().fontFamily,
+              scaffoldBackgroundColor: AppColors.background,
+              textTheme: const TextTheme(
+                  displaySmall: TextStyle(color: AppColors.white),
+                  displayLarge: TextStyle(color: AppColors.white),
+                  displayMedium: TextStyle(color: AppColors.white)),
+              colorScheme: ColorScheme.fromSwatch(
+                primarySwatch: MaterialColor(
+                  AppColors.themeColor.value,
+                  getSwatch(AppColors.themeColor),
+                ),
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 

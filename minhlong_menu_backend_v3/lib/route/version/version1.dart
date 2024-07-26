@@ -1,4 +1,5 @@
 import 'package:minhlong_menu_backend_v3/app/http/modules/v1/food/controllers/food_controller.dart';
+import 'package:minhlong_menu_backend_v3/app/http/modules/v1/home/controller/home_client_controller.dart';
 import 'package:minhlong_menu_backend_v3/app/http/modules/v1/info/controllers/info_controller.dart';
 import 'package:vania/vania.dart';
 import '../../app/http/modules/v1/auth/controllers/auth_controller.dart';
@@ -63,7 +64,7 @@ class Version1 implements Route {
         Router.delete("{id}", _categoryController.destroy);
       },
       prefix: '/categories',
-      middleware: [AuthenticateMiddleware()],
+      // middleware: [AuthenticateMiddleware()],
     );
 
     //======= Table route =======
@@ -76,7 +77,7 @@ class Version1 implements Route {
         Router.delete("{id}", _tableController.destroy);
       },
       prefix: '/tables',
-      middleware: [AuthenticateMiddleware()],
+      // middleware: [AuthenticateMiddleware()],
     );
 
     //======= Food route ======
@@ -91,7 +92,7 @@ class Version1 implements Route {
         Router.get('search', _foodController.search);
       },
       prefix: '/foods',
-      middleware: [AuthenticateMiddleware()],
+      // middleware: [AuthenticateMiddleware()],
     );
 
     //======= Banner route =======
@@ -117,7 +118,7 @@ class Version1 implements Route {
         Router.delete('{id}', _orderController.destroy);
       },
       prefix: '/orders',
-      middleware: [AuthenticateMiddleware()],
+      // middleware: [AuthenticateMiddleware()],
     );
 
     //======= Info route =======
@@ -129,11 +130,14 @@ class Version1 implements Route {
             'revenue-filter-on-date', _infoController.revenueFilterOnDate);
       },
       prefix: '/info',
-      middleware: [AuthenticateMiddleware()],
+      // middleware: [AuthenticateMiddleware()],
     );
 
     //======= Upload image =======
     Router.post('/upload-image', uploadImageController.updateImage);
     Router.post("/upload-avatar", uploadImageController.updateAvatar);
+
+    //======= Home =======
+    Router.get('client/home', homeClientController.getHomeDataForUser);
   }
 }

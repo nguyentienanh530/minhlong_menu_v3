@@ -2,6 +2,9 @@ part of '../controllers/food_controller.dart';
 
 extension IndexFood on FoodController {
   Future<Response> index(Request request) async {
+    int? userID = request.headers[ConstRes.userID] != null
+        ? int.tryParse(request.headers[ConstRes.userID])
+        : -1;
     var params = request.all();
     int? page = params['page'] != null ? int.tryParse(params['page']) : null;
     int? limit = params['limit'] != null ? int.tryParse(params['limit']) : null;
@@ -9,7 +12,6 @@ extension IndexFood on FoodController {
     print('params: $params');
 
     try {
-      final userID = Auth().id();
       Map<String, dynamic> response = <String, dynamic>{};
 
       if (userID == null) {

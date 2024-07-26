@@ -4,83 +4,42 @@ extension _BodyTableWidget on _TableViewState {
   Widget _tableItem(TableModel table) {
     return Card(
       elevation: 3,
-      child: Container(
-        padding: const EdgeInsets.all(defaultPadding),
-        height: 100,
-        width: double.infinity,
-        child: Row(
-          // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(defaultPadding / 2),
-                child: Image.asset(
-                  table.isUse ? AppAsset.tableDisable : AppAsset.tableEnable,
-                ),
+      child: Column(
+        children: [
+          10.verticalSpace,
+          FittedBox(
+            child: Text(
+              table.name,
+              style: kSubHeadingStyle.copyWith(fontWeight: FontWeight.bold),
+            ),
+          ),
+          Flexible(
+            child: Text(
+              'Ghế : ${table.seats}',
+              style: kCaptionStyle.copyWith(color: AppColors.secondTextColor),
+            ),
+          ),
+          10.verticalSpace,
+          GestureDetector(
+            onTap: () {
+              context.read<TableCubit>().changeTable(table);
+              context.pop(true);
+            },
+            child: Container(
+              margin: const EdgeInsets.only(bottom: 10),
+              height: 30,
+              width: 100,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                  color: AppColors.themeColor,
+                  borderRadius: BorderRadius.circular(defaultBorderRadius)),
+              child: Text(
+                AppString.check,
+                style: kButtonWhiteStyle.copyWith(fontWeight: FontWeight.bold),
               ),
             ),
-            Expanded(
-                flex: 2,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: defaultPadding * 2),
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Expanded(
-                          child: FittedBox(
-                            fit: BoxFit.scaleDown,
-                            child: Text(
-                              table.name,
-                              style: kBodyStyle.copyWith(
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: FittedBox(
-                            fit: BoxFit.scaleDown,
-                            child: Text(
-                              'Số ghế : ${table.seats}',
-                              style: kBodyStyle.copyWith(
-                                  color: AppColors.secondTextColor),
-                            ),
-                          ),
-                        ),
-                        // RichText(text: '')
-                        // Text(
-                        //   'Số ghế : ${table.seats}',
-                        //   style: kBodyStyle.copyWith(
-                        //       color: AppColors.secondTextColor),
-                        // ),
-                      ]),
-                )),
-            Expanded(
-                child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
-                child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      shadowColor: AppColors.themeColor,
-                      elevation: 4,
-                      backgroundColor: AppColors.themeColor,
-                    ),
-                    onPressed: () {
-                      context.read<TableCubit>().changeTable(table);
-                      context.pop(true);
-                    },
-                    child: Text(
-                      AppString.check,
-                      style:
-                          kBodyWhiteStyle.copyWith(fontWeight: FontWeight.bold),
-                    )),
-              ),
-            )),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

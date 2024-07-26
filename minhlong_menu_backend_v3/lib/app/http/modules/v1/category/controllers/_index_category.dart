@@ -2,6 +2,9 @@ part of '../controllers/category_controller.dart';
 
 extension IndexCategory on CategoryController {
   Future<Response> index(Request request) async {
+    int? userID = request.headers[ConstRes.userID] != null
+        ? int.tryParse(request.headers[ConstRes.userID])
+        : -1;
     Map<String, dynamic> params = request.all();
 
     int? page = params['page'] != null ? int.tryParse(params['page']) : null;
@@ -9,7 +12,6 @@ extension IndexCategory on CategoryController {
     int totalPages = 0;
     int startIndex = 0;
     try {
-      final userID = Auth().id();
       if (userID == null) {
         return AppResponse().error(
             statusCode: HttpStatus.unauthorized, message: 'unauthorized');
@@ -19,7 +21,7 @@ extension IndexCategory on CategoryController {
 
       dynamic category;
       if (page == null && limit == null) {
-        category = await _categoryRepository.getAll(userID: userID);
+        category = await _categoryRepository.getAllForUsers(userID: userID);
       } else {
         totalPages = (totalItems / limit!).ceil();
         startIndex = (page! - 1) * limit;

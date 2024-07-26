@@ -1,7 +1,7 @@
 import 'package:vania/vania.dart';
 
-class Banner extends Model {
-  Banner() {
+class Banners extends Model {
+  Banners() {
     super.table('banners');
   }
 }

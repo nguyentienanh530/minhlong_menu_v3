@@ -9,6 +9,7 @@ import 'package:minhlong_menu_client_v3/common/dialog/app_dialog.dart';
 import 'package:minhlong_menu_client_v3/common/snackbar/app_snackbar.dart';
 import 'package:minhlong_menu_client_v3/common/widget/common_back_button.dart';
 import 'package:minhlong_menu_client_v3/core/extensions.dart';
+import 'package:minhlong_menu_client_v3/features/user/cubit/user_cubit.dart';
 import 'package:minhlong_menu_client_v3/features/user/data/repositories/user_repository.dart';
 
 import '../../../../common/widget/common_text_field.dart';
@@ -94,6 +95,7 @@ class _EditProfileViewState extends State<EditProfileView> {
               pop(context, 1);
               AppSnackbar.showSnackBar(context,
                   msg: 'Cập nhật thành công', isSuccess: true);
+              context.read<UserCubit>().userChanged(_userModel);
               _isUpdated = true;
               break;
             case UserUpdateFailure():

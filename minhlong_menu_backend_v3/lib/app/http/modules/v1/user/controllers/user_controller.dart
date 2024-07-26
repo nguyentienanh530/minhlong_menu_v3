@@ -2,9 +2,12 @@ import 'dart:io';
 import 'package:minhlong_menu_backend_v3/app/http/common/app_response.dart';
 import 'package:vania/vania.dart';
 
+import '../../../../common/const_res.dart';
 import '../models/user.dart';
+import '../repositories/user_repository.dart';
 
 class UserController extends Controller {
+  final UserRepository _userRepository = UserRepository();
   Future<Response> index() async {
     try {
       Map? user = Auth().user();
@@ -38,6 +41,9 @@ class UserController extends Controller {
   }
 
   Future<Response> update(Request request) async {
+    int? userID = request.headers[ConstRes.userID] != null
+        ? int.tryParse(request.headers[ConstRes.userID])
+        : -1;
     request.validate({
       'full_name': 'required|string',
       'phone_number': 'required|numeric',
@@ -49,7 +55,8 @@ class UserController extends Controller {
     String? image = request.input('image');
 
     try {
-      var user = Auth().user();
+      var user = await _userRepository.findUser(id: userID!);
+
       if (user == null) {
         return AppResponse()
             .error(statusCode: HttpStatus.notFound, message: 'user not found');
@@ -72,10 +79,13 @@ class UserController extends Controller {
   }
 
   Future<Response> changePassword(Request request) async {
+    int? userID = request.headers[ConstRes.userID] != null
+        ? int.tryParse(request.headers[ConstRes.userID])
+        : -1;
     String oldPassword = request.input('old_password');
     String newPassword = request.input('new_password');
     try {
-      var user = Auth().user();
+      var user = await _userRepository.findUser(id: userID!);
       if (user == null) {
         return AppResponse()
             .error(statusCode: HttpStatus.notFound, message: 'user not found');

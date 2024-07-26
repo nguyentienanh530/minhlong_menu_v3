@@ -26,6 +26,7 @@ import '../../../../core/app_colors.dart';
 import '../../../../core/app_const.dart';
 import '../../../../core/app_string.dart';
 import '../../../../core/utils.dart';
+import '../../../user/cubit/user_cubit.dart';
 
 class FoodDetailScreen extends StatefulWidget {
   @override
@@ -73,6 +74,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
       body: Builder(builder: (context) {
         var cartState = context.watch<CartCubit>().state;
         var tableState = context.watch<TableCubit>().state;
+        var user = context.watch<UserCubit>().state;
         return Column(
           children: [
             Expanded(
@@ -110,7 +112,8 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                           child: FittedBox(
                             fit: BoxFit.scaleDown,
                             child: CartButton(
-                              onPressed: () => context.push(AppRoute.carts),
+                              onPressed: () =>
+                                  context.push(AppRoute.carts, extra: user),
                               number: cartState.orderDetail.length.toString(),
                               colorIcon: AppColors.themeColor,
                             ),

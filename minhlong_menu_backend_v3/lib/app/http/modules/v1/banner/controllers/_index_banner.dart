@@ -22,7 +22,7 @@ extension IndexBannerCtrl on BannerController {
       dynamic banner;
       if (page == null && limit == null) {
         print('page and limit is null');
-        banner = await _bannerRepository.getAll(userID: userID);
+        banner = await _bannerRepository.getAllForUsers(userID: userID);
       } else {
         totalPages = (totalItems / limit).ceil();
         startIndex = (page! - 1) * limit!;

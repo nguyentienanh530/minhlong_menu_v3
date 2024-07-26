@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_client_v3/common/widget/loading.dart';
 import 'package:minhlong_menu_client_v3/features/cart/cubit/cart_cubit.dart';
 import 'package:minhlong_menu_client_v3/features/food/data/repositories/food_repository.dart';
+import 'package:minhlong_menu_client_v3/features/user/cubit/user_cubit.dart';
 
 import '../../../../Routes/app_route.dart';
 import '../../../../common/snackbar/app_snackbar.dart';
@@ -84,7 +85,6 @@ class _FoodViewState extends State<FoodView> {
               page: _page,
             ),
           );
-      _isLoadMore = false;
     }
   }
 
@@ -101,6 +101,7 @@ class _FoodViewState extends State<FoodView> {
   @override
   Widget build(BuildContext context) {
     var cartState = context.watch<CartCubit>().state;
+    var user = context.watch<UserCubit>().state;
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
@@ -119,7 +120,7 @@ class _FoodViewState extends State<FoodView> {
                 ),
               ),
               CartButton(
-                onPressed: () => context.push(AppRoute.carts),
+                onPressed: () => context.push(AppRoute.carts, extra: user),
                 number: cartState.orderDetail.length.toString(),
                 colorIcon: AppColors.themeColor,
               )
@@ -137,6 +138,7 @@ class _FoodViewState extends State<FoodView> {
             } else if (state is FoodFetchEmpty) {
               return const EmptyWidget();
             } else {
+              _isLoadMore = false;
               var food = state.food;
               if (food.paginationModel != null) {
                 _page > food.paginationModel!.totalPage
@@ -148,17 +150,17 @@ class _FoodViewState extends State<FoodView> {
                 controller: _scrollController,
                 // physics: const BouncingScrollPhysics(),
                 slivers: [
-                  SliverPadding(
-                    padding: const EdgeInsets.all(defaultPadding),
-                    sliver: SliverGrid(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) => CommonItemFood(
-                          addToCartOnTap: () => _handleOnTapAddToCart(
-                              cart, table, state.food.foodItems[index]),
-                          food: state.food.foodItems[index],
-                        ),
-                        childCount: food.foodItems.length,
+                  SliverToBoxAdapter(
+                    child: GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      padding: const EdgeInsets.all(defaultPadding),
+                      itemBuilder: (context, index) => CommonItemFood(
+                        addToCartOnTap: () => _handleOnTapAddToCart(
+                            cart, table, state.food.foodItems[index]),
+                        food: state.food.foodItems[index],
                       ),
+                      itemCount: state.food.foodItems.length,
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
                         childAspectRatio: 9 / 11,
@@ -168,14 +170,17 @@ class _FoodViewState extends State<FoodView> {
                       ),
                     ),
                   ),
-                  SliverToBoxAdapter(
-                    child: state is FoodLoadMoreState
-                        ? Container(
-                            padding: const EdgeInsets.only(bottom: 16),
-                            alignment: Alignment.center,
-                            child: const Loading(),
-                          )
-                        : const SizedBox(),
+                  SliverPadding(
+                    padding: const EdgeInsets.only(bottom: defaultPadding),
+                    sliver: SliverToBoxAdapter(
+                      child: state is FoodLoadMoreState
+                          ? Container(
+                              padding: const EdgeInsets.only(bottom: 16),
+                              alignment: Alignment.center,
+                              child: const Loading(),
+                            )
+                          : const SizedBox(),
+                    ),
                   ),
                 ],
               );

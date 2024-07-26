@@ -108,11 +108,10 @@ class _CategoryViewState extends State<CategoryView> {
         }
 
         if (state is FoodOnCategoryFetchInProgress) {
-          return const SliverToBoxAdapter(child: Loading());
+          return const Loading();
         } else if (state is FoodOnCategoryFetchFailure) {
-          return SliverToBoxAdapter(child: ErrWidget(error: state.message));
+          return ErrWidget(error: state.message);
         } else {
-          // return _buildWidgetWhenFetchSuccess(order, table, state.food);
           return CustomScrollView(
             controller: controller,
             physics: const BouncingScrollPhysics(),
@@ -138,13 +137,18 @@ class _CategoryViewState extends State<CategoryView> {
               ),
               SliverMainAxisGroup(
                 slivers: [
-                  _buildWidgetWhenFetchSuccess(cart, table, state.food),
                   SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: defaultPadding),
-                      child: state is FoodOnCategoryLoadMore
-                          ? const Loading()
-                          : const SizedBox(),
+                      child: _buildWidgetWhenFetchSuccess(
+                          cart, table, state.food)),
+                  SliverPadding(
+                    padding: const EdgeInsets.only(bottom: defaultPadding),
+                    sliver: SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: defaultPadding),
+                        child: state is FoodLoadMoreState
+                            ? const Loading()
+                            : const SizedBox(),
+                      ),
                     ),
                   ),
                 ],
@@ -209,29 +213,15 @@ class _CategoryViewState extends State<CategoryView> {
     );
   }
 
-  // Widget _buildBody(OrderModel order, TableModel table) {
-  //   return BlocBuilder<FoodBloc, FoodState>(builder: (context, state) {
-  //     // return (switch (state) {
-  //     //   FoodOnCategoryFetchInProgress() =>
-  //     //     const SliverToBoxAdapter(child: Loading()),
-  //     //   FoodOnCategoryFetchEmpty() =>
-  //     //     const SliverToBoxAdapter(child: EmptyWidget()),
-  //     //   FoodOnCategoryFetchFailure() =>
-  //     //     SliverToBoxAdapter(child: ErrWidget(error: state.message)),
-  //     //   FoodOnCategoryFetchSuccess() =>
-
-  //     //   _ => const SliverToBoxAdapter(child: Loading())
-  //     // });
-  //   });
-  // }
-
   Widget _buildWidgetWhenFetchSuccess(
       OrderModel order, TableModel table, FoodModel food) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _foodCount.value = food.paginationModel?.totalItem ?? 0;
     });
 
-    return SliverGrid.builder(
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
       itemCount: food.foodItems.length,
       itemBuilder: (context, index) {
         return CommonItemFood(

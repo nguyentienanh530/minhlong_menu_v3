@@ -1,17 +1,14 @@
 import 'dart:developer';
-import 'dart:io';
+
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:logger/logger.dart';
+import 'package:minhlong_menu_client_v3/core/const_res.dart';
+import 'package:minhlong_menu_client_v3/features/user/data/user_local_datasource/user_local_datasource.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../core/api_config.dart';
-import '../../features/auth/data/auth_local_datasource/auth_local_datasource.dart';
-import '../../features/auth/data/model/access_token.dart';
-import 'dio_client.dart';
 
 class DioInterceptor extends Interceptor {
   final SharedPreferences sf;
-  late AuthLocalDatasource _authLocalDatasource;
+  late UserLocalDatasource userLocalDatasource;
 
   final Logger logger = Logger(
     printer: PrettyPrinter(
@@ -21,7 +18,7 @@ class DioInterceptor extends Interceptor {
   );
 
   DioInterceptor(this.sf) {
-    _authLocalDatasource = AuthLocalDatasource(sf);
+    userLocalDatasource = UserLocalDatasource(sf);
   }
 
   @override
@@ -39,14 +36,10 @@ class DioInterceptor extends Interceptor {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
-    if (options.headers.containsKey('Authorization')) {
-      return handler.next(options);
-    }
-
-    final accessToken = await _authLocalDatasource.getAccessToken();
-    log('token: $accessToken');
-    if (accessToken != null && accessToken.accessToken.isNotEmpty) {
-      options.headers['Authorization'] = 'Bearer ${accessToken.accessToken}';
+    final userID = await userLocalDatasource.getUserID();
+    log('userID: $userID');
+    if (userID != null && userID.isNotEmpty) {
+      options.headers[ConstRes.userID] = userID;
       options.headers['Content-Type'] = 'application/json';
       options.headers['Accept'] = 'application/json';
     }
@@ -57,14 +50,14 @@ class DioInterceptor extends Interceptor {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
     final options = err.requestOptions;
-    if (err.response?.statusCode != 401 &&
-        err.response?.data['message'] != 'Invalid token') {
-      return handler.next(err);
-    } else {
-      // await _authLocalDatasource.removeAccessToken();
+    // if (err.response?.statusCode != 401 &&
+    //     err.response?.data['message'] != 'Invalid token') {
+    //   return handler.next(err);
+    // } else {
+    //   // await _authLocalDatasource.removeAccessToken();
 
-      _refreshTokenAndResolveError(err, handler);
-    }
+    //   _refreshTokenAndResolveError(err, handler);
+    // }
 
     logger.e(options.method); // Debug log
     logger.e(
@@ -76,73 +69,44 @@ class DioInterceptor extends Interceptor {
     super.onError(err, handler);
   }
 
-  void _refreshTokenAndResolveError(
-    DioException err,
-    ErrorInterceptorHandler handler,
-  ) async {
-    _debugPrint('### Refreshing token... ###');
-    final token = await _authLocalDatasource.getAccessToken();
-    // final refreshToken = token?.refreshToken;
+  // void _refreshTokenAndResolveError(
+  //   DioException err,
+  //   ErrorInterceptorHandler handler,
+  // ) async {
+  //   _debugPrint('### Refreshing token... ###');
+  //   final token = await _authLocalDatasource.getAccessToken();
+  //   // final refreshToken = token?.refreshToken;
 
-    if (token == null ||
-        token.accessToken.isEmpty ||
-        token.refreshToken.isEmpty) {
-      return handler.next(err);
-    }
+  //   if (token == null ||
+  //       token.accessToken.isEmpty ||
+  //       token.refreshToken.isEmpty) {
+  //     return handler.next(err);
+  //   }
 
-    late final AccessToken? accessToken;
+  //   late final AccessToken? accessToken;
 
-    try {
-      accessToken = await refreshTokenFuction(token: token) ?? token;
-    } on DioException catch (e) {
-      print('caching error $e');
-      await _authLocalDatasource.removeAccessToken();
+  //   try {
+  //     accessToken = await refreshTokenFuction(token: token) ?? token;
+  //   } on DioException catch (e) {
+  //     print('caching error $e');
+  //     await _authLocalDatasource.removeAccessToken();
 
-      return handler.next(e);
-    }
+  //     return handler.next(e);
+  //   }
 
-    _debugPrint('### Token refreshed! ###');
+  //   _debugPrint('### Token refreshed! ###');
 
-    err.requestOptions.headers['Authorization'] =
-        'Bearer ${accessToken.accessToken}';
+  //   err.requestOptions.headers['Authorization'] =
+  //       'Bearer ${accessToken.accessToken}';
 
-    final refreshResponse = await Dio().fetch(err.requestOptions);
-    return handler.resolve(refreshResponse);
-  }
+  //   final refreshResponse = await Dio().fetch(err.requestOptions);
+  //   return handler.resolve(refreshResponse);
+  // }
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
     logger.d('Response => StatusCode: ${response.statusCode}'); // Debug log
     logger.d('Response => Body: ${response.data}'); // Debug log
     return super.onResponse(response, handler);
-  }
-
-  Future<AccessToken?> refreshTokenFuction({required AccessToken token}) async {
-    try {
-      final response = await dio.post(
-        ApiConfig.refreshToken,
-        queryParameters: {
-          'refresh_token': token.refreshToken,
-          // 'access_token': token.accessToken
-        },
-      );
-
-      if (response.statusCode == HttpStatus.created) {
-        final newToken = AccessToken.fromJson(response.data['data']);
-        await _authLocalDatasource.saveAccessToken(newToken);
-        return newToken;
-      }
-
-      return null;
-    } catch (e) {
-      logger.e('refreshToken went wrong $e');
-      return null;
-    }
-  }
-
-  void _debugPrint(String message) {
-    if (kDebugMode) {
-      print(message);
-    }
   }
 }

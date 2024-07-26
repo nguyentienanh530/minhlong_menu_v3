@@ -22,7 +22,7 @@ class CategoryRepository {
         .get();
   }
 
-  Future getAll({required int userID}) async {
+  Future getAllForUsers({required int userID}) async {
     return _category
         .query()
         .where('user_id', '=', userID)

@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:minhlong_menu_backend_v3/app/http/common/app_response.dart';
 import 'package:vania/vania.dart';
+import '../../../../common/const_res.dart';
 import '../repositories/table_repository.dart';
 part '../controllers/_create_table.dart';
 part '../controllers/_update_table.dart';
@@ -25,9 +26,11 @@ class TableController extends Controller {
     return groupedTables;
   }
 
-  Future<Response> getTableQuantity() async {
+  Future<Response> getTableQuantity(Request request) async {
+    int? userID = request.headers[ConstRes.userID] != null
+        ? int.tryParse(request.headers[ConstRes.userID])
+        : -1;
     try {
-      final userID = Auth().id();
       if (userID == null) {
         return AppResponse().error(
             statusCode: HttpStatus.unauthorized, message: 'unauthorized');

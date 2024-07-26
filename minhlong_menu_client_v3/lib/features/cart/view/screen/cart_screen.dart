@@ -31,27 +31,28 @@ import '../../../../core/app_res.dart';
 import '../../../../core/app_string.dart';
 import '../../../../core/utils.dart';
 import '../../../order/bloc/order_bloc.dart';
-import '../../../user/bloc/user_bloc.dart';
+
 import '../../../user/data/model/user_model.dart';
 
 part '../widget/_item_cart_widget.dart';
 
 class CartScreen extends StatelessWidget {
-  const CartScreen({super.key});
+  const CartScreen({super.key, required this.user});
+  final UserModel user;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
           OrderBloc(orderRepository: context.read<OrderRepository>()),
-      child: const CartView(),
+      child: CartView(user: user),
     );
   }
 }
 
 class CartView extends StatefulWidget {
-  const CartView({super.key});
-
+  const CartView({super.key, required this.user});
+  final UserModel user;
   @override
   State<CartView> createState() => _CartViewState();
 }
@@ -64,6 +65,7 @@ class _CartViewState extends State<CartView> {
   @override
   void initState() {
     super.initState();
+    _user = widget.user;
     _tableChannel = IOWebSocketChannel.connect(
         Uri.parse(ApiConfig.tablesSocketUrl),
         headers: {
@@ -97,14 +99,11 @@ class _CartViewState extends State<CartView> {
   Widget build(BuildContext context) {
     var cartState = context.watch<CartCubit>().state;
     var tableState = context.watch<TableCubit>().state;
-    var user = context.watch<UserBloc>().state;
-    if (user is UserFecthSuccess) {
-      _user = user.userModel;
-      if (!_isFirstSendSocket) {
-        Ultils.joinRoom(_tableChannel, 'tables-${_user.id}');
-        Ultils.joinRoom(_orderChannel, 'orders-${_user.id}');
-        _isFirstSendSocket = true;
-      }
+
+    if (!_isFirstSendSocket) {
+      Ultils.joinRoom(_tableChannel, 'tables-${_user.id}');
+      Ultils.joinRoom(_orderChannel, 'orders-${_user.id}');
+      _isFirstSendSocket = true;
     }
     return Scaffold(
       // backgroundColor: AppColors.background,

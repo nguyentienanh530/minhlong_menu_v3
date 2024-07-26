@@ -1,7 +1,9 @@
 part of '../screens/home_view.dart';
 
 extension _NewsFoodWidget on _HomeViewState {
-  Widget _buildListNewFood(OrderModel orderModel, TableModel table) {
+  Widget _buildListNewFood(
+      List<FoodItem> foods, OrderModel orderModel, TableModel table) {
+    var sizeState = context.watch<ItemSizeCubit>().state;
     return BlocProvider(
       create: (context) =>
           FoodBloc(foodRepository: context.read<FoodRepository>())
@@ -10,26 +12,14 @@ extension _NewsFoodWidget on _HomeViewState {
         children: [
           _buildTitle(AppString.newFoods,
               () => context.push(AppRoute.foods, extra: 'created_at')),
-          Builder(builder: (context) {
-            var foodState = context.watch<FoodBloc>().state;
-            var sizeState = context.watch<ItemSizeCubit>().state;
-
-            return (switch (foodState) {
-              FoodFetchInProgress() => const Loading(),
-              FoodFetchEmpty() => const EmptyWidget(),
-              FoodFetchFailure() => ErrWidget(error: foodState.message),
-              FoodFetchSuccess() => _buildSuccessWidget(
-                  context, sizeState, foodState.food, orderModel, table),
-              _ => const SizedBox(),
-            });
-          }),
+          _buildSuccessWidget(context, sizeState, foods, orderModel, table),
         ],
       ),
     );
   }
 
   SizedBox _buildSuccessWidget(BuildContext context, ItemFoodSizeDTO sizeState,
-      FoodModel food, OrderModel orderModel, TableModel table) {
+      List<FoodItem> foods, OrderModel orderModel, TableModel table) {
     return SizedBox(
       width: context.sizeDevice.width,
       height: sizeState.height,
@@ -37,15 +27,15 @@ extension _NewsFoodWidget on _HomeViewState {
           padding: const EdgeInsets.only(left: 8),
           physics: const BouncingScrollPhysics(),
           scrollDirection: Axis.horizontal,
-          itemCount: food.foodItems.length,
+          itemCount: foods.length,
           itemBuilder: (context, index) {
             return ItemFoodView(
               keyItem: _managerList.keys[index],
               addToCartOnTap: () {
-                _handleOnTapAddToCart(orderModel, table, food.foodItems[index]);
+                _handleOnTapAddToCart(orderModel, table, foods[index]);
                 // calculatePathAndAnimate(index);
               },
-              food: food.foodItems[index],
+              food: foods[index],
               height: sizeState.height ?? 0.0,
               width: sizeState.width ?? 0.0,
             );

@@ -6,6 +6,7 @@ import 'package:minhlong_menu_backend_v3/app/http/modules/v1/order/repositories/
 import 'package:minhlong_menu_backend_v3/app/http/modules/v1/table/repositories/table_repository.dart';
 import 'package:vania/vania.dart';
 
+import '../../../../common/const_res.dart';
 import '../../category/repositories/category_repository.dart';
 
 class InfoController extends Controller {
@@ -23,7 +24,10 @@ class InfoController extends Controller {
         _orderRepository = orderRepository,
         _foodRepository = foodRepository,
         _tableRepository = tableRepository;
-  Future<Response> index() async {
+  Future<Response> index(Request request) async {
+    int? userID = request.headers[ConstRes.userID] != null
+        ? int.tryParse(request.headers[ConstRes.userID])
+        : -1;
     try {
       var now = DateTime.now();
 
@@ -39,7 +43,7 @@ class InfoController extends Controller {
       print('yesterday: $dateRepresentationYesterday');
 
       // get user id
-      final userID = Auth().id();
+
       if (userID == null) {
         return AppResponse().error(
           statusCode: HttpStatus.unauthorized,
@@ -129,11 +133,13 @@ class InfoController extends Controller {
 
   // get revenue filter on date
   Future<Response> revenueFilterOnDate(Request request) async {
+    int? userID = request.headers[ConstRes.userID] != null
+        ? int.tryParse(request.headers[ConstRes.userID])
+        : -1;
     var now = DateTime.now();
     var params = request.all();
 
     try {
-      final userID = Auth().id();
       List<Map<String, dynamic>> responseData = [];
       if (userID == null) {
         return AppResponse().error(

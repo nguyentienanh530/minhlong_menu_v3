@@ -60,3 +60,17 @@ final class AuthForgotPasswordFailure extends AuthState {
 
   final String message;
 }
+
+final class AuthRefreshTokenInProgress extends AuthState {
+  AuthRefreshTokenInProgress() : super(AccessToken());
+}
+
+final class AuthRefreshTokenSuccess extends AuthState {
+  AuthRefreshTokenSuccess(super.accessToken);
+}
+
+final class AuthRefreshTokenFailure extends AuthState {
+  AuthRefreshTokenFailure(this.message) : super(AccessToken());
+
+  final String message;
+}

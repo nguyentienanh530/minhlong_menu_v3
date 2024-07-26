@@ -2,9 +2,11 @@ part of '../controllers/table_controller.dart';
 
 extension CreateTable on TableController {
   Future<Response> create(Request request) async {
+    int? userID = request.headers[ConstRes.userID] != null
+        ? int.tryParse(request.headers[ConstRes.userID])
+        : -1;
     var params = request.all();
     try {
-      final userID = Auth().id();
       if (userID == null) {
         return AppResponse().error(
             statusCode: HttpStatus.unauthorized, message: 'unauthorized');

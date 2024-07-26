@@ -2,9 +2,10 @@ part of '../controllers/food_controller.dart';
 
 extension CreateFood on FoodController {
   Future<Response> create(Request request) async {
-    print('request: ${request.all()}');
+    int? userID = request.headers[ConstRes.userID] != null
+        ? int.tryParse(request.headers[ConstRes.userID])
+        : -1;
     try {
-      final userID = Auth().id();
       if (userID == null) {
         return AppResponse().error(
             statusCode: HttpStatus.unauthorized, message: 'unauthorized');

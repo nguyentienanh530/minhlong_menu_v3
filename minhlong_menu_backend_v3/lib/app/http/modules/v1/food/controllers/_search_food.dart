@@ -2,9 +2,12 @@ part of '../controllers/food_controller.dart';
 
 extension SearchFood on FoodController {
   Future<Response> search(Request request) async {
+    int? userID = request.headers[ConstRes.userID] != null
+        ? int.tryParse(request.headers[ConstRes.userID])
+        : -1;
     try {
       var query = request.input('query');
-      final userID = Auth().id();
+
       if (userID == null) {
         return AppResponse().error(
           statusCode: HttpStatus.unauthorized,

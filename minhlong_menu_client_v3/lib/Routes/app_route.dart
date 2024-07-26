@@ -106,7 +106,7 @@ class AppRoute {
           return buildPageWithDefaultTransition(
             context: context,
             state: state,
-            child: const CartScreen(),
+            child: CartScreen(user: state.extra as UserModel),
           );
         },
       ),

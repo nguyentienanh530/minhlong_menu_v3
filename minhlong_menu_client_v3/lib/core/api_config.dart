@@ -7,6 +7,9 @@ class ApiConfig {
   static const Duration receiveTimeout = Duration(milliseconds: 15000);
   static const Duration connectionTimeout = Duration(milliseconds: 15000);
 
+  //===== Home =====
+  static const String home = '$baseUrl/client/home';
+
   //===== Socket =====
   static const String socketbaseUrl = 'ws://192.168.1.96:8080';
   static const String tablesSocketUrl = '$socketbaseUrl/tables';

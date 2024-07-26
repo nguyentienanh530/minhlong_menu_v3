@@ -4,6 +4,8 @@ import 'package:minhlong_menu_backend_v3/app/http/common/app_response.dart';
 import 'package:minhlong_menu_backend_v3/app/http/modules/v1/category/repositories/category_repository.dart';
 
 import 'package:vania/vania.dart';
+
+import '../../../../common/const_res.dart';
 part '../controllers/_index_category.dart';
 part '../controllers/_create_category.dart';
 part '../controllers/_update_category.dart';
@@ -15,9 +17,11 @@ class CategoryController extends Controller {
   CategoryController({required CategoryRepository categoryRepository})
       : _categoryRepository = categoryRepository;
 
-  Future<Response> getCategoryQuantity() async {
+  Future<Response> getCategoryQuantity(Request request) async {
+    int? userID = request.headers[ConstRes.userID] != null
+        ? int.tryParse(request.headers[ConstRes.userID])
+        : -1;
     try {
-      final userID = Auth().id();
       if (userID == null) {
         return AppResponse().error(
             statusCode: HttpStatus.unauthorized, message: 'unauthorized');

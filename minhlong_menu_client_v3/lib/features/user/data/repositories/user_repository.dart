@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:logger/logger.dart';
+import 'package:minhlong_menu_client_v3/features/user/data/user_local_datasource/user_local_datasource.dart';
 
 import '../../../../common/network/dio_exception.dart';
 import '../../../../common/network/result.dart';
@@ -9,12 +10,19 @@ import '../provider/user_api.dart';
 
 class UserRepository {
   final UserApi _userApi;
+  final UserLocalDatasource _userLocalDatasource;
 
-  UserRepository({required UserApi userApi}) : _userApi = userApi;
+  UserRepository(
+      {required UserApi userApi,
+      required UserLocalDatasource userLocalDatasource})
+      : _userApi = userApi,
+        _userLocalDatasource = userLocalDatasource;
 
   Future<Result<UserModel>> getUser({required AccessToken accessToken}) async {
     try {
       var userModel = await _userApi.getUser(accessToken: accessToken);
+      await _userLocalDatasource.saveUserID(userModel.id);
+      Logger().i('user: $userModel');
       return Result.success(userModel);
     } on DioException catch (e) {
       Logger().e('get user error: $e');

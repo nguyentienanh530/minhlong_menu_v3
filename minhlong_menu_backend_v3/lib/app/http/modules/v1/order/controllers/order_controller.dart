@@ -5,6 +5,7 @@ import 'package:minhlong_menu_backend_v3/app/http/modules/v1/order/repositories/
 import 'package:minhlong_menu_backend_v3/app/http/modules/v1/order/repositories/order_repository.dart';
 import 'package:minhlong_menu_backend_v3/app/http/modules/v1/table/models/table.dart';
 import 'package:vania/vania.dart';
+import '../../../../common/const_res.dart';
 import '../../food/models/foods.dart';
 
 class OrderController extends Controller {
@@ -91,6 +92,9 @@ class OrderController extends Controller {
   }
 
   Future<Response> getNewOrdersByTable(Request request) async {
+    int? userID = request.headers[ConstRes.userID] != null
+        ? int.tryParse(request.headers[ConstRes.userID])
+        : -1;
     // request.validate({
     //   'table_id': 'required|integer',
     // });
@@ -102,7 +106,7 @@ class OrderController extends Controller {
         return AppResponse().error(
             statusCode: HttpStatus.notFound, message: 'table id not found');
       }
-      final userID = Auth().id();
+
       if (userID == null) {
         return AppResponse().error(
           statusCode: HttpStatus.unauthorized,
@@ -150,11 +154,14 @@ class OrderController extends Controller {
   }
 
   Future<dynamic> getOrders(Request request) async {
+    int? userID = request.headers[ConstRes.userID] != null
+        ? int.tryParse(request.headers[ConstRes.userID])
+        : -1;
     try {
       String status = request.input('status') ?? 'new';
       int page = request.input('page') ?? 1;
       int limit = request.input('limit') ?? 10;
-      final userID = Auth().id();
+
       if (userID == null) {
         return AppResponse().error(
           statusCode: HttpStatus.unauthorized,

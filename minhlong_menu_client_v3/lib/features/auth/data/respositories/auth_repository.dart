@@ -5,14 +5,20 @@ import 'package:minhlong_menu_client_v3/common/network/result.dart';
 import 'package:minhlong_menu_client_v3/features/auth/data/auth_local_datasource/auth_local_datasource.dart';
 import 'package:minhlong_menu_client_v3/features/auth/data/model/access_token.dart';
 import 'package:minhlong_menu_client_v3/features/auth/data/provider/remote/auth_api.dart';
+import 'package:minhlong_menu_client_v3/features/user/data/user_local_datasource/user_local_datasource.dart';
 import '../../../../common/network/dio_exception.dart';
 import '../dto/login_dto.dart';
 
 class AuthRepository {
-  AuthRepository({required this.authLocalDatasource, required this.authApi});
+  AuthRepository({
+    required this.authLocalDatasource,
+    required this.authApi,
+    required this.userLocalDatasource,
+  });
 
   final AuthApi authApi;
   final AuthLocalDatasource authLocalDatasource;
+  final UserLocalDatasource userLocalDatasource;
 
   Future<Result<bool>> login(LoginDto login) async {
     try {
@@ -41,6 +47,7 @@ class AuthRepository {
     try {
       // await authApi.logout();
       await authLocalDatasource.removeAccessToken();
+      await userLocalDatasource.removeUserID();
       return const Result.success(null);
     } catch (e) {
       return Result.failure('$e');
