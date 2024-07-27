@@ -97,11 +97,15 @@ extension _HeaderDinnderTableWidget on _DinnerTableViewState {
       {required DinnerTableDialogAction mode, TableItem? tableItem}) async {
     await showDialog(
         context: context,
-        builder: (context) => Dialog(
-              backgroundColor: AppColors.background,
-              child: CreateOrUpdateDinnerTableDialog(
-                action: mode,
-                tableItem: tableItem,
+        builder: (context) => BlocProvider(
+              create: (context) =>
+                  DinnerTableBloc(context.read<DinnerTableRepository>()),
+              child: Dialog(
+                backgroundColor: AppColors.background,
+                child: CreateOrUpdateDinnerTableDialog(
+                  action: mode,
+                  tableItem: tableItem,
+                ),
               ),
             )).then(
       (value) {

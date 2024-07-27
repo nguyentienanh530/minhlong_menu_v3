@@ -16,16 +16,16 @@ import 'package:minhlong_menu_admin_v3/core/utils.dart';
 import 'package:minhlong_menu_admin_v3/features/order/cubit/pagination_cubit.dart';
 import 'package:minhlong_menu_admin_v3/features/order/data/model/food_order_model.dart';
 import '../../../../common/widget/number_pagination.dart';
-import '../../bloc/order_bloc.dart';
-import '../../data/model/order_item.dart';
-import '../../data/model/order_model.dart';
-import '../../data/repositories/order_repository.dart';
-part '../widgets/_order_header_widget.dart';
-part '../widgets/_order_body_widget.dart';
-part '../dialogs/_order_detail_dialog.dart';
+import '../../../order/bloc/order_bloc.dart';
+import '../../../order/data/model/order_item.dart';
+import '../../../order/data/model/order_model.dart';
+import '../../../order/data/repositories/order_repository.dart';
+part '../widgets/_order_history_header_widget.dart';
+part '../widgets/_order_history_body_widget.dart';
+part '../dialogs/_order_history_detail_dialog.dart';
 
-class OrderScreen extends StatelessWidget {
-  const OrderScreen({super.key});
+class OrderHistoryScreen extends StatelessWidget {
+  const OrderHistoryScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +35,7 @@ class OrderScreen extends StatelessWidget {
           create: (context) => OrderBloc(context.read<OrderRepository>())
             ..add(
               OrderFetchNewOrdersStarted(
-                status: 'new',
+                status: 'completed',
                 page: 1,
                 limit: 10,
               ),
@@ -63,16 +63,15 @@ class _OrderViewState extends State<OrderView>
   final _listTitleTable = [
     'ID',
     'Ngày',
-    'Bàn',
-    'SL món',
-    'T.Tiền',
-    'T.Thái',
-    'H.Động'
+    'Tổng món',
+    'Tổng tiền',
+    'Trạng thái',
+    'Hành động'
   ];
   final _curentPage = ValueNotifier(1);
   final _limit = ValueNotifier(10);
   late final TabController _tabController;
-  final _listStatus = ['new', 'processing'];
+  final _listStatus = ['completed', 'cancel'];
 
   @override
   void initState() {
@@ -195,11 +194,6 @@ class _OrderViewState extends State<OrderView>
       context: context,
       builder: (context) => _orderDetailDialog(orderItem),
     );
-  }
-
-  void _handleUpdateOrder(OrderItem orderItem) {
-    context.read<OrderBloc>().add(OrderUpdated(order: orderItem));
-    context.pop();
   }
 
   _handleDeleteOrder({required int orderID}) {

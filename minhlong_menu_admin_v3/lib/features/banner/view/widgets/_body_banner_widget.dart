@@ -303,11 +303,15 @@ extension _BodyBannerWidget on _BannerViewState {
       {required CreateOrUpdateBannerType type, BannerItem? bannerItem}) async {
     await showDialog(
         context: context,
-        builder: (context) => Dialog(
-              backgroundColor: AppColors.background,
-              child: CreateOrUpdateBanner(
-                type: type,
-                bannItem: bannerItem,
+        builder: (context) => BlocProvider(
+              create: (context) => BannerBloc(
+                  bannerRepository: context.read<BannerRepository>()),
+              child: Dialog(
+                backgroundColor: AppColors.background,
+                child: CreateOrUpdateBanner(
+                  type: type,
+                  bannItem: bannerItem,
+                ),
               ),
             )).then(
       (value) {

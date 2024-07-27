@@ -9,6 +9,7 @@ import 'package:minhlong_menu_admin_v3/features/auth/bloc/auth_bloc.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/data/auth_local_datasource/auth_local_datasource.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/data/provider/remote/auth_api.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/data/repositories/auth_repository.dart';
+
 import 'package:minhlong_menu_admin_v3/features/user/cubit/user_cubit.dart';
 import 'package:minhlong_menu_admin_v3/features/user/data/user_local_datasource/user_local_datasource.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -25,6 +26,7 @@ import 'features/dashboard/data/provider/info_api.dart';
 import 'features/dashboard/data/respositories/info_respository.dart';
 import 'features/dinner_table/data/provider/dinner_table_api.dart';
 import 'features/dinner_table/data/repositories/table_repository.dart';
+import 'features/food/bloc/search_food_bloc/search_food_bloc.dart';
 import 'features/food/data/provider/food_api.dart';
 import 'features/food/data/repositories/food_repository.dart';
 import 'features/order/data/provider/order_api.dart';
@@ -117,6 +119,9 @@ class MainApp extends StatelessWidget {
           BlocProvider(
             create: (context) => UserCubit(),
           ),
+          BlocProvider(
+            create: (context) => SearchFoodBloc(context.read<FoodRepository>()),
+          ),
         ],
         child: AppContent(sf: sf),
       ),
@@ -146,8 +151,7 @@ class _AppContentState extends State<AppContent> {
     // check token is expired
     var hasExpired = JwtDecoder.isExpired(accessToken.accessToken);
     var hasExpiredRefresh = JwtDecoder.isExpired(accessToken.refreshToken);
-    print('hasExpired: $hasExpired');
-    print('hasExpiredRefresh: $hasExpiredRefresh');
+
     if (!hasExpired && !hasExpiredRefresh) {
       context.read<UserBloc>().add(UserFetched(accessToken));
     }
@@ -199,7 +203,7 @@ class _AppContentState extends State<AppContent> {
             scrollBehavior: MyCustomScrollBehavior(),
             theme: ThemeData(
               useMaterial3: true,
-              fontFamily: GoogleFonts.roboto().fontFamily,
+              fontFamily: GoogleFonts.beVietnamPro().fontFamily,
               scaffoldBackgroundColor: AppColors.background,
               // textTheme: const TextTheme(
               //     displaySmall: TextStyle(color: AppColors.white),

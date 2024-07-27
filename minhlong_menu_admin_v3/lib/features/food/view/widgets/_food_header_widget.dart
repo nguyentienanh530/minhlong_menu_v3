@@ -90,27 +90,24 @@ extension _FoodHeaderWidget on _FoodViewState {
           controller: _searchController,
           focusNode: _focusSearch,
           onChanged: (value) async {
+            _searchController.text = value;
+            print('overLay: $_overlayShown');
             if (value.isNotEmpty && !_overlayShown) {
               _showOverlaySearch();
               _overlayShown = true;
             }
 
-            _searchController.text = value;
-            await Future.delayed(const Duration(milliseconds: 500), () {
-              context
-                  .read<SearchFoodBloc>()
-                  .add(SearchFoodStarted(query: _searchController.text));
-            });
+            context
+                .read<SearchFoodBloc>()
+                .add(SearchFoodStarted(query: _searchController.text));
           },
           prefixIcon:
               const Icon(Icons.search, color: AppColors.secondTextColor),
           suffixIcon: InkWell(
-            onTap: _searchController.text.isEmpty
-                ? null
-                : () {
-                    _searchController.clear();
-                    context.read<SearchFoodBloc>().add(SearchFoodReset());
-                  },
+            onTap: () {
+              _searchController.clear();
+              context.read<SearchFoodBloc>().add(SearchFoodReset());
+            },
             child: const SizedBox(
               child: Icon(Icons.clear, color: AppColors.secondTextColor),
             ),
@@ -167,11 +164,11 @@ extension _FoodHeaderWidget on _FoodViewState {
                   padding: const EdgeInsets.all(8.0),
                   child: Builder(
                     builder: (context) {
-                      var searchState = context.watch<SearchFoodBloc>().state;
-                      return (switch (searchState) {
+                      var state = context.watch<SearchFoodBloc>().state;
+                      print('state in search: $state');
+                      return (switch (state) {
                         FoodSearchInProgress() => const Loading(),
-                        FoodSearchSuccess() =>
-                          buildListFood(searchState.foodItems),
+                        FoodSearchSuccess() => buildListFood(state.foodItems),
                         FoodSearchFailure() => const SizedBox(),
                         FoodSearchEmpty() => Center(
                             child: Text('Không có dữ liệu',
@@ -202,6 +199,7 @@ extension _FoodHeaderWidget on _FoodViewState {
   }
 
   buildListFood(List<FoodItem> foodItems) {
+    print('state in search: $foodItems');
     return ListView.builder(
       itemCount: foodItems.length,
       itemBuilder: (context, index) {
@@ -214,7 +212,7 @@ extension _FoodHeaderWidget on _FoodViewState {
     return ListTile(
       onTap: () async {
         _hideOverlaySearch();
-
+        _searchController.clear();
         // _focusSearch.unfocus();
         await _showCreateOrUpdateDialog(
             mode: FoodScreenMode.update, foodItem: foodItem);

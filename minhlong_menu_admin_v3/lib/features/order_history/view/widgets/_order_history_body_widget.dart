@@ -1,4 +1,4 @@
-part of '../screens/order_screen.dart';
+part of '../screens/order_history_screen.dart';
 
 extension _OrderBodyWidget on _OrderViewState {
   Widget _orderBodyWidget() {
@@ -26,8 +26,7 @@ extension _OrderBodyWidget on _OrderViewState {
               2: FlexColumnWidth(),
               3: FlexColumnWidth(),
               4: FlexColumnWidth(),
-              5: FlexColumnWidth(),
-              6: FixedColumnWidth(100),
+              5: FixedColumnWidth(100),
             },
             defaultVerticalAlignment: TableCellVerticalAlignment.middle,
             children: <TableRow>[
@@ -96,7 +95,7 @@ extension _OrderBodyWidget on _OrderViewState {
                                 valueListenable: _limit,
                                 builder: (context, limit, child) => Text(
                                       'Hiển thị 1 đến $limit trong số ${pagination.totalItem} đơn',
-                                      style: kCaptionStyle.copyWith(
+                                      style: kBodyStyle.copyWith(
                                           color: AppColors.secondTextColor),
                                     ));
                           },
@@ -146,8 +145,7 @@ extension _OrderBodyWidget on _OrderViewState {
           2: FlexColumnWidth(),
           3: FlexColumnWidth(),
           4: FlexColumnWidth(),
-          5: FlexColumnWidth(),
-          6: FixedColumnWidth(100),
+          5: FixedColumnWidth(100),
         },
         defaultVerticalAlignment: TableCellVerticalAlignment.middle,
         children: orders.orderItems
@@ -192,14 +190,6 @@ extension _OrderBodyWidget on _OrderViewState {
           alignment: Alignment.center,
           child: Text(
             Ultils.formatDateToString(orderItem.createdAt!, isShort: true),
-            style: kBodyStyle.copyWith(color: AppColors.secondTextColor),
-          ),
-        ),
-        Container(
-          height: 70.h,
-          alignment: Alignment.center,
-          child: Text(
-            orderItem.tableName,
             style: kBodyStyle.copyWith(color: AppColors.secondTextColor),
           ),
         ),
@@ -258,6 +248,60 @@ extension _OrderBodyWidget on _OrderViewState {
             icon: Icons.mode_edit_outline_outlined,
             color: AppColors.sun,
             tooltip: 'Xem đơn hàng',
+          ),
+        );
+      case 'completed':
+        return Row(
+          children: [
+            Container(
+              height: 70.h,
+              alignment: Alignment.center,
+              child: CommonIconButton(
+                onTap: () {
+                  _showDetailDialog(orderItem);
+                },
+                icon: Icons.remove_red_eye,
+                color: AppColors.islamicGreen,
+                tooltip: 'Xem đơn hàng',
+              ),
+            ),
+            10.horizontalSpace,
+            Container(
+              height: 70.h,
+              alignment: Alignment.center,
+              child: CommonIconButton(
+                onTap: () {
+                  AppDialog.showWarningDialog(context,
+                      title: 'Xóa đơn',
+                      description: 'Bạn có muốn xóa đơn ${orderItem.id}?',
+                      onPressedComfirm: () {
+                    _handleDeleteOrder(orderID: orderItem.id);
+                  });
+                },
+                icon: Icons.delete_outline,
+                color: AppColors.red,
+                tooltip: 'Xóa đơn',
+              ),
+            ),
+          ],
+        );
+
+      case 'cancel':
+        return Container(
+          height: 70.h,
+          alignment: Alignment.center,
+          child: CommonIconButton(
+            onTap: () {
+              AppDialog.showWarningDialog(context,
+                  title: 'Xóa đơn',
+                  description: 'Bạn có muốn xóa đơn ${orderItem.id}?',
+                  onPressedComfirm: () {
+                _handleDeleteOrder(orderID: orderItem.id);
+              });
+            },
+            icon: Icons.delete_outline,
+            color: AppColors.red,
+            tooltip: 'Xóa đơn',
           ),
         );
       default:

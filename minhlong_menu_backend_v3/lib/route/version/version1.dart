@@ -37,7 +37,7 @@ class Version1 implements Route {
     Router.group(
       () {
         Router.get("", categoryCtrl.index);
-        Router.get('quantity', categoryCtrl.getCategoryQuantity);
+        // Router.get('quantity', categoryCtrl.getCategoryQuantity);
         Router.post("", categoryCtrl.create);
         Router.patch("{id}", categoryCtrl.update);
         Router.delete("{id}", categoryCtrl.destroy);
@@ -111,6 +111,7 @@ class Version1 implements Route {
       () {
         Router.get('home', homeClientController.getHomeDataForUser);
         Router.get('foods/category/{id}', foodCtrl.getFoodsOnCategory);
+        Router.get('foods', foodCtrl.index);
       },
       prefix: '/client',
     );

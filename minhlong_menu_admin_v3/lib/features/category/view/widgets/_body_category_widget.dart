@@ -277,11 +277,15 @@ extension _FoodBodyWidget on _CategoryViewState {
       CategoryItem? categoryItem}) async {
     await showDialog(
         context: context,
-        builder: (context) => Dialog(
-              backgroundColor: AppColors.background,
-              child: CreateOrUpdateCategory(
-                type: type,
-                categoryItem: categoryItem,
+        builder: (context) => BlocProvider(
+              create: (context) => CategoryBloc(
+                  categoryRepository: context.read<CategoryRepository>()),
+              child: Dialog(
+                backgroundColor: AppColors.background,
+                child: CreateOrUpdateCategory(
+                  type: type,
+                  categoryItem: categoryItem,
+                ),
               ),
             )).then(
       (value) {

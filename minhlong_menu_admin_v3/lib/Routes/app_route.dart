@@ -32,6 +32,7 @@ class AppRoute {
   static const String banners = '/banners';
   static const String settings = '/settings';
   static const String orders = '/orders';
+  static const String ordersHistory = '/orders-history';
   static const String updatePassword = '/update-password';
   static const String editProfile = '/edit-profile';
   static const String printScreen = '/print-screen';

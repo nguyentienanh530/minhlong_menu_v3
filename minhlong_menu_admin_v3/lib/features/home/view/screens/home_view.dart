@@ -24,6 +24,7 @@ import '../../../../core/app_asset.dart';
 import '../../../../core/app_colors.dart';
 import '../../../../core/app_style.dart';
 import '../../../auth/bloc/auth_bloc.dart';
+import '../../../order_history/view/screens/order_history_screen.dart';
 import '../../../user/cubit/user_cubit.dart';
 
 part '../widgets/_side_menu.dart';
@@ -53,6 +54,11 @@ class HomeViewState extends State<HomeView>
       'title': 'Đơn hàng',
       'icon': Icons.format_list_numbered,
       'route': AppRoute.orders,
+    },
+    {
+      'title': 'Lịch sử Đơn',
+      'icon': Icons.history_rounded,
+      'route': AppRoute.ordersHistory,
     },
     {
       'title': 'Món ăn',
@@ -171,6 +177,7 @@ class HomeViewState extends State<HomeView>
                       itemCount: <Widget>[
                         DashboardScreen(userModel: user),
                         const OrderScreen(),
+                        const OrderHistoryScreen(),
                         const FoodScreen(),
                         const DinnerTableScreen(),
                         const CategoryScreen(),
@@ -182,6 +189,7 @@ class HomeViewState extends State<HomeView>
                         return <Widget>[
                           DashboardScreen(userModel: user),
                           const OrderScreen(),
+                          const OrderHistoryScreen(),
                           const FoodScreen(),
                           const DinnerTableScreen(),
                           const CategoryScreen(),

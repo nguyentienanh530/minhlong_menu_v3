@@ -1,4 +1,4 @@
-part of '../screens/order_screen.dart';
+part of '../screens/order_history_screen.dart';
 
 extension _OrderDetailDialog on _OrderViewState {
   Widget _orderDetailDialog(OrderItem orderItem) {
@@ -10,33 +10,33 @@ extension _OrderDetailDialog on _OrderViewState {
       backgroundColor: AppColors.background,
       actionsAlignment: MainAxisAlignment.center,
       content: SizedBox(
-          height: 890.h,
-          child: Padding(
-            padding: const EdgeInsets.all(defaultPadding),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _buildTimeOrderDialog(orderItem),
-                10.verticalSpace,
-                _buildBodyDialog(orderItem),
-                // _buildBottomDialog(orderItem)
-                10.verticalSpace,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Tổng tiền: ',
-                      style: kBodyStyle.copyWith(fontWeight: FontWeight.w700),
-                    ),
-                    Text(
-                      '${Ultils.currencyFormat(orderItem.totalPrice)} đ',
-                      style: kBodyStyle.copyWith(fontWeight: FontWeight.w700),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          )),
+        height: 890.h,
+        child: Padding(
+          padding: const EdgeInsets.all(defaultPadding),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildTimeOrderDialog(orderItem),
+              10.verticalSpace,
+              _buildBodyDialog(orderItem),
+              10.verticalSpace,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Tổng tiền: ',
+                    style: kBodyStyle.copyWith(fontWeight: FontWeight.w700),
+                  ),
+                  Text(
+                    '${Ultils.currencyFormat(orderItem.totalPrice)} đ',
+                    style: kBodyStyle.copyWith(fontWeight: FontWeight.w700),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
       actions: [
         CommonIconButton(
           onTap: () {
@@ -44,34 +44,6 @@ extension _OrderDetailDialog on _OrderViewState {
           },
           icon: Icons.print,
           color: AppColors.sun,
-        ),
-        10.horizontalSpace,
-        _buttonAction(
-          title: 'Xác nhận',
-          onTap: () {
-            AppDialog.showWarningDialog(context,
-                title: 'Xác nhận đơn',
-                description: 'Chuyển đơn ${orderItem.id} sang đang làm',
-                onPressedComfirm: () {
-              orderItem = orderItem.copyWith(status: 'processing');
-              _handleUpdateOrder(orderItem);
-            });
-          },
-          color: AppColors.blue,
-        ),
-        _buttonAction(
-          title: 'Huỷ đơn',
-          onTap: () {
-            AppDialog.showWarningDialog(context,
-                title: 'Huỷ đơn',
-                description: 'Bạn có muốn huỷ đơn ${orderItem.id}?',
-                onPressedComfirm: () {
-              orderItem = orderItem.copyWith(status: 'cancel');
-
-              _handleUpdateOrder(orderItem);
-            });
-          },
-          color: AppColors.red,
         ),
       ],
     );
@@ -114,86 +86,8 @@ extension _OrderDetailDialog on _OrderViewState {
     );
   }
 
-  Widget _buildBottomDialog(OrderItem orderItem) {
-    return Card(
-        margin: const EdgeInsets.all(defaultPadding),
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(textFieldBorderRadius).r),
-        color: AppColors.white,
-        elevation: 10,
-        child: Padding(
-          padding: const EdgeInsets.all(defaultPadding),
-          child: Column(children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Tổng tiền: ',
-                  style: kBodyStyle.copyWith(fontWeight: FontWeight.w700),
-                ),
-                Text(
-                  '${Ultils.currencyFormat(orderItem.totalPrice)} đ',
-                  style: kBodyStyle.copyWith(fontWeight: FontWeight.w700),
-                ),
-              ],
-            ),
-            20.verticalSpace,
-            _buildActionButton(orderItem)
-          ]),
-        ));
-  }
-
   Widget _buildActionButton(OrderItem orderItem) {
     switch (orderItem.status) {
-      case 'new':
-        return const Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [],
-        );
-
-      case 'processing':
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: _buttonAction(
-                title: 'Hủy đơn',
-                onTap: () {
-                  AppDialog.showWarningDialog(context,
-                      title: 'Huỷ đơn',
-                      description: 'Bạn có muốn huỷ đơn ${orderItem.id}?',
-                      onPressedComfirm: () {
-                    orderItem = orderItem.copyWith(status: 'cancel');
-
-                    _handleUpdateOrder(orderItem);
-                  });
-                },
-                color: AppColors.red,
-              ),
-            ),
-            10.horizontalSpace,
-            Expanded(
-              child: _buttonAction(
-                title: 'Hoàn thành',
-                onTap: () {
-                  AppDialog.showWarningDialog(context,
-                      title: 'Hoàn thành!',
-                      description:
-                          'Đơn đã xong, chuyển đơn ${orderItem.id} tới hoàn thành?',
-                      onPressedComfirm: () {
-                    orderItem = orderItem.copyWith(
-                        status: 'completed',
-                        payedAt: DateTime.now().toString());
-
-                    _handleUpdateOrder(orderItem);
-                  });
-                },
-                color: AppColors.blue,
-              ),
-            ),
-          ],
-        );
-
       case 'completed':
         return const SizedBox();
       // return _buttonAction(
@@ -206,26 +100,6 @@ extension _OrderDetailDialog on _OrderViewState {
       default:
         return const SizedBox();
     }
-  }
-
-  _buttonAction(
-      {required String title,
-      required Function() onTap,
-      required Color color}) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(10),
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(textFieldBorderRadius).r,
-            color: color),
-        child: Text(
-          title,
-          style: kBodyWhiteStyle.copyWith(fontWeight: FontWeight.w700),
-        ),
-      ),
-    );
   }
 
   _buildBodyDialog(OrderItem orderItem) {
@@ -319,11 +193,15 @@ extension _OrderDetailDialog on _OrderViewState {
     return Column(
       children: [
         _buildItemTimeOrder(
-            title: 'Thời gian đặt:',
-            value:
-                Ultils.formatDateToString(orderItem.createdAt!, isTime: true)),
+          title: 'bàn: ',
+          value: orderItem.tableName,
+        ),
         _buildItemTimeOrder(
-            title: 'Thời gian thanh toán:',
+          title: 'Thời gian đặt: ',
+          value: Ultils.formatDateToString(orderItem.createdAt!, isTime: true),
+        ),
+        _buildItemTimeOrder(
+            title: 'Thời gian thanh toán: ',
             value: orderItem.payedAt == null
                 ? 'Chưa thanh toán'
                 : Ultils.formatDateToString(orderItem.payedAt!, isTime: true)),
@@ -338,7 +216,7 @@ extension _OrderDetailDialog on _OrderViewState {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             title ?? '',

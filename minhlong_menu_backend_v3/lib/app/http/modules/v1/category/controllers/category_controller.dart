@@ -28,11 +28,14 @@ class CategoryController extends Controller {
           await categoryRepo.getCategoryCount(userID: userID);
 
       dynamic category;
-
       int totalPages = (totalItems / limit!).ceil();
       int startIndex = (page! - 1) * limit;
-      category = await categoryRepo.get(
-          startIndex: startIndex, limit: limit, userID: userID);
+      if (params['type'] == 'all') {
+        category = await categoryRepo.getAllForUsers(userID: userID);
+      } else {
+        category = await categoryRepo.get(
+            startIndex: startIndex, limit: limit, userID: userID);
+      }
 
       return AppResponse().ok(statusCode: HttpStatus.ok, data: {
         'pagination': {
@@ -81,23 +84,23 @@ class CategoryController extends Controller {
     }
   }
 
-  Future<Response> getCategoryQuantity(Request request) async {
-    int? userID = request.headers[ConstRes.userID] != null
-        ? int.tryParse(request.headers[ConstRes.userID])
-        : -1;
-    try {
-      if (userID == null || userID == -1) {
-        return AppResponse().error(
-            statusCode: HttpStatus.unauthorized, message: 'unauthorized');
-      }
-      var quantity = await categoryRepo.getCategoryCount(userID: userID);
-      return AppResponse().ok(data: quantity, statusCode: HttpStatus.ok);
-    } catch (e) {
-      return AppResponse().error(
-          statusCode: HttpStatus.internalServerError,
-          message: 'connection error');
-    }
-  }
+  // Future<Response> getCategoryQuantity(Request request) async {
+  //   int? userID = request.headers[ConstRes.userID] != null
+  //       ? int.tryParse(request.headers[ConstRes.userID])
+  //       : -1;
+  //   try {
+  //     if (userID == null || userID == -1) {
+  //       return AppResponse().error(
+  //           statusCode: HttpStatus.unauthorized, message: 'unauthorized');
+  //     }
+  //     var quantity = await categoryRepo.getCategoryCount(userID: userID);
+  //     return AppResponse().ok(data: quantity, statusCode: HttpStatus.ok);
+  //   } catch (e) {
+  //     return AppResponse().error(
+  //         statusCode: HttpStatus.internalServerError,
+  //         message: 'connection error');
+  //   }
+  // }
 
   Future<Response> create(Request request) async {
     int? userID = request.headers[ConstRes.userID] != null

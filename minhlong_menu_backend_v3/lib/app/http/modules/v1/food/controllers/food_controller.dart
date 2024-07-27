@@ -58,7 +58,7 @@ class FoodController extends Controller {
         ? int.tryParse(request.headers[ConstRes.userID])
         : -1;
     try {
-      if (userID == null) {
+      if (userID == null || userID == -1) {
         return AppResponse().error(
             statusCode: HttpStatus.unauthorized, message: 'unauthorized');
       }
@@ -120,7 +120,7 @@ class FoodController extends Controller {
     try {
       var query = request.input('query');
 
-      if (userID == null) {
+      if (userID == null || userID == -1) {
         return AppResponse().error(
           statusCode: HttpStatus.unauthorized,
           message: 'unauthorized',
@@ -151,7 +151,7 @@ class FoodController extends Controller {
     try {
       Map<String, dynamic> response = <String, dynamic>{};
 
-      if (userID == null) {
+      if (userID == null || userID == -1) {
         return AppResponse().error(
             statusCode: HttpStatus.unauthorized, message: 'unauthorized');
       }
@@ -226,7 +226,7 @@ class FoodController extends Controller {
         ? int.tryParse(request.headers[ConstRes.userID])
         : -1;
     try {
-      if (userID == null) {
+      if (userID == null || userID == -1) {
         return AppResponse().error(
             statusCode: HttpStatus.unauthorized, message: 'unauthorized');
       }

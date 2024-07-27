@@ -1,4 +1,4 @@
-part of '../screens/order_screen.dart';
+part of '../screens/order_history_screen.dart';
 
 extension _OrderHeaderWidget on _OrderViewState {
   Widget get _orderHeaderWidget => SizedBox(
@@ -22,7 +22,6 @@ extension _OrderHeaderWidget on _OrderViewState {
           borderRadius: BorderRadius.circular(textFieldBorderRadius).r,
           color: AppColors.white),
       child: TabBar(
-        // isScrollable: context.isMobile ? true : false,
         controller: _tabController,
         splashFactory: InkSplash.splashFactory,
         labelStyle: kBodyStyle.copyWith(color: AppColors.white),
@@ -40,8 +39,8 @@ extension _OrderHeaderWidget on _OrderViewState {
               limit: _limit.value);
         },
         tabs: const [
-          Tab(text: 'Mới'),
-          Tab(text: 'Đang làm'),
+          Tab(text: 'Hoàn thành'),
+          Tab(text: 'Bị hủy'),
         ],
       ),
     );

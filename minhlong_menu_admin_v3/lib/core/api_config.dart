@@ -30,8 +30,7 @@ class ApiConfig {
   static const String banners = '/admin/banners';
 
   //===== Category =====
-  static const String categories = '/categories';
-  static const String quantityCategories = '/$categories/quantity';
+  static const String categories = '/admin/categories';
 
   //===== Food =====
   static const String foods = '/admin/foods';

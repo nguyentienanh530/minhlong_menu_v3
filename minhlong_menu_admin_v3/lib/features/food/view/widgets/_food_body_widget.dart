@@ -42,11 +42,13 @@ extension _FoodBodyWidget on _FoodViewState {
                 AppDialog.showLoadingDialog(context);
               }
               if (state is FoodDeleteSuccess) {
+                _overlayShown = false;
                 Navigator.pop(context);
                 OverlaySnackbar.show(context, 'Xoá thành công');
                 _fetchData(page: _curentPage.value, limit: _limit.value);
               }
               if (state is FoodDeleteFailure) {
+                _overlayShown = false;
                 Navigator.pop(context);
                 OverlaySnackbar.show(context, state.message,
                     type: OverlaySnackbarType.error);
@@ -56,6 +58,7 @@ extension _FoodBodyWidget on _FoodViewState {
               var foodsState = context.watch<FoodBloc>().state;
               switch (foodsState) {
                 case FoodFetchSuccess():
+                  _overlayShown = false;
                   context
                       .read<PaginationCubit>()
                       .setPagination(foodsState.foodModel.paginationModel!);
@@ -96,53 +99,48 @@ extension _FoodBodyWidget on _FoodViewState {
       builder: (context) {
         var pagination = context.watch<PaginationCubit>().state;
         return Container(
-          width: double.infinity,
+          width: context.sizeDevice.width,
           height: 71,
           padding: const EdgeInsets.all(10).r,
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               context.isMobile
                   ? const SizedBox()
-                  : Expanded(
-                      child: FittedBox(
-                        alignment: Alignment.centerLeft,
-                        fit: BoxFit.scaleDown,
-                        child: ValueListenableBuilder<FoodModel>(
-                          valueListenable: _foodModel,
-                          builder: (context, order, child) {
-                            return ValueListenableBuilder(
-                              valueListenable: _limit,
-                              builder: (context, limit, child) => Text(
-                                'Hiển thị 1 đến $limit trong số ${pagination.totalItem} món',
-                                style: kBodyStyle.copyWith(
-                                  color: AppColors.secondTextColor,
-                                ),
+                  : FittedBox(
+                      alignment: Alignment.centerLeft,
+                      fit: BoxFit.scaleDown,
+                      child: ValueListenableBuilder<FoodModel>(
+                        valueListenable: _foodModel,
+                        builder: (context, order, child) {
+                          return ValueListenableBuilder(
+                            valueListenable: _limit,
+                            builder: (context, limit, child) => Text(
+                              'Hiển thị 1 đến $limit trong số ${pagination.totalItem} món',
+                              style: kCaptionStyle.copyWith(
+                                color: AppColors.secondTextColor,
                               ),
-                            );
-                          },
-                        ),
+                            ),
+                          );
+                        },
                       ),
                     ),
-              context.isDesktop ? const Spacer() : const SizedBox(),
               Expanded(
                 child: ValueListenableBuilder(
                   valueListenable: _curentPage,
                   builder: (context, value, child) {
-                    return Container(
-                      alignment: Alignment.centerRight,
-                      child: NumberPagination(
-                        onPageChanged: (int pageNumber) {
-                          _curentPage.value = pageNumber;
+                    return NumberPagination(
+                      onPageChanged: (int pageNumber) {
+                        _curentPage.value = pageNumber;
 
-                          _fetchData(page: pageNumber, limit: _limit.value);
-                        },
-                        fontSize: 16,
-                        buttonElevation: 10,
-                        buttonRadius: textFieldBorderRadius,
-                        pageTotal: pagination.totalPage,
-                        pageInit: _curentPage.value,
-                        colorPrimary: AppColors.themeColor,
-                      ),
+                        _fetchData(page: pageNumber, limit: _limit.value);
+                      },
+                      fontSize: 14,
+                      threshold: 5,
+                      buttonRadius: textFieldBorderRadius,
+                      pageTotal: pagination.totalPage,
+                      pageInit: _curentPage.value,
+                      colorPrimary: AppColors.themeColor,
                     );
                   },
                 ),
@@ -329,11 +327,14 @@ extension _FoodBodyWidget on _FoodViewState {
       {required FoodScreenMode mode, FoodItem? foodItem}) async {
     await showDialog(
         context: context,
-        builder: (context) => Dialog(
-              backgroundColor: AppColors.background,
-              child: CreateOrUpdateFoodDialog(
-                mode: mode,
-                foodItem: foodItem,
+        builder: (context) => BlocProvider(
+              create: (context) => FoodBloc(context.read<FoodRepository>()),
+              child: Dialog(
+                backgroundColor: AppColors.background,
+                child: CreateOrUpdateFoodDialog(
+                  mode: mode,
+                  foodItem: foodItem,
+                ),
               ),
             )).then(
       (value) {

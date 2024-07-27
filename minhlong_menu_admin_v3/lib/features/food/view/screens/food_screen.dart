@@ -15,13 +15,12 @@ import 'package:minhlong_menu_admin_v3/features/food/bloc/food_bloc/food_bloc.da
 import 'package:minhlong_menu_admin_v3/features/food/data/model/food_item.dart';
 import 'package:minhlong_menu_admin_v3/features/food/data/model/food_model.dart';
 import 'package:minhlong_menu_admin_v3/features/food/data/provider/food_api.dart';
-import 'package:number_pagination/number_pagination.dart';
-
 import '../../../../common/dialog/app_dialog.dart';
 import '../../../../common/snackbar/overlay_snackbar.dart';
 import '../../../../common/widget/common_icon_button.dart';
 import '../../../../common/widget/error_widget.dart';
 import '../../../../common/widget/loading.dart';
+import '../../../../common/widget/number_pagination.dart';
 import '../../../../core/app_colors.dart';
 import '../../../../core/app_const.dart';
 import '../../../../core/utils.dart';
@@ -111,7 +110,8 @@ class _FoodViewState extends State<FoodView>
           _overlayShown = false;
           _hideOverlaySearch();
         },
-        child: Padding(
+        child: Container(
+          // color: AppColors.red,
           padding: const EdgeInsets.all(30).r,
           child: Column(
             children: [

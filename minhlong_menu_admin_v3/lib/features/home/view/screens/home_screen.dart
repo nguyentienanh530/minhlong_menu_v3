@@ -10,9 +10,7 @@ import '../../../category/data/repositories/category_repository.dart';
 import '../../../dinner_table/bloc/dinner_table_bloc.dart';
 import '../../../dinner_table/data/repositories/table_repository.dart';
 import '../../../food/bloc/food_bloc/food_bloc.dart';
-import '../../../food/bloc/search_food_bloc/search_food_bloc.dart';
 import '../../../food/data/repositories/food_repository.dart';
-
 import '../../../user/bloc/user_bloc.dart';
 import '../../../user/cubit/user_cubit.dart';
 import '../../cubit/table_index_selected_cubit.dart';
@@ -25,28 +23,26 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<UserBloc, UserState>(
-      listener: (context, state) {
-        if (state is UserFecthSuccess) {
-          context.read<UserCubit>().userChanged(state.user);
-        }
-      },
+    return BlocBuilder<UserBloc, UserState>(
       builder: (context, state) {
-        return BlocBuilder<UserBloc, UserState>(
-          builder: (context, state) {
-            return (switch (state) {
-              UserFecthSuccess() => _userFetchSuccess(context, state.user),
-              UserFecthFailure() => ErrWidget(error: state.errorMessage),
-              UserFecthInProgress() => const Loading(),
-              _ => Container(),
-            });
-          },
+        return Scaffold(
+          body: BlocBuilder<UserBloc, UserState>(
+            builder: (context, state) {
+              return (switch (state) {
+                UserFecthSuccess() => _userFetchSuccess(context, state.user),
+                UserFecthFailure() => ErrWidget(error: state.errorMessage),
+                UserFecthInProgress() => const Loading(),
+                _ => Container(),
+              });
+            },
+          ),
         );
       },
     );
   }
 
   Widget _userFetchSuccess(BuildContext context, UserModel user) {
+    context.read<UserCubit>().userChanged(user);
     return MultiBlocProvider(
       providers: [
         BlocProvider(
@@ -54,11 +50,6 @@ class HomeScreen extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => FoodBloc(context.read<FoodRepository>()),
-        ),
-        BlocProvider(
-          create: (context) => SearchFoodBloc(
-            context.read<FoodRepository>(),
-          ),
         ),
         BlocProvider(
           create: (context) => DinnerTableBloc(
