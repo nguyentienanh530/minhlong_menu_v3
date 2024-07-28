@@ -93,12 +93,14 @@ extension _OrderBodyWidget on _OrderViewState {
                           valueListenable: _orderModel,
                           builder: (context, order, child) {
                             return ValueListenableBuilder(
-                                valueListenable: _limit,
-                                builder: (context, limit, child) => Text(
-                                      'Hiển thị 1 đến $limit trong số ${pagination.totalItem} đơn',
-                                      style: kCaptionStyle.copyWith(
-                                          color: AppColors.secondTextColor),
-                                    ));
+                              valueListenable: _limit,
+                              builder: (context, limit, child) => Text(
+                                'Hiển thị 1 đến $limit trong số ${pagination.totalItem} đơn',
+                                style: kCaptionStyle.copyWith(
+                                  color: AppColors.secondTextColor,
+                                ),
+                              ),
+                            );
                           },
                         ),
                       ),
@@ -235,17 +237,30 @@ extension _OrderBodyWidget on _OrderViewState {
   Widget _actionWidget(OrderItem orderItem) {
     switch (orderItem.status) {
       case 'new':
-        return Container(
-          height: 70.h,
-          alignment: Alignment.center,
-          child: CommonIconButton(
-            onTap: () {
-              _showDetailDialog(orderItem);
-            },
-            icon: Icons.mode_edit_outline_outlined,
-            color: AppColors.sun,
-            tooltip: 'Xem đơn hàng',
-          ),
+        return Row(
+          children: [
+            CommonIconButton(
+              onTap: () {
+                context.push(AppRoute.printScreen, extra: orderItem);
+              },
+              icon: Icons.print,
+              color: AppColors.blue,
+              tooltip: 'In',
+            ),
+            10.horizontalSpace,
+            Container(
+              height: 70.h,
+              alignment: Alignment.center,
+              child: CommonIconButton(
+                onTap: () {
+                  _showDetailDialog(orderItem);
+                },
+                icon: Icons.mode_edit_outline_outlined,
+                color: AppColors.sun,
+                tooltip: 'Xem đơn hàng',
+              ),
+            ),
+          ],
         );
       case 'processing':
         return Container(

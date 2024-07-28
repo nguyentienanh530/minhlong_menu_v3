@@ -117,6 +117,29 @@ class TableController extends Controller {
     }
   }
 
+  Future<Response> getAllTables(Request request) async {
+    int? userID = request.headers[ConstRes.userID] != null
+        ? int.tryParse(request.headers[ConstRes.userID])
+        : -1;
+
+    try {
+      if (userID == null || userID == -1) {
+        return AppResponse().error(
+            statusCode: HttpStatus.unauthorized, message: 'unauthorized');
+      }
+
+      dynamic tables;
+
+      tables = await tableRepo.getAllTables(userID: userID);
+
+      return AppResponse().ok(data: tables, statusCode: HttpStatus.ok);
+    } catch (e) {
+      return AppResponse().error(
+          statusCode: HttpStatus.internalServerError,
+          message: 'connection error');
+    }
+  }
+
   Future<Response> destroy(int id) async {
     try {
       var table = await tableRepo.find(id: id);

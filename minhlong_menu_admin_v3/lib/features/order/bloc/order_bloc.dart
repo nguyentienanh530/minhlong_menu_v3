@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:minhlong_menu_admin_v3/features/order/data/repositories/order_repository.dart';
 
+import '../../../core/app_res.dart';
+import '../data/model/food_order_model.dart';
 import '../data/model/order_item.dart';
 import '../data/model/order_model.dart';
 
@@ -62,5 +64,32 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     }, failure: (message) {
       emit(OrderDeleteFailure(message));
     });
+  }
+
+  void handleUpdateQuantityFood(
+      OrderItem orderItem, int quantity, FoodOrderModel food) {
+    int index =
+        orderItem.foodOrders.indexWhere((element) => element.id == food.id);
+
+    if (index != -1) {
+      var existingFoodOrder = orderItem.foodOrders[index];
+
+      var updatedFoodOrder = existingFoodOrder.copyWith(
+          quantity: quantity,
+          totalAmount: quantity *
+              AppRes.foodPrice(
+                  isDiscount: existingFoodOrder.isDiscount,
+                  foodPrice: existingFoodOrder.price,
+                  discount: int.parse(existingFoodOrder.discount.toString())));
+
+      List<FoodOrderModel> updatedFoods = List.from(orderItem.foodOrders);
+      updatedFoods[index] = updatedFoodOrder;
+      double newTotalPrice = updatedFoods.fold(
+          0, (double total, currentFood) => total + currentFood.totalAmount);
+      orderItem = orderItem.copyWith(
+          foodOrders: updatedFoods, totalPrice: newTotalPrice);
+    } else {
+      return;
+    }
   }
 }

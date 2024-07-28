@@ -48,11 +48,12 @@ class Version1 implements Route {
     //======= Table route =======
     Router.group(() {
       Router.get("", tableCtrl.index);
+      Router.get("all", tableCtrl.getAllTables);
       Router.post("", tableCtrl.create);
       Router.patch("{id}", tableCtrl.update);
       Router.get('quantity', tableCtrl.getTableQuantity);
       Router.delete("{id}", tableCtrl.destroy);
-    }, prefix: '/tables');
+    }, prefix: '/admin/tables');
 
     //======= Food route ======
     Router.group(
@@ -112,6 +113,7 @@ class Version1 implements Route {
         Router.get('home', homeClientController.getHomeDataForUser);
         Router.get('foods/category/{id}', foodCtrl.getFoodsOnCategory);
         Router.get('foods', foodCtrl.index);
+        Router.get("tables/all", tableCtrl.getAllTables);
       },
       prefix: '/client',
     );

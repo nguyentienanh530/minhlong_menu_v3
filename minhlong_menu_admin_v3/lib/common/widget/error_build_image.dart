@@ -24,7 +24,7 @@ class ImageNotFound extends StatelessWidget {
       child: Center(
         child: FittedBox(
           child: Text(
-            '(>_<)'.toUpperCase(),
+            '(>_<)',
             style: kSubHeadingStyle.copyWith(
               color: tintcolor ?? AppColors.smokeWhite1,
               fontSize: 15,

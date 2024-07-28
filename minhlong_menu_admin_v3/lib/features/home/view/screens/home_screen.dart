@@ -25,18 +25,20 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<UserBloc, UserState>(
       builder: (context, state) {
-        return Scaffold(
-          body: BlocBuilder<UserBloc, UserState>(
-            builder: (context, state) {
-              return (switch (state) {
-                UserFecthSuccess() => _userFetchSuccess(context, state.user),
-                UserFecthFailure() => ErrWidget(error: state.errorMessage),
-                UserFecthInProgress() => const Loading(),
-                _ => Container(),
-              });
-            },
-          ),
-        );
+        // return Scaffold(
+        //   body: BlocBuilder<UserBloc, UserState>(
+        //     builder: (context, state) {
+        //       return (switch (state) {
+        //         UserFecthSuccess() => _userFetchSuccess(context, state.user),
+        //         UserFecthFailure() => ErrWidget(error: state.errorMessage),
+        //         UserFecthInProgress() => const Loading(),
+        //         _ => Container(),
+        //       });
+        //     },
+        //   ),
+        // );
+
+        return _userFetchSuccess(context, state.user);
       },
     );
   }

@@ -7,6 +7,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:minhlong_menu_admin_v3/common/network/dio_client.dart';
+import 'package:minhlong_menu_admin_v3/features/order/data/model/food_order_model.dart';
+import 'package:minhlong_menu_admin_v3/features/order/data/model/order_item.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'api_config.dart';
 
@@ -23,6 +25,17 @@ class Ultils {
       Logger().d('No image selected!');
     }
     return imageFile;
+  }
+
+  static bool checkExistFood(OrderItem order, int foodID) {
+    var isExist = false;
+    for (FoodOrderModel e in order.foodOrders) {
+      if (e.id == foodID) {
+        isExist = true;
+        break;
+      }
+    }
+    return isExist;
   }
 
   static Future<String?> uploadImage({

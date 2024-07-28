@@ -9,7 +9,8 @@ extension _OrderHeaderWidget on _OrderViewState {
           children: [
             _buildTabbarWidget(),
             10.horizontalSpace,
-            _buildDropdown()
+            _buildDropdown(),
+            _buildAddOrder()
           ],
         ),
       );
@@ -80,6 +81,19 @@ extension _OrderHeaderWidget on _OrderViewState {
               },
             );
           },
+        ));
+  }
+
+  Widget _buildAddOrder() {
+    return ElevatedButton(
+        onPressed: () => context.push(AppRoute.createOrUpdateOrder),
+        style: ButtonStyle(
+            backgroundColor: const WidgetStatePropertyAll(AppColors.themeColor),
+            shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(textFieldBorderRadius)))),
+        child: const Text(
+          'Thêm',
+          style: kButtonWhiteStyle,
         ));
   }
 }

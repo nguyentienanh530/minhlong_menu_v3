@@ -9,6 +9,10 @@ final class DinnerTableFetched extends DinnerTableEvent {
   DinnerTableFetched({required this.page, required this.limit});
 }
 
+final class AllDinnerTableFetched extends DinnerTableEvent {
+  AllDinnerTableFetched();
+}
+
 final class DinnerTableDeleted extends DinnerTableEvent {
   final int id;
   DinnerTableDeleted({required this.id});

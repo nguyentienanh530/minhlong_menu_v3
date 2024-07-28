@@ -1,12 +1,9 @@
 import 'dart:async';
-
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:minhlong_menu_admin_v3/features/dinner_table/data/model/table_item.dart';
 import 'package:minhlong_menu_admin_v3/features/dinner_table/data/repositories/table_repository.dart';
-
 import '../data/model/table_model.dart';
-
 part 'dinner_table_event.dart';
 part 'dinner_table_state.dart';
 
@@ -20,6 +17,7 @@ class DinnerTableBloc extends Bloc<DinnerTableEvent, DinnerTableState> {
     on<DinnerTableDeleted>(_onDinnerTableDeleted);
     on<DinnerTableCreated>(_onDinnerTableCreated);
     on<DinnerTableUpdated>(_onDinnerTableUpdated);
+    on<AllDinnerTableFetched>(_onAllDinnerTableFetched);
   }
 
   final DinnerTableRepository _tableRepository;
@@ -81,6 +79,24 @@ class DinnerTableBloc extends Bloc<DinnerTableEvent, DinnerTableState> {
       },
       failure: (message) {
         emit(DinnerTableUpdateFailure(message));
+      },
+    );
+  }
+
+  FutureOr<void> _onAllDinnerTableFetched(
+      AllDinnerTableFetched event, Emit emit) async {
+    emit(AllDinnerTablesInProgress());
+    final result = await _tableRepository.getAllTables();
+    result.when(
+      success: (tables) {
+        if (tables.isEmpty) {
+          emit(AllDinnerTablesEmpty());
+        } else {
+          emit(AllDinnerTablesSuccess(tables));
+        }
+      },
+      failure: (message) {
+        emit(AllDinnerTablesFailure(message));
       },
     );
   }

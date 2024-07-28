@@ -61,20 +61,10 @@ class MainApp extends StatelessWidget {
               authLocalDatasource: AuthLocalDatasource(sf),
               userLocalDatasource: UserLocalDatasource(sf)),
         ),
+        RepositoryProvider(create: (context) => FoodRepository(FoodApi(dio))),
         RepositoryProvider(
-          create: (context) => FoodRepository(
-            FoodApi(
-              dio,
-            ),
-          ),
-        ),
-        RepositoryProvider(
-          create: (context) => DinnerTableRepository(
-            dinnerTableApi: DinnerTableApi(
-              dio,
-            ),
-          ),
-        ),
+            create: (context) =>
+                DinnerTableRepository(dinnerTableApi: DinnerTableApi(dio))),
         RepositoryProvider(
           create: (context) => CategoryRepository(
             categoryApi: CategoryApi(dio: dio),

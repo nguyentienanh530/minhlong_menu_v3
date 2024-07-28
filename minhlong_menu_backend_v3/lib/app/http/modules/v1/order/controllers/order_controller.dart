@@ -199,6 +199,7 @@ class OrderController extends Controller {
           'updated_at': ordersList.first['updated_at'],
           'foods': ordersList.map((order) {
             return {
+              'id': order['food_id'],
               'name': order['name'],
               'quantity': order['quantity'],
               'price': order['price'],
@@ -208,6 +209,8 @@ class OrderController extends Controller {
               'image2': order['image2'],
               'image3': order['image3'],
               'image4': order['image4'],
+              'is_discount': order['is_discount'],
+              'discount': order['discount'],
             };
           }).toList(),
         };

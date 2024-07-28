@@ -49,3 +49,17 @@ final class DinnerTableUpdateFailure extends DinnerTableState {
   final String message;
   DinnerTableUpdateFailure(this.message);
 }
+
+final class AllDinnerTablesInProgress extends DinnerTableState {}
+
+final class AllDinnerTablesSuccess extends DinnerTableState {
+  final List<TableItem> tables;
+  AllDinnerTablesSuccess(this.tables);
+}
+
+final class AllDinnerTablesFailure extends DinnerTableState {
+  final String message;
+  AllDinnerTablesFailure(this.message);
+}
+
+final class AllDinnerTablesEmpty extends DinnerTableState {}

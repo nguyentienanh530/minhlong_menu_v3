@@ -20,6 +20,7 @@ FoodOrderModel _$FoodOrderModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$FoodOrderModel {
+  int get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String? get image1 => throw _privateConstructorUsedError;
   String? get image2 => throw _privateConstructorUsedError;
@@ -30,6 +31,10 @@ mixin _$FoodOrderModel {
   int get quantity => throw _privateConstructorUsedError;
   @JsonKey(name: 'total_amount')
   double get totalAmount => throw _privateConstructorUsedError;
+  @JsonKey(name: 'is_discount')
+  bool get isDiscount => throw _privateConstructorUsedError;
+  @JsonKey(name: 'discount')
+  int get discount => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -44,7 +49,8 @@ abstract class $FoodOrderModelCopyWith<$Res> {
       _$FoodOrderModelCopyWithImpl<$Res, FoodOrderModel>;
   @useResult
   $Res call(
-      {String name,
+      {int id,
+      String name,
       String? image1,
       String? image2,
       String? image3,
@@ -52,7 +58,9 @@ abstract class $FoodOrderModelCopyWith<$Res> {
       String note,
       double price,
       int quantity,
-      @JsonKey(name: 'total_amount') double totalAmount});
+      @JsonKey(name: 'total_amount') double totalAmount,
+      @JsonKey(name: 'is_discount') bool isDiscount,
+      @JsonKey(name: 'discount') int discount});
 }
 
 /// @nodoc
@@ -68,6 +76,7 @@ class _$FoodOrderModelCopyWithImpl<$Res, $Val extends FoodOrderModel>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? name = null,
     Object? image1 = freezed,
     Object? image2 = freezed,
@@ -77,8 +86,14 @@ class _$FoodOrderModelCopyWithImpl<$Res, $Val extends FoodOrderModel>
     Object? price = null,
     Object? quantity = null,
     Object? totalAmount = null,
+    Object? isDiscount = null,
+    Object? discount = null,
   }) {
     return _then(_value.copyWith(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -115,6 +130,14 @@ class _$FoodOrderModelCopyWithImpl<$Res, $Val extends FoodOrderModel>
           ? _value.totalAmount
           : totalAmount // ignore: cast_nullable_to_non_nullable
               as double,
+      isDiscount: null == isDiscount
+          ? _value.isDiscount
+          : isDiscount // ignore: cast_nullable_to_non_nullable
+              as bool,
+      discount: null == discount
+          ? _value.discount
+          : discount // ignore: cast_nullable_to_non_nullable
+              as int,
     ) as $Val);
   }
 }
@@ -128,7 +151,8 @@ abstract class _$$FoodOrderModelImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String name,
+      {int id,
+      String name,
       String? image1,
       String? image2,
       String? image3,
@@ -136,7 +160,9 @@ abstract class _$$FoodOrderModelImplCopyWith<$Res>
       String note,
       double price,
       int quantity,
-      @JsonKey(name: 'total_amount') double totalAmount});
+      @JsonKey(name: 'total_amount') double totalAmount,
+      @JsonKey(name: 'is_discount') bool isDiscount,
+      @JsonKey(name: 'discount') int discount});
 }
 
 /// @nodoc
@@ -150,6 +176,7 @@ class __$$FoodOrderModelImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? name = null,
     Object? image1 = freezed,
     Object? image2 = freezed,
@@ -159,8 +186,14 @@ class __$$FoodOrderModelImplCopyWithImpl<$Res>
     Object? price = null,
     Object? quantity = null,
     Object? totalAmount = null,
+    Object? isDiscount = null,
+    Object? discount = null,
   }) {
     return _then(_$FoodOrderModelImpl(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -197,6 +230,14 @@ class __$$FoodOrderModelImplCopyWithImpl<$Res>
           ? _value.totalAmount
           : totalAmount // ignore: cast_nullable_to_non_nullable
               as double,
+      isDiscount: null == isDiscount
+          ? _value.isDiscount
+          : isDiscount // ignore: cast_nullable_to_non_nullable
+              as bool,
+      discount: null == discount
+          ? _value.discount
+          : discount // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -205,7 +246,8 @@ class __$$FoodOrderModelImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$FoodOrderModelImpl implements _FoodOrderModel {
   _$FoodOrderModelImpl(
-      {this.name = '',
+      {this.id = 0,
+      this.name = '',
       this.image1,
       this.image2,
       this.image3,
@@ -213,11 +255,16 @@ class _$FoodOrderModelImpl implements _FoodOrderModel {
       this.note = '',
       this.price = 0,
       this.quantity = 0,
-      @JsonKey(name: 'total_amount') this.totalAmount = 0});
+      @JsonKey(name: 'total_amount') this.totalAmount = 0,
+      @JsonKey(name: 'is_discount') this.isDiscount = false,
+      @JsonKey(name: 'discount') this.discount = 0});
 
   factory _$FoodOrderModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$FoodOrderModelImplFromJson(json);
 
+  @override
+  @JsonKey()
+  final int id;
   @override
   @JsonKey()
   final String name;
@@ -241,10 +288,16 @@ class _$FoodOrderModelImpl implements _FoodOrderModel {
   @override
   @JsonKey(name: 'total_amount')
   final double totalAmount;
+  @override
+  @JsonKey(name: 'is_discount')
+  final bool isDiscount;
+  @override
+  @JsonKey(name: 'discount')
+  final int discount;
 
   @override
   String toString() {
-    return 'FoodOrderModel(name: $name, image1: $image1, image2: $image2, image3: $image3, image4: $image4, note: $note, price: $price, quantity: $quantity, totalAmount: $totalAmount)';
+    return 'FoodOrderModel(id: $id, name: $name, image1: $image1, image2: $image2, image3: $image3, image4: $image4, note: $note, price: $price, quantity: $quantity, totalAmount: $totalAmount, isDiscount: $isDiscount, discount: $discount)';
   }
 
   @override
@@ -252,6 +305,7 @@ class _$FoodOrderModelImpl implements _FoodOrderModel {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$FoodOrderModelImpl &&
+            (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.image1, image1) || other.image1 == image1) &&
             (identical(other.image2, image2) || other.image2 == image2) &&
@@ -262,13 +316,17 @@ class _$FoodOrderModelImpl implements _FoodOrderModel {
             (identical(other.quantity, quantity) ||
                 other.quantity == quantity) &&
             (identical(other.totalAmount, totalAmount) ||
-                other.totalAmount == totalAmount));
+                other.totalAmount == totalAmount) &&
+            (identical(other.isDiscount, isDiscount) ||
+                other.isDiscount == isDiscount) &&
+            (identical(other.discount, discount) ||
+                other.discount == discount));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, name, image1, image2, image3,
-      image4, note, price, quantity, totalAmount);
+  int get hashCode => Object.hash(runtimeType, id, name, image1, image2, image3,
+      image4, note, price, quantity, totalAmount, isDiscount, discount);
 
   @JsonKey(ignore: true)
   @override
@@ -287,20 +345,24 @@ class _$FoodOrderModelImpl implements _FoodOrderModel {
 
 abstract class _FoodOrderModel implements FoodOrderModel {
   factory _FoodOrderModel(
-          {final String name,
-          final String? image1,
-          final String? image2,
-          final String? image3,
-          final String? image4,
-          final String note,
-          final double price,
-          final int quantity,
-          @JsonKey(name: 'total_amount') final double totalAmount}) =
-      _$FoodOrderModelImpl;
+      {final int id,
+      final String name,
+      final String? image1,
+      final String? image2,
+      final String? image3,
+      final String? image4,
+      final String note,
+      final double price,
+      final int quantity,
+      @JsonKey(name: 'total_amount') final double totalAmount,
+      @JsonKey(name: 'is_discount') final bool isDiscount,
+      @JsonKey(name: 'discount') final int discount}) = _$FoodOrderModelImpl;
 
   factory _FoodOrderModel.fromJson(Map<String, dynamic> json) =
       _$FoodOrderModelImpl.fromJson;
 
+  @override
+  int get id;
   @override
   String get name;
   @override
@@ -320,6 +382,12 @@ abstract class _FoodOrderModel implements FoodOrderModel {
   @override
   @JsonKey(name: 'total_amount')
   double get totalAmount;
+  @override
+  @JsonKey(name: 'is_discount')
+  bool get isDiscount;
+  @override
+  @JsonKey(name: 'discount')
+  int get discount;
   @override
   @JsonKey(ignore: true)
   _$$FoodOrderModelImplCopyWith<_$FoodOrderModelImpl> get copyWith =>

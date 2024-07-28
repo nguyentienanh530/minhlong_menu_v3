@@ -16,6 +16,12 @@ class DinnerTableApi {
     return TableModel.fromJson(response.data['data']);
   }
 
+  Future<List<TableItem>> getAllTables() async {
+    final response = await _dio.get(ApiConfig.allTables);
+    return (List<TableItem>.from(
+        response.data['data'].map((x) => TableItem.fromJson(x))));
+  }
+
   Future<bool> deleteTable({required int id}) async {
     final response = await _dio.delete('${ApiConfig.tables}/$id');
     return response.data['data'];

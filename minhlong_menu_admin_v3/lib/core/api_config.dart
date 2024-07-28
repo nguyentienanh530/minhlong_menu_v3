@@ -41,7 +41,8 @@ class ApiConfig {
   static const String search = '/$foods/search';
 
   //===== Table =====
-  static const String tables = '/tables';
+  static const String tables = '/admin/tables';
+  static const String allTables = '/$tables/all';
   static const String quantityTables = '/$tables/quantity';
 
   //===== Order =====

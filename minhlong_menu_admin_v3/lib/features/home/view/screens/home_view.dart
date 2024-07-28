@@ -262,24 +262,27 @@ class HomeViewState extends State<HomeView>
   }
 
   Widget _buildAvatar(String imageUrl) {
-    return SizedBox(
-      height: 45,
-      width: 45,
-      child: CircleAvatar(
-        radius: 40,
-        backgroundColor: AppColors.white,
-        child: Padding(
-          padding: const EdgeInsets.all(3), // Border radius
-          child: ClipOval(
-              child: CachedNetworkImage(
-            imageUrl: imageUrl,
-            fit: BoxFit.cover,
-            errorWidget: errorBuilderForImage,
-            placeholder: (context, url) => const Loading(),
-            height: 45,
-            width: 45,
-          )),
+    return Padding(
+      padding: const EdgeInsets.all(3), // Border radius
+      child: CachedNetworkImage(
+        imageUrl: imageUrl,
+        imageBuilder: (context, imageProvider) => Container(
+          height: 45,
+          width: 45,
+          clipBehavior: Clip.hardEdge,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            image: DecorationImage(
+              image: imageProvider,
+              fit: BoxFit.cover,
+            ),
+          ),
         ),
+        fit: BoxFit.fill,
+        errorWidget: errorBuilderForImage,
+        placeholder: (context, url) => const Loading(),
+        height: 45,
+        width: 45,
       ),
     );
   }

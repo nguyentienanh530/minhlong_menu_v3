@@ -26,6 +26,17 @@ class DinnerTableRepository {
     }
   }
 
+  Future<Result<List<TableItem>>> getAllTables() async {
+    try {
+      final response = await _dinnerTableApi.getAllTables();
+      return Result.success(response);
+    } on DioException catch (e) {
+      Logger().e('get all table error: $e');
+      final errorMessage = DioExceptions.fromDioError(e).toString();
+      return Result.failure(errorMessage);
+    }
+  }
+
   Future<Result<bool>> deleteTable({required int id}) async {
     try {
       final response = await _dinnerTableApi.deleteTable(id: id);

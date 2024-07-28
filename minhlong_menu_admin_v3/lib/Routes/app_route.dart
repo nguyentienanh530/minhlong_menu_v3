@@ -11,6 +11,7 @@ import 'package:minhlong_menu_admin_v3/features/food/view/screens/food_screen.da
 import 'package:minhlong_menu_admin_v3/features/home/view/screens/home_screen.dart';
 
 import 'package:minhlong_menu_admin_v3/features/order/data/model/order_item.dart';
+import 'package:minhlong_menu_admin_v3/features/order/view/screens/create_or_update_order_screen.dart';
 import 'package:minhlong_menu_admin_v3/features/order/view/screens/order_screen.dart';
 import 'package:minhlong_menu_admin_v3/features/print/view/screens/print_screen.dart';
 import 'package:minhlong_menu_admin_v3/features/user/data/model/user_model.dart';
@@ -37,6 +38,7 @@ class AppRoute {
   static const String editProfile = '/edit-profile';
   static const String printScreen = '/print-screen';
   static const String loadScreen = '/load-screen';
+  static const String createOrUpdateOrder = '/create-or-update-order';
 
   static const publicRoute = [login, forgotPassword, signUp];
 
@@ -171,6 +173,16 @@ class AppRoute {
             context: context,
             state: state,
             child: PrintScreen(order: state.extra as OrderItem),
+          );
+        },
+      ),
+      GoRoute(
+        path: createOrUpdateOrder,
+        pageBuilder: (context, state) {
+          return buildPageWithDefaultTransition(
+            context: context,
+            state: state,
+            child: const CreateOrUpdateOrderScreen(),
           );
         },
       ),

@@ -38,13 +38,6 @@ extension _OrderDetailDialog on _OrderViewState {
             ),
           )),
       actions: [
-        CommonIconButton(
-          onTap: () {
-            context.push(AppRoute.printScreen, extra: orderItem);
-          },
-          icon: Icons.print,
-          color: AppColors.sun,
-        ),
         10.horizontalSpace,
         _buttonAction(
           title: 'Xác nhận',
