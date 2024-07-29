@@ -46,8 +46,8 @@ extension _OrderDetailDialog on _OrderViewState {
                 title: 'Xác nhận đơn',
                 description: 'Chuyển đơn ${orderItem.id} sang đang làm',
                 onPressedComfirm: () {
-              orderItem = orderItem.copyWith(status: 'processing');
-              _handleUpdateOrder(orderItem);
+              // orderItem = orderItem.copyWith(status: 'processing');
+              _handleUpdateOrder(orderID: orderItem.id, status: 'processing');
             });
           },
           color: AppColors.blue,
@@ -59,9 +59,9 @@ extension _OrderDetailDialog on _OrderViewState {
                 title: 'Huỷ đơn',
                 description: 'Bạn có muốn huỷ đơn ${orderItem.id}?',
                 onPressedComfirm: () {
-              orderItem = orderItem.copyWith(status: 'cancel');
+              // orderItem = orderItem.copyWith(status: 'cancel');
 
-              _handleUpdateOrder(orderItem);
+              _handleUpdateOrder(orderID: orderItem.id, status: 'cancel');
             });
           },
           color: AppColors.red,
@@ -156,9 +156,9 @@ extension _OrderDetailDialog on _OrderViewState {
                       title: 'Huỷ đơn',
                       description: 'Bạn có muốn huỷ đơn ${orderItem.id}?',
                       onPressedComfirm: () {
-                    orderItem = orderItem.copyWith(status: 'cancel');
+                    // orderItem = orderItem.copyWith(status: 'cancel');
 
-                    _handleUpdateOrder(orderItem);
+                    _handleUpdateOrder(orderID: orderItem.id, status: 'cancel');
                   });
                 },
                 color: AppColors.red,
@@ -174,11 +174,12 @@ extension _OrderDetailDialog on _OrderViewState {
                       description:
                           'Đơn đã xong, chuyển đơn ${orderItem.id} tới hoàn thành?',
                       onPressedComfirm: () {
-                    orderItem = orderItem.copyWith(
-                        status: 'completed',
-                        payedAt: DateTime.now().toString());
+                    // orderItem = orderItem.copyWith(
+                    //     status: 'completed',
+                    //     payedAt: DateTime.now().toString());
 
-                    _handleUpdateOrder(orderItem);
+                    _handleUpdateOrder(
+                        orderID: orderItem.id, status: 'completed');
                   });
                 },
                 color: AppColors.blue,

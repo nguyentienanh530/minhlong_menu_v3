@@ -47,6 +47,7 @@ class ApiConfig {
 
   //===== Order =====
   static const String orders = '/admin/orders';
+  static const String updateStatus = '/$orders/status';
   static const String newOrders = '/$orders/new-orders';
   static const String newOrdersByTable = '/$orders/new-orders-by-table';
   static const String createOrder = '/$orders/create-order';

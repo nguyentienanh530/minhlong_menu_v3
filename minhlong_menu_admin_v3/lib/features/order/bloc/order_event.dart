@@ -11,6 +11,12 @@ final class OrderFetchNewOrdersStarted extends OrderEvent {
       {required this.status, required this.page, required this.limit});
 }
 
+final class OrderStatusUpdated extends OrderEvent {
+  final int orderID;
+  final String status;
+  OrderStatusUpdated({required this.orderID, required this.status});
+}
+
 final class OrderUpdated extends OrderEvent {
   final OrderItem order;
   OrderUpdated({required this.order});

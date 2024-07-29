@@ -142,8 +142,7 @@ extension _OrdersOnTableWidget on _OrderViewState {
                           title: 'Hủy đơn',
                           description: 'Bạn có muốn huỷ đơn ${order.id}?',
                           onPressedComfirm: () {
-                        order = order.copyWith(status: 'cancel');
-                        _handleUpdateOrder(order);
+                        _handleUpdateOrder(orderID: order.id, status: 'cancel');
                       });
                     },
                     icon: Icons.clear_rounded,
@@ -160,8 +159,10 @@ extension _OrdersOnTableWidget on _OrderViewState {
                           title: 'Xác nhận đơn!',
                           description: 'Chuyển đơn ${order.id} sang đang làm?',
                           onPressedComfirm: () {
-                        order = order.copyWith(status: 'processing');
-                        _handleUpdateOrder(order);
+                        // order = order.copyWith(status: 'processing');
+
+                        _handleUpdateOrder(
+                            orderID: order.id, status: 'processing');
                       });
                     },
                     icon: Icons.check,
@@ -192,10 +193,10 @@ extension _OrdersOnTableWidget on _OrderViewState {
     );
   }
 
-  void _handleUpdateOrder(OrderItem orderItem) {
-    context.read<OrderBloc>().add(OrderUpdated(order: orderItem));
-    context.pop();
-  }
+  // void _handleUpdateOrder(OrderItem orderItem) {
+  //   context.read<OrderBloc>().add(OrderUpdated(order: orderItem));
+  //   context.pop();
+  // }
 
   Widget _buildHeader(BuildContext context, OrderItem order) {
     return Column(

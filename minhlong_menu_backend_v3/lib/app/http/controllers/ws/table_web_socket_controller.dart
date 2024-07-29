@@ -28,12 +28,15 @@ class TableWebSocketController extends Controller {
         orderCount = await Orders()
             .query()
             .select()
-            .where('status', '=', 'new')
+            .whereRaw('orders.status IN ("new", "processing")')
             .where('table_id', '=', table['id'])
             .count();
       } else {
-        orderCount =
-            await Orders().query().select().where('status', '=', 'new').count();
+        orderCount = await Orders()
+            .query()
+            .select()
+            .whereRaw('orders.status IN ("new", "processing")')
+            .count();
       }
       var newTable = {
         'id': table['id'],

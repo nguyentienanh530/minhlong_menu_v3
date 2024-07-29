@@ -10,4 +10,17 @@ class OrderDetailsRepo {
   Future createOrderDetails(Map<String, dynamic> data) async {
     return await orderDetails.query().insert(data);
   }
+
+  Future updateOrderDetails(
+      {required int id, required Map<String, dynamic> data}) async {
+    return await orderDetails.query().where('id', '=', id).update(data);
+  }
+
+  Future deleteOrderDetails({required int id}) async {
+    return await orderDetails.query().where('id', '=', id).delete();
+  }
+
+  Future findOrderDetails({required int id}) async {
+    return await orderDetails.query().where('id', '=', id).first();
+  }
 }

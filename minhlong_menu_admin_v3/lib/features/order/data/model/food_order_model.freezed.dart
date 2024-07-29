@@ -20,8 +20,11 @@ FoodOrderModel _$FoodOrderModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$FoodOrderModel {
+  @JsonKey(name: 'order_details_id')
   int get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
+  @JsonKey(name: 'food_id')
+  int get foodID => throw _privateConstructorUsedError;
   String? get image1 => throw _privateConstructorUsedError;
   String? get image2 => throw _privateConstructorUsedError;
   String? get image3 => throw _privateConstructorUsedError;
@@ -49,8 +52,9 @@ abstract class $FoodOrderModelCopyWith<$Res> {
       _$FoodOrderModelCopyWithImpl<$Res, FoodOrderModel>;
   @useResult
   $Res call(
-      {int id,
+      {@JsonKey(name: 'order_details_id') int id,
       String name,
+      @JsonKey(name: 'food_id') int foodID,
       String? image1,
       String? image2,
       String? image3,
@@ -78,6 +82,7 @@ class _$FoodOrderModelCopyWithImpl<$Res, $Val extends FoodOrderModel>
   $Res call({
     Object? id = null,
     Object? name = null,
+    Object? foodID = null,
     Object? image1 = freezed,
     Object? image2 = freezed,
     Object? image3 = freezed,
@@ -98,6 +103,10 @@ class _$FoodOrderModelCopyWithImpl<$Res, $Val extends FoodOrderModel>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
+      foodID: null == foodID
+          ? _value.foodID
+          : foodID // ignore: cast_nullable_to_non_nullable
+              as int,
       image1: freezed == image1
           ? _value.image1
           : image1 // ignore: cast_nullable_to_non_nullable
@@ -151,8 +160,9 @@ abstract class _$$FoodOrderModelImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {int id,
+      {@JsonKey(name: 'order_details_id') int id,
       String name,
+      @JsonKey(name: 'food_id') int foodID,
       String? image1,
       String? image2,
       String? image3,
@@ -178,6 +188,7 @@ class __$$FoodOrderModelImplCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? name = null,
+    Object? foodID = null,
     Object? image1 = freezed,
     Object? image2 = freezed,
     Object? image3 = freezed,
@@ -198,6 +209,10 @@ class __$$FoodOrderModelImplCopyWithImpl<$Res>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
+      foodID: null == foodID
+          ? _value.foodID
+          : foodID // ignore: cast_nullable_to_non_nullable
+              as int,
       image1: freezed == image1
           ? _value.image1
           : image1 // ignore: cast_nullable_to_non_nullable
@@ -246,8 +261,9 @@ class __$$FoodOrderModelImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$FoodOrderModelImpl implements _FoodOrderModel {
   _$FoodOrderModelImpl(
-      {this.id = 0,
+      {@JsonKey(name: 'order_details_id') this.id = 0,
       this.name = '',
+      @JsonKey(name: 'food_id') this.foodID = 0,
       this.image1,
       this.image2,
       this.image3,
@@ -263,11 +279,14 @@ class _$FoodOrderModelImpl implements _FoodOrderModel {
       _$$FoodOrderModelImplFromJson(json);
 
   @override
-  @JsonKey()
+  @JsonKey(name: 'order_details_id')
   final int id;
   @override
   @JsonKey()
   final String name;
+  @override
+  @JsonKey(name: 'food_id')
+  final int foodID;
   @override
   final String? image1;
   @override
@@ -297,7 +316,7 @@ class _$FoodOrderModelImpl implements _FoodOrderModel {
 
   @override
   String toString() {
-    return 'FoodOrderModel(id: $id, name: $name, image1: $image1, image2: $image2, image3: $image3, image4: $image4, note: $note, price: $price, quantity: $quantity, totalAmount: $totalAmount, isDiscount: $isDiscount, discount: $discount)';
+    return 'FoodOrderModel(id: $id, name: $name, foodID: $foodID, image1: $image1, image2: $image2, image3: $image3, image4: $image4, note: $note, price: $price, quantity: $quantity, totalAmount: $totalAmount, isDiscount: $isDiscount, discount: $discount)';
   }
 
   @override
@@ -307,6 +326,7 @@ class _$FoodOrderModelImpl implements _FoodOrderModel {
             other is _$FoodOrderModelImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
+            (identical(other.foodID, foodID) || other.foodID == foodID) &&
             (identical(other.image1, image1) || other.image1 == image1) &&
             (identical(other.image2, image2) || other.image2 == image2) &&
             (identical(other.image3, image3) || other.image3 == image3) &&
@@ -325,8 +345,8 @@ class _$FoodOrderModelImpl implements _FoodOrderModel {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, name, image1, image2, image3,
-      image4, note, price, quantity, totalAmount, isDiscount, discount);
+  int get hashCode => Object.hash(runtimeType, id, name, foodID, image1, image2,
+      image3, image4, note, price, quantity, totalAmount, isDiscount, discount);
 
   @JsonKey(ignore: true)
   @override
@@ -345,8 +365,9 @@ class _$FoodOrderModelImpl implements _FoodOrderModel {
 
 abstract class _FoodOrderModel implements FoodOrderModel {
   factory _FoodOrderModel(
-      {final int id,
+      {@JsonKey(name: 'order_details_id') final int id,
       final String name,
+      @JsonKey(name: 'food_id') final int foodID,
       final String? image1,
       final String? image2,
       final String? image3,
@@ -362,9 +383,13 @@ abstract class _FoodOrderModel implements FoodOrderModel {
       _$FoodOrderModelImpl.fromJson;
 
   @override
+  @JsonKey(name: 'order_details_id')
   int get id;
   @override
   String get name;
+  @override
+  @JsonKey(name: 'food_id')
+  int get foodID;
   @override
   String? get image1;
   @override

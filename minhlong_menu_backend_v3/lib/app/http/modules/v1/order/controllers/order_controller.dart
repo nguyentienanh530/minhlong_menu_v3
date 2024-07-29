@@ -107,6 +107,55 @@ class OrderController extends Controller {
     }
   }
 
+  Future<Response> updateOrder(Request request, int id) async {
+    try {
+      var order = await orderRepo.findOrderByID(id);
+      if (order == null) {
+        return AppResponse().error(
+          statusCode: HttpStatus.notFound,
+          message: 'order not found',
+        );
+      }
+      var orderDetails = request.input('order_detail') as List;
+      print('od: ${request.all()}');
+      print('or: $orderDetails');
+      for (var orderDetail in orderDetails) {
+        var detail = await orderDetailsRepo.findOrderDetails(
+            id: orderDetail['order_details_id']);
+        if (detail == null) {
+          await orderDetailsRepo.createOrderDetails({
+            'order_id': order['id'],
+            'food_id': orderDetail['id'],
+            'quantity': orderDetail['quantity'],
+            'price': orderDetail['price'],
+            'total_amount': orderDetail['total_amount'],
+            'note': orderDetail['note']
+          });
+        } else {
+          await orderDetailsRepo
+              .updateOrderDetails(id: orderDetail['id'], data: {
+            'quantity': orderDetail['quantity'],
+            'total_amount': orderDetail['total_amount'],
+          });
+        }
+      }
+      var orderUpdate = {
+        'status': request.input('status'),
+        'total_price': request.input('total_price'),
+        'table_id': request.input('table_id'),
+        'payed_at': request.input('payed_at'),
+      };
+
+      await orderRepo.updateOrder(id, orderUpdate);
+      return AppResponse().ok(data: true, statusCode: HttpStatus.ok);
+    } catch (e) {
+      print('update order error: $e');
+      return AppResponse().error(
+          statusCode: HttpStatus.internalServerError,
+          message: 'connection error');
+    }
+  }
+
   Future<Response> getNewOrdersByTable(Request request) async {
     int? userID = request.headers[ConstRes.userID] != null
         ? int.tryParse(request.headers[ConstRes.userID])
@@ -261,6 +310,17 @@ class OrderController extends Controller {
     return groupedOrders;
   }
 
+  Map<int, List<dynamic>> groupOrdersByIdd(List<dynamic> orders) {
+    Map<int, List<dynamic>> groupedOrders = {};
+    for (var order in orders) {
+      if (!groupedOrders.containsKey(order['order_id'])) {
+        groupedOrders[order['order_id']] = [];
+      }
+      groupedOrders[order['order_id']]!.add(order);
+    }
+    return groupedOrders;
+  }
+
   Future<Response> getOrdersDataChart(Request request) async {
     // Map<String, dynamic> data = request.all();
     try {
@@ -279,7 +339,7 @@ class OrderController extends Controller {
     }
   }
 
-  Future<Response> update(Request request, int id) async {
+  Future<Response> updateStatus(Request request, int id) async {
     try {
       var order = await orderRepo.findOrderByID(id);
       if (order == null) {
@@ -288,14 +348,8 @@ class OrderController extends Controller {
           message: 'order not found',
         );
       }
-      var orderUpdate = {
-        'status': request.input('status') ?? order['status'],
-        'total_price': request.input('total_price') ?? order['total_price'],
-        'payed_at': request.input('payed_at') ?? order['payed_at'],
-        'table_id': request.input('table_id') ?? order['table_id'],
-      };
+      var orderUpdate = {'status': request.input('status') ?? order['status']};
 
-      // print(orderUpdate);
       await orderRepo.updateOrder(id, orderUpdate);
 
       return AppResponse().ok(

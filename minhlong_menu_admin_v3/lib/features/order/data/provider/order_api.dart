@@ -15,10 +15,11 @@ class OrderApi {
     return OrderModel.fromJson(response.data['data']);
   }
 
-  Future<bool> updateOrder({required OrderItem order}) async {
+  Future<bool> updateStatus(
+      {required int orderID, required String status}) async {
     final response = await dio.patch(
-      '${ApiConfig.orders}/${order.id}',
-      data: order.toJson(),
+      '${ApiConfig.updateStatus}/$orderID',
+      queryParameters: {'status': status},
     );
 
     return response.data['data'] ?? false;
@@ -31,6 +32,12 @@ class OrderApi {
 
   Future<bool> createOrder({required OrderItem order}) async {
     final response = await dio.post(ApiConfig.orders, data: order.toJson());
+    return response.data['data'];
+  }
+
+  Future<bool> updateOrder({required OrderItem order}) async {
+    final response = await dio.patch('${ApiConfig.orders}/${order.id}',
+        data: order.toJson());
     return response.data['data'];
   }
 }

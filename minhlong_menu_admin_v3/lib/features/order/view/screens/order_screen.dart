@@ -160,10 +160,10 @@ class _OrderViewState extends State<OrderView>
         padding: const EdgeInsets.all(30).r,
         child: BlocListener<OrderBloc, OrderState>(
           listener: (context, state) {
-            if (state is OrderUpdateInProgress) {
+            if (state is OrderUpdateStatusInProgress) {
               AppDialog.showLoadingDialog(context);
             }
-            if (state is OrderUpdateSuccess) {
+            if (state is OrderUpdateStatusSuccess) {
               pop(context, 1);
               OverlaySnackbar.show(context, 'Cập nhật thành công');
               Ultils.sendSocket(_orderChannel, 'orders',
@@ -171,7 +171,7 @@ class _OrderViewState extends State<OrderView>
               Ultils.sendSocket(_tableChannel, 'tables', _user.id);
             }
 
-            if (state is OrderUpdateFailure) {
+            if (state is OrderUpdateStatusFailure) {
               pop(context, 1);
               OverlaySnackbar.show(context, 'Có lỗi xảy ra',
                   type: OverlaySnackbarType.error);
@@ -242,8 +242,10 @@ class _OrderViewState extends State<OrderView>
     );
   }
 
-  void _handleUpdateOrder(OrderItem orderItem) {
-    context.read<OrderBloc>().add(OrderUpdated(order: orderItem));
+  void _handleUpdateOrder({required int orderID, required String status}) {
+    context
+        .read<OrderBloc>()
+        .add(OrderStatusUpdated(orderID: orderID, status: status));
     context.pop();
   }
 

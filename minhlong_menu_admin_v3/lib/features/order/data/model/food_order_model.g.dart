@@ -8,8 +8,9 @@ part of 'food_order_model.dart';
 
 _$FoodOrderModelImpl _$$FoodOrderModelImplFromJson(Map<String, dynamic> json) =>
     _$FoodOrderModelImpl(
-      id: (json['id'] as num?)?.toInt() ?? 0,
+      id: (json['order_details_id'] as num?)?.toInt() ?? 0,
       name: json['name'] as String? ?? '',
+      foodID: (json['food_id'] as num?)?.toInt() ?? 0,
       image1: json['image1'] as String?,
       image2: json['image2'] as String?,
       image3: json['image3'] as String?,
@@ -25,8 +26,9 @@ _$FoodOrderModelImpl _$$FoodOrderModelImplFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$$FoodOrderModelImplToJson(
         _$FoodOrderModelImpl instance) =>
     <String, dynamic>{
-      'id': instance.id,
+      'order_details_id': instance.id,
       'name': instance.name,
+      'food_id': instance.foodID,
       'image1': instance.image1,
       'image2': instance.image2,
       'image3': instance.image3,

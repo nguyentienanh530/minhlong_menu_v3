@@ -10,8 +10,9 @@ List<dynamic> stringToList(String photoGallery) {
 @freezed
 class FoodOrderModel with _$FoodOrderModel {
   factory FoodOrderModel({
-    @Default(0) int id,
+    @Default(0) @JsonKey(name: 'order_details_id') int id,
     @Default('') String name,
+    @Default(0) @JsonKey(name: 'food_id') int foodID,
     final String? image1,
     final String? image2,
     final String? image3,

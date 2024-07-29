@@ -13,9 +13,10 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       : _orderRepo = orderRespository,
         super(OrderInitial()) {
     on<OrderFetchNewOrdersStarted>(_orderFetchNewOrdersStarted);
-    on<OrderUpdated>(_onOrderUpdated);
+    on<OrderStatusUpdated>(_onOrderStatusUpdated);
     on<OrderDeleted>(_onOrderDeleted);
     on<OrderCreated>(_orderCreated);
+    on<OrderUpdated>(_onOrderUpdated);
   }
 
   final OrderRepository _orderRepo;
@@ -42,13 +43,15 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     );
   }
 
-  FutureOr<void> _onOrderUpdated(OrderUpdated event, Emit emit) async {
-    emit(OrderUpdateInProgress());
-    final result = await _orderRepo.updateOrder(order: event.order);
+  FutureOr<void> _onOrderStatusUpdated(
+      OrderStatusUpdated event, Emit emit) async {
+    emit(OrderUpdateStatusInProgress());
+    final result = await _orderRepo.updateStatus(
+        orderID: event.orderID, status: event.status);
     result.when(success: (success) {
-      emit(OrderUpdateSuccess());
+      emit(OrderUpdateStatusSuccess());
     }, failure: (message) {
-      emit(OrderUpdateFailure(message));
+      emit(OrderUpdateStatusFailure(message));
     });
   }
 
@@ -71,6 +74,19 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       },
       failure: (message) {
         emit(OrderCreateFailure(error: message));
+      },
+    );
+  }
+
+  FutureOr<void> _onOrderUpdated(OrderUpdated event, Emit emit) async {
+    emit(OrderUpdateInProgress());
+    final result = await _orderRepo.updateOrder(order: event.order);
+    result.when(
+      success: (success) {
+        emit(OrderUpdateSuccess());
+      },
+      failure: (message) {
+        emit(OrderUpdateFailure(message));
       },
     );
   }

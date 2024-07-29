@@ -96,12 +96,12 @@ class _OrderViewState extends State<OrderView>
         padding: const EdgeInsets.all(30).r,
         child: BlocListener<OrderBloc, OrderState>(
           listener: (context, state) {
-            if (state is OrderUpdateInProgress ||
+            if (state is OrderUpdateStatusInProgress ||
                 state is OrderDeleteInProgress) {
               AppDialog.showLoadingDialog(context);
             }
 
-            if (state is OrderUpdateSuccess) {
+            if (state is OrderUpdateStatusSuccess) {
               pop(context, 2);
               _fetchData(
                   status: _listStatus[_tabController.index],
@@ -119,7 +119,7 @@ class _OrderViewState extends State<OrderView>
               OverlaySnackbar.show(context, 'Xóa thành công');
             }
 
-            if (state is OrderUpdateFailure) {
+            if (state is OrderUpdateStatusFailure) {
               pop(context, 2);
               OverlaySnackbar.show(context, 'Có lỗi xảy ra',
                   type: OverlaySnackbarType.error);

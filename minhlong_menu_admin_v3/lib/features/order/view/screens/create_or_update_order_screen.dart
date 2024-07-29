@@ -75,8 +75,6 @@ class _CreateOrUpdateOrderViewState extends State<CreateOrUpdateOrderView> {
   final _listStatus = [
     StatusDto(key: 'new', value: 'Đơn mới'),
     StatusDto(key: 'processing', value: 'Đang làm'),
-    StatusDto(key: 'completed', value: 'Hoàn thành'),
-    StatusDto(key: 'cancel', value: 'Đơn đã huỷ'),
   ];
   late final _status = ValueNotifier(_listStatus.first);
   @override
@@ -86,6 +84,7 @@ class _CreateOrUpdateOrderViewState extends State<CreateOrUpdateOrderView> {
     context.read<DinnerTableBloc>().add(AllDinnerTableFetched());
     if (widget.order != null) {
       _order.value = widget.order!;
+      print('update order: ${_order.value}');
       _status.value = _listStatus
           .firstWhere((element) => element.key == _order.value.status);
     }
@@ -323,7 +322,8 @@ class _CreateOrUpdateOrderViewState extends State<CreateOrUpdateOrderView> {
           return;
         }
         var food = FoodOrderModel(
-          id: foodItem.id,
+          id: 0,
+          foodID: foodItem.id,
           image1: foodItem.image1,
           name: foodItem.name,
           price: foodItem.price ?? 0,
@@ -459,7 +459,7 @@ class _CreateOrUpdateOrderViewState extends State<CreateOrUpdateOrderView> {
                 onPressed: () {
                   _order.value = _order.value.copyWith(
                     foodOrders: _order.value.foodOrders
-                        .where((element) => element.id != food.id)
+                        .where((element) => element.foodID != food.foodID)
                         .toList(),
                   );
                   var newTotal = _order.value.foodOrders.fold(
@@ -486,21 +486,29 @@ class _CreateOrUpdateOrderViewState extends State<CreateOrUpdateOrderView> {
     return BlocListener<OrderBloc, OrderState>(
       listener: (context, state) {
         switch (state) {
-          case OrderCreateInProgress():
+          case OrderCreateInProgress() || OrderUpdateInProgress():
             AppDialog.showLoadingDialog(context);
             break;
-          case OrderCreateFailure():
+          case OrderCreateFailure() || OrderUpdateFailure():
             context.pop();
-            OverlaySnackbar.show(context, state.error,
-                type: OverlaySnackbarType.error);
+            if (state is OrderCreateFailure) {
+              OverlaySnackbar.show(context, state.error,
+                  type: OverlaySnackbarType.error);
+            }
+            if (state is OrderUpdateFailure) {
+              OverlaySnackbar.show(context, state.message,
+                  type: OverlaySnackbarType.error);
+            }
             _isUpdated = false;
             break;
-          case OrderCreateSuccess():
+          case OrderCreateSuccess() || OrderUpdateSuccess():
             pop(context, 1);
-            _order.value = _order.value.copyWith(
-              foodOrders: [],
-              totalPrice: 0,
-            );
+            if (state is OrderCreateSuccess) {
+              _order.value = _order.value.copyWith(
+                foodOrders: [],
+                totalPrice: 0,
+              );
+            }
             _isUpdated = true;
             OverlaySnackbar.show(context, 'Tạo đơn thành công');
             break;
@@ -612,8 +620,11 @@ class _CreateOrUpdateOrderViewState extends State<CreateOrUpdateOrderView> {
                                     cancelText: 'Thôi!',
                                     haveCancelButton: true,
                                     onPressedComfirm: () {
-                                      _handleCreateOrder(
-                                          _order.value, _table.value);
+                                      _typeScreen == ScreenType.create
+                                          ? _handleCreateOrder(
+                                              _order.value, _table.value)
+                                          : _handleUpdateOrder(
+                                              _order.value, _table.value);
                                     },
                                   );
                                 },
@@ -647,13 +658,22 @@ class _CreateOrUpdateOrderViewState extends State<CreateOrUpdateOrderView> {
 
   void _handleCreateOrder(OrderItem order, TableItem table) {
     context.pop();
-    order = order.copyWith(tableId: table.id, tableName: table.name);
+    order = order.copyWith(
+        tableId: table.id, tableName: table.name, status: _status.value.key);
     context.read<OrderBloc>().add(OrderCreated(order));
   }
 
+  void _handleUpdateOrder(OrderItem order, TableItem table) {
+    context.pop();
+    order = order.copyWith(
+        tableId: table.id, tableName: table.name, status: _status.value.key);
+    print('update order: $order');
+    context.read<OrderBloc>().add(OrderUpdated(order: order));
+  }
+
   void _handleUpdateQuantityFood(int quantity, FoodOrderModel food) {
-    int index =
-        _order.value.foodOrders.indexWhere((element) => element.id == food.id);
+    int index = _order.value.foodOrders
+        .indexWhere((element) => element.foodID == food.foodID);
 
     if (index != -1) {
       var existingFoodOrder = _order.value.foodOrders[index];

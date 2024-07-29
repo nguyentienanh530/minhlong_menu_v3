@@ -18,6 +18,16 @@ final class OrderFetchNewOrdersFailure extends OrderState {
   OrderFetchNewOrdersFailure(this.message);
 }
 
+//===== update order status =====
+final class OrderUpdateStatusInProgress extends OrderState {}
+
+final class OrderUpdateStatusSuccess extends OrderState {}
+
+final class OrderUpdateStatusFailure extends OrderState {
+  final String message;
+  OrderUpdateStatusFailure(this.message);
+}
+
 //===== update order =====
 final class OrderUpdateInProgress extends OrderState {}
 
