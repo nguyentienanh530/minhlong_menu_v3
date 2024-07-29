@@ -46,4 +46,15 @@ class OrderRepository {
       return Result.failure(errorMessage);
     }
   }
+
+  Future<Result<bool>> createOrder({required OrderItem order}) async {
+    try {
+      var result = await _orderApi.createOrder(order: order);
+      return Result.success(result);
+    } on DioException catch (e) {
+      Logger().e('create order error: $e');
+      var errorMessage = DioExceptions.fromDioError(e).toString();
+      return Result.failure(errorMessage);
+    }
+  }
 }

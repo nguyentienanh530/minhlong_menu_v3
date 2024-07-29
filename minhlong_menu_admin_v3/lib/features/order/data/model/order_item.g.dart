@@ -17,7 +17,7 @@ _$OrderItemImpl _$$OrderItemImplFromJson(Map<String, dynamic> json) =>
       createdAt: json['created_at'] as String?,
       updatedAt: json['updated_at'] as String?,
       deletedAt: json['deleted_at'] as String?,
-      foodOrders: (json['foods'] as List<dynamic>?)
+      foodOrders: (json['order_detail'] as List<dynamic>?)
               ?.map((e) => FoodOrderModel.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const <FoodOrderModel>[],
@@ -34,5 +34,5 @@ Map<String, dynamic> _$$OrderItemImplToJson(_$OrderItemImpl instance) =>
       'created_at': instance.createdAt,
       'updated_at': instance.updatedAt,
       'deleted_at': instance.deletedAt,
-      'foods': instance.foodOrders,
+      'order_detail': instance.foodOrders,
     };

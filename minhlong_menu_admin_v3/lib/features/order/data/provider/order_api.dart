@@ -28,4 +28,9 @@ class OrderApi {
     final response = await dio.delete('${ApiConfig.orders}/$id');
     return response.data['data'] ?? false;
   }
+
+  Future<bool> createOrder({required OrderItem order}) async {
+    final response = await dio.post(ApiConfig.orders, data: order.toJson());
+    return response.data['data'];
+  }
 }

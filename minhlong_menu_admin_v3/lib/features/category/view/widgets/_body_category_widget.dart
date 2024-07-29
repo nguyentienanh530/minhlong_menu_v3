@@ -229,8 +229,7 @@ extension _FoodBodyWidget on _CategoryViewState {
               child: CommonIconButton(
                 onTap: () {
                   _showCreateOrUpdateCategoryDialog(
-                      type: CreateOrUpdateCategoryType.update,
-                      categoryItem: categoryItem);
+                      type: ScreenType.update, categoryItem: categoryItem);
                 },
                 icon: Icons.edit,
                 color: AppColors.sun,
@@ -273,8 +272,7 @@ extension _FoodBodyWidget on _CategoryViewState {
   }
 
   Future<void> _showCreateOrUpdateCategoryDialog(
-      {required CreateOrUpdateCategoryType type,
-      CategoryItem? categoryItem}) async {
+      {required ScreenType type, CategoryItem? categoryItem}) async {
     await showDialog(
         context: context,
         builder: (context) => BlocProvider(

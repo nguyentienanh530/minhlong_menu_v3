@@ -12,11 +12,12 @@ import 'package:minhlong_menu_admin_v3/features/home/view/screens/home_screen.da
 
 import 'package:minhlong_menu_admin_v3/features/order/data/model/order_item.dart';
 import 'package:minhlong_menu_admin_v3/features/order/view/screens/create_or_update_order_screen.dart';
-import 'package:minhlong_menu_admin_v3/features/order/view/screens/order_screen.dart';
+// import 'package:minhlong_menu_admin_v3/features/order/view/screens/order_screen.dart';
 import 'package:minhlong_menu_admin_v3/features/print/view/screens/print_screen.dart';
 import 'package:minhlong_menu_admin_v3/features/user/data/model/user_model.dart';
 import 'package:minhlong_menu_admin_v3/features/user/view/widgets/change_password.dart';
 
+import '../core/app_enum.dart';
 import '../features/user/view/screens/edit_profile_screen.dart';
 
 class AppRoute {
@@ -104,16 +105,16 @@ class AppRoute {
           );
         },
       ),
-      GoRoute(
-        path: orders,
-        pageBuilder: (context, state) {
-          return buildPageWithDefaultTransition(
-            context: context,
-            state: state,
-            child: const OrderScreen(),
-          );
-        },
-      ),
+      // GoRoute(
+      //   path: orders,
+      //   pageBuilder: (context, state) {
+      //     return buildPageWithDefaultTransition(
+      //       context: context,
+      //       state: state,
+      //       child: const OrderScreen(),
+      //     );
+      //   },
+      // ),
       GoRoute(
         path: dinnerTables,
         pageBuilder: (context, state) {
@@ -179,10 +180,18 @@ class AppRoute {
       GoRoute(
         path: createOrUpdateOrder,
         pageBuilder: (context, state) {
+          var extra = state.extra as Map<String, dynamic>?;
+
+          OrderItem? order = extra?['order'] as OrderItem?;
+          ScreenType type = extra?['type'] as ScreenType;
+
           return buildPageWithDefaultTransition(
             context: context,
             state: state,
-            child: const CreateOrUpdateOrderScreen(),
+            child: CreateOrUpdateOrderScreen(
+              order: order,
+              type: type,
+            ),
           );
         },
       ),

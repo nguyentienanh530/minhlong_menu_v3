@@ -13,6 +13,7 @@ import '../../../../common/widget/loading.dart';
 import '../../../../common/widget/number_pagination.dart';
 import '../../../../core/app_colors.dart';
 import '../../../../core/app_const.dart';
+import '../../../../core/app_enum.dart';
 import '../../../../core/app_style.dart';
 import '../../../order/cubit/pagination_cubit.dart';
 import '../../bloc/dinner_table_bloc.dart';

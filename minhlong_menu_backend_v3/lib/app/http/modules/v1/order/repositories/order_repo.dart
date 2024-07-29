@@ -62,7 +62,10 @@ class OrderRepo {
           ])
           .join('order_details', 'orders.id', '=', 'order_details.order_id')
           .join('foods', 'foods.id', '=', 'order_details.food_id')
-          .where('status', '=', 'new')
+
+          // .where ('status', '=', 'new')
+          // .where('status', '=', 'processing')
+          .whereRaw('orders.status IN ("new", "processing")')
           .where('orders.user_id', '=', userID)
           .get();
     } else {
@@ -91,7 +94,8 @@ class OrderRepo {
           .join('foods', 'foods.id', '=', 'order_details.food_id')
           .where('table_id', '=', tableID)
           .where('orders.user_id', '=', userID)
-          .where('status', '=', 'new')
+          // .where('status', '=', 'new')
+          .whereRaw('orders.status IN ("new", "processing")')
           .get();
     }
   }

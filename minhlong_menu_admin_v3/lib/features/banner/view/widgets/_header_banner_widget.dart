@@ -74,7 +74,7 @@ extension _HeaderCategoryWidget on _BannerViewState {
   _buildButtonAdd() {
     return InkWell(
       onTap: () async {
-        _showCreateOrUpdateBannerDialog(type: CreateOrUpdateBannerType.create);
+        _showCreateOrUpdateBannerDialog(type: ScreenType.create);
       },
       child: Container(
         height: 35,

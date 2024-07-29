@@ -43,7 +43,7 @@ class HomeViewState extends State<HomeView>
 
   final SideMenuController _sideMenuCtrl = SideMenuController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
+  final _indexPage = ValueNotifier(0);
   final _listIconMenu = [
     {
       'title': 'Dashboard',
@@ -94,9 +94,9 @@ class HomeViewState extends State<HomeView>
 
     _title.value = _listIconMenu[0]['title'].toString();
     _sideMenuCtrl.addListener((index) {
-      _pageCtrl.animateToPage(index,
-          duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
-
+      // _pageCtrl.animateToPage(index,
+      //     duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+      _indexPage.value = index;
       _title.value = _listIconMenu[index]['title'].toString();
     });
   }
@@ -172,34 +172,53 @@ class HomeViewState extends State<HomeView>
                   //   ),
                   // ),
 
+                  // Expanded(
+                  //   child: PageView.builder(
+                  //     itemCount: <Widget>[
+                  //       DashboardScreen(userModel: user),
+                  //       const OrderScreen(),
+                  //       const OrderHistoryScreen(),
+                  //       const FoodScreen(),
+                  //       const DinnerTableScreen(),
+                  //       const CategoryScreen(),
+                  //       const BannerScreen(),
+                  //       const SettingScreen(),
+                  //     ].length,
+                  //     physics: const NeverScrollableScrollPhysics(),
+                  //     itemBuilder: (context, index) {
+                  //       return <Widget>[
+                  //         DashboardScreen(userModel: user),
+                  //         const OrderScreen(),
+                  //         const OrderHistoryScreen(),
+                  //         const FoodScreen(),
+                  //         const DinnerTableScreen(),
+                  //         const CategoryScreen(),
+                  //         const BannerScreen(),
+                  //         const SettingScreen(),
+                  //       ][index];
+                  //     },
+                  //     controller: _pageCtrl,
+                  //   ),
+                  // ),
+
                   Expanded(
-                    child: PageView.builder(
-                      itemCount: <Widget>[
-                        DashboardScreen(userModel: user),
-                        const OrderScreen(),
-                        const OrderHistoryScreen(),
-                        const FoodScreen(),
-                        const DinnerTableScreen(),
-                        const CategoryScreen(),
-                        const BannerScreen(),
-                        const SettingScreen(),
-                      ].length,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        return <Widget>[
-                          DashboardScreen(userModel: user),
-                          const OrderScreen(),
-                          const OrderHistoryScreen(),
-                          const FoodScreen(),
-                          const DinnerTableScreen(),
-                          const CategoryScreen(),
-                          const BannerScreen(),
-                          const SettingScreen(),
-                        ][index];
-                      },
-                      controller: _pageCtrl,
-                    ),
-                  ),
+                      child: ListenableBuilder(
+                          listenable: _indexPage,
+                          builder: (context, _) {
+                            return switch (_indexPage.value) {
+                              0 => DashboardScreen(userModel: user),
+                              1 => OrderScreen(
+                                  user: user,
+                                ),
+                              2 => const OrderHistoryScreen(),
+                              3 => const FoodScreen(),
+                              4 => const DinnerTableScreen(),
+                              5 => const CategoryScreen(),
+                              6 => const BannerScreen(),
+                              7 => const SettingScreen(),
+                              _ => DashboardScreen(userModel: user)
+                            };
+                          })),
                 ],
               ),
             ),

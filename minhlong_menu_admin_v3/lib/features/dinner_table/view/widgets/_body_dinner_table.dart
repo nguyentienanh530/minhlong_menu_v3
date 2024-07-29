@@ -234,8 +234,7 @@ extension _FoodBodyWidget on _DinnerTableViewState {
               child: CommonIconButton(
                 onTap: () {
                   _showCreateOrUpdateDinnerTableDialog(
-                      mode: DinnerTableDialogAction.update,
-                      tableItem: tableItem);
+                      mode: ScreenType.update, tableItem: tableItem);
                 },
                 icon: Icons.edit,
                 color: AppColors.sun,

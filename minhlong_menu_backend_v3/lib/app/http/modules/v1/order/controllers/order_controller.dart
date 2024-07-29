@@ -33,8 +33,11 @@ class OrderController extends Controller {
     int? userID = request.headers[ConstRes.userID] != null
         ? int.tryParse(request.headers[ConstRes.userID])
         : -1;
+    print('userID: $userID');
+    print('request: ${request.all()}');
     try {
       var tableID = request.input('table_id');
+      var totalPrice = request.input('total_price');
       var listFood = request.input('order_detail') as List;
 
       if (userID == null || userID == -1) {
@@ -47,26 +50,27 @@ class OrderController extends Controller {
         'status': 'new',
         'table_id': tableID,
         'user_id': userID,
+        'total_price': totalPrice
       };
       var orderID = await orderRepo.createOrder(order);
+      print('orderID: $orderID');
 
       if (orderID != 0) {
-        var totalPrice = 0.0;
         for (var food in listFood) {
-          var foodID = food['food_id'];
+          var foodID = food['id'];
           var quantity = food['quantity'];
-          var foodDB = await Foods().query().where('id', '=', foodID).first();
-          var isDiscount = foodDB!['is_discount'];
-          var price = foodDB['price'];
-          var discount = foodDB['discount'];
-          var totalAmount = 0.0;
-          if (isDiscount != null && isDiscount == true) {
-            double discountAmount = (price * discount.toDouble()) / 100;
-            double discountedPrice = price - discountAmount;
-            totalAmount = discountedPrice * quantity;
-          } else {
-            totalAmount = price * quantity;
-          }
+          var foodDB = await foodRepo.find(id: foodID);
+          // var isDiscount = foodDB!['is_discount'];
+          var price = foodDB!['price'];
+          // var discount = foodDB['discount'];
+          var totalAmount = food['total_amount'];
+          // if (isDiscount != null && isDiscount == true) {
+          //   double discountAmount = (price * discount.toDouble()) / 100;
+          //   double discountedPrice = price - discountAmount;
+          //   totalAmount = discountedPrice * quantity;
+          // } else {
+          //   totalAmount = price * quantity;
+          // }
 
           var orderDetailsData = {
             'order_id': orderID,
@@ -86,7 +90,7 @@ class OrderController extends Controller {
         }
 
         await tableRepo.update(id: tableID, tableDataUpdate: {'is_use': 1});
-        await orderRepo.updateOrder(orderID, {'total_price': totalPrice});
+        // await orderRepo.updateOrder(orderID, {'total_price': totalPrice});
       } else {
         return AppResponse().error(
           statusCode: HttpStatus.badRequest,
@@ -141,7 +145,7 @@ class OrderController extends Controller {
           'payed_at': ordersList.first['payed_at'],
           'created_at': ordersList.first['created_at'],
           'updated_at': ordersList.first['updated_at'],
-          'foods': ordersList.map((order) {
+          'order_detail': ordersList.map((order) {
             return {
               'name': order['name'],
               'quantity': order['quantity'],
@@ -197,7 +201,7 @@ class OrderController extends Controller {
           'table_id': ordersList.first['table_id'],
           'created_at': ordersList.first['created_at'],
           'updated_at': ordersList.first['updated_at'],
-          'foods': ordersList.map((order) {
+          'order_detail': ordersList.map((order) {
             return {
               'id': order['food_id'],
               'name': order['name'],

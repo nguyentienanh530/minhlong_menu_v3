@@ -25,3 +25,8 @@ final class OrderDeleted extends OrderEvent {
   final int id;
   OrderDeleted({required this.id});
 }
+
+final class OrderCreated extends OrderEvent {
+  final OrderItem order;
+  OrderCreated(this.order);
+}

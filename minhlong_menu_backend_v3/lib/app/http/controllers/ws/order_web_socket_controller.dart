@@ -36,7 +36,7 @@ class OrderWebSocketController extends Controller {
             'payed_at': ordersList.first['payed_at'],
             'created_at': ordersList.first['created_at'],
             'updated_at': ordersList.first['updated_at'],
-            'foods': ordersList.map((order) {
+            'order_detail': ordersList.map((order) {
               return {
                 'name': order['name'],
                 'quantity': order['quantity'],

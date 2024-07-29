@@ -120,7 +120,7 @@ extension _FoodHeaderWidget on _FoodViewState {
   _buildButtonAddFood() {
     return InkWell(
       onTap: () async {
-        _showCreateOrUpdateDialog(mode: FoodScreenMode.create);
+        _showCreateOrUpdateDialog(mode: ScreenType.create);
       },
       child: Container(
         height: 35,
@@ -215,7 +215,7 @@ extension _FoodHeaderWidget on _FoodViewState {
         _searchController.clear();
         // _focusSearch.unfocus();
         await _showCreateOrUpdateDialog(
-            mode: FoodScreenMode.update, foodItem: foodItem);
+            mode: ScreenType.update, foodItem: foodItem);
       },
       title: Text(
         foodItem.name,

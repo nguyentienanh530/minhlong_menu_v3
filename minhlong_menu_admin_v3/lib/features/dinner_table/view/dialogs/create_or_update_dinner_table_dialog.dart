@@ -11,17 +11,14 @@ import 'package:minhlong_menu_admin_v3/features/dinner_table/data/model/table_it
 
 import '../../../../common/dialog/app_dialog.dart';
 import '../../../../common/snackbar/overlay_snackbar.dart';
+import '../../../../core/app_enum.dart';
 import '../../../../core/app_style.dart';
 import '../../../../core/extensions.dart';
-
-enum DinnerTableDialogAction { create, update }
-
-enum DinnerTableStatus { active, inactive }
 
 class CreateOrUpdateDinnerTableDialog extends StatefulWidget {
   const CreateOrUpdateDinnerTableDialog(
       {super.key, required this.action, this.tableItem});
-  final DinnerTableDialogAction action;
+  final ScreenType action;
   final TableItem? tableItem;
 
   @override
@@ -31,7 +28,7 @@ class CreateOrUpdateDinnerTableDialog extends StatefulWidget {
 
 class _CreateOrUpdateDinnerTableDialogState
     extends State<CreateOrUpdateDinnerTableDialog> {
-  late DinnerTableDialogAction _mode;
+  late ScreenType _mode;
   final _dinnerTableNameCtrl = TextEditingController();
   final _dinnertableSeatCtrl = TextEditingController();
   final _dinnerTableStatus =
@@ -42,7 +39,7 @@ class _CreateOrUpdateDinnerTableDialogState
   void initState() {
     super.initState();
     _mode = widget.action;
-    if (_mode == DinnerTableDialogAction.update) {
+    if (_mode == ScreenType.update) {
       _tableItem = widget.tableItem ?? TableItem();
       _dinnerTableNameCtrl.text = _tableItem.name;
       _dinnertableSeatCtrl.text = _tableItem.seats.toString();
@@ -95,9 +92,7 @@ class _CreateOrUpdateDinnerTableDialogState
                 child: Column(
                   children: [
                     Text(
-                      _mode == DinnerTableDialogAction.create
-                          ? 'THÊM BÀN MỚI'
-                          : 'SỬA BÀN',
+                      _mode == ScreenType.create ? 'THÊM BÀN MỚI' : 'SỬA BÀN',
                       style: kBodyStyle.copyWith(
                           fontWeight: FontWeight.w700,
                           fontSize: 40.sp,
@@ -219,7 +214,7 @@ class _CreateOrUpdateDinnerTableDialogState
             borderRadius: BorderRadius.circular(defaultBorderRadius),
             color: AppColors.themeColor),
         child: Text(
-          _mode == DinnerTableDialogAction.create ? 'Thêm mới' : 'Sửa',
+          _mode == ScreenType.create ? 'Thêm mới' : 'Sửa',
           style: kBodyWhiteStyle.copyWith(
             fontWeight: FontWeight.w700,
           ),
@@ -230,7 +225,7 @@ class _CreateOrUpdateDinnerTableDialogState
 
   void _handleCreateOrUpdateDinnerTable() {
     if (AppKeys.createOrUpdateDinnerTableKey.currentState!.validate()) {
-      if (_mode == DinnerTableDialogAction.create) {
+      if (_mode == ScreenType.create) {
         var dinnerTable = TableItem(
           name: _dinnerTableNameCtrl.text,
           seats: int.parse(_dinnertableSeatCtrl.text),

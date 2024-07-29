@@ -114,6 +114,7 @@ class Version1 implements Route {
         Router.get('foods/category/{id}', foodCtrl.getFoodsOnCategory);
         Router.get('foods', foodCtrl.index);
         Router.get("tables/all", tableCtrl.getAllTables);
+        Router.post('orders', orderCtrl.create);
       },
       prefix: '/client',
     );

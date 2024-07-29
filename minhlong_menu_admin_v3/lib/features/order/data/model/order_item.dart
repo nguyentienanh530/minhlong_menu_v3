@@ -17,7 +17,7 @@ class OrderItem with _$OrderItem {
     @JsonKey(name: 'updated_at') String? updatedAt,
     @JsonKey(name: 'deleted_at') String? deletedAt,
     @Default(<FoodOrderModel>[])
-    @JsonKey(name: 'foods')
+    @JsonKey(name: 'order_detail')
     List<FoodOrderModel> foodOrders,
   }) = _OrderItem;
 

@@ -74,8 +74,7 @@ extension _HeaderCategoryWidget on _CategoryViewState {
   _buildButtonAddFood() {
     return InkWell(
       onTap: () async {
-        _showCreateOrUpdateCategoryDialog(
-            type: CreateOrUpdateCategoryType.create);
+        _showCreateOrUpdateCategoryDialog(type: ScreenType.create);
       },
       child: Container(
         height: 35,

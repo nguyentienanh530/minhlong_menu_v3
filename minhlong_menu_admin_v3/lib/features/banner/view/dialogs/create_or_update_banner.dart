@@ -15,13 +15,9 @@ import '../../../../common/dialog/app_dialog.dart';
 import '../../../../common/snackbar/overlay_snackbar.dart';
 import '../../../../core/app_colors.dart';
 import '../../../../core/app_const.dart';
+import '../../../../core/app_enum.dart';
 import '../../../../core/app_style.dart';
 import '../../../../core/extensions.dart';
-
-enum CreateOrUpdateBannerType {
-  create,
-  update,
-}
 
 class CreateOrUpdateBanner extends StatefulWidget {
   const CreateOrUpdateBanner({
@@ -30,7 +26,7 @@ class CreateOrUpdateBanner extends StatefulWidget {
     this.bannItem,
   });
 
-  final CreateOrUpdateBannerType type;
+  final ScreenType type;
   final BannerItem? bannItem;
 
   @override
@@ -38,7 +34,7 @@ class CreateOrUpdateBanner extends StatefulWidget {
 }
 
 class _CreateOrUpdateBannerState extends State<CreateOrUpdateBanner> {
-  late CreateOrUpdateBannerType _type;
+  late ScreenType _type;
 
   final _imageFile = ValueNotifier(File(''));
   String _image = '';
@@ -51,7 +47,7 @@ class _CreateOrUpdateBannerState extends State<CreateOrUpdateBanner> {
     super.initState();
     _type = widget.type;
 
-    if (_type == CreateOrUpdateBannerType.update) {
+    if (_type == ScreenType.update) {
       _bannItem = widget.bannItem!;
       _image = _bannItem.image;
       _isShowBanner.value = _bannItem.show ?? false;
@@ -102,9 +98,7 @@ class _CreateOrUpdateBannerState extends State<CreateOrUpdateBanner> {
             child: Column(
               children: [
                 Text(
-                  _type == CreateOrUpdateBannerType.create
-                      ? 'Thêm Banner'
-                      : 'Sửa Banner',
+                  _type == ScreenType.create ? 'Thêm Banner' : 'Sửa Banner',
                   style: kBodyStyle.copyWith(
                     color: AppColors.secondTextColor,
                     fontWeight: FontWeight.w700,
@@ -234,7 +228,7 @@ class _CreateOrUpdateBannerState extends State<CreateOrUpdateBanner> {
           color: AppColors.themeColor,
         ),
         child: Text(
-          _type == CreateOrUpdateBannerType.create ? 'Thêm' : 'Cập nhật',
+          _type == ScreenType.create ? 'Thêm' : 'Cập nhật',
           style: kBodyStyle.copyWith(color: AppColors.white),
         ),
       ),
@@ -251,7 +245,7 @@ class _CreateOrUpdateBannerState extends State<CreateOrUpdateBanner> {
                 loading: _imageUploadProgress) ??
             '';
       }
-      if (_type == CreateOrUpdateBannerType.create) {
+      if (_type == ScreenType.create) {
         var banner = BannerItem(
           image: _image,
           show: _isShowBanner.value,

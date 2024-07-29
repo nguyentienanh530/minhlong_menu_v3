@@ -1,46 +1,28 @@
-import 'dart:convert';
-import 'package:badges/badges.dart' as badges;
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:go_router/go_router.dart';
-import 'package:minhlong_menu_admin_v3/common/dialog/app_dialog.dart';
 import 'package:minhlong_menu_admin_v3/common/widget/empty_widget.dart';
-import 'package:minhlong_menu_admin_v3/common/widget/error_build_image.dart';
 import 'package:minhlong_menu_admin_v3/common/widget/error_widget.dart';
 import 'package:minhlong_menu_admin_v3/common/widget/loading.dart';
-import 'package:minhlong_menu_admin_v3/core/const_res.dart';
 import 'package:minhlong_menu_admin_v3/core/extensions.dart';
 import 'package:minhlong_menu_admin_v3/features/dashboard/bloc/best_selling_food/best_selling_food_bloc.dart';
 import 'package:minhlong_menu_admin_v3/features/dashboard/bloc/data_chart/data_chart_bloc.dart';
 import 'package:minhlong_menu_admin_v3/features/dashboard/bloc/info/info_bloc.dart';
 import 'package:minhlong_menu_admin_v3/features/dashboard/data/model/info_model.dart';
 import 'package:minhlong_menu_admin_v3/features/dashboard/data/respositories/info_respository.dart';
-import 'package:minhlong_menu_admin_v3/features/dinner_table/data/model/table_item.dart';
 import 'package:minhlong_menu_admin_v3/features/home/cubit/table_index_selected_cubit.dart';
 import 'package:minhlong_menu_admin_v3/features/order/data/repositories/order_repository.dart';
 import 'package:minhlong_menu_admin_v3/features/user/data/model/user_model.dart';
-import 'package:web_socket_channel/io.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
-import '../../../../common/snackbar/overlay_snackbar.dart';
-import '../../../../common/widget/common_icon_button.dart';
-import '../../../../core/api_config.dart';
 import '../../../../core/app_colors.dart';
 import '../../../../core/app_const.dart';
 import '../../../../core/app_style.dart';
 import '../../../../core/utils.dart';
 import '../../../dinner_table/cubit/dinner_table_cubit.dart';
 import '../../../order/bloc/order_bloc.dart';
-import '../../../order/data/model/order_item.dart';
 import '../../data/model/data_chart.dart';
 import '../widgets/_column_revenue_chart.dart';
 import '../widgets/chart_revenue.dart';
-
 part '../widgets/_info_widget.dart';
-part '../widgets/_orders_on_table_widget.dart';
-part '../widgets/_table_widget.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key, required this.userModel});
@@ -92,43 +74,25 @@ class DashboardView extends StatefulWidget {
 
 class _DashboardViewState extends State<DashboardView>
     with AutomaticKeepAliveClientMixin {
-  late final WebSocketChannel _tableChannel;
-  late final WebSocketChannel _orderChannel;
-  final _indexSelectedTable = ValueNotifier(0);
-  var _isFirstSendSocket = false;
-  late UserModel _user;
   final _listDateDropdown = ['Tuần này', 'Tháng này', 'Năm nay'];
   final _valueDropdown = ValueNotifier('');
 
   @override
   void initState() {
     super.initState();
-    _tableChannel = IOWebSocketChannel.connect(
-        Uri.parse(ApiConfig.tablesSocketUrl),
-        headers: {
-          ConstRes.userID: '${widget.userModel.id}',
-        })
-      ..ready;
-    _orderChannel = IOWebSocketChannel.connect(
-        Uri.parse(ApiConfig.ordersSocketUrl),
-        headers: {
-          ConstRes.userID: '${widget.userModel.id}',
-        })
-      ..ready;
+
     context.read<InfoBloc>().add(InfoFetchStarted());
     context.read<BestSellingFoodBloc>().add(BestSellingFoodFetched());
     context.read<DataChartBloc>().add(DataChartFetched('week'));
     _valueDropdown.value = _listDateDropdown.first;
   }
 
-  void _getDataDashboard() {
+  void _onRefreshDataDashboard() {
     context.read<InfoBloc>().add(InfoFetchStarted());
     context.read<BestSellingFoodBloc>().add(BestSellingFoodFetched());
     context
         .read<DataChartBloc>()
         .add(DataChartFetched(_handleTypeChart(_valueDropdown.value)));
-    Ultils.joinRoom(_tableChannel, 'tables-${_user.id}');
-    Ultils.joinRoom(_orderChannel, 'orders-${_user.id}');
   }
 
   String _handleTypeChart(String type) {
@@ -144,125 +108,59 @@ class _DashboardViewState extends State<DashboardView>
   @override
   void dispose() {
     super.dispose();
-    disconnect();
-    _indexSelectedTable.dispose();
-    _valueDropdown.dispose();
-  }
 
-  void disconnect() {
-    if (_tableChannel.closeCode != null || _tableChannel.closeCode != null) {
-      debugPrint('Not connected');
-      return;
-    }
-    Ultils.leaveRoom(_tableChannel, 'tables-${_user.id}');
-    Ultils.leaveRoom(_orderChannel, 'orders-${_user.id}');
-    _tableChannel.sink.close();
-    _orderChannel.sink.close();
+    _valueDropdown.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    _user = widget.userModel;
-    final tableIndexSelectedState =
-        context.watch<TableIndexSelectedCubit>().state;
 
-    if (!_isFirstSendSocket) {
-      Ultils.joinRoom(_orderChannel, 'orders-${_user.id}');
-      Ultils.joinRoom(_tableChannel, 'tables-${_user.id}');
-
-      Ultils.sendSocket(_tableChannel, 'tables', _user.id);
-      Ultils.sendSocket(_orderChannel, 'orders',
-          {'user_id': _user.id, 'table_id': tableIndexSelectedState});
-
-      _isFirstSendSocket = true;
-    }
-    return BlocListener<OrderBloc, OrderState>(
-      listener: (context, state) {
-        if (state is OrderUpdateInProgress) {
-          AppDialog.showLoadingDialog(context);
-        }
-        if (state is OrderUpdateSuccess) {
-          pop(context, 1);
-          OverlaySnackbar.show(context, 'Cập nhật thành công');
-          Ultils.sendSocket(_orderChannel, 'orders',
-              {'user_id': _user.id, 'table_id': tableIndexSelectedState});
-          Ultils.sendSocket(_tableChannel, 'tables', _user.id);
-        }
-
-        if (state is OrderUpdateFailure) {
-          pop(context, 1);
-          OverlaySnackbar.show(context, 'Có lỗi xảy ra',
-              type: OverlaySnackbarType.error);
-        }
-      },
-      child: Padding(
-        padding: const EdgeInsets.all(30).r,
-        child: RefreshIndicator(
-          onRefresh: () async {
-            _getDataDashboard();
-          },
-          child: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 180,
-                  child: _buildInfoWidget(),
-                ),
-                15.verticalSpace,
-                context.isDesktop
-                    ? SizedBox(
-                        height: 0.5 * context.sizeDevice.height,
-                        width: double.infinity,
-                        child: Row(
-                          children: [
-                            Expanded(
-                              flex: 3,
-                              child: _lineChartRevenueWidget(),
-                            ),
-                            15.horizontalSpace,
-                            Expanded(
-                              child: _chartBestSellingFoodWidget(),
-                            )
-                          ],
-                        ),
-                      )
-                    : Column(
+    return Padding(
+      padding: const EdgeInsets.all(30).r,
+      child: RefreshIndicator(
+        onRefresh: () async {
+          _onRefreshDataDashboard();
+        },
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: Column(
+            children: [
+              SizedBox(
+                height: 180,
+                child: _buildInfoWidget(),
+              ),
+              15.verticalSpace,
+              context.isDesktop
+                  ? SizedBox(
+                      height: 0.5 * context.sizeDevice.height,
+                      width: double.infinity,
+                      child: Row(
                         children: [
-                          SizedBox(
-                              height: 0.5 * context.sizeDevice.height,
-                              child: _lineChartRevenueWidget()),
+                          Expanded(
+                            flex: 3,
+                            child: _lineChartRevenueWidget(),
+                          ),
                           15.horizontalSpace,
-                          SizedBox(
-                              height: 0.5 * context.sizeDevice.height,
-                              child: _chartBestSellingFoodWidget())
+                          Expanded(
+                            child: _chartBestSellingFoodWidget(),
+                          )
                         ],
                       ),
-                15.verticalSpace,
-                Card(
-                  child: Container(
-                    width: double.infinity,
-                    constraints: const BoxConstraints(minHeight: 500),
-                    padding: const EdgeInsets.all(defaultPadding).r,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    )
+                  : Column(
                       children: [
-                        Text(
-                          'Đơn hàng mới',
-                          style: kHeadingStyle.copyWith(
-                              fontWeight: FontWeight.w700),
-                        ),
-                        const SizedBox(height: defaultPadding),
-                        _buildTablesWidget(index: tableIndexSelectedState),
-                        const SizedBox(height: defaultPadding),
-                        _buildOrdersOnTable(),
+                        SizedBox(
+                            height: 0.5 * context.sizeDevice.height,
+                            child: _lineChartRevenueWidget()),
+                        15.horizontalSpace,
+                        SizedBox(
+                            height: 0.5 * context.sizeDevice.height,
+                            child: _chartBestSellingFoodWidget())
                       ],
                     ),
-                  ),
-                ),
-              ],
-            ),
+              15.verticalSpace,
+            ],
           ),
         ),
       ),

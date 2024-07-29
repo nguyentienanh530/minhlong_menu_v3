@@ -37,3 +37,14 @@ final class OrderDeleteFailure extends OrderState {
   final String message;
   OrderDeleteFailure(this.message);
 }
+
+// ===== create order =====
+final class OrderCreateSuccess extends OrderState {}
+
+final class OrderCreateInProgress extends OrderState {}
+
+final class OrderCreateFailure extends OrderState {
+  final String error;
+
+  OrderCreateFailure({required this.error});
+}

@@ -15,14 +15,10 @@ import '../../../../common/dialog/app_dialog.dart';
 import '../../../../common/snackbar/overlay_snackbar.dart';
 import '../../../../core/app_colors.dart';
 import '../../../../core/app_const.dart';
+import '../../../../core/app_enum.dart';
 import '../../../../core/app_style.dart';
 import '../../../../core/extensions.dart';
 import '../../bloc/category_bloc.dart';
-
-enum CreateOrUpdateCategoryType {
-  create,
-  update,
-}
 
 class CreateOrUpdateCategory extends StatefulWidget {
   const CreateOrUpdateCategory({
@@ -31,7 +27,7 @@ class CreateOrUpdateCategory extends StatefulWidget {
     this.categoryItem,
   });
 
-  final CreateOrUpdateCategoryType type;
+  final ScreenType type;
   final CategoryItem? categoryItem;
 
   @override
@@ -39,7 +35,7 @@ class CreateOrUpdateCategory extends StatefulWidget {
 }
 
 class _CreateOrUpdateCategoryState extends State<CreateOrUpdateCategory> {
-  late CreateOrUpdateCategoryType _type;
+  late ScreenType _type;
   final _nameCategoryController = TextEditingController();
   final _serialCategoryController = TextEditingController();
   final _imageFile = ValueNotifier(File(''));
@@ -52,7 +48,7 @@ class _CreateOrUpdateCategoryState extends State<CreateOrUpdateCategory> {
     super.initState();
     _type = widget.type;
 
-    if (_type == CreateOrUpdateCategoryType.update) {
+    if (_type == ScreenType.update) {
       _categoryItem = widget.categoryItem!;
       _nameCategoryController.text = _categoryItem.name;
       _serialCategoryController.text = _categoryItem.serial.toString();
@@ -106,9 +102,7 @@ class _CreateOrUpdateCategoryState extends State<CreateOrUpdateCategory> {
             child: Column(
               children: [
                 Text(
-                  _type == CreateOrUpdateCategoryType.create
-                      ? 'Thêm danh mục'
-                      : 'Sửa danh mục',
+                  _type == ScreenType.create ? 'Thêm danh mục' : 'Sửa danh mục',
                   style: kBodyStyle.copyWith(
                     color: AppColors.secondTextColor,
                     fontWeight: FontWeight.w700,
@@ -236,7 +230,7 @@ class _CreateOrUpdateCategoryState extends State<CreateOrUpdateCategory> {
           color: AppColors.themeColor,
         ),
         child: Text(
-          _type == CreateOrUpdateCategoryType.create ? 'Thêm' : 'Cập nhật',
+          _type == ScreenType.create ? 'Thêm' : 'Cập nhật',
           style: kBodyStyle.copyWith(color: AppColors.white),
         ),
       ),
@@ -253,7 +247,7 @@ class _CreateOrUpdateCategoryState extends State<CreateOrUpdateCategory> {
                 loading: _imageUploadProgress) ??
             '';
       }
-      if (_type == CreateOrUpdateCategoryType.create) {
+      if (_type == ScreenType.create) {
         var category = CategoryItem(
           name: _nameCategoryController.text,
           serial: int.parse(_serialCategoryController.text),

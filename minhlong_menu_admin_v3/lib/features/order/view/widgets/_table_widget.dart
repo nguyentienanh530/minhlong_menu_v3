@@ -1,6 +1,6 @@
-part of '../screens/dashboard_screen.dart';
+part of '../screens/order_screen.dart';
 
-extension _TableWidget on _DashboardViewState {
+extension _TableWidget on _OrderViewState {
   Widget _buildTablesWidget({required int index}) {
     return StreamBuilder(
       stream: _tableChannel.stream,

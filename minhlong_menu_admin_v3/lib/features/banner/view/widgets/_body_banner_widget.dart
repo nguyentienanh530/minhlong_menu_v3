@@ -252,8 +252,7 @@ extension _BodyBannerWidget on _BannerViewState {
               child: CommonIconButton(
                 onTap: () {
                   _showCreateOrUpdateBannerDialog(
-                      type: CreateOrUpdateBannerType.update,
-                      bannerItem: bannerItem);
+                      type: ScreenType.update, bannerItem: bannerItem);
                 },
                 icon: Icons.edit,
                 color: AppColors.sun,
@@ -300,7 +299,7 @@ extension _BodyBannerWidget on _BannerViewState {
   }
 
   Future<void> _showCreateOrUpdateBannerDialog(
-      {required CreateOrUpdateBannerType type, BannerItem? bannerItem}) async {
+      {required ScreenType type, BannerItem? bannerItem}) async {
     await showDialog(
         context: context,
         builder: (context) => BlocProvider(

@@ -19,20 +19,17 @@ import '../../../../common/widget/loading.dart';
 import '../../../../core/api_config.dart';
 import '../../../../core/app_colors.dart';
 import '../../../../core/app_const.dart';
+import '../../../../core/app_enum.dart';
 import '../../../../core/app_style.dart';
 import '../../../../core/extensions.dart';
 import '../../../category/bloc/category_bloc.dart';
 import '../../../category/data/repositories/category_repository.dart';
 import '../../bloc/food_bloc/food_bloc.dart';
 
-enum FoodScreenMode { create, update }
-
-enum FoodDiscountType { apply, doNotApply }
-
 class CreateOrUpdateFoodDialog extends StatefulWidget {
   const CreateOrUpdateFoodDialog(
       {super.key, required this.mode, this.foodItem});
-  final FoodScreenMode mode;
+  final ScreenType mode;
   final FoodItem? foodItem;
 
   @override
@@ -46,7 +43,7 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
   final _descriptionFoodController = TextEditingController();
   final _discountFoodController = TextEditingController();
   final _categoryValueNotifier = ValueNotifier(CategoryItem());
-  late FoodScreenMode _mode;
+  late ScreenType _mode;
 
   final _imageFile1 = ValueNotifier(File(''));
   final _imageFile2 = ValueNotifier(File(''));
@@ -68,7 +65,7 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
     super.initState();
     _mode = widget.mode;
 
-    if (_mode == FoodScreenMode.update) {
+    if (_mode == ScreenType.update) {
       _foodItem = widget.foodItem!;
       _nameFoodController.text = _foodItem?.name ?? '';
       _priceFoodController.text = _foodItem?.price.toString() ?? '';
@@ -153,7 +150,7 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
                         child: Column(
                           children: [
                             Text(
-                                _mode == FoodScreenMode.create
+                                _mode == ScreenType.create
                                     ? 'Thêm món mới'.toUpperCase()
                                     : 'Chỉnh sửa'.toUpperCase(),
                                 style: kHeadingStyle.copyWith(
@@ -453,7 +450,7 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
           borderRadius: BorderRadius.circular(10.r),
         ),
         child: Text(
-          _mode == FoodScreenMode.create ? 'Tạo món' : 'Sửa',
+          _mode == ScreenType.create ? 'Tạo món' : 'Sửa',
           style: kButtonWhiteStyle,
         ),
       ),
@@ -543,7 +540,7 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
             '';
       }
 
-      if (_mode == FoodScreenMode.create) {
+      if (_mode == ScreenType.create) {
         var food = FoodItem();
         food = food.copyWith(
           name: _nameFoodController.text,

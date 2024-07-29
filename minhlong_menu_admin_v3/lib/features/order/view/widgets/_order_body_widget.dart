@@ -224,9 +224,16 @@ extension _OrderBodyWidget on _OrderViewState {
         Container(
           height: 70.h,
           alignment: Alignment.center,
-          child: Text(
-            _handleStatus(orderItem.status),
-            style: kBodyStyle.copyWith(color: _handleColor(orderItem.status)),
+          child: Container(
+            padding: const EdgeInsets.all(5).r,
+            decoration: BoxDecoration(
+              color: _handleColor(orderItem.status).withOpacity(0.2),
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: Text(
+              _handleStatus(orderItem.status),
+              style: kBodyStyle.copyWith(color: _handleColor(orderItem.status)),
+            ),
           ),
         ),
         _actionWidget(orderItem),
@@ -235,48 +242,32 @@ extension _OrderBodyWidget on _OrderViewState {
   }
 
   Widget _actionWidget(OrderItem orderItem) {
-    switch (orderItem.status) {
-      case 'new':
-        return Row(
-          children: [
-            CommonIconButton(
-              onTap: () {
-                context.push(AppRoute.printScreen, extra: orderItem);
-              },
-              icon: Icons.print,
-              color: AppColors.blue,
-              tooltip: 'In',
-            ),
-            10.horizontalSpace,
-            Container(
-              height: 70.h,
-              alignment: Alignment.center,
-              child: CommonIconButton(
-                onTap: () {
-                  _showDetailDialog(orderItem);
-                },
-                icon: Icons.mode_edit_outline_outlined,
-                color: AppColors.sun,
-                tooltip: 'Xem đơn hàng',
-              ),
-            ),
-          ],
-        );
-      case 'processing':
-        return Container(
+    return Row(
+      children: [
+        CommonIconButton(
+          onTap: () {
+            context.push(AppRoute.printScreen, extra: orderItem);
+          },
+          icon: Icons.print,
+          color: AppColors.blue,
+          tooltip: 'In',
+        ),
+        10.horizontalSpace,
+        Container(
           height: 70.h,
           alignment: Alignment.center,
           child: CommonIconButton(
             onTap: () {
-              _showDetailDialog(orderItem);
+              // _showDetailDialog(orderItem);
+              context.push(AppRoute.createOrUpdateOrder,
+                  extra: {'order': orderItem, 'type': ScreenType.update});
             },
             icon: Icons.mode_edit_outline_outlined,
             color: AppColors.sun,
             tooltip: 'Xem đơn hàng',
           ),
-        );
-      default:
-        return const SizedBox();
-    }
+        ),
+      ],
+    );
   }
 }

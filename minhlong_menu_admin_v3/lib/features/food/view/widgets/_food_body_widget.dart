@@ -281,7 +281,7 @@ extension _FoodBodyWidget on _FoodViewState {
               child: CommonIconButton(
                 onTap: () {
                   _showCreateOrUpdateDialog(
-                      mode: FoodScreenMode.update, foodItem: foodItem);
+                      mode: ScreenType.update, foodItem: foodItem);
                 },
                 icon: Icons.edit,
                 color: AppColors.sun,
@@ -324,7 +324,7 @@ extension _FoodBodyWidget on _FoodViewState {
   }
 
   Future<void> _showCreateOrUpdateDialog(
-      {required FoodScreenMode mode, FoodItem? foodItem}) async {
+      {required ScreenType mode, FoodItem? foodItem}) async {
     await showDialog(
         context: context,
         builder: (context) => BlocProvider(

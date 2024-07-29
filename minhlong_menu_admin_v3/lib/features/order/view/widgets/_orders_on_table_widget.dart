@@ -1,7 +1,7 @@
-part of '../screens/dashboard_screen.dart';
+part of '../screens/order_screen.dart';
 
-extension _OrdersOnTableWidget on _DashboardViewState {
-  Widget _buildOrdersOnTable() {
+extension _OrdersOnTableWidget on _OrderViewState {
+  Widget _buildOrdersOnTable(int tableIndexSelectedState) {
     return StreamBuilder(
         stream: _orderChannel.stream,
         builder: (context, snapshot) {
@@ -37,7 +37,7 @@ extension _OrdersOnTableWidget on _DashboardViewState {
                     } else {
                       orderList = orders;
                     }
-
+                    _ordersLength = orderList.length;
                     return orderList.isEmpty
                         ? SizedBox(
                             height: 500,
@@ -53,8 +53,10 @@ extension _OrdersOnTableWidget on _DashboardViewState {
                           )
                         : StaggeredGrid.count(
                             crossAxisCount: _gridCount(),
-                            children:
-                                orderList.map((e) => _buildItem(e)).toList(),
+                            children: orderList
+                                .map((e) =>
+                                    _buildItem(e, tableIndexSelectedState))
+                                .toList(),
                           );
                   } else {
                     return const SizedBox();
@@ -71,11 +73,11 @@ extension _OrdersOnTableWidget on _DashboardViewState {
     } else if (context.isTablet) {
       return 3;
     } else {
-      return 4;
+      return 5;
     }
   }
 
-  Widget _buildItem(OrderItem order) {
+  Widget _buildItem(OrderItem order, int tableIndexSelectedState) {
     return FittedBox(
       child: Card(
         elevation: 10,
@@ -95,7 +97,7 @@ extension _OrdersOnTableWidget on _DashboardViewState {
               const SizedBox(height: 10),
               _buildBody(context, order),
               const SizedBox(height: 10),
-              _buildFooter(context, order),
+              _buildFooter(context, order, tableIndexSelectedState),
             ],
           ),
         ),
@@ -103,7 +105,8 @@ extension _OrdersOnTableWidget on _DashboardViewState {
     );
   }
 
-  Widget _buildFooter(BuildContext context, OrderItem order) {
+  Widget _buildFooter(
+      BuildContext context, OrderItem order, int tableIndexSelectedState) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -128,43 +131,63 @@ extension _OrdersOnTableWidget on _DashboardViewState {
         const SizedBox(
           width: defaultPadding / 2,
         ),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            CommonIconButton(
-              onTap: () {
-                AppDialog.showWarningDialog(context,
-                    title: 'Hủy đơn',
-                    description: 'Bạn có muốn huỷ đơn ${order.id}?',
-                    onPressedComfirm: () {
-                  order = order.copyWith(status: 'cancel');
-                  _handleUpdateOrder(order);
-                });
-              },
-              icon: Icons.clear_rounded,
-              color: Colors.red,
-              tooltip: 'Hủy đơn',
-            ),
-            const SizedBox(
-              width: defaultPadding / 2,
-            ),
-            CommonIconButton(
-              tooltip: 'Xác nhận đơn',
-              onTap: () {
-                AppDialog.showWarningDialog(context,
-                    title: 'Xác nhận đơn!',
-                    description: 'Chuyển đơn ${order.id} sang đang làm?',
-                    onPressedComfirm: () {
-                  order = order.copyWith(status: 'processing');
-                  _handleUpdateOrder(order);
-                });
-              },
-              icon: Icons.check,
-              color: AppColors.islamicGreen,
-            ),
-          ],
-        ),
+        order.status == 'new'
+            ? Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  CommonIconButton(
+                    onTap: () {
+                      AppDialog.showWarningDialog(context,
+                          title: 'Hủy đơn',
+                          description: 'Bạn có muốn huỷ đơn ${order.id}?',
+                          onPressedComfirm: () {
+                        order = order.copyWith(status: 'cancel');
+                        _handleUpdateOrder(order);
+                      });
+                    },
+                    icon: Icons.clear_rounded,
+                    color: Colors.red,
+                    tooltip: 'Hủy đơn',
+                  ),
+                  const SizedBox(
+                    width: defaultPadding / 2,
+                  ),
+                  CommonIconButton(
+                    tooltip: 'Xác nhận đơn',
+                    onTap: () {
+                      AppDialog.showWarningDialog(context,
+                          title: 'Xác nhận đơn!',
+                          description: 'Chuyển đơn ${order.id} sang đang làm?',
+                          onPressedComfirm: () {
+                        order = order.copyWith(status: 'processing');
+                        _handleUpdateOrder(order);
+                      });
+                    },
+                    icon: Icons.check,
+                    color: AppColors.islamicGreen,
+                  ),
+                ],
+              )
+            : CommonIconButton(
+                tooltip: 'Sửa đơn',
+                onTap: () async {
+                  await context.push<bool>(AppRoute.createOrUpdateOrder,
+                      extra: {'order': order, 'type': ScreenType.update}).then(
+                    (value) {
+                      if (value != null && value) {
+                        Ultils.sendSocket(_tableChannel, 'tables', _user.id);
+                        Ultils.sendSocket(_orderChannel, 'orders', {
+                          'user_id': _user.id,
+                          'table_id': tableIndexSelectedState
+                        });
+                      }
+                    },
+                  );
+                },
+                icon: Icons.edit,
+                color: AppColors.sun,
+              ),
       ],
     );
   }
@@ -193,6 +216,19 @@ extension _OrdersOnTableWidget on _DashboardViewState {
             fontWeight: FontWeight.w400,
           ),
         ),
+        10.verticalSpace,
+        Container(
+          padding: const EdgeInsets.all(5).r,
+          decoration: BoxDecoration(
+            color: _handleColor(order.status).withOpacity(0.2),
+            borderRadius: BorderRadius.circular(5),
+          ),
+          child: Text(
+            _handleStatus(order.status),
+            style: kBodyStyle.copyWith(color: _handleColor(order.status)),
+          ),
+        ),
+        10.verticalSpace,
       ],
     );
   }
@@ -288,7 +324,7 @@ extension _OrdersOnTableWidget on _DashboardViewState {
                 ),
               ),
               Text(
-                'chien ham, them cai deo gi do vao day nhe,chien ham, them cai deo gi do vao day nhe,',
+                note,
                 style: kCaptionStyle.copyWith(
                   fontSize: 10,
                   color: AppColors.secondTextColor,

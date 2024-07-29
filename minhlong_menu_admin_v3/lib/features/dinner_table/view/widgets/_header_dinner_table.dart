@@ -74,8 +74,7 @@ extension _HeaderDinnderTableWidget on _DinnerTableViewState {
   _buildButtonAddFood() {
     return InkWell(
       onTap: () async {
-        _showCreateOrUpdateDinnerTableDialog(
-            mode: DinnerTableDialogAction.create);
+        _showCreateOrUpdateDinnerTableDialog(mode: ScreenType.create);
       },
       child: Container(
         height: 35,
@@ -94,7 +93,7 @@ extension _HeaderDinnderTableWidget on _DinnerTableViewState {
   }
 
   Future<void> _showCreateOrUpdateDinnerTableDialog(
-      {required DinnerTableDialogAction mode, TableItem? tableItem}) async {
+      {required ScreenType mode, TableItem? tableItem}) async {
     await showDialog(
         context: context,
         builder: (context) => BlocProvider(

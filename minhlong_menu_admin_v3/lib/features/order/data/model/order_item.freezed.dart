@@ -36,7 +36,7 @@ mixin _$OrderItem {
   String? get updatedAt => throw _privateConstructorUsedError;
   @JsonKey(name: 'deleted_at')
   String? get deletedAt => throw _privateConstructorUsedError;
-  @JsonKey(name: 'foods')
+  @JsonKey(name: 'order_detail')
   List<FoodOrderModel> get foodOrders => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -60,7 +60,7 @@ abstract class $OrderItemCopyWith<$Res> {
       @JsonKey(name: 'created_at') String? createdAt,
       @JsonKey(name: 'updated_at') String? updatedAt,
       @JsonKey(name: 'deleted_at') String? deletedAt,
-      @JsonKey(name: 'foods') List<FoodOrderModel> foodOrders});
+      @JsonKey(name: 'order_detail') List<FoodOrderModel> foodOrders});
 }
 
 /// @nodoc
@@ -150,7 +150,7 @@ abstract class _$$OrderItemImplCopyWith<$Res>
       @JsonKey(name: 'created_at') String? createdAt,
       @JsonKey(name: 'updated_at') String? updatedAt,
       @JsonKey(name: 'deleted_at') String? deletedAt,
-      @JsonKey(name: 'foods') List<FoodOrderModel> foodOrders});
+      @JsonKey(name: 'order_detail') List<FoodOrderModel> foodOrders});
 }
 
 /// @nodoc
@@ -233,7 +233,7 @@ class _$OrderItemImpl implements _OrderItem {
       @JsonKey(name: 'created_at') this.createdAt,
       @JsonKey(name: 'updated_at') this.updatedAt,
       @JsonKey(name: 'deleted_at') this.deletedAt,
-      @JsonKey(name: 'foods')
+      @JsonKey(name: 'order_detail')
       final List<FoodOrderModel> foodOrders = const <FoodOrderModel>[]})
       : _foodOrders = foodOrders;
 
@@ -269,7 +269,7 @@ class _$OrderItemImpl implements _OrderItem {
   final String? deletedAt;
   final List<FoodOrderModel> _foodOrders;
   @override
-  @JsonKey(name: 'foods')
+  @JsonKey(name: 'order_detail')
   List<FoodOrderModel> get foodOrders {
     if (_foodOrders is EqualUnmodifiableListView) return _foodOrders;
     // ignore: implicit_dynamic_type
@@ -335,17 +335,17 @@ class _$OrderItemImpl implements _OrderItem {
 
 abstract class _OrderItem implements OrderItem {
   factory _OrderItem(
-          {final int id,
-          final String status,
-          @JsonKey(name: 'table_id') final int tableId,
-          @JsonKey(name: 'table_name') final String tableName,
-          @JsonKey(name: 'total_price') final double totalPrice,
-          @JsonKey(name: 'payed_at') final String? payedAt,
-          @JsonKey(name: 'created_at') final String? createdAt,
-          @JsonKey(name: 'updated_at') final String? updatedAt,
-          @JsonKey(name: 'deleted_at') final String? deletedAt,
-          @JsonKey(name: 'foods') final List<FoodOrderModel> foodOrders}) =
-      _$OrderItemImpl;
+      {final int id,
+      final String status,
+      @JsonKey(name: 'table_id') final int tableId,
+      @JsonKey(name: 'table_name') final String tableName,
+      @JsonKey(name: 'total_price') final double totalPrice,
+      @JsonKey(name: 'payed_at') final String? payedAt,
+      @JsonKey(name: 'created_at') final String? createdAt,
+      @JsonKey(name: 'updated_at') final String? updatedAt,
+      @JsonKey(name: 'deleted_at') final String? deletedAt,
+      @JsonKey(name: 'order_detail')
+      final List<FoodOrderModel> foodOrders}) = _$OrderItemImpl;
 
   factory _OrderItem.fromJson(Map<String, dynamic> json) =
       _$OrderItemImpl.fromJson;
@@ -376,7 +376,7 @@ abstract class _OrderItem implements OrderItem {
   @JsonKey(name: 'deleted_at')
   String? get deletedAt;
   @override
-  @JsonKey(name: 'foods')
+  @JsonKey(name: 'order_detail')
   List<FoodOrderModel> get foodOrders;
   @override
   @JsonKey(ignore: true)
