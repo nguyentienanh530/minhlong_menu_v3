@@ -51,10 +51,10 @@ extension _BannerWidget on _HomeViewState {
     return AnimatedSmoothIndicator(
         activeIndex: _indexPage.value,
         count: length,
-        effect: const ExpandingDotsEffect(
-            activeDotColor: AppColors.themeColor,
+        effect: ExpandingDotsEffect(
+            activeDotColor: context.colorScheme.secondary,
             dotHeight: 8,
             dotWidth: 8,
-            dotColor: AppColors.white));
+            dotColor: context.colorScheme.onPrimary));
   }
 }

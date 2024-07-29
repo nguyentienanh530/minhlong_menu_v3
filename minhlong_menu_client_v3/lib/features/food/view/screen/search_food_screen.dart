@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_client_v3/common/widget/error_screen.dart';
 import 'package:minhlong_menu_client_v3/common/widget/loading.dart';
 import 'package:minhlong_menu_client_v3/common/widget/no_product.dart';
+import 'package:minhlong_menu_client_v3/core/extensions.dart';
 import 'package:minhlong_menu_client_v3/core/utils.dart';
 import 'package:minhlong_menu_client_v3/features/food/cubit/search_cubit.dart';
 import 'package:minhlong_menu_client_v3/features/food/data/repositories/food_repository.dart';
 import 'package:tiengviet/tiengviet.dart';
 
 import '../../../../Routes/app_route.dart';
+import '../../../../common/widget/common_back_button.dart';
 import '../../../../common/widget/common_text_field.dart';
 import '../../../../core/api_config.dart';
 import '../../../../core/app_asset.dart';
-import '../../../../core/app_colors.dart';
 import '../../../../core/app_const.dart';
 import '../../bloc/food_bloc.dart';
 import '../../data/model/food_item.dart';
@@ -65,20 +66,23 @@ class _MyWidgetState extends State<SearchFoodView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.themeColor,
       body: Stack(
         children: [
-          Image.asset(AppAsset.background,
-              color: AppColors.black.withOpacity(0.15)),
+          Image.asset(AppAsset.backgroundLight,
+              color: context.colorScheme.onPrimary.withOpacity(0.15)),
           _buildAppbar(),
           Column(
             children: [
               const SizedBox(height: 100),
               Expanded(
                 child: Container(
-                  decoration: const BoxDecoration(
-                      color: AppColors.smokeWhite,
-                      borderRadius: BorderRadius.only(
+                  decoration: BoxDecoration(
+                      color: context.colorScheme.surface,
+                      border: Border.symmetric(
+                          horizontal: BorderSide(
+                              color: context.colorScheme.onSurfaceVariant
+                                  .withOpacity(0.3))),
+                      borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(defaultBorderRadius * 4),
                           topRight: Radius.circular(defaultBorderRadius * 4))),
                   child: Padding(
@@ -107,8 +111,9 @@ class _MyWidgetState extends State<SearchFoodView> {
 
   _buildAppbar() {
     return AppBar(
-        backgroundColor: AppColors.transparent,
-        foregroundColor: AppColors.white,
+        backgroundColor: Colors.transparent,
+        automaticallyImplyLeading: false,
+        leading: CommonBackButton(onTap: () => context.pop()),
         title: _buildSearch()
             .animate()
             .slideX(
@@ -121,17 +126,23 @@ class _MyWidgetState extends State<SearchFoodView> {
 
   Widget _buildSearch() {
     return CommonTextField(
-        filled: true,
-        focusedBorder: const OutlineInputBorder(
-            borderSide: BorderSide(color: AppColors.white)),
-        enabledBorder: const OutlineInputBorder(
-            borderSide: BorderSide(color: AppColors.white)),
+        filled: false,
+        focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(defaultBorderRadius),
+            borderSide: BorderSide(color: context.colorScheme.secondary)),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(defaultBorderRadius),
+          borderSide:
+              BorderSide(color: context.colorScheme.outline.withOpacity(0.2)),
+        ),
         controller: _searchController,
         onChanged: (value) {
           _searchController.text = value;
           context.read<SearchCubit>().onSearchChange(value);
         },
         hintText: "Tìm kiếm",
+        hintStyle: context.bodyMedium,
+        style: context.bodyMedium,
         suffixIcon: IconButton(
             icon: const Icon(Icons.close),
             onPressed: () {
@@ -189,8 +200,7 @@ class _AfterSearchUIState extends State<AfterSearchUI> {
         padding: const EdgeInsets.symmetric(
             horizontal: defaultPadding, vertical: defaultPadding / 5),
         child: Card(
-          // color: AppColors.lavender,
-          shadowColor: AppColors.lavender,
+          shadowColor: context.colorScheme.onSurfaceVariant.withOpacity(0.4),
           elevation: 4,
           borderOnForeground: false,
           child: SizedBox(
@@ -235,7 +245,7 @@ class _AfterSearchUIState extends State<AfterSearchUI> {
       width: 80,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: Colors.black.withOpacity(0.3),
+        color: context.colorScheme.surface.withOpacity(0.3),
         image: DecorationImage(
             image: NetworkImage('${ApiConfig.host}${food.image1}'),
             fit: BoxFit.cover),
@@ -248,6 +258,7 @@ class _AfterSearchUIState extends State<AfterSearchUI> {
         fit: BoxFit.scaleDown,
         child: Text(
           food.name,
+          style: context.bodyMedium,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ));
@@ -257,26 +268,27 @@ class _AfterSearchUIState extends State<AfterSearchUI> {
     double discountAmount = (food.price! * food.discount!.toDouble()) / 100;
     double discountedPrice = food.price! - discountAmount;
     return food.isDiscount == false
-        ? Text(Ultils.currencyFormat(double.parse(food.price.toString())),
-            style: const TextStyle(
-                color: AppColors.themeColor, fontWeight: FontWeight.bold))
+        ? Text(
+            '${Ultils.currencyFormat(double.parse(food.price.toString()))} ₫',
+            style: context.bodyMedium!.copyWith(
+                fontWeight: FontWeight.bold,
+                color: context.colorScheme.secondary))
         : Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             Row(children: [
-              Text(Ultils.currencyFormat(double.parse(food.price.toString())),
-                  style: const TextStyle(
-                      decoration: TextDecoration.lineThrough,
-                      decorationThickness: 3.0,
-                      decorationColor: Colors.red,
-                      decorationStyle: TextDecorationStyle.solid,
-                      // fontSize: defaultSizeText,
-                      color: Color.fromARGB(255, 131, 128, 126),
-                      fontWeight: FontWeight.w700)),
-              const SizedBox(width: 10.0),
               Text(
-                  Ultils.currencyFormat(
-                      double.parse(discountedPrice.toString())),
-                  style: const TextStyle(
-                      color: AppColors.themeColor, fontWeight: FontWeight.bold))
+                  '${Ultils.currencyFormat(double.parse(food.price.toString()))} ₫',
+                  style: TextStyle(
+                      decoration: TextDecoration.lineThrough,
+                      decorationThickness: 2.0,
+                      decorationColor: context.colorScheme.secondary,
+                      color: context.colorScheme.outline,
+                      fontWeight: FontWeight.bold)),
+              10.horizontalSpace,
+              Text(
+                  '${Ultils.currencyFormat(double.parse(discountedPrice.toString()))} ₫',
+                  style: context.bodyMedium!.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: context.colorScheme.secondary))
             ])
           ]);
   }

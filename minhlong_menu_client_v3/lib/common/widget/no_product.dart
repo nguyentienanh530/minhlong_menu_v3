@@ -15,8 +15,11 @@ class NoProduct extends StatelessWidget {
           right: defaultPadding,
           bottom: defaultPadding * 2),
       height: double.infinity,
-      child: Image.asset(
-        AppAsset.noProductImage,
+      child: Padding(
+        padding: const EdgeInsets.all(defaultPadding * 6),
+        child: Image.asset(
+          AppAsset.noProductImage,
+        ),
       ),
     );
   }

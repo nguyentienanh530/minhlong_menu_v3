@@ -7,15 +7,16 @@ extension _EditProfileWidget on _EditProfileViewState {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Stack(
+          alignment: Alignment.bottomRight,
           children: [
             Container(
                 padding: const EdgeInsets.all(2),
                 width: 0.25 * context.sizeDevice.height,
                 height: 0.25 * context.sizeDevice.height,
                 decoration: BoxDecoration(
-                  color: AppColors.white,
                   shape: BoxShape.circle,
-                  border: Border.all(color: AppColors.smokeWhite, width: 6),
+                  border: Border.all(
+                      color: context.colorScheme.onPrimary, width: 6),
                 ),
                 child: ValueListenableBuilder(
                   valueListenable: _imageFile,
@@ -40,8 +41,8 @@ extension _EditProfileWidget on _EditProfileViewState {
                   },
                 )),
             Positioned(
-              bottom: 10,
-              right: 35,
+              bottom: context.sizeDevice.height * 0.01,
+              right: context.sizeDevice.height * 0.03,
               child: _uploadImage(),
             )
           ],
@@ -60,14 +61,19 @@ extension _EditProfileWidget on _EditProfileViewState {
         }
       }),
       child: Card(
+        color: context.colorScheme.secondary,
         shape: const CircleBorder(),
         elevation: 3,
         child: Container(
           padding: const EdgeInsets.all(5),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(color: Colors.white, width: 2),
+          ),
           child: const Icon(
             Icons.photo_camera,
             size: 20,
-            color: AppColors.secondTextColor,
+            color: Colors.white,
           ),
         ),
       ),
@@ -78,7 +84,6 @@ extension _EditProfileWidget on _EditProfileViewState {
     return Card(
       elevation: 4,
       margin: EdgeInsets.zero,
-      shadowColor: AppColors.lavender,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(defaultBorderRadius * 2),
@@ -124,8 +129,8 @@ extension _EditProfileWidget on _EditProfileViewState {
     return Container(
       alignment: Alignment.center,
       child: ElevatedButton(
-          style:
-              ElevatedButton.styleFrom(backgroundColor: AppColors.themeColor),
+          style: ElevatedButton.styleFrom(
+              backgroundColor: context.colorScheme.secondary),
           onPressed: () async {
             if (AppKeys.updateUserKey.currentState!.validate()) {
               if (_imageFile.value.path.isNotEmpty) {
@@ -145,7 +150,7 @@ extension _EditProfileWidget on _EditProfileViewState {
           },
           child: Text(
             AppString.edit,
-            style: kBodyWhiteStyle,
+            style: context.bodyMedium!.copyWith(color: Colors.white),
           )),
     );
   }
@@ -167,10 +172,16 @@ class TextBoxProfile extends StatelessWidget {
     return CommonTextField(
       onChanged: (p0) {},
       labelText: labelText,
-      labelStyle: kBodyStyle.copyWith(color: AppColors.secondTextColor),
+      labelStyle: context.bodyMedium,
       controller: controllers,
-      style: kBodyStyle,
+      style: context.bodyMedium,
       validator: validator,
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(defaultBorderRadius / 3),
+        borderSide: BorderSide(
+          color: context.colorScheme.secondary,
+        ),
+      ),
     );
   }
 }

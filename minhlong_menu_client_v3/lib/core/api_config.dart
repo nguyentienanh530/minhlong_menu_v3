@@ -35,17 +35,17 @@ class ApiConfig {
   static const String quantityCategories = '/categories/quantity';
 
   //===== Food =====
-  static const String foods = '/foods';
+  static const String foods = '/client/foods';
 
-  static const String foodsOnCategory = '/foods/category/';
-  static const String quantityOfFoods = '/foods/quantity';
+  static const String foodsOnCategory = '/client/foods/category/';
+  // static const String quantityOfFoods = '/foods/quantity';
 
   //===== Table =====
-  static const String tables = '/tables';
-  static const String quantityTables = '/tables/quantity';
+  static const String tables = '/client/tables/all';
+  // static const String quantityTables = '/tables/quantity';
 
   //===== Order =====
-  static const String orders = '/orders';
+  static const String orders = '/client/orders';
   static const String newOrdersByTable = '/orders/new-orders-by-table';
   static const String createOrder = '/orders/create-order';
   static const String orderCompleted = '/orders/orders-completed';

@@ -10,9 +10,7 @@ import 'package:minhlong_menu_client_v3/features/food/data/dto/item_food_size_dt
 import 'package:minhlong_menu_client_v3/features/food/data/model/food_item.dart';
 
 import '../../Routes/app_route.dart';
-import '../../core/app_colors.dart';
 import '../../core/app_const.dart';
-import '../../core/app_style.dart';
 import '../../core/utils.dart';
 import '../../features/food/cubit/item_size_cubit.dart';
 
@@ -56,6 +54,7 @@ class ItemFoodView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      elevation: 5,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(defaultBorderRadius / 2),
       ),
@@ -87,43 +86,42 @@ class ItemFoodView extends StatelessWidget {
                 _buildPrice(context, food),
               ],
             ),
-            Positioned(top: 5, right: 5, child: _addToCard()),
+            Positioned(top: 5, right: 5, child: _addToCard(context)),
             if (food.isDiscount!)
               Positioned(
                   right: 5,
                   top: 0.7 * height - 18,
-                  child: _buildDiscountItem(food)),
+                  child: _buildDiscountItem(food, context)),
           ]),
         ),
       ),
     );
   }
 
-  Widget _addToCard() {
+  Widget _addToCard(BuildContext context) {
     return InkWell(
       onTap: addToCartOnTap,
-      child: const Card(
+      child: Card(
         elevation: 4,
-        shadowColor: AppColors.themeColor,
-        shape: CircleBorder(),
-        color: AppColors.red,
+        shape: const CircleBorder(),
+        color: context.colorScheme.secondary,
         child: SizedBox(
             height: 35,
             width: 35,
             child: Icon(
               Icons.add,
-              color: AppColors.white,
+              color: context.colorScheme.onPrimary,
               size: 30,
             )),
       ),
     );
   }
 
-  Widget _buildDiscountItem(FoodItem food) {
+  Widget _buildDiscountItem(FoodItem food, BuildContext context) {
     return Card(
-      color: AppColors.red,
+      color: Colors.red,
       elevation: 4,
-      shadowColor: AppColors.themeColor,
+      shadowColor: context.colorScheme.tertiaryContainer,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(defaultBorderRadius)),
       ),
@@ -132,7 +130,8 @@ class ItemFoodView extends StatelessWidget {
         constraints: const BoxConstraints(maxWidth: 45, maxHeight: 25),
         child: Text(
           '${food.discount}%',
-          style: kBodyWhiteStyle.copyWith(fontWeight: FontWeight.bold),
+          style: context.labelMedium!
+              .copyWith(fontWeight: FontWeight.bold, color: Colors.white),
         ),
       ),
     );
@@ -151,17 +150,14 @@ class ItemFoodView extends StatelessWidget {
             ),
             child: Row(
               children: [
-                const Icon(Icons.check_circle,
-                    color: AppColors.islamicGreen, size: 16),
+                Icon(Icons.check_circle,
+                    color: context.colorScheme.primaryContainer, size: 16),
                 5.horizontalSpace,
                 Text(food.name,
                     textAlign: TextAlign.center,
-                    style: context.isTablet
-                        ? kHeadingStyle.copyWith(fontWeight: FontWeight.bold)
-                        : kHeadingStyle.copyWith(fontWeight: FontWeight.bold)),
+                    style: context.titleStyleMedium!
+                        .copyWith(fontWeight: FontWeight.bold)),
                 2.horizontalSpace,
-                // const Icon(Icons.check_circle,
-                //     color: AppColors.islamicGreen, size: 14),
               ],
             ),
           ),
@@ -184,45 +180,39 @@ class ItemFoodView extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: defaultPadding),
                   child: Text(
-                      '₫ ${Ultils.currencyFormat(double.parse(food.price.toString()))}',
-                      style: kBodyStyle.copyWith(
+                      '${Ultils.currencyFormat(double.parse(food.price.toString()))} ₫',
+                      style: context.labelLarge!.copyWith(
                           fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                          color: AppColors.themeColor)),
+                          color: context.colorScheme.secondary)),
                 ),
               ),
             ),
           )
         : Expanded(
-            child: SizedBox(
-              width: double.infinity,
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                alignment: Alignment.centerLeft,
-                child: Padding(
+            child: Row(
+              children: [
+                Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: defaultPadding),
                   child: Row(children: [
                     Text(
-                        '₫ ${Ultils.currencyFormat(double.parse(food.price.toString()))}',
-                        style: kBodyStyle.copyWith(
-                            color: AppColors.secondTextColor,
+                        '${Ultils.currencyFormat(double.parse(food.price.toString()))} ₫',
+                        style: context.labelLarge!.copyWith(
+                            color: context.colorScheme.outline,
                             decoration: TextDecoration.lineThrough,
-                            fontSize: 18,
                             decorationThickness: 1,
-                            decorationColor: Colors.red,
+                            decorationColor: context.colorScheme.secondary,
                             decorationStyle: TextDecorationStyle.solid)),
                     3.horizontalSpace,
                     Text(
-                        '₫ ${Ultils.currencyFormat(double.parse(discountedPrice.toString()))}',
-                        style: kBodyStyle.copyWith(
+                        '${Ultils.currencyFormat(double.parse(discountedPrice.toString()))} ₫',
+                        style: context.labelLarge!.copyWith(
                           fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                          color: AppColors.themeColor,
+                          color: context.colorScheme.secondary,
                         )),
                   ]),
                 ),
-              ),
+              ],
             ),
           );
   }

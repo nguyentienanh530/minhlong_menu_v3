@@ -4,7 +4,6 @@ extension _ProfileWidget on _ProfileScreenState {
   Widget _bodyInfoUser({required UserModel userModel}) {
     return Card(
       elevation: 4,
-      shadowColor: AppColors.lavender,
       margin: EdgeInsets.zero,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
@@ -24,15 +23,27 @@ extension _ProfileWidget on _ProfileScreenState {
                     context.push(AppRoute.editProfile, extra: userModel),
                 svgPath: AppAsset.user,
                 title: AppString.editProfile),
+            5.verticalSpace,
             _ItemProfile(
                 svgPath: AppAsset.lock,
                 title: AppString.changePassword,
                 onTap: () => context.push(AppRoute.changePassword)),
-            // _buildItemPrint(context),
+            _buildThemeWidget(context),
+            5.verticalSpace,
             _ItemProfile(
                 svgPath: AppAsset.logout,
-                title: 'Đăng xuất',
+                title: AppString.logout,
                 onTap: () => _showDialogLogout()),
+            // _ItemProfile(
+            //     svgPath: AppAsset.logout,
+            //     title: 'Test ',
+            //     onTap: () => AppDialog.showSuccessDialog(
+            //           context,
+            //           confirmText: 'OK',
+            //           title: 'Test',
+            //           description: 'Test',
+            //           onPressedComfirm: () => context.pop(),
+            //         )),
           ],
         ),
       ),
@@ -64,77 +75,64 @@ extension _ProfileWidget on _ProfileScreenState {
     //     });
   }
 
-//   Widget _buildItemPrint(BuildContext context) {
-//     return ValueListenableBuilder(
-//       valueListenable: _isUsePrinter,
-//       builder: (context, value, child) {
-//         return Column(
-//           children: [
-//             Card(
-//                 elevation: 4,
-//                 shadowColor: AppColors.lavender,
-//                 child: SizedBox(
-//                     child: Row(
-//                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                         children: [
-//                       Expanded(
-//                         child: FittedBox(
-//                           alignment: Alignment.centerLeft,
-//                           fit: BoxFit.scaleDown,
-//                           child: Row(children: [
-//                             Padding(
-//                                 padding: const EdgeInsets.all(defaultPadding),
-//                                 child: SvgPicture.asset(AppAsset.print,
-//                                     colorFilter: const ColorFilter.mode(
-//                                         AppColors.themeColor,
-//                                         BlendMode.srcIn))),
-//                             Text(
-//                               AppString.usePrinter,
-//                               style: kBodyStyle.copyWith(
-//                                   color: AppColors.secondTextColor),
-//                             )
-//                           ]),
-//                         ),
-//                       ),
-//                       Expanded(
-//                         child: FittedBox(
-//                           alignment: Alignment.centerRight,
-//                           fit: BoxFit.scaleDown,
-//                           child: Transform.scale(
-//                             scale: 0.8,
-//                             child: Switch(
-//                               activeTrackColor: AppColors.themeColor,
-//                               inactiveTrackColor:
-//                                   AppColors.themeColor.withOpacity(0.5),
-//                               inactiveThumbColor: AppColors.white,
-//                               value: _isUsePrinter.value,
-//                               onChanged: (value) {
-//                                 _isUsePrinter.value = !_isUsePrinter.value;
-//                               },
-//                             ),
-//                           ),
-//                         ),
-//                       ),
-//                     ]))),
-//             _isUsePrinter.value
-//                 ? Padding(
-//                     padding:
-//                         const EdgeInsets.symmetric(horizontal: defaultPadding),
-//                     child: _ItemProfile(
-//                         svgPath: AppAsset.fileConfig,
-//                         title: AppString.settingPrinter,
-//                         titleStyle: kBodyStyle.copyWith(
-//                             color: AppColors.secondTextColor),
-//                         onTap: () {
-//                           //  context.push(RouteName.printSeting)
-//                         }),
-//                   )
-//                 : const SizedBox()
-//           ],
-//         );
-//       },
-//     );
-//   }
+  Widget _buildThemeWidget(BuildContext context) {
+    return ValueListenableBuilder(
+      valueListenable: isDarkMode,
+      builder: (context, value, child) {
+        return Card(
+            elevation: 2,
+            shadowColor: context.colorScheme.onPrimary,
+            child: SizedBox(
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                  Expanded(
+                    child: FittedBox(
+                      alignment: Alignment.centerLeft,
+                      fit: BoxFit.scaleDown,
+                      child: Row(children: [
+                        Padding(
+                            padding: const EdgeInsets.all(defaultPadding),
+                            child: Icon(
+                              isDarkMode.value
+                                  ? Icons.dark_mode_outlined
+                                  : Icons.light_mode_outlined,
+                              color: context.colorScheme.secondary,
+                            )),
+                        Text(
+                          isDarkMode.value
+                              ? AppString.darkMode
+                              : AppString.lightMode,
+                          style: context.bodyMedium!,
+                        )
+                      ]),
+                    ),
+                  ),
+                  Expanded(
+                    child: FittedBox(
+                      alignment: Alignment.centerRight,
+                      fit: BoxFit.scaleDown,
+                      child: Transform.scale(
+                        scale: 0.8,
+                        child: Switch(
+                          activeTrackColor: context.colorScheme.secondary,
+                          inactiveTrackColor:
+                              context.colorScheme.secondary.withOpacity(0.5),
+                          inactiveThumbColor: Colors.white,
+                          value: isDarkMode.value,
+                          onChanged: (value) async {
+                            isDarkMode.value = !isDarkMode.value;
+                            context.read<ThemeCubit>().changeTheme(value);
+                            await ThemeLocalDatasource(sf).setTheme(value);
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                ])));
+      },
+    );
+  }
 }
 
 class _ItemProfile extends StatelessWidget {
@@ -155,8 +153,8 @@ class _ItemProfile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-        elevation: 4,
-        shadowColor: AppColors.lavender,
+        elevation: 2,
+        shadowColor: context.colorScheme.onPrimary,
         child: InkWell(
           borderRadius: BorderRadius.circular(defaultPadding),
           onTap: onTap,
@@ -172,27 +170,25 @@ class _ItemProfile extends StatelessWidget {
                       Padding(
                           padding: const EdgeInsets.all(defaultPadding),
                           child: SvgPicture.asset(svgPath,
-                              colorFilter: const ColorFilter.mode(
-                                  Colors.red, BlendMode.srcIn))),
+                              colorFilter: ColorFilter.mode(
+                                  context.colorScheme.secondary,
+                                  BlendMode.srcIn))),
                       Text(
                         title,
-                        style: titleStyle ??
-                            kBodyStyle.copyWith(
-                                color: AppColors.secondTextColor),
+                        style: titleStyle ?? context.bodyMedium!,
                       )
                     ]),
                   ),
                 ),
-                Expanded(
+                const Expanded(
                   child: FittedBox(
                     alignment: Alignment.centerRight,
                     fit: BoxFit.scaleDown,
                     child: Padding(
-                        padding: const EdgeInsets.all(defaultPadding),
+                        padding: EdgeInsets.all(defaultPadding),
                         child: Icon(
                           Icons.arrow_forward_ios_rounded,
                           size: 15,
-                          color: colorIcon ?? AppColors.secondTextColor,
                         )),
                   ),
                 )

@@ -6,6 +6,7 @@ class AppString {
   static const refreshTokenkey = "refresh_token";
   static const usePrinterkey = "printer_key";
   static const userIDKey = "user_id";
+  static const themeKey = "theme_key";
 
   //Api call error
   static const cancelRequest = "Request to API server was cancelled";
@@ -23,6 +24,7 @@ class AppString {
   static const connectionError = "Lỗi kết nối";
   static const userExists = 'Người dùng đã tồn tại';
   static const tokenExpired = 'Hết hạn đăng nhập';
+  static const retry = 'Thử lại';
 
   //status code
   static const badRequest = "Bad request";
@@ -31,6 +33,7 @@ class AppString {
   static const notFound = "Not found";
   static const internalServerError = "Internal server error";
   static const badGateway = "Bad gateway";
+  static const error = "Lỗi!";
 
   static const appFont = "Roboto";
   static const newFoods = "Món ăn mới";
@@ -46,6 +49,7 @@ class AppString {
   static String totalPrice = 'Tổng tiền:';
   static String password = 'Mật khẩu';
   static String login = 'Đăng Nhập';
+  static String logout = 'Đăng xuất';
   static String welcomeBack = 'Đăng Nhập';
   static String phoneNumber = 'Số điện thoại';
   static String forgotPassword = 'Quên mật khẩu?';
@@ -68,7 +72,8 @@ class AppString {
   static String fullName = 'Tên đầy đủ *';
   static String email = 'Email';
   static String edit = 'Cập nhật';
-  static String usePrinter = 'Sử dụng máy in';
+  static String darkMode = 'Chế độ tối';
+  static String lightMode = 'Chế độ sáng';
   static String settingPrinter = 'Cấu hình máy in';
   static String uploadImage = 'Tải lên ';
   static String back = 'Trở lại ';
@@ -76,7 +81,8 @@ class AppString {
   static String changePassword = 'Thay đổi mật khẩu';
   static String newPassword = 'Mật khẩu mới';
   static String oldPassword = 'Mật khẩu cũ';
-  static String reNewPassword = 'Nhập lại mật khẩu mới';
+  static String confirNewPassword = 'Xác nhận mật khẩu mới';
+  // static String confirPassword = 'Xác nhận mật khẩu ';
   static String total = 'Tổng tiền';
   static String description = 'Mô tả :';
 }

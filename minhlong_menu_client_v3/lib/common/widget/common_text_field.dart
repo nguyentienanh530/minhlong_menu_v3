@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:minhlong_menu_client_v3/core/extensions.dart';
 
-import '../../core/app_colors.dart';
 import '../../core/app_const.dart';
-import '../../core/app_style.dart';
 
 class CommonTextField extends StatelessWidget {
   const CommonTextField(
@@ -60,7 +59,7 @@ class CommonTextField extends StatelessWidget {
         textAlignVertical: TextAlignVertical.center,
         key: key,
         maxLines: maxLines,
-        style: style ?? kBodyStyle,
+        style: style ?? context.bodyMedium,
         textAlign: TextAlign.start,
         keyboardType: keyboardType ?? TextInputType.text,
         autocorrect: false,
@@ -72,32 +71,31 @@ class CommonTextField extends StatelessWidget {
             focusedErrorBorder: focusedErrorBorder ??
                 OutlineInputBorder(
                     borderRadius: BorderRadius.circular(textFieldBorderRadius),
-                    borderSide:
-                        const BorderSide(color: AppColors.secondTextColor)),
+                    borderSide: BorderSide(color: context.colorScheme.outline)),
             errorBorder: errorBorder ??
                 OutlineInputBorder(
                     borderRadius: BorderRadius.circular(textFieldBorderRadius),
-                    borderSide: const BorderSide(color: AppColors.black)),
+                    borderSide: const BorderSide(color: Colors.black)),
             enabledBorder: enabledBorder ??
                 OutlineInputBorder(
                     borderRadius: BorderRadius.circular(textFieldBorderRadius),
-                    borderSide:
-                        const BorderSide(color: AppColors.secondTextColor)),
+                    borderSide: BorderSide(color: context.colorScheme.outline)),
             suffixIcon: suffixIcon,
             prefixIcon: prefixIcon,
             focusedBorder: focusedBorder ??
                 OutlineInputBorder(
                     borderRadius: BorderRadius.circular(textFieldBorderRadius),
-                    borderSide: const BorderSide(color: AppColors.black)),
+                    borderSide: const BorderSide(color: Colors.black)),
             errorText: errorText,
             contentPadding:
                 contentPadding ?? const EdgeInsets.all(defaultPadding),
             filled: filled ?? false,
             hintText: hintText,
             labelText: labelText,
-            errorStyle: kBodyStyle.copyWith(color: AppColors.red),
-            hintStyle: hintStyle ?? kBodyStyle,
-            labelStyle: labelStyle ?? kBodyStyle),
+            errorStyle: context.bodyMedium!
+                .copyWith(color: context.colorScheme.secondary),
+            hintStyle: hintStyle ?? context.bodyMedium,
+            labelStyle: labelStyle ?? context.bodyMedium),
         onChanged: onChanged);
   }
 }

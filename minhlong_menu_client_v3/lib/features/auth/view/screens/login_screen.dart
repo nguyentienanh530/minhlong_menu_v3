@@ -7,15 +7,14 @@ import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_client_v3/common/widget/loading_widget.dart';
 import 'package:minhlong_menu_client_v3/core/app_asset.dart';
 import 'package:minhlong_menu_client_v3/core/extensions.dart';
+import 'package:minhlong_menu_client_v3/features/theme/cubit/theme_cubit.dart';
 
 import '../../../../Routes/app_route.dart';
 import '../../../../common/widget/common_text_field.dart';
 import '../../../../common/widget/error_widget.dart';
-import '../../../../core/app_colors.dart';
 import '../../../../core/app_const.dart';
 import '../../../../core/app_res.dart';
 import '../../../../core/app_string.dart';
-import '../../../../core/app_style.dart';
 import '../../bloc/auth_bloc.dart';
 import '../../data/dto/login_dto.dart';
 
@@ -49,6 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var isDarkMode = context.watch<ThemeCubit>().state;
     return Scaffold(
       body: Stack(
         children: [
@@ -56,7 +56,7 @@ class _LoginScreenState extends State<LoginScreen> {
             height: context.sizeDevice.height,
             width: context.sizeDevice.width,
             child: Image.asset(
-              AppAsset.background,
+              isDarkMode ? AppAsset.backgroundDark : AppAsset.backgroundLight,
               fit: BoxFit.cover,
             ),
           ),
@@ -104,16 +104,22 @@ class _LoginScreenState extends State<LoginScreen> {
                     ? _least8Characters.value = true
                     : _least8Characters.value = false;
               },
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(defaultBorderRadius / 3),
+                borderSide: BorderSide(color: context.colorScheme.secondary),
+              ),
               obscureText: !value,
+              style: context.bodyMedium,
+              labelStyle: context.bodyMedium,
               prefixIcon: Icon(
                 Icons.lock_outline,
-                color: AppColors.black.withOpacity(0.9),
+                color: context.colorScheme.secondary.withOpacity(0.9),
               ),
               suffixIcon: GestureDetector(
                   onTap: () => isShowPassword.value = !isShowPassword.value,
                   child: Icon(
                       !value ? Icons.visibility_off : Icons.remove_red_eye,
-                      color: AppColors.black.withOpacity(0.9))));
+                      color: context.bodyMedium!.color!.withOpacity(0.5))));
         });
   }
 
@@ -169,14 +175,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   Icon(Icons.check_circle_rounded,
                       size: 15,
                       color: value
-                          ? AppColors.islamicGreen
-                          : AppColors.black.withOpacity(0.5)),
+                          ? context.colorScheme.primaryContainer
+                          : context.bodySmall!.color!.withOpacity(0.5)),
                   const SizedBox(width: 8),
                   Text(label,
-                      style: kCaptionStyle.copyWith(
+                      style: context.bodySmall!.copyWith(
                           color: value
-                              ? AppColors.islamicGreen
-                              : AppColors.black.withOpacity(0.5)))
+                              ? context.colorScheme.primaryContainer
+                              : context.bodySmall!.color!.withOpacity(0.5)))
                 ])));
   }
 }
@@ -188,8 +194,8 @@ class _Wellcome extends StatelessWidget {
   Widget build(BuildContext context) {
     return FittedBox(
       child: Text(AppString.welcomeBack,
-          style: kHeadingStyle.copyWith(
-              fontSize: 35, fontWeight: FontWeight.w700)),
+          style: context.titleStyleLarge!
+              .copyWith(fontSize: 35, fontWeight: FontWeight.bold)),
     );
   }
 }
@@ -204,6 +210,12 @@ class _PhoneNumber extends StatelessWidget {
         controller: emailcontroller,
         keyboardType: TextInputType.phone,
         labelText: AppString.phoneNumber,
+        labelStyle: context.bodyMedium,
+        style: context.bodyMedium,
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(defaultBorderRadius / 3),
+          borderSide: BorderSide(color: context.colorScheme.secondary),
+        ),
         validator: (value) {
           return AppRes.validatePhoneNumber(value)
               ? null
@@ -211,7 +223,7 @@ class _PhoneNumber extends StatelessWidget {
         },
         prefixIcon: Icon(
           Icons.phone_android_outlined,
-          color: AppColors.black.withOpacity(0.9),
+          color: context.colorScheme.secondary.withOpacity(0.8),
         ),
         onFieldSubmitted: onSubmit,
         onChanged: (value) => emailcontroller.text = value);
@@ -233,14 +245,15 @@ class _ButtonLogin extends StatelessWidget {
               shape: RoundedRectangleBorder(
                   borderRadius:
                       BorderRadius.circular(textFieldBorderRadius * 10)),
-              side: const BorderSide(color: AppColors.themeColor),
-              foregroundColor: AppColors.black,
+              side: BorderSide(color: context.colorScheme.secondary),
+              foregroundColor: context.colorScheme.onPrimary,
               elevation: 0,
               shadowColor: Colors.transparent,
-              backgroundColor: AppColors.themeColor),
+              backgroundColor: context.colorScheme.secondary),
           onPressed: onTap,
           child: Text(AppString.login,
-              style: kButtonWhiteStyle.copyWith(fontSize: 15)),
+              style: context.bodyMedium!.copyWith(
+                  fontSize: 15, color: context.colorScheme.onPrimary)),
         ));
   }
 }
@@ -255,6 +268,7 @@ class _ButtonForgotPassword extends StatelessWidget {
           context.push(AppRoute.forgotPassword);
         },
         child: Text(AppString.forgotPassword,
-            style: kCaptionStyle.copyWith(color: AppColors.themeColor)));
+            style: context.bodyMedium!
+                .copyWith(color: context.colorScheme.secondary)));
   }
 }

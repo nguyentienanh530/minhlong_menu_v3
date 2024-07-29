@@ -3,12 +3,12 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:minhlong_menu_client_v3/common/widget/cart_button.dart';
 import 'package:minhlong_menu_client_v3/common/widget/common_back_button.dart';
 import 'package:minhlong_menu_client_v3/common/widget/common_text_field.dart';
 import 'package:minhlong_menu_client_v3/common/widget/error_build_image.dart';
-import 'package:minhlong_menu_client_v3/core/app_style.dart';
+import 'package:minhlong_menu_client_v3/core/app_asset.dart';
 import 'package:minhlong_menu_client_v3/core/extensions.dart';
 import 'package:minhlong_menu_client_v3/features/cart/cubit/cart_cubit.dart';
 import 'package:minhlong_menu_client_v3/features/food/data/model/food_item.dart';
@@ -21,8 +21,8 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../../../../Routes/app_route.dart';
 import '../../../../common/snackbar/app_snackbar.dart';
+import '../../../../common/widget/cart_button.dart';
 import '../../../../core/api_config.dart';
-import '../../../../core/app_colors.dart';
 import '../../../../core/app_const.dart';
 import '../../../../core/app_string.dart';
 import '../../../../core/utils.dart';
@@ -84,42 +84,26 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                   SliverAppBar(
                     centerTitle: true,
                     expandedHeight: 0.5 * context.sizeDevice.height,
-                    backgroundColor: AppColors.white,
                     pinned: true,
                     stretch: true,
                     automaticallyImplyLeading: false,
-                    title: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                            child: FittedBox(
-                                fit: BoxFit.scaleDown,
-                                child: CommonBackButton(
-                                    onTap: () => context.pop()))),
-                        Expanded(
-                          flex: 8,
-                          child: FittedBox(
-                            fit: BoxFit.scaleDown,
-                            child: ValueListenableBuilder(
-                              valueListenable: _indexImage,
-                              builder: (context, value, child) {
-                                return _buildIndicator(context, 4);
-                              },
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: FittedBox(
-                            fit: BoxFit.scaleDown,
-                            child: CartButton(
-                              onPressed: () =>
-                                  context.push(AppRoute.carts, extra: user),
-                              number: cartState.orderDetail.length.toString(),
-                              colorIcon: AppColors.themeColor,
-                            ),
-                          ),
-                        )
-                      ],
+                    actions: [
+                      CartButton(
+                        onPressed: () =>
+                            context.push(AppRoute.carts, extra: user),
+                        number: cartState.orderDetail.length.toString(),
+                        colorIcon: context.colorScheme.secondary,
+                      ),
+                    ],
+                    leading: CommonBackButton(onTap: () => context.pop()),
+                    title: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: ValueListenableBuilder(
+                        valueListenable: _indexImage,
+                        builder: (context, value, child) {
+                          return _buildIndicator(context, 4);
+                        },
+                      ),
                     ),
                     flexibleSpace: FlexibleSpaceBar(
                       background: _buildFoodImage(_foodItem),
@@ -176,6 +160,29 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
     );
   }
 
+  Widget _buildFoodImage(FoodItem food) {
+    var images = [food.image1, food.image2, food.image3, food.image4];
+    return CarouselSlider.builder(
+      itemBuilder: (context, index, realIndex) {
+        return SizedBox(
+          width: double.infinity,
+          child: CachedNetworkImage(
+            imageUrl: images[index]!.isEmpty
+                ? ''
+                : '${ApiConfig.host}${images[index]}',
+            fit: BoxFit.cover,
+            errorWidget: errorBuilderForImage,
+          ),
+        );
+      },
+      options: CarouselOptions(
+          viewportFraction: 1,
+          aspectRatio: 1,
+          onPageChanged: (index, reason) => _indexImage.value = index),
+      itemCount: images.length,
+    );
+  }
+
   Widget _buildQuantity() {
     return ValueListenableBuilder(
       valueListenable: _quantity,
@@ -185,7 +192,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
           width: 120,
           padding: const EdgeInsets.symmetric(horizontal: 5),
           decoration: BoxDecoration(
-            color: AppColors.white,
+            // color: context.colorScheme.onSurfaceVariant,
             borderRadius: BorderRadius.circular(defaultBorderRadius * 3),
           ),
           child: Row(
@@ -194,18 +201,14 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
               children: [
                 _buildCounter(context,
                     icon: Icons.remove,
-                    iconColor: AppColors.themeColor, onTap: () {
+                    iconColor: context.colorScheme.secondary, onTap: () {
                   decrementQuaranty();
                 }),
-                Text(quantity.toString(),
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.black,
-                        fontSize: 20)),
+                Text(quantity.toString(), style: context.bodyLarge!),
                 _buildCounter(context,
                     icon: Icons.add,
-                    colorBg: AppColors.themeColor,
-                    iconColor: AppColors.white, onTap: () {
+                    colorBg: context.colorScheme.secondary,
+                    iconColor: Colors.white, onTap: () {
                   incrementQuaranty();
                 })
               ]),
@@ -234,7 +237,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
             decoration: BoxDecoration(
                 color: colorBg,
                 shape: BoxShape.circle,
-                border: Border.all(color: AppColors.themeColor)),
+                border: Border.all(color: context.colorScheme.secondary)),
             height: 30,
             width: 30,
             alignment: Alignment.center,
@@ -245,46 +248,26 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
     return AnimatedSmoothIndicator(
         activeIndex: _indexImage.value,
         count: length,
-        effect: const ExpandingDotsEffect(
-            activeDotColor: AppColors.themeColor,
+        effect: ExpandingDotsEffect(
+            activeDotColor: context.colorScheme.secondary,
             dotHeight: 8,
             dotWidth: 8,
-            dotColor: AppColors.white));
-  }
-
-  Widget _buildFoodImage(FoodItem food) {
-    var images = [food.image1, food.image2, food.image3, food.image4];
-    return CarouselSlider.builder(
-      itemBuilder: (context, index, realIndex) {
-        return SizedBox(
-          width: double.infinity,
-          child: CachedNetworkImage(
-            imageUrl: images[index]!.isEmpty
-                ? ''
-                : '${ApiConfig.host}${images[index]}',
-            fit: BoxFit.cover,
-            errorWidget: errorBuilderForImage,
-          ),
-        );
-      },
-      options: CarouselOptions(
-          viewportFraction: 1,
-          aspectRatio: 1,
-          onPageChanged: (index, reason) => _indexImage.value = index),
-      itemCount: images.length,
-    );
+            dotColor: Colors.white));
   }
 
   Widget _buildFoodDetailsName(FoodItem food) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        const Icon(Icons.check_circle, color: AppColors.islamicGreen, size: 24),
+        Icon(
+          Icons.check_circle,
+          color: context.colorScheme.primaryContainer,
+          size: 24,
+        ),
         5.horizontalSpace,
         Text(
           food.name,
-          style:
-              kHeadingStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 24),
+          style: context.titleStyleLarge!.copyWith(fontWeight: FontWeight.bold),
         ),
       ],
     );
@@ -295,17 +278,18 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
         ? Row(children: [
             Text(
                 '₫ ${Ultils.currencyFormat(double.parse(food.price.toString()))}',
-                style: kBodyStyle.copyWith(
-                    fontWeight: FontWeight.bold, color: AppColors.themeColor)),
+                style: context.bodyMedium!.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: context.colorScheme.secondary)),
           ])
         : Row(children: [
             Text(
                 '₫ ${Ultils.currencyFormat(double.parse(food.price.toString()))}',
-                style: kBodyStyle.copyWith(
-                    color: AppColors.secondTextColor,
+                style: context.bodyMedium!.copyWith(
+                    color: context.colorScheme.outline,
                     decoration: TextDecoration.lineThrough,
-                    decorationThickness: 1,
-                    decorationColor: Colors.red,
+                    decorationThickness: 3,
+                    decorationColor: context.colorScheme.secondary,
                     decorationStyle: TextDecorationStyle.solid)),
             5.horizontalSpace,
             Text(
@@ -313,8 +297,9 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                     isDiscount: food.isDiscount!,
                     foodPrice: food.price!,
                     discount: food.discount!)),
-                style: kBodyStyle.copyWith(
-                    fontWeight: FontWeight.bold, color: AppColors.themeColor)),
+                style: context.bodyMedium!.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: context.colorScheme.secondary)),
           ]);
   }
 
@@ -323,17 +308,21 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(AppString.description,
-            style: kSubHeadingStyle.copyWith(fontWeight: FontWeight.w700)),
+            style: context.bodyLarge!.copyWith(fontWeight: FontWeight.bold)),
         10.verticalSpace,
         ReadMoreText(
           food.description,
-          trimLines: 8,
+          trimLines: 5,
           trimMode: TrimMode.Line,
           trimCollapsedText: AppString.seeMore,
           trimExpandedText: AppString.hide,
-          style: kBodyStyle.copyWith(color: AppColors.secondTextColor),
-          lessStyle: kBodyStyle.copyWith(color: AppColors.themeColor),
-          moreStyle: kBodyStyle.copyWith(color: AppColors.themeColor),
+          style: context.bodyMedium!.copyWith(
+            color: context.bodyMedium!.color!.withOpacity(0.5),
+          ),
+          lessStyle: context.bodyMedium!
+              .copyWith(color: context.colorScheme.secondary),
+          moreStyle: context.bodyMedium!
+              .copyWith(color: context.colorScheme.secondary),
         )
       ],
     );
@@ -345,17 +334,18 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
       children: [
         Text(
           AppString.note,
-          style: kSubHeadingStyle.copyWith(
-            fontWeight: FontWeight.w700,
+          style: context.bodyLarge!.copyWith(
+            fontWeight: FontWeight.bold,
           ),
         ),
         10.verticalSpace,
         CommonTextField(
-          prefixIcon: const Icon(
+          prefixIcon: Icon(
             Icons.description_outlined,
-            color: AppColors.secondTextColor,
+            color: context.colorScheme.secondary.withOpacity(0.7),
           ),
           onChanged: (value) {},
+          style: context.bodyMedium,
           controller: _noteController,
         ),
       ],
@@ -370,7 +360,8 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
         children: [
           FilledButton.icon(
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.themeColor, // Button background color
+              backgroundColor:
+                  context.colorScheme.secondary, // Button background color
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30), // Rounded corners
               ),
@@ -379,19 +370,21 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
               _handleOnTapAddToCart(order, table);
             },
             icon: Container(
-              margin: const EdgeInsets.symmetric(vertical: defaultPadding / 2),
-              padding: const EdgeInsets.all(defaultPadding / 2),
-              decoration: const BoxDecoration(
-                  shape: BoxShape.circle, color: AppColors.white),
-              child: const Icon(
-                Icons.shopping_bag,
-                color: AppColors.themeColor,
-                size: 20,
-              ),
-            ),
+                margin:
+                    const EdgeInsets.symmetric(vertical: defaultPadding / 2),
+                padding: const EdgeInsets.all(defaultPadding / 2),
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: context.colorScheme.onPrimary),
+                child: SvgPicture.asset(
+                  AppAsset.shoppingCart,
+                  height: 20,
+                  colorFilter: ColorFilter.mode(
+                      context.colorScheme.secondary, BlendMode.srcIn),
+                )),
             label: Text(
               AppString.addToCart,
-              style: const TextStyle(color: AppColors.white),
+              style: context.bodyMedium!.copyWith(color: Colors.white),
             ),
           ),
         ],
