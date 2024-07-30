@@ -114,7 +114,10 @@ class OrderRepo {
         .select([
           'orders.id',
           'orders.status',
-          'orders.table_id',
+          'table_id',
+          'tables.name as table_name',
+          'order_details.id as order_details_id',
+          'order_details.quantity',
           'order_details.price',
           'order_details.quantity',
           'order_details.note',
@@ -129,7 +132,6 @@ class OrderRepo {
           'foods.discount',
           'orders.total_price',
           'orders.payed_at',
-          'tables.name as table_name',
           'orders.created_at',
           'orders.updated_at'
         ])

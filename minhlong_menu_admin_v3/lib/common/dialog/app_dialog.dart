@@ -286,33 +286,30 @@ class AppDialog {
     return showDialog(
       barrierDismissible: false,
       context: context,
-      builder: (context) => Dialog(
-        backgroundColor: Colors.transparent,
-        child: FittedBox(
-          child: Container(
-            padding: const EdgeInsets.all(defaultPadding),
-            constraints: const BoxConstraints(maxWidth: 200),
-            child: Column(
-              children: [
-                const LoadingWidget(
-                  title: 'Đang xử lý...',
-                ),
-                isProgressed
-                    ? Column(
-                        children: [
-                          10.verticalSpace,
-                          Text(imageName ?? ''),
-                          10.verticalSpace,
-                          LinearProgressIndicator(
-                            value: progressValue! / 100,
-                            color: AppColors.themeColor,
-                          ),
-                        ],
-                      )
-                    : const SizedBox()
-              ],
+      builder: (context) => AlertDialog(
+        scrollable: true,
+        backgroundColor: AppColors.white,
+        content: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const LoadingWidget(
+              title: 'Đang xử lý...',
             ),
-          ),
+            isProgressed
+                ? Column(
+                    children: [
+                      10.verticalSpace,
+                      Text(imageName ?? ''),
+                      10.verticalSpace,
+                      LinearProgressIndicator(
+                        value: progressValue! / 100,
+                        color: AppColors.themeColor,
+                      ),
+                    ],
+                  )
+                : const SizedBox()
+          ],
         ),
       ),
     );

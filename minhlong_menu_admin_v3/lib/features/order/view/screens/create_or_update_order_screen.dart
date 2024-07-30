@@ -75,6 +75,8 @@ class _CreateOrUpdateOrderViewState extends State<CreateOrUpdateOrderView> {
   final _listStatus = [
     StatusDto(key: 'new', value: 'Đơn mới'),
     StatusDto(key: 'processing', value: 'Đang làm'),
+    StatusDto(key: 'completed', value: 'Hoàn thành'),
+    StatusDto(key: 'cancel', value: 'Huỷ'),
   ];
   late final _status = ValueNotifier(_listStatus.first);
   @override
@@ -91,15 +93,22 @@ class _CreateOrUpdateOrderViewState extends State<CreateOrUpdateOrderView> {
 
   @override
   Widget build(BuildContext context) {
+    print('order: ${widget.order}');
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: AppColors.themeColor,
+        foregroundColor: AppColors.white,
+        centerTitle: true,
         leading: IconButton(
             onPressed: () => context.pop(_isUpdated),
             icon: const Icon(
               Icons.arrow_back,
             )),
-        title: Text(_typeScreen == ScreenType.create ? 'Tạo đơn' : 'Sửa đơn',
-            style: kHeadingStyle),
+        title: Text(
+            _typeScreen == ScreenType.create
+                ? 'Tạo đơn'
+                : 'Sửa đơn #${widget.order!.id}',
+            style: kHeadingWhiteStyle),
       ),
       body: GestureDetector(
         onTap: () {
@@ -140,7 +149,8 @@ class _CreateOrUpdateOrderViewState extends State<CreateOrUpdateOrderView> {
   Widget _buildTablesDropdown(List<TableItem> tables) {
     return Row(
       children: [
-        const Text('Chọn bàn: ', style: kBodyStyle),
+        10.horizontalSpace,
+        const Text('Chọn bàn: ', style: kBodyWhiteStyle),
         ListenableBuilder(
           listenable: _table,
           builder: (context, _) {
@@ -148,16 +158,21 @@ class _CreateOrUpdateOrderViewState extends State<CreateOrUpdateOrderView> {
               padding:
                   const EdgeInsets.symmetric(horizontal: defaultPadding / 2),
               value: _table.value,
-              icon: const Icon(Icons.arrow_drop_down),
+              icon: const Icon(
+                Icons.arrow_drop_down,
+              ),
               // borderRadius: BorderRadius.circular(defaultBorderRadius).r,
               underline: const SizedBox(),
-              style: kBodyStyle.copyWith(fontWeight: FontWeight.w900),
-              dropdownColor: AppColors.white,
+              style: kBodyWhiteStyle.copyWith(fontWeight: FontWeight.w900),
+              iconEnabledColor: AppColors.white,
+              dropdownColor: AppColors.themeColor,
               items: tables
                   .map(
                     (e) => DropdownMenuItem(
                       value: e,
-                      child: Text(e.name),
+                      child: Text(
+                        e.name,
+                      ),
                     ),
                   )
                   .toList(),
@@ -174,7 +189,7 @@ class _CreateOrUpdateOrderViewState extends State<CreateOrUpdateOrderView> {
   Widget _buildStatusDropdown() {
     return Row(
       children: [
-        const Text('Trạng thái: ', style: kBodyStyle),
+        const Text('Trạng thái: ', style: kBodyWhiteStyle),
         ListenableBuilder(
           listenable: _status,
           builder: (context, _) {
@@ -185,8 +200,9 @@ class _CreateOrUpdateOrderViewState extends State<CreateOrUpdateOrderView> {
               icon: const Icon(Icons.arrow_drop_down),
               // borderRadius: BorderRadius.circular(defaultBorderRadius).r,
               underline: const SizedBox(),
-              style: kBodyStyle.copyWith(fontWeight: FontWeight.w900),
-              dropdownColor: AppColors.white,
+              style: kBodyWhiteStyle.copyWith(fontWeight: FontWeight.w900),
+              dropdownColor: AppColors.themeColor,
+              iconEnabledColor: AppColors.white,
               items: _listStatus
                   .map(
                     (e) => DropdownMenuItem(
@@ -518,8 +534,10 @@ class _CreateOrUpdateOrderViewState extends State<CreateOrUpdateOrderView> {
       },
       child: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: defaultPadding / 2),
+          Container(
+            padding: const EdgeInsets.symmetric(
+                horizontal: defaultPadding / 2, vertical: defaultPadding / 2),
+            color: AppColors.themeColor,
             child: Column(
               children: [
                 context.isMobile
@@ -547,6 +565,7 @@ class _CreateOrUpdateOrderViewState extends State<CreateOrUpdateOrderView> {
               ],
             ),
           ),
+          10.verticalSpace,
           Expanded(
             child: SizedBox(
               width: context.sizeDevice.width,

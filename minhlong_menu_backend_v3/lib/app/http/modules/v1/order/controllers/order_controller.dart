@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:minhlong_menu_backend_v3/app/http/common/app_response.dart';
 import 'package:minhlong_menu_backend_v3/app/http/modules/v1/food/repositories/food_repo.dart';
 import 'package:minhlong_menu_backend_v3/app/http/modules/v1/order/models/order_details.dart';
-
 import 'package:minhlong_menu_backend_v3/app/http/modules/v1/order/repositories/order_repo.dart';
 import 'package:minhlong_menu_backend_v3/app/http/modules/v1/table/models/table.dart';
 import 'package:minhlong_menu_backend_v3/app/http/modules/v1/table/repositories/table_repo.dart';
@@ -189,7 +188,8 @@ class OrderController extends Controller {
         'status': request.input('status'),
         'total_price': request.input('total_price'),
         'table_id': request.input('table_id'),
-        'payed_at': request.input('payed_at'),
+        'payed_at':
+            request.input('status') == 'completed' ? DateTime.now() : null,
       };
 
       await orderRepo.updateOrder(id, orderUpdate);
@@ -290,15 +290,16 @@ class OrderController extends Controller {
         Map<String, dynamic> orderMap = {
           'id': id,
           'status': ordersList.first['status'],
-          'total_price': ordersList.first['total_price'],
-          'table_name': ordersList.first['table_name'],
-          'payed_at': ordersList.first['payed_at'],
           'table_id': ordersList.first['table_id'],
+          'table_name': ordersList.first['table_name'],
+          'total_price': ordersList.first['total_price'],
+          'payed_at': ordersList.first['payed_at'],
           'created_at': ordersList.first['created_at'],
           'updated_at': ordersList.first['updated_at'],
           'order_detail': ordersList.map((order) {
             return {
-              'id': order['food_id'],
+              'order_details_id': order['order_details_id'],
+              'food_id': order['food_id'],
               'name': order['name'],
               'quantity': order['quantity'],
               'price': order['price'],

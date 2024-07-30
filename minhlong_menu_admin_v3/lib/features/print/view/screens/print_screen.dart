@@ -19,6 +19,7 @@ class PrintScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('In hóa đơn')),
       body: PdfPreview(
+        maxPageWidth: 80,
         // useActions: false,
         build: (format) => _generatePdf(format),
       ),

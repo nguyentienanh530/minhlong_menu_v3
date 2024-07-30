@@ -14,17 +14,13 @@ extension _BuildSideMenuWidget on HomeViewState {
 
           selectedColor: AppColors.themeColor,
           selectedTitleTextStyle: kBodyStyle.copyWith(
-              color: AppColors.white,
-              fontWeight: FontWeight.w700,
-              fontSize: 16),
+            color: AppColors.white,
+            fontWeight: FontWeight.w700,
+          ),
           unselectedTitleTextStyle:
               kBodyStyle.copyWith(color: AppColors.secondTextColor),
           selectedIconColor: Colors.white,
           unselectedIconColor: AppColors.secondTextColor,
-          // decoration: const BoxDecoration(
-          //   borderRadius: BorderRadius.all(Radius.circular(10)),
-          // ),
-          // backgroundColor: Colors.grey[200]
         ),
         title: Column(
           children: [

@@ -26,7 +26,7 @@ extension _OrderBodyWidget on _OrderViewState {
               2: FlexColumnWidth(),
               3: FlexColumnWidth(),
               4: FlexColumnWidth(),
-              5: FixedColumnWidth(100),
+              5: FixedColumnWidth(200),
             },
             defaultVerticalAlignment: TableCellVerticalAlignment.middle,
             children: <TableRow>[
@@ -154,7 +154,7 @@ extension _OrderBodyWidget on _OrderViewState {
           2: FlexColumnWidth(),
           3: FlexColumnWidth(),
           4: FlexColumnWidth(),
-          5: FixedColumnWidth(100),
+          5: FixedColumnWidth(200),
         },
         defaultVerticalAlignment: TableCellVerticalAlignment.middle,
         children: orders.orderItems
@@ -198,7 +198,11 @@ extension _OrderBodyWidget on _OrderViewState {
           height: 70.h,
           alignment: Alignment.center,
           child: Text(
-            Ultils.formatDateToString(orderItem.createdAt!, isShort: true),
+            Ultils.formatDateToString(
+                orderItem.status == 'cancel'
+                    ? orderItem.updatedAt!
+                    : orderItem.payedAt!,
+                isShort: true),
             style: kBodyStyle.copyWith(color: AppColors.secondTextColor),
           ),
         ),
@@ -221,9 +225,16 @@ extension _OrderBodyWidget on _OrderViewState {
         Container(
           height: 70.h,
           alignment: Alignment.center,
-          child: Text(
-            _handleStatus(orderItem.status),
-            style: kBodyStyle.copyWith(color: _handleColor(orderItem.status)),
+          child: Container(
+            padding: const EdgeInsets.all(10).r,
+            decoration: BoxDecoration(
+              color: _handleColor(orderItem.status).withOpacity(0.1),
+              borderRadius: BorderRadius.circular(defaultBorderRadius / 2),
+            ),
+            child: Text(
+              _handleStatus(orderItem.status),
+              style: kBodyStyle.copyWith(color: _handleColor(orderItem.status)),
+            ),
           ),
         ),
         _actionWidget(orderItem),
@@ -232,71 +243,47 @@ extension _OrderBodyWidget on _OrderViewState {
   }
 
   Widget _actionWidget(OrderItem orderItem) {
-    switch (orderItem.status) {
-      case 'new':
-        return Container(
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
           height: 70.h,
           alignment: Alignment.center,
           child: CommonIconButton(
             onTap: () {
               _showDetailDialog(orderItem);
             },
-            icon: Icons.mode_edit_outline_outlined,
-            color: AppColors.sun,
+            icon: Icons.remove_red_eye,
+            color: AppColors.islamicGreen,
             tooltip: 'Xem đơn hàng',
           ),
-        );
-      case 'processing':
-        return Container(
+        ),
+        10.horizontalSpace,
+        Container(
           height: 70.h,
           alignment: Alignment.center,
           child: CommonIconButton(
-            onTap: () {
-              _showDetailDialog(orderItem);
+            onTap: () async {
+              // _showDetailDialog(orderItem);
+              await context.push<bool>(AppRoute.createOrUpdateOrder,
+                  extra: {'order': orderItem, 'type': ScreenType.update}).then(
+                (value) {
+                  if (value != null && value) {
+                    _fetchData(
+                        status: _listStatus[_tabController.index],
+                        page: _curentPage.value,
+                        limit: _limit.value);
+                  }
+                },
+              );
             },
-            icon: Icons.mode_edit_outline_outlined,
+            icon: Icons.edit,
             color: AppColors.sun,
-            tooltip: 'Xem đơn hàng',
+            tooltip: 'Sửa đơn hàng',
           ),
-        );
-      case 'completed':
-        return Row(
-          children: [
-            Container(
-              height: 70.h,
-              alignment: Alignment.center,
-              child: CommonIconButton(
-                onTap: () {
-                  _showDetailDialog(orderItem);
-                },
-                icon: Icons.remove_red_eye,
-                color: AppColors.islamicGreen,
-                tooltip: 'Xem đơn hàng',
-              ),
-            ),
-            10.horizontalSpace,
-            Container(
-              height: 70.h,
-              alignment: Alignment.center,
-              child: CommonIconButton(
-                onTap: () {
-                  AppDialog.showWarningDialog(context,
-                      title: 'Xóa đơn',
-                      description: 'Bạn có muốn xóa đơn ${orderItem.id}?',
-                      onPressedComfirm: () {
-                    _handleDeleteOrder(orderID: orderItem.id);
-                  });
-                },
-                icon: Icons.delete_outline,
-                color: AppColors.red,
-                tooltip: 'Xóa đơn',
-              ),
-            ),
-          ],
-        );
-
-      case 'cancel':
-        return Container(
+        ),
+        10.horizontalSpace,
+        Container(
           height: 70.h,
           alignment: Alignment.center,
           child: CommonIconButton(
@@ -312,9 +299,9 @@ extension _OrderBodyWidget on _OrderViewState {
             color: AppColors.red,
             tooltip: 'Xóa đơn',
           ),
-        );
-      default:
-        return const SizedBox();
-    }
+        ),
+        10.horizontalSpace,
+      ],
+    );
   }
 }

@@ -38,13 +38,16 @@ extension _OrderDetailDialog on _OrderViewState {
         ),
       ),
       actions: [
-        CommonIconButton(
-          onTap: () {
-            context.push(AppRoute.printScreen, extra: orderItem);
-          },
-          icon: Icons.print,
-          color: AppColors.sun,
-        ),
+        _buttonAction(
+            title: 'In đơn',
+            icon: const Icon(
+              Icons.print,
+              color: AppColors.white,
+            ),
+            onTap: () {
+              context.push(AppRoute.printScreen, extra: orderItem);
+            },
+            color: AppColors.themeColor),
       ],
     );
   }
@@ -86,64 +89,78 @@ extension _OrderDetailDialog on _OrderViewState {
     );
   }
 
-  Widget _buildActionButton(OrderItem orderItem) {
-    switch (orderItem.status) {
-      case 'completed':
-        return const SizedBox();
-      // return _buttonAction(
-      //   title: 'Xóa đơn',
-      //   onTap: () {
-      //     // _showOrderCancelDialog(orderItem);
-      //   },
-      //   color: AppColors.blue,
-      // );
-      default:
-        return const SizedBox();
-    }
+  _buttonAction(
+      {required String title,
+      required Function() onTap,
+      required Color color,
+      Widget? icon}) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(textFieldBorderRadius).r,
+            color: color),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            icon ?? const SizedBox(),
+            10.horizontalSpace,
+            Text(
+              title,
+              style: kBodyWhiteStyle.copyWith(fontWeight: FontWeight.w700),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   _buildBodyDialog(OrderItem orderItem) {
-    return Column(
-      children: [
-        Container(
-          color: AppColors.white,
-          child: Table(
-              border: const TableBorder(
-                top: BorderSide(color: AppColors.secondTextColor),
-                left: BorderSide(color: AppColors.secondTextColor),
-                right: BorderSide(color: AppColors.secondTextColor),
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          Container(
+            color: AppColors.white,
+            child: Table(
+                border: const TableBorder(
+                  top: BorderSide(color: AppColors.secondTextColor),
+                  left: BorderSide(color: AppColors.secondTextColor),
+                  right: BorderSide(color: AppColors.secondTextColor),
+                ),
+                columnWidths: const <int, TableColumnWidth>{
+                  0: FlexColumnWidth(),
+                  1: FlexColumnWidth(0.5),
+                  2: FlexColumnWidth(),
+                },
+                defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                children: [
+                  TableRow(children: [
+                    _buildItemTitle(title: 'Món ăn'),
+                    _buildItemTitle(title: 'Số lượng'),
+                    _buildItemTitle(title: 'Giá')
+                  ])
+                ]),
+          ),
+          Table(
+              border: TableBorder.all(
+                color: AppColors.secondTextColor,
               ),
               columnWidths: const <int, TableColumnWidth>{
                 0: FlexColumnWidth(),
-                1: FlexColumnWidth(),
+                1: FlexColumnWidth(0.5),
                 2: FlexColumnWidth(),
               },
               defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-              children: [
-                TableRow(children: [
-                  _buildItemTitle(title: 'Món ăn'),
-                  _buildItemTitle(title: 'Số lượng'),
-                  _buildItemTitle(title: 'Giá')
-                ])
-              ]),
-        ),
-        Table(
-            border: TableBorder.all(
-              color: AppColors.secondTextColor,
-            ),
-            columnWidths: const <int, TableColumnWidth>{
-              0: FlexColumnWidth(),
-              1: FlexColumnWidth(),
-              2: FlexColumnWidth(),
-            },
-            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-            children: orderItem.foodOrders
-                .asMap()
-                .map((index, value) =>
-                    MapEntry(index, _buildRowTableDialog(value)))
-                .values
-                .toList()),
-      ],
+              children: orderItem.foodOrders
+                  .asMap()
+                  .map((index, value) =>
+                      MapEntry(index, _buildRowTableDialog(value)))
+                  .values
+                  .toList()),
+        ],
+      ),
     );
   }
 

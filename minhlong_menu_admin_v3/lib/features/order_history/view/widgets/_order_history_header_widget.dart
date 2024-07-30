@@ -24,7 +24,8 @@ extension _OrderHeaderWidget on _OrderViewState {
       child: TabBar(
         controller: _tabController,
         splashFactory: InkSplash.splashFactory,
-        labelStyle: kBodyStyle.copyWith(color: AppColors.white),
+        labelStyle: kBodyStyle.copyWith(
+            color: AppColors.white, fontWeight: FontWeight.w900),
         indicatorSize: TabBarIndicatorSize.tab,
         indicator: BoxDecoration(
             borderRadius: BorderRadius.circular(textFieldBorderRadius),
