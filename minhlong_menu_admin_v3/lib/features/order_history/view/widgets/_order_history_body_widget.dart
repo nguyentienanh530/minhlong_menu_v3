@@ -137,6 +137,15 @@ extension _OrderBodyWidget on _OrderViewState {
   }
 
   Widget _buildWidgetSuccess(OrderModel orders) {
+    List<OrderItem> mutableOrderItems = List.from(orders.orderItems);
+    if (orders.orderItems.first.status == 'cancel') {
+      mutableOrderItems.sort((a, b) => b.updatedAt!.compareTo(a.updatedAt!));
+      orders = orders.copyWith(orderItems: mutableOrderItems);
+    } else {
+      mutableOrderItems.sort((a, b) => b.payedAt!.compareTo(a.payedAt!));
+      orders = orders.copyWith(orderItems: mutableOrderItems);
+    }
+
     return Table(
         // border: TableBorder.all(),
         columnWidths: const <int, TableColumnWidth>{

@@ -20,6 +20,10 @@ class OrderDetailsRepo {
     return await orderDetails.query().where('id', '=', id).delete();
   }
 
+  Future deleteOrderDetailsByOrderID({required int id}) async {
+    return await orderDetails.query().where('order_id', '=', id).delete();
+  }
+
   Future findOrderDetails({required int id}) async {
     return await orderDetails.query().where('id', '=', id).first();
   }

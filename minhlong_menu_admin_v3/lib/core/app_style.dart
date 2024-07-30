@@ -26,23 +26,23 @@ const kSubHeadingWhiteStyle = TextStyle(
 const kBodyStyle = TextStyle(
   color: AppColors.neroDark,
   letterSpacing: 1,
-  fontSize: 14,
+  fontSize: 12,
 );
 const kBodyWhiteStyle = TextStyle(
   color: AppColors.white,
   letterSpacing: 1,
-  fontSize: 14,
+  fontSize: 12,
 );
 const kCaptionStyle = TextStyle(
   color: AppColors.neroDark,
   letterSpacing: 1,
-  fontSize: 12,
+  fontSize: 10,
 );
 
 const kCaptionWhiteStyle = TextStyle(
   color: AppColors.white,
   letterSpacing: 1,
-  fontSize: 12,
+  fontSize: 10,
 );
 
 const kButtonStyle = TextStyle(

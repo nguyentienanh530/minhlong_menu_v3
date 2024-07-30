@@ -36,3 +36,9 @@ final class OrderCreated extends OrderEvent {
   final OrderItem order;
   OrderCreated(this.order);
 }
+
+final class OrderPayed extends OrderEvent {
+  final OrderItem order;
+  final List<int> ids;
+  OrderPayed({required this.order, required this.ids});
+}

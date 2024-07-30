@@ -40,4 +40,9 @@ class OrderApi {
         data: order.toJson());
     return response.data['data'];
   }
+
+  Future<bool> payOrder({required OrderItem order}) async {
+    final response = await dio.post(ApiConfig.payOrder, data: order.toJson());
+    return response.data['data'];
+  }
 }

@@ -39,6 +39,7 @@ class OrderController extends Controller {
       var tableID = request.input('table_id');
       var totalPrice = request.input('total_price');
       var listFood = request.input('order_detail') as List;
+      String? status = request.input('status');
 
       if (userID == null || userID == -1) {
         return AppResponse().error(
@@ -47,7 +48,7 @@ class OrderController extends Controller {
         );
       }
       var order = {
-        'status': 'new',
+        'status': status ?? 'new',
         'table_id': tableID,
         'user_id': userID,
         'total_price': totalPrice
@@ -57,20 +58,13 @@ class OrderController extends Controller {
 
       if (orderID != 0) {
         for (var food in listFood) {
-          var foodID = food['id'];
+          var foodID = food['food_id'];
           var quantity = food['quantity'];
           var foodDB = await foodRepo.find(id: foodID);
-          // var isDiscount = foodDB!['is_discount'];
+
           var price = foodDB!['price'];
-          // var discount = foodDB['discount'];
+
           var totalAmount = food['total_amount'];
-          // if (isDiscount != null && isDiscount == true) {
-          //   double discountAmount = (price * discount.toDouble()) / 100;
-          //   double discountedPrice = price - discountAmount;
-          //   totalAmount = discountedPrice * quantity;
-          // } else {
-          //   totalAmount = price * quantity;
-          // }
 
           var orderDetailsData = {
             'order_id': orderID,
@@ -107,6 +101,67 @@ class OrderController extends Controller {
     }
   }
 
+  Future<Response> paymentOrder(Request request) async {
+    int? userID = request.headers[ConstRes.userID] != null
+        ? int.tryParse(request.headers[ConstRes.userID])
+        : -1;
+    var data = request.all();
+
+    try {
+      if (userID == null || userID == -1) {
+        return AppResponse().error(
+          statusCode: HttpStatus.unauthorized,
+          message: 'unauthorized',
+        );
+      }
+      var order = {
+        'status': data['status'] ?? 'new',
+        'table_id': data['table_id'] ?? -1,
+        'user_id': userID,
+        'total_price': data['total_price'] ?? 0,
+        'payed_at': DateTime.now()
+      };
+      var orderDetails = data['order_detail'] as List;
+
+      var orderID = await orderRepo.createOrder(order);
+      print('orderID: $orderID');
+
+      if (orderID != 0) {
+        for (var food in orderDetails) {
+          var foodDB = await foodRepo.find(id: food['food_id']);
+
+          var orderDetailsData = {
+            'order_id': orderID,
+            'food_id': food['food_id'],
+            'quantity': food['quantity'],
+            'price': foodDB!['price'],
+            'total_amount': food['total_amount'],
+            'note': food['note']
+          };
+          await orderDetailsRepo.createOrderDetails(orderDetailsData);
+          await foodRepo.update(
+              id: food['food_id'],
+              data: {'order_count': foodDB['order_count'] + 1});
+        }
+
+        await tableRepo
+            .update(id: data['table_id'] ?? -1, tableDataUpdate: {'is_use': 0});
+      } else {
+        return AppResponse().error(
+          statusCode: HttpStatus.badRequest,
+          message: 'create order failed',
+        );
+      }
+
+      return AppResponse().ok(data: true, statusCode: HttpStatus.ok);
+    } catch (e) {
+      print('create order error: $e');
+      return AppResponse().error(
+          statusCode: HttpStatus.internalServerError,
+          message: 'connection error');
+    }
+  }
+
   Future<Response> updateOrder(Request request, int id) async {
     try {
       var order = await orderRepo.findOrderByID(id);
@@ -119,25 +174,16 @@ class OrderController extends Controller {
       var orderDetails = request.input('order_detail') as List;
       print('od: ${request.all()}');
       print('or: $orderDetails');
+      await orderDetailsRepo.deleteOrderDetailsByOrderID(id: id);
       for (var orderDetail in orderDetails) {
-        var detail = await orderDetailsRepo.findOrderDetails(
-            id: orderDetail['order_details_id']);
-        if (detail == null) {
-          await orderDetailsRepo.createOrderDetails({
-            'order_id': order['id'],
-            'food_id': orderDetail['id'],
-            'quantity': orderDetail['quantity'],
-            'price': orderDetail['price'],
-            'total_amount': orderDetail['total_amount'],
-            'note': orderDetail['note']
-          });
-        } else {
-          await orderDetailsRepo
-              .updateOrderDetails(id: orderDetail['id'], data: {
-            'quantity': orderDetail['quantity'],
-            'total_amount': orderDetail['total_amount'],
-          });
-        }
+        await orderDetailsRepo.createOrderDetails({
+          'order_id': order['id'],
+          'food_id': orderDetail['food_id'],
+          'quantity': orderDetail['quantity'],
+          'price': orderDetail['price'],
+          'total_amount': orderDetail['total_amount'],
+          'note': orderDetail['note']
+        });
       }
       var orderUpdate = {
         'status': request.input('status'),

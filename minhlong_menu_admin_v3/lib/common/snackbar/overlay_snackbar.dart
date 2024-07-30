@@ -34,62 +34,69 @@ class OverlaySnackbar {
                     ? AppColors.red.withOpacity(0.3)
                     : AppColors.islamicGreen.withOpacity(0.3),
                 borderRadius: BorderRadius.circular(10)),
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: Column(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            child: Stack(
               children: [
-                Expanded(
-                  flex: 2,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      type == OverlaySnackbarType.error
-                          ? const Icon(Icons.error,
-                              color: AppColors.red, size: 20)
-                          : const Icon(Icons.check_circle,
-                              color: AppColors.islamicGreen, size: 20),
-                      const SizedBox(width: 10),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                Column(
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Text(
-                            type == OverlaySnackbarType.error
-                                ? 'Lỗi!'
-                                : 'Thành công!',
-                            style: kSubHeadingStyle.copyWith(
-                                fontWeight: FontWeight.w700),
-                          ),
-                          Text(
-                            message,
-                            style: kCaptionStyle.copyWith(
-                                color: AppColors.black.withOpacity(0.5)),
+                          type == OverlaySnackbarType.error
+                              ? const Icon(Icons.error,
+                                  color: AppColors.red, size: 20)
+                              : const Icon(Icons.check_circle,
+                                  color: AppColors.islamicGreen, size: 20),
+                          const SizedBox(width: 10),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                type == OverlaySnackbarType.error
+                                    ? 'Lỗi!'
+                                    : 'Thành công!',
+                                style: kSubHeadingStyle.copyWith(
+                                    fontWeight: FontWeight.w700),
+                              ),
+                              Text(
+                                message,
+                                style: kBodyStyle.copyWith(
+                                    color: AppColors.black.withOpacity(0.5)),
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                      const Spacer(),
-                      IconButton(
-                        icon: const Icon(Icons.close,
-                            color: Colors.black, size: 15),
-                        onPressed: () {
+                    ),
+                    10.verticalSpace,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 3),
+                      child: LinearTimer(
+                        color: type == OverlaySnackbarType.error
+                            ? AppColors.red
+                            : AppColors.islamicGreen,
+                        duration: const Duration(seconds: 3),
+                        onTimerEnd: () {
                           overlayEntry.remove();
                         },
+                        forward: false,
                       ),
-                    ],
-                  ),
+                    )
+                  ],
                 ),
-                10.verticalSpace,
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 3),
-                  child: LinearTimer(
-                    color: type == OverlaySnackbarType.error
-                        ? AppColors.red
-                        : AppColors.islamicGreen,
-                    duration: const Duration(seconds: 3),
-                    onTimerEnd: () {
+                Positioned(
+                  top: 0,
+                  right: 0,
+                  child: InkWell(
+                    child: const Icon(Icons.close,
+                        color: AppColors.white, size: 20),
+                    onTap: () {
                       overlayEntry.remove();
                     },
-                    forward: false,
                   ),
-                )
+                ),
               ],
             ),
           ),

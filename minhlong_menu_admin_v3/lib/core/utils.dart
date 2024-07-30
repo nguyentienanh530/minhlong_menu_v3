@@ -30,7 +30,7 @@ class Ultils {
   static bool checkExistFood(OrderItem order, int foodID) {
     var isExist = false;
     for (FoodOrderModel e in order.foodOrders) {
-      if (e.id == foodID) {
+      if (e.foodID == foodID) {
         isExist = true;
         break;
       }

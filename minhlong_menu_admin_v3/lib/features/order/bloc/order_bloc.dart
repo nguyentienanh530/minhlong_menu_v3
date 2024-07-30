@@ -17,6 +17,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     on<OrderDeleted>(_onOrderDeleted);
     on<OrderCreated>(_orderCreated);
     on<OrderUpdated>(_onOrderUpdated);
+    on<OrderPayed>(_onOrderPayed);
   }
 
   final OrderRepository _orderRepo;
@@ -87,6 +88,23 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       },
       failure: (message) {
         emit(OrderUpdateFailure(message));
+      },
+    );
+  }
+
+  FutureOr<void> _onOrderPayed(OrderPayed event, Emit emit) async {
+    emit(OrderPaymentInProgress());
+
+    final result = await _orderRepo.payOrder(order: event.order);
+    await result.when(
+      success: (success) async {
+        for (var item in event.ids) {
+          await _orderRepo.delete(id: item);
+        }
+        emit(OrderPaymentSuccess());
+      },
+      failure: (message) {
+        emit(OrderPaymentFailure(error: message));
       },
     );
   }

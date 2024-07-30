@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -25,18 +26,15 @@ import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import '../../../../common/widget/empty_widget.dart';
 import '../../../../common/widget/error_build_image.dart';
-import '../../../../common/widget/number_pagination.dart';
 import '../../../../core/api_config.dart';
 import '../../../../core/const_res.dart';
 import '../../../dinner_table/data/model/table_item.dart';
 import '../../../home/cubit/table_index_selected_cubit.dart';
 import '../../bloc/order_bloc.dart';
 import '../../data/model/order_item.dart';
-import '../../data/model/order_model.dart';
 import '../../data/repositories/order_repository.dart';
 import 'package:badges/badges.dart' as badges;
 part '../widgets/_order_header_widget.dart';
-part '../widgets/_order_body_widget.dart';
 part '../dialogs/_order_detail_dialog.dart';
 part '../widgets/_orders_on_table_widget.dart';
 part '../widgets/_table_widget.dart';
@@ -74,22 +72,13 @@ class _OrderViewState extends State<OrderView>
   late final WebSocketChannel _orderChannel;
   final _indexSelectedTable = ValueNotifier(0);
   var _isFirstSendSocket = false;
-  var _ordersLength = 0;
+
   late UserModel _user;
-  final _orderModel = ValueNotifier(OrderModel());
-  final _listTitleTable = [
-    'ID',
-    'Ngày',
-    'Bàn',
-    'SL món',
-    'T.Tiền',
-    'T.Thái',
-    'H.Động'
-  ];
+
+  List<OrderItem> ordersList = <OrderItem>[];
   final _curentPage = ValueNotifier(1);
   final _limit = ValueNotifier(10);
   late final TabController _tabController;
-  final _listStatus = ['new', 'processing'];
 
   @override
   void initState() {
@@ -125,18 +114,13 @@ class _OrderViewState extends State<OrderView>
   void dispose() {
     super.dispose();
     _tabController.dispose();
-    _orderModel.dispose();
+
     _curentPage.dispose();
     _limit.dispose();
-    disconnect();
     _indexSelectedTable.dispose();
-  }
 
-  // Ultils.joinRoom(_tableChannel, 'tables-${_user.id}');
-  // Ultils.joinRoom(_orderChannel, 'orders-${_user.id}');
-  // Ultils.sendSocket(_tableChannel, 'tables', _user.id);
-  // Ultils.sendSocket(_orderChannel, 'orders',
-  //     {'user_id': _user.id, 'table_id': tableIndexSelectedState});
+    disconnect();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -160,11 +144,21 @@ class _OrderViewState extends State<OrderView>
         padding: const EdgeInsets.all(30).r,
         child: BlocListener<OrderBloc, OrderState>(
           listener: (context, state) {
-            if (state is OrderUpdateStatusInProgress) {
+            if (state is OrderUpdateStatusInProgress ||
+                state is OrderPaymentInProgress ||
+                state is OrderDeleted) {
               AppDialog.showLoadingDialog(context);
             }
-            if (state is OrderUpdateStatusSuccess) {
+            if (state is OrderUpdateStatusSuccess ||
+                state is OrderDeleteSuccess) {
               pop(context, 1);
+              OverlaySnackbar.show(context, 'Cập nhật thành công');
+              Ultils.sendSocket(_orderChannel, 'orders',
+                  {'user_id': _user.id, 'table_id': tableIndexSelectedState});
+              Ultils.sendSocket(_tableChannel, 'tables', _user.id);
+            }
+            if (state is OrderPaymentSuccess) {
+              pop(context, 2);
               OverlaySnackbar.show(context, 'Cập nhật thành công');
               Ultils.sendSocket(_orderChannel, 'orders',
                   {'user_id': _user.id, 'table_id': tableIndexSelectedState});
@@ -176,12 +170,27 @@ class _OrderViewState extends State<OrderView>
               OverlaySnackbar.show(context, 'Có lỗi xảy ra',
                   type: OverlaySnackbarType.error);
             }
+
+            if (state is OrderPaymentFailure) {
+              pop(context, 1);
+              OverlaySnackbar.show(context, 'Có lỗi xảy ra',
+                  type: OverlaySnackbarType.error);
+            }
+
+            if (state is OrderDeleteFailure) {
+              pop(context, 1);
+              OverlaySnackbar.show(context, 'Có lỗi xảy ra',
+                  type: OverlaySnackbarType.error);
+            }
           },
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _orderHeaderWidget(tableIndexSelectedState),
+              _orderHeaderWidget(
+                tableIndexSelectedState,
+                ordersList,
+              ),
               10.verticalSpace,
               const SizedBox(height: defaultPadding),
               _buildTablesWidget(index: tableIndexSelectedState),
@@ -197,12 +206,6 @@ class _OrderViewState extends State<OrderView>
     );
   }
 
-  void _fetchData(
-      {required String status, required int page, required int limit}) {
-    context.read<OrderBloc>().add(
-        OrderFetchNewOrdersStarted(status: status, page: page, limit: limit));
-  }
-
   String _handleStatus(String status) {
     switch (status) {
       case 'new':
@@ -213,7 +216,6 @@ class _OrderViewState extends State<OrderView>
         return 'Hoàn thành';
       case 'cancel':
         return 'Đã huỷ';
-
       default:
         return 'Đã đặt';
     }
@@ -235,11 +237,71 @@ class _OrderViewState extends State<OrderView>
     }
   }
 
-  void _showDetailDialog(OrderItem orderItem) {
+  void _showDetailDialog(List<OrderItem> orders) {
+    if (orders.isEmpty) {
+      OverlaySnackbar.show(context, 'Không có đơn hàng',
+          type: OverlaySnackbarType.error);
+      return;
+    }
+    var listID = orders.map((e) => e.id).toList();
+
     showDialog(
       context: context,
-      builder: (context) => _orderDetailDialog(orderItem),
+      builder: (context) =>
+          _orderDetailDialog(_mergeOrderItems(orders), listID),
     );
+  }
+
+  OrderItem _mergeOrderItems(List<OrderItem> orderItems) {
+    orderItems.sort((a, b) => a.createdAt!.compareTo(b.createdAt!));
+
+    OrderItem mergedOrders = OrderItem(
+        createdAt: orderItems[0].createdAt,
+        tableId: orderItems[0].tableId,
+        foodOrders: []);
+
+    List<FoodOrderModel> mergedFoodOrders = [];
+    for (OrderItem orderItem in orderItems) {
+      mergedFoodOrders.addAll(orderItem.foodOrders);
+    }
+
+    Map<int, FoodOrderModel> groupedOrders = {};
+
+    for (FoodOrderModel foodOrder in mergedFoodOrders) {
+      if (groupedOrders.containsKey(foodOrder.foodID)) {
+        groupedOrders[foodOrder.foodID] =
+            groupedOrders[foodOrder.foodID]!.copyWith(
+          quantity:
+              groupedOrders[foodOrder.foodID]!.quantity + foodOrder.quantity,
+          totalAmount: groupedOrders[foodOrder.foodID]!.totalAmount +
+              foodOrder.totalAmount,
+        );
+      } else {
+        groupedOrders[foodOrder.foodID] = FoodOrderModel(
+          id: foodOrder.id,
+          name: foodOrder.name,
+          foodID: foodOrder.foodID,
+          image1: foodOrder.image1,
+          price: foodOrder.price,
+          quantity: foodOrder.quantity,
+          totalAmount: foodOrder.totalAmount,
+          isDiscount: foodOrder.isDiscount,
+          discount: foodOrder.discount,
+        );
+      }
+    }
+
+    List<FoodOrderModel> groupedFoodOrders = groupedOrders.values.toList();
+    var totalPrice = groupedFoodOrders.fold(
+      0.0,
+      (previousValue, element) => previousValue + element.totalAmount,
+    );
+    mergedOrders = mergedOrders.copyWith(
+        status: 'completed',
+        foodOrders: groupedFoodOrders,
+        totalPrice: totalPrice);
+
+    return mergedOrders;
   }
 
   void _handleUpdateOrder({required int orderID, required String status}) {

@@ -58,3 +58,13 @@ final class OrderCreateFailure extends OrderState {
 
   OrderCreateFailure({required this.error});
 }
+
+// ===== payment order =====
+final class OrderPaymentSuccess extends OrderState {}
+
+final class OrderPaymentInProgress extends OrderState {}
+
+final class OrderPaymentFailure extends OrderState {
+  final String error;
+  OrderPaymentFailure({required this.error});
+}

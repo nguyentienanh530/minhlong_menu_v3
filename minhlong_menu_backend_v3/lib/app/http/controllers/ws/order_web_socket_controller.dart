@@ -25,7 +25,7 @@ class OrderWebSocketController extends Controller {
       List<Map<String, dynamic>> formattedOrders = [];
 
       var groupedOrders = orderController.groupOrdersById(payloadData);
-      print('groupedOrders: $payloadData');
+      // print('groupedOrders: $payloadData');
 
       groupedOrders.forEach(
         (id, ordersList) {
@@ -39,7 +39,7 @@ class OrderWebSocketController extends Controller {
             'updated_at': ordersList.first['updated_at'],
             'order_detail': ordersList.map((order) {
               return {
-                'id': order['order_details_id'],
+                'order_details_id': order['order_details_id'],
                 'food_id': order['food_id'],
                 'name': order['name'],
                 'quantity': order['quantity'],

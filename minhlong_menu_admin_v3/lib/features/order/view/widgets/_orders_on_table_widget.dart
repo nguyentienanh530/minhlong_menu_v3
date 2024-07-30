@@ -16,29 +16,40 @@ extension _OrdersOnTableWidget on _OrderViewState {
                 if (!snapshot.hasData) {
                   return const EmptyWidget();
                 } else {
+                  ordersList.clear();
                   List<OrderItem> orders = <OrderItem>[];
-                  List<OrderItem> orderList = <OrderItem>[];
+
                   var res = jsonDecode(snapshot.data);
 
                   String event = res['event'].toString();
                   if (event.contains('orders-ws')) {
                     var data = jsonDecode(res['payload']);
+
                     orders = List<OrderItem>.from(
                       data.map(
                         (x) => OrderItem.fromJson(x),
                       ),
                     );
+
+                    log('orders $orders');
                     if (tableIndexState != 0) {
                       for (var order in orders) {
                         if (order.tableId == tableIndexState) {
-                          orderList.add(order);
+                          ordersList.add(order);
                         }
                       }
                     } else {
-                      orderList = orders;
+                      ordersList = orders;
                     }
-                    _ordersLength = orderList.length;
-                    return orderList.isEmpty
+
+                    // return ListenableBuilder(
+                    //   listenable: _orderList,
+                    //   builder: (context, child) {
+
+                    //   },
+                    // );
+
+                    return ordersList.isEmpty
                         ? SizedBox(
                             height: 500,
                             width: double.infinity,
@@ -53,7 +64,7 @@ extension _OrdersOnTableWidget on _OrderViewState {
                           )
                         : StaggeredGrid.count(
                             crossAxisCount: _gridCount(),
-                            children: orderList
+                            children: ordersList
                                 .map((e) =>
                                     _buildItem(e, tableIndexSelectedState))
                                 .toList(),
@@ -170,24 +181,47 @@ extension _OrdersOnTableWidget on _OrderViewState {
                   ),
                 ],
               )
-            : CommonIconButton(
-                tooltip: 'Sửa đơn',
-                onTap: () async {
-                  await context.push<bool>(AppRoute.createOrUpdateOrder,
-                      extra: {'order': order, 'type': ScreenType.update}).then(
-                    (value) {
-                      if (value != null && value) {
-                        Ultils.sendSocket(_tableChannel, 'tables', _user.id);
-                        Ultils.sendSocket(_orderChannel, 'orders', {
-                          'user_id': _user.id,
-                          'table_id': tableIndexSelectedState
-                        });
-                      }
+            : Row(
+                children: [
+                  CommonIconButton(
+                    tooltip: 'Sửa đơn',
+                    onTap: () async {
+                      await context.push<bool>(AppRoute.createOrUpdateOrder,
+                          extra: {
+                            'order': order,
+                            'type': ScreenType.update
+                          }).then(
+                        (value) {
+                          if (value != null && value) {
+                            Ultils.sendSocket(
+                                _tableChannel, 'tables', _user.id);
+                            Ultils.sendSocket(_orderChannel, 'orders', {
+                              'user_id': _user.id,
+                              'table_id': tableIndexSelectedState
+                            });
+                          }
+                        },
+                      );
                     },
-                  );
-                },
-                icon: Icons.edit,
-                color: AppColors.sun,
+                    icon: Icons.edit,
+                    color: AppColors.sun,
+                  ),
+                  10.horizontalSpace,
+                  CommonIconButton(
+                    tooltip: 'Xóa đơn',
+                    onTap: () async {
+                      AppDialog.showWarningDialog(context,
+                          title: 'Xác nhận xóa!',
+                          description:
+                              'Kiểm tra kĩ trước khi xóa đơn #${order.id}!',
+                          onPressedComfirm: () {
+                        _handleDeleteOrder(orderID: order.id);
+                      });
+                    },
+                    icon: Icons.delete,
+                    color: AppColors.red,
+                  ),
+                ],
               ),
       ],
     );

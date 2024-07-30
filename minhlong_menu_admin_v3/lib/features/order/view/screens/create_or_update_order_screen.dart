@@ -84,7 +84,6 @@ class _CreateOrUpdateOrderViewState extends State<CreateOrUpdateOrderView> {
     context.read<DinnerTableBloc>().add(AllDinnerTableFetched());
     if (widget.order != null) {
       _order.value = widget.order!;
-      print('update order: ${_order.value}');
       _status.value = _listStatus
           .firstWhere((element) => element.key == _order.value.status);
     }
@@ -638,8 +637,10 @@ class _CreateOrUpdateOrderViewState extends State<CreateOrUpdateOrderView> {
                                 Radius.circular(textFieldBorderRadius),
                               ),
                             ),
-                            child: const Text(
-                              'Tạo đơn',
+                            child: Text(
+                              _typeScreen == ScreenType.create
+                                  ? 'Tạo đơn'
+                                  : 'Sửa đơn',
                               style: kButtonWhiteStyle,
                             ),
                           ),

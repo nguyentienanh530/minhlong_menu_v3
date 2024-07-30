@@ -70,4 +70,15 @@ class OrderRepository {
       return Result.failure(errorMessage);
     }
   }
+
+  Future<Result<bool>> payOrder({required OrderItem order}) async {
+    try {
+      var result = await _orderApi.payOrder(order: order);
+      return Result.success(result);
+    } on DioException catch (e) {
+      Logger().e('pay order error: $e');
+      var errorMessage = DioExceptions.fromDioError(e).toString();
+      return Result.failure(errorMessage);
+    }
+  }
 }

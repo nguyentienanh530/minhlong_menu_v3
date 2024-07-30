@@ -88,6 +88,7 @@ class Version1 implements Route {
         Router.get('orders-chart', orderCtrl.getOrdersDataChart);
         Router.patch('status/{id}', orderCtrl.updateStatus);
         Router.patch('{id}', orderCtrl.updateOrder);
+        Router.post('payment', orderCtrl.paymentOrder);
         Router.delete('{id}', orderCtrl.destroy);
       },
       prefix: 'admin/orders',
