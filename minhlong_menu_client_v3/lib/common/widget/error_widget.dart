@@ -38,7 +38,7 @@ class ErrWidget extends StatelessWidget {
                   10.verticalSpace,
                   FilledButton.icon(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: context.colorScheme.secondary,
+                        backgroundColor: context.colorScheme.primary,
                       ),
                       icon: const Icon(Icons.refresh, size: 15),
                       onPressed: onRetryPressed,

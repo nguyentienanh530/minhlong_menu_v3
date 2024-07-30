@@ -63,7 +63,7 @@ class AppDialog {
                             child: OutlinedButton(
                               style: OutlinedButton.styleFrom(
                                 side: BorderSide(
-                                  color: context.colorScheme.secondary,
+                                  color: context.colorScheme.primary,
                                 ),
                               ),
                               onPressed: () => Navigator.pop(context),
@@ -72,7 +72,7 @@ class AppDialog {
                                 child: Text(
                                   cancelText ?? "Huỷ",
                                   style: context.bodyLarge!.copyWith(
-                                      color: context.colorScheme.secondary),
+                                      color: context.colorScheme.primary),
                                 ),
                               ),
                             ),
@@ -82,7 +82,7 @@ class AppDialog {
                     Expanded(
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: context.colorScheme.secondary,
+                          backgroundColor: context.colorScheme.primary,
                           foregroundColor: context.colorScheme.onPrimary,
                         ),
                         onPressed: onPressedComfirm,
@@ -157,7 +157,7 @@ class AppDialog {
                     Expanded(
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: context.colorScheme.secondary,
+                          backgroundColor: context.colorScheme.primary,
                           foregroundColor: context.colorScheme.onPrimary,
                         ),
                         onPressed: onPressedComfirm,
@@ -205,7 +205,7 @@ class AppDialog {
                           10.verticalSpace,
                           LinearProgressIndicator(
                             value: progressValue! / 100,
-                            color: context.colorScheme.secondary,
+                            color: context.colorScheme.primary,
                           ),
                         ],
                       )

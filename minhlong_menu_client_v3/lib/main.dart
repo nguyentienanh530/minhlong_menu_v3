@@ -14,6 +14,7 @@ import 'package:minhlong_menu_client_v3/features/auth/data/provider/remote/auth_
 import 'package:minhlong_menu_client_v3/features/auth/data/respositories/auth_repository.dart';
 import 'package:minhlong_menu_client_v3/features/home/data/provider/home_api.dart';
 import 'package:minhlong_menu_client_v3/features/home/data/repository/home_repo.dart';
+import 'package:minhlong_menu_client_v3/features/theme/cubit/scheme_cubit.dart';
 import 'package:minhlong_menu_client_v3/features/theme/cubit/theme_cubit.dart';
 import 'package:minhlong_menu_client_v3/features/theme/data/theme_local_datasource.dart';
 import 'package:minhlong_menu_client_v3/features/user/cubit/user_cubit.dart';
@@ -48,18 +49,24 @@ void main() async {
   dio.interceptors.add(
     DioInterceptor(sf),
   );
-  var theme = await ThemeLocalDatasource(sf).getTheme() ?? false;
+  var theme = await ThemeLocalDatasource(sf).getDartTheme() ?? false;
+  var scheme = await ThemeLocalDatasource(sf).getSchemeTheme() ?? 'blueWhale';
   runApp(DevicePreview(
-      // enabled: !kReleaseMode,
       enabled: false,
-      builder: (context) => MainApp(sf: sf, theme: theme)));
+      builder: (context) => MainApp(
+            sf: sf,
+            theme: theme,
+            scheme: scheme,
+          )));
 }
 
 class MainApp extends StatelessWidget {
-  const MainApp({super.key, required this.sf, required this.theme});
+  const MainApp(
+      {super.key, required this.sf, required this.theme, required this.scheme});
 
   final SharedPreferences sf;
   final bool theme;
+  final String? scheme;
 
   @override
   Widget build(BuildContext context) {
@@ -119,10 +126,14 @@ class MainApp extends StatelessWidget {
           BlocProvider(
             create: (context) => UserCubit(),
           ),
+          BlocProvider(
+            create: (context) => SchemeCubit(),
+          ),
         ],
         child: AppContent(
           sf: sf,
           theme: theme,
+          scheme: scheme,
         ),
       ),
     );
@@ -130,9 +141,11 @@ class MainApp extends StatelessWidget {
 }
 
 class AppContent extends StatefulWidget {
-  const AppContent({super.key, required this.sf, required this.theme});
+  const AppContent(
+      {super.key, required this.sf, required this.theme, required this.scheme});
   final SharedPreferences sf;
   final bool theme;
+  final String? scheme;
 
   @override
   State<AppContent> createState() => _AppContentState();
@@ -144,6 +157,7 @@ class _AppContentState extends State<AppContent> {
     super.initState();
     context.read<AuthBloc>().add(AuthAuthenticateStarted());
     context.read<ThemeCubit>().changeTheme(widget.theme);
+    context.read<SchemeCubit>().changeScheme(widget.scheme!);
   }
 
   void _handleGetUser(AccessToken accessToken) async {
@@ -170,6 +184,8 @@ class _AppContentState extends State<AppContent> {
   Widget build(BuildContext context) {
     final state = context.watch<AuthBloc>().state;
     var themeState = context.watch<ThemeCubit>().state;
+    var schemeState = context.watch<SchemeCubit>().state;
+
     if (state is AuthInitial) {
       return Container();
     }
@@ -201,7 +217,9 @@ class _AppContentState extends State<AppContent> {
             builder: DevicePreview.appBuilder,
             routerConfig: AppRoute.routes,
             scrollBehavior: MyCustomScrollBehavior(),
-            theme: themeState ? AppTheme().darkTheme : AppTheme().lightTheme,
+            theme: themeState
+                ? AppTheme(scheme: schemeState).darkTheme
+                : AppTheme(scheme: schemeState).lightTheme,
             // theme: ThemeData(
             //   fontFamily: GoogleFonts.rubik().fontFamily,
             //   scaffoldBackgroundColor: AppColors.background,
@@ -211,8 +229,8 @@ class _AppContentState extends State<AppContent> {
             //       displayMedium: TextStyle(color: AppColors.white)),
             //   colorScheme: ColorScheme.fromSwatch(
             //     primarySwatch: MaterialColor(
-            //       context.colorScheme.secondary.value,
-            //       getSwatch(context.colorScheme.secondary),
+            //       context.colorScheme.primary.value,
+            //       getSwatch(context.colorScheme.primary),
             //     ),
             //   ),
             // ),

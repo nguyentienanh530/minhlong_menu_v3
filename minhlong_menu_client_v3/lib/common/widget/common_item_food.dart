@@ -104,7 +104,7 @@ class ItemFoodView extends StatelessWidget {
       child: Card(
         elevation: 4,
         shape: const CircleBorder(),
-        color: context.colorScheme.secondary,
+        color: context.colorScheme.primary,
         child: SizedBox(
             height: 35,
             width: 35,
@@ -183,7 +183,7 @@ class ItemFoodView extends StatelessWidget {
                       '${Ultils.currencyFormat(double.parse(food.price.toString()))} ₫',
                       style: context.labelLarge!.copyWith(
                           fontWeight: FontWeight.bold,
-                          color: context.colorScheme.secondary)),
+                          color: context.colorScheme.primary)),
                 ),
               ),
             ),
@@ -201,14 +201,14 @@ class ItemFoodView extends StatelessWidget {
                             color: context.colorScheme.outline,
                             decoration: TextDecoration.lineThrough,
                             decorationThickness: 1,
-                            decorationColor: context.colorScheme.secondary,
+                            decorationColor: context.colorScheme.primary,
                             decorationStyle: TextDecorationStyle.solid)),
                     3.horizontalSpace,
                     Text(
                         '${Ultils.currencyFormat(double.parse(discountedPrice.toString()))} ₫',
                         style: context.labelLarge!.copyWith(
                           fontWeight: FontWeight.bold,
-                          color: context.colorScheme.secondary,
+                          color: context.colorScheme.primary,
                         )),
                   ]),
                 ),

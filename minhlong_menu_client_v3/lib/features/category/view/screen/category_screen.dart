@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_client_v3/Routes/app_route.dart';
 import 'package:minhlong_menu_client_v3/common/widget/cart_button.dart';
@@ -136,7 +137,7 @@ class _CategoryViewState extends State<CategoryView> {
                       onPressed: () =>
                           context.push(AppRoute.carts, extra: user),
                       number: cart.orderDetail.length.toString(),
-                      colorIcon: context.colorScheme.secondary),
+                      colorIcon: context.colorScheme.primary),
                   const SizedBox(width: 10),
                 ],
               ),
@@ -174,7 +175,7 @@ class _CategoryViewState extends State<CategoryView> {
           decoration: const BoxDecoration(),
           width: double.infinity,
           child: category.image.isEmpty
-              ? Image.asset(AppAsset.logo)
+              ? SvgPicture.asset(AppAsset.noImage)
               : CachedNetworkImage(
                   imageUrl: '${ApiConfig.host}${category.image}',
                   errorWidget: errorBuilderForImage,
@@ -200,7 +201,7 @@ class _CategoryViewState extends State<CategoryView> {
                 style: context.titleStyleLarge!.copyWith(
                     fontSize: 40,
                     fontWeight: FontWeight.bold,
-                    color: context.colorScheme.secondary,
+                    color: context.colorScheme.primary,
                     height: 1),
               ),
               ValueListenableBuilder(

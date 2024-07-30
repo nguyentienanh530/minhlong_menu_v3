@@ -51,7 +51,7 @@ class SuccessScreen extends StatelessWidget {
               bottom: 50,
               child: FilledButton(
                 style: FilledButton.styleFrom(
-                  backgroundColor: context.colorScheme.secondary,
+                  backgroundColor: context.colorScheme.primary,
                   foregroundColor: context.colorScheme.onPrimary,
                 ),
                 onPressed: () {

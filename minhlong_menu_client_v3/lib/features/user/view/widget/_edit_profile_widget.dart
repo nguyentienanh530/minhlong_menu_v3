@@ -61,7 +61,7 @@ extension _EditProfileWidget on _EditProfileViewState {
         }
       }),
       child: Card(
-        color: context.colorScheme.secondary,
+        color: context.colorScheme.primary,
         shape: const CircleBorder(),
         elevation: 3,
         child: Container(
@@ -130,7 +130,7 @@ extension _EditProfileWidget on _EditProfileViewState {
       alignment: Alignment.center,
       child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-              backgroundColor: context.colorScheme.secondary),
+              backgroundColor: context.colorScheme.primary),
           onPressed: () async {
             if (AppKeys.updateUserKey.currentState!.validate()) {
               if (_imageFile.value.path.isNotEmpty) {
@@ -179,7 +179,7 @@ class TextBoxProfile extends StatelessWidget {
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(defaultBorderRadius / 3),
         borderSide: BorderSide(
-          color: context.colorScheme.secondary,
+          color: context.colorScheme.primary,
         ),
       ),
     );

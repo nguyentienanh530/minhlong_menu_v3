@@ -168,11 +168,11 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                                   borderRadius: BorderRadius.circular(
                                       textFieldBorderRadius * 10)),
                               side: BorderSide(
-                                  color: context.colorScheme.secondary),
+                                  color: context.colorScheme.primary),
                               foregroundColor: context.colorScheme.onPrimary,
                               elevation: 0,
                               shadowColor: Colors.transparent,
-                              backgroundColor: context.colorScheme.secondary),
+                              backgroundColor: context.colorScheme.primary),
                           onPressed: () => _handleForgotPassword(),
                           child: Text('Đặt lại mật khẩu',
                               style: context.bodyMedium!.copyWith(
@@ -216,11 +216,11 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
         style: context.bodyMedium,
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(defaultBorderRadius / 3),
-          borderSide: BorderSide(color: context.colorScheme.secondary),
+          borderSide: BorderSide(color: context.colorScheme.primary),
         ),
         prefixIcon: Icon(
           Icons.phone_android_outlined,
-          color: context.colorScheme.secondary.withOpacity(0.9),
+          color: context.colorScheme.primary.withOpacity(0.9),
         ),
       );
 
@@ -256,7 +256,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
           onTap: () => context.pop(),
           child: Text('Quay lại đăng nhập',
               style: context.bodyMedium!.copyWith(
-                  color: context.colorScheme.secondary.withOpacity(0.6),
+                  color: context.colorScheme.primary.withOpacity(0.6),
                   fontWeight: FontWeight.bold)))
     ]);
   }

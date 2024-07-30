@@ -137,7 +137,7 @@ class _CartViewState extends State<CartView> {
                       )} ₫',
                       style: context.bodyMedium!.copyWith(
                           fontWeight: FontWeight.bold,
-                          color: context.colorScheme.secondary),
+                          color: context.colorScheme.primary),
                     ),
                   ],
                 ),
@@ -208,7 +208,7 @@ class _CartViewState extends State<CartView> {
         decoration: BoxDecoration(
           color: order.orderDetail.isEmpty
               ? context.colorScheme.outline
-              : context.colorScheme.secondary,
+              : context.colorScheme.primary,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Text(

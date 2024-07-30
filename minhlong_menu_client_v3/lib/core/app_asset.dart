@@ -36,4 +36,5 @@ class AppAsset {
   static const String noProductImage = 'assets/image/noproduct.png';
   static const String errorImageScreen = 'assets/image/404error.png';
   static const String successImageScreen = 'assets/image/success_cart.png';
+  static const String noImage = 'assets/svg/no_image.svg';
 }

@@ -7,7 +7,9 @@ import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_client_v3/common/widget/error_build_image.dart';
 import 'package:minhlong_menu_client_v3/common/widget/loading.dart';
 import 'package:minhlong_menu_client_v3/core/app_const.dart';
+import 'package:minhlong_menu_client_v3/core/app_theme.dart';
 import 'package:minhlong_menu_client_v3/core/extensions.dart';
+import 'package:minhlong_menu_client_v3/features/theme/cubit/scheme_cubit.dart';
 import 'package:minhlong_menu_client_v3/features/theme/data/theme_local_datasource.dart';
 import 'package:minhlong_menu_client_v3/features/user/cubit/user_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -34,11 +36,12 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   late final SharedPreferences sf;
   final isDarkMode = ValueNotifier(false);
+  final _pickColor = ValueNotifier(const Color(0xFFED7F29));
 
   @override
   void dispose() {
     super.dispose();
-
+    _pickColor.dispose();
     isDarkMode.dispose();
   }
 
@@ -50,7 +53,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   void _init() async {
     sf = await SharedPreferences.getInstance();
-    isDarkMode.value = await ThemeLocalDatasource(sf).getTheme() ?? false;
+    isDarkMode.value = await ThemeLocalDatasource(sf).getDartTheme() ?? false;
+
+    var schemeKey = await ThemeLocalDatasource(sf).getSchemeTheme() ?? '';
+    for (var e in listScheme) {
+      if (e.key == schemeKey) {
+        _pickColor.value = e.color;
+      }
+    }
   }
 
   @override

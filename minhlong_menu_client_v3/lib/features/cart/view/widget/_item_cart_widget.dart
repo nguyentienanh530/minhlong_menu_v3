@@ -66,7 +66,7 @@ extension _ItemCartWidget on _CartViewState {
                             Text(
                               '${Ultils.currencyFormat(Ultils.foodPrice(isDiscount: orderItem.isDiscount, foodPrice: orderItem.foodPrice, discount: orderItem.discount))} ₫',
                               style: context.bodyMedium!.copyWith(
-                                color: context.colorScheme.secondary,
+                                color: context.colorScheme.primary,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -126,11 +126,11 @@ extension _ItemCartWidget on _CartViewState {
             width: 20,
             decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: context.colorScheme.secondary)),
+                border: Border.all(color: context.colorScheme.primary)),
             child: Icon(
               Icons.remove,
               size: 15,
-              color: context.colorScheme.secondary,
+              color: context.colorScheme.primary,
             ),
           ),
         ),
@@ -155,7 +155,7 @@ extension _ItemCartWidget on _CartViewState {
             height: 20,
             width: 20,
             decoration: BoxDecoration(
-                shape: BoxShape.circle, color: context.colorScheme.secondary),
+                shape: BoxShape.circle, color: context.colorScheme.primary),
             child:
                 Icon(Icons.add, size: 15, color: context.colorScheme.onPrimary),
           ),

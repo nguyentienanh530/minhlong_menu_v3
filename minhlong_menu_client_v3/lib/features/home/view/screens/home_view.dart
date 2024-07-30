@@ -257,7 +257,7 @@ class _HomeViewState extends State<HomeView>
         : GestureDetector(
             onTap: () => context.push(AppRoute.dinnerTables),
             child: Card(
-              color: context.colorScheme.secondary,
+              color: context.colorScheme.primary,
               elevation: 4,
               child: Container(
                 height: 40,
@@ -279,23 +279,20 @@ class _HomeViewState extends State<HomeView>
   Widget _buildFloatingButton(OrderModel orderModel, UserModel user) {
     return FloatingActionButton(
       key: _cartKey,
-      backgroundColor: context.colorScheme.secondary,
+      backgroundColor: context.colorScheme.primary,
       onPressed: () => context.push(AppRoute.carts, extra: user),
       child: Padding(
-        padding: const EdgeInsets.all(5),
+        padding: const EdgeInsets.all(defaultPadding / 3),
         child: badges.Badge(
-          badgeStyle: badges.BadgeStyle(
-              badgeColor: context.colorScheme.primaryContainer),
-          position: badges.BadgePosition.topEnd(top: -14),
+          badgeStyle: const badges.BadgeStyle(badgeColor: Colors.green),
+          position: badges.BadgePosition.topEnd(top: -20, end: -20),
           badgeContent: Text(orderModel.orderDetail.length.toString(),
-              style: context.bodyMedium!
-                  .copyWith(color: context.colorScheme.onPrimary)),
+              style: context.bodyMedium!.copyWith(color: Colors.white)),
           child: SvgPicture.asset(
             AppAsset.shoppingCart,
-            height: double.infinity,
+            height: 30,
             fit: BoxFit.cover,
-            colorFilter: ColorFilter.mode(
-                context.colorScheme.onPrimary, BlendMode.srcIn),
+            colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
           ),
         ),
       ),

@@ -28,12 +28,11 @@ class CommonIconButton extends StatelessWidget {
           padding: const EdgeInsets.all(1),
           decoration: BoxDecoration(
               color: color?.withOpacity(0.2) ??
-                  context.colorScheme.secondary.withOpacity(0.18),
+                  context.colorScheme.primary.withOpacity(0.18),
               borderRadius: BorderRadius.circular(5),
-              border:
-                  Border.all(color: color ?? context.colorScheme.secondary)),
+              border: Border.all(color: color ?? context.colorScheme.primary)),
           child: Icon(icon ?? Icons.remove_red_eye,
-              color: color ?? context.colorScheme.secondary,
+              color: color ?? context.colorScheme.primary,
               size: iconSize ?? 20),
         ),
       ),

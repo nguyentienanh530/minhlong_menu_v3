@@ -23,13 +23,12 @@ class CartButton extends StatelessWidget {
       child: Container(
         alignment: Alignment.center,
         child: badges.Badge(
-          badgeStyle: badges.BadgeStyle(
-              badgeColor: context.colorScheme.primaryContainer),
+          badgeStyle: const badges.BadgeStyle(badgeColor: Colors.green),
           position: badges.BadgePosition.topEnd(top: -1, end: -1),
           badgeContent: Text(number,
               style: context.labelSmall!.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: context.labelSmall!.color)),
+                  color: context.colorScheme.onPrimary)),
           child: Card(
             child: Container(
               padding: const EdgeInsets.all(defaultPadding / 1.3),

@@ -33,7 +33,7 @@ extension _AppBarWidget on _HomeViewState {
         borderRadius: BorderRadius.circular(defaultPadding),
         onTap: onPressed,
         child: Card(
-          color: context.colorScheme.secondary,
+          color: context.colorScheme.primary,
           elevation: 3,
           child: SizedBox(
             height: 40,

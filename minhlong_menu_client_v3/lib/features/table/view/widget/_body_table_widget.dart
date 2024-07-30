@@ -44,7 +44,7 @@ extension _BodyTableWidget on _TableViewState {
                     width: 100,
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                        color: context.colorScheme.secondary,
+                        color: context.colorScheme.primary,
                         borderRadius:
                             BorderRadius.circular(defaultBorderRadius)),
                     child: Text(

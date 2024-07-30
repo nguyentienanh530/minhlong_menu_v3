@@ -116,7 +116,7 @@ class _FoodViewState extends State<FoodView> {
             CartButton(
               onPressed: () => context.push(AppRoute.carts, extra: user),
               number: cartState.orderDetail.length.toString(),
-              colorIcon: context.colorScheme.secondary,
+              colorIcon: context.colorScheme.primary,
             ),
             10.horizontalSpace
           ],

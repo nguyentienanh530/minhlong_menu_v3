@@ -41,7 +41,7 @@ class ErrorScreen extends StatelessWidget {
           Expanded(
             child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: context.colorScheme.secondary,
+                  backgroundColor: context.colorScheme.primary,
                   elevation: 4,
                   padding: const EdgeInsets.symmetric(
                       horizontal: defaultPadding * 4),

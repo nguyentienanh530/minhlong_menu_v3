@@ -22,7 +22,7 @@ extension _CategoryWidget on _HomeViewState {
           context.push(AppRoute.categories, extra: categoryModel);
         },
         child: Card(
-          color: context.colorScheme.secondary,
+          color: context.colorScheme.primary,
           margin: const EdgeInsets.only(left: 10, bottom: 20),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(100),
@@ -33,20 +33,19 @@ extension _CategoryWidget on _HomeViewState {
               Expanded(
                 flex: 4,
                 child: Container(
+                  clipBehavior: Clip.antiAlias,
                   margin: const EdgeInsets.all(5),
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     shape: BoxShape.circle,
-                    color: context.colorScheme.onPrimary,
+                    color: Colors.white,
                   ),
                   child: categoryModel.image.isEmpty
                       ? Container(
                           margin: const EdgeInsets.all(defaultMargin),
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: context.colorScheme.onPrimary,
-                              image: const DecorationImage(
-                                image: AssetImage(AppAsset.logo),
-                              )),
+                          child: Icon(
+                            Icons.wallpaper,
+                            color: Colors.black.withOpacity(0.3),
+                          ),
                         )
                       : CachedNetworkImage(
                           imageUrl: '${ApiConfig.host}${categoryModel.image}',

@@ -30,22 +30,100 @@ extension _ProfileWidget on _ProfileScreenState {
                 onTap: () => context.push(AppRoute.changePassword)),
             _buildThemeWidget(context),
             5.verticalSpace,
+            ListenableBuilder(
+              listenable: _pickColor,
+              builder: (context, child) {
+                return _ItemProfile(
+                    svgPath: AppAsset.logout,
+                    title: AppString.pickColor,
+                    leftIcon: Icon(Icons.color_lens_outlined,
+                        color: context.colorScheme.primary),
+                    rightIcon: Container(
+                      margin: const EdgeInsets.only(right: defaultPadding / 2),
+                      height: 30,
+                      width: 30,
+                      decoration: BoxDecoration(
+                          color: _pickColor.value, shape: BoxShape.circle),
+                    ),
+                    onTap: () async => _showDialogPickThemes());
+              },
+            ),
             _ItemProfile(
                 svgPath: AppAsset.logout,
                 title: AppString.logout,
                 onTap: () => _showDialogLogout()),
-            // _ItemProfile(
-            //     svgPath: AppAsset.logout,
-            //     title: 'Test ',
-            //     onTap: () => AppDialog.showSuccessDialog(
-            //           context,
-            //           confirmText: 'OK',
-            //           title: 'Test',
-            //           description: 'Test',
-            //           onPressedComfirm: () => context.pop(),
-            //         )),
           ],
         ),
+      ),
+    );
+  }
+
+  void _showDialogPickThemes() async {
+    await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            elevation: 4,
+            actionsAlignment: MainAxisAlignment.center,
+            title: Text(
+              textAlign: TextAlign.center,
+              'Chọn màu chính',
+              style: context.titleStyleLarge!
+                  .copyWith(fontWeight: FontWeight.bold),
+            ),
+            actions: [
+              ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: context.colorScheme.primary,
+                  ),
+                  onPressed: () => context.pop(),
+                  child: Text(AppString.cancel,
+                      style: context.bodyMedium!.copyWith(color: Colors.white)))
+            ],
+            content: SizedBox(
+              width: 300,
+              child: GridView.count(
+                  crossAxisSpacing: defaultPadding / 2,
+                  mainAxisSpacing: defaultPadding / 2,
+                  crossAxisCount: 6,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: listScheme.map((e) => _buildItemColor(e)).toList()),
+            ),
+          );
+        }).then(
+      (value) {
+        if (value is Color) {
+          _pickColor.value = value;
+        }
+      },
+    );
+  }
+
+  Widget _buildItemColor(ThemeDTO e) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(defaultBorderRadius),
+      onTap: () async {
+        context.pop(e.color);
+        await ThemeLocalDatasource(sf).setSchemeTheme(e.key);
+        if (!mounted) return;
+        context.read<SchemeCubit>().changeScheme(e.key);
+      },
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: e.color,
+                border: e.key == context.read<SchemeCubit>().state
+                    ? Border.all(color: context.colorScheme.primary, width: 2)
+                    : Border.all(color: Colors.transparent)),
+          ),
+          e.key == context.read<SchemeCubit>().state
+              ? const Icon(Icons.check, color: Colors.white)
+              : const SizedBox()
+        ],
       ),
     );
   }
@@ -97,7 +175,7 @@ extension _ProfileWidget on _ProfileScreenState {
                               isDarkMode.value
                                   ? Icons.dark_mode_outlined
                                   : Icons.light_mode_outlined,
-                              color: context.colorScheme.secondary,
+                              color: context.colorScheme.primary,
                             )),
                         Text(
                           isDarkMode.value
@@ -115,15 +193,15 @@ extension _ProfileWidget on _ProfileScreenState {
                       child: Transform.scale(
                         scale: 0.8,
                         child: Switch(
-                          activeTrackColor: context.colorScheme.secondary,
+                          activeTrackColor: context.colorScheme.primary,
                           inactiveTrackColor:
-                              context.colorScheme.secondary.withOpacity(0.5),
+                              context.colorScheme.primary.withOpacity(0.5),
                           inactiveThumbColor: Colors.white,
                           value: isDarkMode.value,
                           onChanged: (value) async {
                             isDarkMode.value = !isDarkMode.value;
                             context.read<ThemeCubit>().changeTheme(value);
-                            await ThemeLocalDatasource(sf).setTheme(value);
+                            await ThemeLocalDatasource(sf).setDarkTheme(value);
                           },
                         ),
                       ),
@@ -142,12 +220,16 @@ class _ItemProfile extends StatelessWidget {
     required this.onTap,
     this.titleStyle,
     this.colorIcon,
+    this.rightIcon,
+    this.leftIcon,
   });
 
   final Color? colorIcon;
   final String svgPath;
+  final Icon? leftIcon;
   final String title;
   final TextStyle? titleStyle;
+  final Widget? rightIcon;
   final void Function()? onTap;
 
   @override
@@ -169,10 +251,11 @@ class _ItemProfile extends StatelessWidget {
                     child: Row(children: [
                       Padding(
                           padding: const EdgeInsets.all(defaultPadding),
-                          child: SvgPicture.asset(svgPath,
-                              colorFilter: ColorFilter.mode(
-                                  context.colorScheme.secondary,
-                                  BlendMode.srcIn))),
+                          child: leftIcon ??
+                              SvgPicture.asset(svgPath,
+                                  colorFilter: ColorFilter.mode(
+                                      context.colorScheme.primary,
+                                      BlendMode.srcIn))),
                       Text(
                         title,
                         style: titleStyle ?? context.bodyMedium!,
@@ -180,16 +263,17 @@ class _ItemProfile extends StatelessWidget {
                     ]),
                   ),
                 ),
-                const Expanded(
+                Expanded(
                   child: FittedBox(
                     alignment: Alignment.centerRight,
                     fit: BoxFit.scaleDown,
-                    child: Padding(
-                        padding: EdgeInsets.all(defaultPadding),
-                        child: Icon(
-                          Icons.arrow_forward_ios_rounded,
-                          size: 15,
-                        )),
+                    child: rightIcon ??
+                        const Padding(
+                            padding: EdgeInsets.all(defaultPadding),
+                            child: Icon(
+                              Icons.arrow_forward_ios_rounded,
+                              size: 15,
+                            )),
                   ),
                 )
               ])),

@@ -93,7 +93,7 @@ class CommonTextField extends StatelessWidget {
             hintText: hintText,
             labelText: labelText,
             errorStyle: context.bodyMedium!
-                .copyWith(color: context.colorScheme.secondary),
+                .copyWith(color: context.colorScheme.primary),
             hintStyle: hintStyle ?? context.bodyMedium,
             labelStyle: labelStyle ?? context.bodyMedium),
         onChanged: onChanged);

@@ -32,12 +32,12 @@ class TextFieldPassword extends StatelessWidget {
             obscureText: !value,
             prefixIcon: Icon(
               Icons.lock_outline,
-              color: context.colorScheme.secondary.withOpacity(0.8),
+              color: context.colorScheme.primary.withOpacity(0.8),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(defaultBorderRadius / 3),
               borderSide: BorderSide(
-                color: context.colorScheme.secondary,
+                color: context.colorScheme.primary,
               ),
             ),
             suffixIcon: GestureDetector(

@@ -92,7 +92,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                         onPressed: () =>
                             context.push(AppRoute.carts, extra: user),
                         number: cartState.orderDetail.length.toString(),
-                        colorIcon: context.colorScheme.secondary,
+                        colorIcon: context.colorScheme.primary,
                       ),
                     ],
                     leading: CommonBackButton(onTap: () => context.pop()),
@@ -192,7 +192,6 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
           width: 120,
           padding: const EdgeInsets.symmetric(horizontal: 5),
           decoration: BoxDecoration(
-            // color: context.colorScheme.onSurfaceVariant,
             borderRadius: BorderRadius.circular(defaultBorderRadius * 3),
           ),
           child: Row(
@@ -201,13 +200,13 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
               children: [
                 _buildCounter(context,
                     icon: Icons.remove,
-                    iconColor: context.colorScheme.secondary, onTap: () {
+                    iconColor: context.colorScheme.primary, onTap: () {
                   decrementQuaranty();
                 }),
                 Text(quantity.toString(), style: context.bodyLarge!),
                 _buildCounter(context,
                     icon: Icons.add,
-                    colorBg: context.colorScheme.secondary,
+                    colorBg: context.colorScheme.primary,
                     iconColor: Colors.white, onTap: () {
                   incrementQuaranty();
                 })
@@ -237,7 +236,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
             decoration: BoxDecoration(
                 color: colorBg,
                 shape: BoxShape.circle,
-                border: Border.all(color: context.colorScheme.secondary)),
+                border: Border.all(color: context.colorScheme.primary)),
             height: 30,
             width: 30,
             alignment: Alignment.center,
@@ -249,7 +248,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
         activeIndex: _indexImage.value,
         count: length,
         effect: ExpandingDotsEffect(
-            activeDotColor: context.colorScheme.secondary,
+            activeDotColor: context.colorScheme.primary,
             dotHeight: 8,
             dotWidth: 8,
             dotColor: Colors.white));
@@ -280,7 +279,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                 '₫ ${Ultils.currencyFormat(double.parse(food.price.toString()))}',
                 style: context.bodyMedium!.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: context.colorScheme.secondary)),
+                    color: context.colorScheme.primary)),
           ])
         : Row(children: [
             Text(
@@ -289,7 +288,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                     color: context.colorScheme.outline,
                     decoration: TextDecoration.lineThrough,
                     decorationThickness: 3,
-                    decorationColor: context.colorScheme.secondary,
+                    decorationColor: context.colorScheme.primary,
                     decorationStyle: TextDecorationStyle.solid)),
             5.horizontalSpace,
             Text(
@@ -299,7 +298,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                     discount: food.discount!)),
                 style: context.bodyMedium!.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: context.colorScheme.secondary)),
+                    color: context.colorScheme.primary)),
           ]);
   }
 
@@ -319,10 +318,10 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
           style: context.bodyMedium!.copyWith(
             color: context.bodyMedium!.color!.withOpacity(0.5),
           ),
-          lessStyle: context.bodyMedium!
-              .copyWith(color: context.colorScheme.secondary),
-          moreStyle: context.bodyMedium!
-              .copyWith(color: context.colorScheme.secondary),
+          lessStyle:
+              context.bodyMedium!.copyWith(color: context.colorScheme.primary),
+          moreStyle:
+              context.bodyMedium!.copyWith(color: context.colorScheme.primary),
         )
       ],
     );
@@ -342,7 +341,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
         CommonTextField(
           prefixIcon: Icon(
             Icons.description_outlined,
-            color: context.colorScheme.secondary.withOpacity(0.7),
+            color: context.colorScheme.primary.withOpacity(0.7),
           ),
           onChanged: (value) {},
           style: context.bodyMedium,
@@ -361,7 +360,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
           FilledButton.icon(
             style: ElevatedButton.styleFrom(
               backgroundColor:
-                  context.colorScheme.secondary, // Button background color
+                  context.colorScheme.primary, // Button background color
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30), // Rounded corners
               ),
@@ -380,7 +379,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                   AppAsset.shoppingCart,
                   height: 20,
                   colorFilter: ColorFilter.mode(
-                      context.colorScheme.secondary, BlendMode.srcIn),
+                      context.colorScheme.primary, BlendMode.srcIn),
                 )),
             label: Text(
               AppString.addToCart,

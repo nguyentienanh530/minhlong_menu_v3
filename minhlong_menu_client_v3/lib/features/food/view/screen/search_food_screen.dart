@@ -129,7 +129,7 @@ class _MyWidgetState extends State<SearchFoodView> {
         filled: false,
         focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(defaultBorderRadius),
-            borderSide: BorderSide(color: context.colorScheme.secondary)),
+            borderSide: BorderSide(color: context.colorScheme.primary)),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(defaultBorderRadius),
           borderSide:
@@ -272,7 +272,7 @@ class _AfterSearchUIState extends State<AfterSearchUI> {
             '${Ultils.currencyFormat(double.parse(food.price.toString()))} ₫',
             style: context.bodyMedium!.copyWith(
                 fontWeight: FontWeight.bold,
-                color: context.colorScheme.secondary))
+                color: context.colorScheme.primary))
         : Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             Row(children: [
               Text(
@@ -280,7 +280,7 @@ class _AfterSearchUIState extends State<AfterSearchUI> {
                   style: TextStyle(
                       decoration: TextDecoration.lineThrough,
                       decorationThickness: 2.0,
-                      decorationColor: context.colorScheme.secondary,
+                      decorationColor: context.colorScheme.primary,
                       color: context.colorScheme.outline,
                       fontWeight: FontWeight.bold)),
               10.horizontalSpace,
@@ -288,7 +288,7 @@ class _AfterSearchUIState extends State<AfterSearchUI> {
                   '${Ultils.currencyFormat(double.parse(discountedPrice.toString()))} ₫',
                   style: context.bodyMedium!.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: context.colorScheme.secondary))
+                      color: context.colorScheme.primary))
             ])
           ]);
   }

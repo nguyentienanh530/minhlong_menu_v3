@@ -46,12 +46,12 @@ class AppRes {
   //                         alignment: Alignment.center,
   //                         decoration: BoxDecoration(
   //                             color: AppColors.white,
-  //                             border: Border.all(color: context.colorScheme.secondary),
+  //                             border: Border.all(color: context.colorScheme.primary),
   //                             borderRadius:
   //                                 BorderRadius.circular(defaultBorderRadius)),
   //                         child: Text('Hủy',
   //                             style: kSubHeadingStyle.copyWith(
-  //                                 color: context.colorScheme.secondary)))),
+  //                                 color: context.colorScheme.primary)))),
   //                 GestureDetector(
   //                     onTap: onConformTap,
   //                     child: Container(
@@ -59,7 +59,7 @@ class AppRes {
   //                         width: 90,
   //                         alignment: Alignment.center,
   //                         decoration: BoxDecoration(
-  //                             color: context.colorScheme.secondary,
+  //                             color: context.colorScheme.primary,
   //                             borderRadius:
   //                                 BorderRadius.circular(defaultBorderRadius)),
   //                         child: Text('Xác nhận', style: kButtonWhiteStyle)))
@@ -90,12 +90,12 @@ class AppRes {
   //                         alignment: Alignment.center,
   //                         decoration: BoxDecoration(
   //                             color: AppColors.white,
-  //                             border: Border.all(color: context.colorScheme.secondary),
+  //                             border: Border.all(color: context.colorScheme.primary),
   //                             borderRadius:
   //                                 BorderRadius.circular(defaultBorderRadius)),
   //                         child: Text('Hủy',
   //                             style: kSubHeadingStyle.copyWith(
-  //                                 color: context.colorScheme.secondary)))),
+  //                                 color: context.colorScheme.primary)))),
   //                 GestureDetector(
   //                     onTap: onConformTap,
   //                     child: Container(
@@ -103,7 +103,7 @@ class AppRes {
   //                         width: 90,
   //                         alignment: Alignment.center,
   //                         decoration: BoxDecoration(
-  //                             color: context.colorScheme.secondary,
+  //                             color: context.colorScheme.primary,
   //                             borderRadius:
   //                                 BorderRadius.circular(defaultBorderRadius)),
   //                         child: Text('Xác nhận', style: kSubHeadingStyle)))

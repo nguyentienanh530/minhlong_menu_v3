@@ -106,14 +106,14 @@ class _LoginScreenState extends State<LoginScreen> {
               },
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(defaultBorderRadius / 3),
-                borderSide: BorderSide(color: context.colorScheme.secondary),
+                borderSide: BorderSide(color: context.colorScheme.primary),
               ),
               obscureText: !value,
               style: context.bodyMedium,
               labelStyle: context.bodyMedium,
               prefixIcon: Icon(
                 Icons.lock_outline,
-                color: context.colorScheme.secondary.withOpacity(0.9),
+                color: context.colorScheme.primary.withOpacity(0.9),
               ),
               suffixIcon: GestureDetector(
                   onTap: () => isShowPassword.value = !isShowPassword.value,
@@ -214,7 +214,7 @@ class _PhoneNumber extends StatelessWidget {
         style: context.bodyMedium,
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(defaultBorderRadius / 3),
-          borderSide: BorderSide(color: context.colorScheme.secondary),
+          borderSide: BorderSide(color: context.colorScheme.primary),
         ),
         validator: (value) {
           return AppRes.validatePhoneNumber(value)
@@ -223,7 +223,7 @@ class _PhoneNumber extends StatelessWidget {
         },
         prefixIcon: Icon(
           Icons.phone_android_outlined,
-          color: context.colorScheme.secondary.withOpacity(0.8),
+          color: context.colorScheme.primary.withOpacity(0.8),
         ),
         onFieldSubmitted: onSubmit,
         onChanged: (value) => emailcontroller.text = value);
@@ -245,11 +245,11 @@ class _ButtonLogin extends StatelessWidget {
               shape: RoundedRectangleBorder(
                   borderRadius:
                       BorderRadius.circular(textFieldBorderRadius * 10)),
-              side: BorderSide(color: context.colorScheme.secondary),
+              side: BorderSide(color: context.colorScheme.primary),
               foregroundColor: context.colorScheme.onPrimary,
               elevation: 0,
               shadowColor: Colors.transparent,
-              backgroundColor: context.colorScheme.secondary),
+              backgroundColor: context.colorScheme.primary),
           onPressed: onTap,
           child: Text(AppString.login,
               style: context.bodyMedium!.copyWith(
@@ -269,6 +269,6 @@ class _ButtonForgotPassword extends StatelessWidget {
         },
         child: Text(AppString.forgotPassword,
             style: context.bodyMedium!
-                .copyWith(color: context.colorScheme.secondary)));
+                .copyWith(color: context.colorScheme.primary)));
   }
 }

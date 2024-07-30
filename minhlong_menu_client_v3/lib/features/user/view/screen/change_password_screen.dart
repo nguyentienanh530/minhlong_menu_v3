@@ -156,7 +156,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
     return Center(
       child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-              backgroundColor: context.colorScheme.secondary),
+              backgroundColor: context.colorScheme.primary),
           onPressed: () {
             if (AppKeys.updatePasswordKey.currentState!.validate()) {
               context.read<UserBloc>().add(UserUpdatePasswordStarted(

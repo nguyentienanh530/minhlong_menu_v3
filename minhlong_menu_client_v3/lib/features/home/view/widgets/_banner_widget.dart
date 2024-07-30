@@ -52,7 +52,7 @@ extension _BannerWidget on _HomeViewState {
         activeIndex: _indexPage.value,
         count: length,
         effect: ExpandingDotsEffect(
-            activeDotColor: context.colorScheme.secondary,
+            activeDotColor: context.colorScheme.primary,
             dotHeight: 8,
             dotWidth: 8,
             dotColor: context.colorScheme.onPrimary));

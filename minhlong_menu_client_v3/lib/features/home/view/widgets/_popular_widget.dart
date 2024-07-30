@@ -53,10 +53,10 @@ extension _PopularWidget on _HomeViewState {
                   child: Text(AppString.seeMore,
                       style: context.labelMedium!.copyWith(
                           fontStyle: FontStyle.italic,
-                          color: context.colorScheme.secondary)),
+                          color: context.colorScheme.primary)),
                 ),
                 Icon(Icons.navigate_next_rounded,
-                    size: 15, color: context.colorScheme.secondary)
+                    size: 15, color: context.colorScheme.primary)
               ]))
         ]));
   }
