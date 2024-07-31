@@ -446,7 +446,7 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
         height: 50,
         width: 200,
         decoration: BoxDecoration(
-          color: AppColors.themeColor,
+          color: context.colorScheme.primary,
           borderRadius: BorderRadius.circular(10.r),
         ),
         child: Text(

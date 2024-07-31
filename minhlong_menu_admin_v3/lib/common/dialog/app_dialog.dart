@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:minhlong_menu_admin_v3/core/app_asset.dart';
+import 'package:minhlong_menu_admin_v3/core/extensions.dart';
 
-import '../../core/app_colors.dart';
 import '../../core/app_const.dart';
-import '../../core/app_style.dart';
 import '../widget/loading_widget.dart';
 
 class AppDialog {
@@ -37,7 +36,7 @@ class AppDialog {
               const SizedBox(height: defaultPadding),
               Text(
                 title ?? 'Lỗi!',
-                style: kHeadingStyle.copyWith(
+                style: context.titleStyleLarge!.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
               )
@@ -48,8 +47,9 @@ class AppDialog {
             children: [
               Text(
                 description ?? '',
-                style: kSubHeadingStyle.copyWith(
-                    fontSize: 14, color: AppColors.black.withOpacity(0.5)),
+                style: context.titleStyleLarge!.copyWith(
+                    fontSize: 14,
+                    color: context.titleStyleLarge!.color!.withOpacity(0.5)),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(
@@ -64,8 +64,8 @@ class AppDialog {
                         ? Expanded(
                             child: OutlinedButton(
                               style: OutlinedButton.styleFrom(
-                                side: const BorderSide(
-                                  color: AppColors.themeColor,
+                                side: BorderSide(
+                                  color: context.colorScheme.primary,
                                 ),
                               ),
                               onPressed: () => Navigator.pop(context),
@@ -73,7 +73,7 @@ class AppDialog {
                                 fit: BoxFit.scaleDown,
                                 child: Text(
                                   cancelText ?? "Huỷ",
-                                  style: kButtonStyle,
+                                  style: context.bodyMedium,
                                 ),
                               ),
                             ),
@@ -83,15 +83,15 @@ class AppDialog {
                     Expanded(
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.themeColor,
-                          foregroundColor: AppColors.white,
+                          backgroundColor: context.colorScheme.primary,
+                          foregroundColor: Colors.white,
                         ),
                         onPressed: onPressedComfirm,
                         child: FittedBox(
                           fit: BoxFit.scaleDown,
                           child: Text(
                             confirmText ?? "Đăng xuất",
-                            style: kButtonWhiteStyle,
+                            style: context.bodyMedium,
                           ),
                         ),
                       ),
@@ -136,7 +136,7 @@ class AppDialog {
               const SizedBox(height: defaultPadding),
               Text(
                 title ?? 'Cảnh báo!',
-                style: kHeadingStyle.copyWith(
+                style: context.titleStyleLarge!.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
               )
@@ -147,8 +147,9 @@ class AppDialog {
             children: [
               Text(
                 description ?? '',
-                style: kSubHeadingStyle.copyWith(
-                    fontSize: 14, color: AppColors.black.withOpacity(0.5)),
+                style: context.titleStyleMedium!.copyWith(
+                    fontSize: 14,
+                    color: context.titleStyleMedium!.color!.withOpacity(0.5)),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(
@@ -164,15 +165,15 @@ class AppDialog {
                             child: OutlinedButton(
                               style: OutlinedButton.styleFrom(
                                 side: const BorderSide(
-                                  color: AppColors.red,
-                                ),
+                                    // color: AppColors.red,
+                                    ),
                               ),
                               onPressed: () => Navigator.pop(context),
                               child: FittedBox(
                                 fit: BoxFit.scaleDown,
                                 child: Text(
                                   cancelText ?? "Huỷ",
-                                  style: kButtonStyle,
+                                  style: context.bodyMedium,
                                 ),
                               ),
                             ),
@@ -182,15 +183,15 @@ class AppDialog {
                     Expanded(
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.red,
-                          foregroundColor: AppColors.white,
+                          backgroundColor: context.colorScheme.primary,
+                          foregroundColor: Colors.white,
                         ),
                         onPressed: onPressedComfirm,
                         child: FittedBox(
                           fit: BoxFit.scaleDown,
                           child: Text(
                             confirmText ?? 'Xác nhận',
-                            style: kButtonWhiteStyle,
+                            style: context.bodyMedium,
                           ),
                         ),
                       ),
@@ -226,13 +227,13 @@ class AppDialog {
             children: [
               const Icon(
                 Icons.check_circle,
-                color: AppColors.islamicGreen,
+                color: Colors.green,
                 size: 80,
               ),
               const SizedBox(height: defaultPadding),
               Text(
                 title ?? 'Thành công!',
-                style: kHeadingStyle.copyWith(
+                style: context.titleStyleLarge!.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
               )
@@ -243,8 +244,9 @@ class AppDialog {
             children: [
               Text(
                 description ?? '',
-                style: kSubHeadingStyle.copyWith(
-                    fontSize: 14, color: AppColors.black.withOpacity(0.5)),
+                style: context.titleStyleMedium!.copyWith(
+                    fontSize: 14,
+                    color: context.titleStyleMedium!.color!.withOpacity(0.5)),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(
@@ -258,15 +260,15 @@ class AppDialog {
                     Expanded(
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.themeColor,
-                          foregroundColor: AppColors.white,
+                          backgroundColor: context.colorScheme.primary,
+                          foregroundColor: Colors.white,
                         ),
                         onPressed: onPressedComfirm,
                         child: FittedBox(
                           fit: BoxFit.scaleDown,
                           child: Text(
                             confirmText!,
-                            style: kButtonWhiteStyle,
+                            style: context.bodyMedium,
                           ),
                         ),
                       ),
@@ -288,7 +290,7 @@ class AppDialog {
       context: context,
       builder: (context) => AlertDialog(
         scrollable: true,
-        backgroundColor: AppColors.white,
+        backgroundColor: Colors.white,
         content: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -304,7 +306,7 @@ class AppDialog {
                       10.verticalSpace,
                       LinearProgressIndicator(
                         value: progressValue! / 100,
-                        color: AppColors.themeColor,
+                        color: context.colorScheme.primary,
                       ),
                     ],
                   )

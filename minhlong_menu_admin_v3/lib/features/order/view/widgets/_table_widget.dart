@@ -47,8 +47,8 @@ extension _TableWidget on _OrderViewState {
         children: dinnerTable
             .map(
               (e) => badges.Badge(
-                badgeStyle: const badges.BadgeStyle(
-                  badgeColor: AppColors.themeColor,
+                badgeStyle: badges.BadgeStyle(
+                  badgeColor: context.colorScheme.primary,
                 ),
                 position: badges.BadgePosition.topEnd(
                   top: -10,
@@ -80,7 +80,7 @@ extension _TableWidget on _OrderViewState {
                     shape: OutlineInputBorder(
                       borderSide: BorderSide(
                         color: index == e.id
-                            ? AppColors.themeColor
+                            ? context.colorScheme.primary
                             : AppColors.white,
                       ),
                       borderRadius: BorderRadius.circular(
@@ -95,7 +95,7 @@ extension _TableWidget on _OrderViewState {
                         style: kBodyStyle.copyWith(
                           fontWeight: FontWeight.w700,
                           color: index == e.id
-                              ? AppColors.themeColor
+                              ? context.colorScheme.primary
                               : AppColors.secondTextColor,
                         ),
                       ),

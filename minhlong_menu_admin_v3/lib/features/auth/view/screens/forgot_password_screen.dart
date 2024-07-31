@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_admin_v3/common/dialog/app_dialog.dart';
+import 'package:minhlong_menu_admin_v3/core/extensions.dart';
+
 import '../../../../Routes/app_route.dart';
 import '../../../../common/widget/common_text_field.dart';
 import '../../../../core/app_asset.dart';
@@ -14,6 +16,7 @@ import '../../../../core/app_string.dart';
 import '../../../../core/app_style.dart';
 import '../../bloc/auth_bloc.dart';
 import '../../data/dto/login_dto.dart';
+
 part '../widgets/_forgot_password_body.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
@@ -134,12 +137,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                     shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(
                                             textFieldBorderRadius)),
-                                    side: const BorderSide(
-                                        color: AppColors.themeColor),
+                                    side: BorderSide(
+                                        color: context.colorScheme.primary),
                                     foregroundColor: AppColors.white,
                                     elevation: 0,
                                     shadowColor: Colors.transparent,
-                                    backgroundColor: AppColors.themeColor),
+                                    backgroundColor:
+                                        context.colorScheme.primary),
                                 onPressed: () => _handleForgotPassword(),
                                 child: const Text('Đặt lại mật khẩu',
                                     style: kButtonWhiteStyle),

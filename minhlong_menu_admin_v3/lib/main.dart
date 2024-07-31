@@ -1,23 +1,24 @@
+import 'package:device_preview/device_preview.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:minhlong_menu_admin_v3/Routes/app_route.dart';
+import 'package:minhlong_menu_admin_v3/core/app_theme.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/bloc/auth_bloc.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/data/auth_local_datasource/auth_local_datasource.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/data/provider/remote/auth_api.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/data/repositories/auth_repository.dart';
-
+import 'package:minhlong_menu_admin_v3/features/theme/cubit/scheme_cubit.dart';
 import 'package:minhlong_menu_admin_v3/features/user/cubit/user_cubit.dart';
 import 'package:minhlong_menu_admin_v3/features/user/data/user_local_datasource/user_local_datasource.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import 'bloc_observer.dart';
 import 'common/network/dio_client.dart';
 import 'common/network/dio_interceptor.dart';
-import 'core/app_colors.dart';
 import 'features/auth/data/model/access_token.dart';
 import 'features/banner/data/provider/banner_api.dart';
 import 'features/banner/data/repositories/banner_repository.dart';
@@ -32,6 +33,8 @@ import 'features/food/data/provider/food_api.dart';
 import 'features/food/data/repositories/food_repository.dart';
 import 'features/order/data/provider/order_api.dart';
 import 'features/order/data/repositories/order_repository.dart';
+import 'features/theme/cubit/theme_cubit.dart';
+import 'features/theme/data/theme_local_datasource.dart';
 import 'features/user/bloc/user_bloc.dart';
 import 'features/user/data/provider/user_api.dart';
 import 'features/user/data/repositories/user_repository.dart';
@@ -41,14 +44,23 @@ void main() async {
   Bloc.observer = const AppBlocObserver();
   final sf = await SharedPreferences.getInstance();
   dio.interceptors.add(DioInterceptor(sf));
-  runApp(MainApp(sf: sf));
+  var theme = await ThemeLocalDatasource(sf).getDartTheme() ?? false;
+  var scheme =
+      await ThemeLocalDatasource(sf).getSchemeTheme() ?? listScheme.first.key;
+  runApp(DevicePreview(
+      enabled: false,
+      builder: (context) => MainApp(sf: sf, theme: theme, scheme: scheme)));
 }
 
 class MainApp extends StatelessWidget {
   const MainApp({
     super.key,
     required this.sf,
+    required this.theme,
+    required this.scheme,
   });
+  final bool? theme;
+  final String? scheme;
 
   final SharedPreferences sf;
 
@@ -113,8 +125,18 @@ class MainApp extends StatelessWidget {
           BlocProvider(
             create: (context) => SearchFoodBloc(context.read<FoodRepository>()),
           ),
+          BlocProvider(
+            create: (context) => ThemeCubit(),
+          ),
+          BlocProvider(
+            create: (context) => SchemeCubit(),
+          ),
         ],
-        child: AppContent(sf: sf),
+        child: AppContent(
+          sf: sf,
+          theme: theme,
+          scheme: scheme,
+        ),
       ),
     );
   }
@@ -124,7 +146,11 @@ class AppContent extends StatefulWidget {
   const AppContent({
     super.key,
     required this.sf,
+    required this.theme,
+    required this.scheme,
   });
+  final bool? theme;
+  final String? scheme;
   final SharedPreferences sf;
   @override
   State<AppContent> createState() => _AppContentState();
@@ -134,6 +160,8 @@ class _AppContentState extends State<AppContent> {
   @override
   void initState() {
     context.read<AuthBloc>().add(AuthAuthenticateStarted());
+    context.read<ThemeCubit>().changeTheme(widget.theme!);
+    context.read<SchemeCubit>().changeScheme(widget.scheme!);
 
     super.initState();
   }
@@ -162,6 +190,8 @@ class _AppContentState extends State<AppContent> {
   @override
   Widget build(BuildContext context) {
     final state = context.watch<AuthBloc>().state;
+    var themeState = context.watch<ThemeCubit>().state;
+    var schemeState = context.watch<SchemeCubit>().state;
     if (state is AuthInitial) {
       return Container();
     }
@@ -196,21 +226,25 @@ class _AppContentState extends State<AppContent> {
               GlobalMaterialLocalizations.delegate
             ],
             supportedLocales: const [Locale('en'), Locale('vi')],
-            theme: ThemeData(
-              useMaterial3: true,
-              fontFamily: GoogleFonts.beVietnamPro().fontFamily,
-              scaffoldBackgroundColor: AppColors.background,
-              // textTheme: const TextTheme(
-              //     displaySmall: TextStyle(color: AppColors.white),
-              //     displayLarge: TextStyle(color: AppColors.white),
-              //     displayMedium: TextStyle(color: AppColors.white)),
-              colorScheme: ColorScheme.fromSwatch(
-                primarySwatch: MaterialColor(
-                  AppColors.themeColor.value,
-                  getSwatch(AppColors.themeColor),
-                ),
-              ),
-            ),
+            theme: themeState
+                ? AppTheme(scheme: schemeState).darkTheme
+                : AppTheme(scheme: schemeState).lightTheme,
+
+            // theme: ThemeData(
+            //   useMaterial3: true,
+            //   fontFamily: GoogleFonts.beVietnamPro().fontFamily,
+            //   scaffoldBackgroundColor: AppColors.background,
+            //   // textTheme: const TextTheme(
+            //   //     displaySmall: TextStyle(color: AppColors.white),
+            //   //     displayLarge: TextStyle(color: AppColors.white),
+            //   //     displayMedium: TextStyle(color: AppColors.white)),
+            //   colorScheme: ColorScheme.fromSwatch(
+            //     primarySwatch: MaterialColor(
+            //       context.colorScheme.primary.value,
+            //       getSwatch(context.colorScheme.primary),
+            //     ),
+            //   ),
+            // ),
           );
         },
       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:minhlong_menu_admin_v3/core/extensions.dart';
 
 import '../../core/app_colors.dart';
 import '../../core/app_const.dart';
@@ -46,7 +47,7 @@ class ErrorDialog extends StatelessWidget {
           const SizedBox(height: 15),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.themeColor,
+                backgroundColor: context.colorScheme.primary,
                 foregroundColor: AppColors.white),
             onPressed: onRetryPressed,
             child: Text(onRetryText ?? "Quay lại đăng nhập",

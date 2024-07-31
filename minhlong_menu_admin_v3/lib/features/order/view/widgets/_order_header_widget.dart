@@ -32,7 +32,8 @@ extension _OrderHeaderWidget on _OrderViewState {
               }
             }),
         style: ButtonStyle(
-            backgroundColor: const WidgetStatePropertyAll(AppColors.themeColor),
+            backgroundColor:
+                WidgetStatePropertyAll(context.colorScheme.primary),
             shape: WidgetStatePropertyAll(RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(textFieldBorderRadius)))),
         child: const Text(
@@ -53,7 +54,8 @@ extension _OrderHeaderWidget on _OrderViewState {
           }
         },
         style: ButtonStyle(
-            backgroundColor: const WidgetStatePropertyAll(AppColors.themeColor),
+            backgroundColor:
+                WidgetStatePropertyAll(context.colorScheme.primary),
             shape: WidgetStatePropertyAll(RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(textFieldBorderRadius)))),
         child: const Text(

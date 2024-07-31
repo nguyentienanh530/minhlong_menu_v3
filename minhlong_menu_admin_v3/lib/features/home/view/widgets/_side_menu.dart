@@ -9,10 +9,10 @@ extension _BuildSideMenuWidget on HomeViewState {
           displayMode: displayMode ?? SideMenuDisplayMode.auto,
           // showHamburger: true,
           backgroundColor: AppColors.white,
-          hoverColor: AppColors.themeColor.withOpacity(0.3),
+          hoverColor: context.colorScheme.primary.withOpacity(0.3),
           itemOuterPadding: const EdgeInsets.all(2),
 
-          selectedColor: AppColors.themeColor,
+          selectedColor: context.colorScheme.primary,
           selectedTitleTextStyle: kBodyStyle.copyWith(
             color: AppColors.white,
             fontWeight: FontWeight.w700,

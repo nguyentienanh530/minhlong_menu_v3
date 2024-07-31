@@ -40,7 +40,7 @@
 //         height: 30,
 //         width: 50,
 //         decoration: const BoxDecoration(
-//             color: AppColors.themeColor,
+//             color: context.colorScheme.primary,
 //             borderRadius: BorderRadius.only(
 //                 bottomRight: Radius.circular(defaultBorderRadius),
 //                 topLeft: Radius.circular(defaultBorderRadius))),
@@ -108,7 +108,7 @@
 //               width: constraints.maxHeight,
 //               alignment: Alignment.center,
 //               decoration: const BoxDecoration(
-//                   color: AppColors.themeColor,
+//                   color: context.colorScheme.primary,
 //                   borderRadius: BorderRadius.only(
 //                       topLeft: Radius.circular(defaultBorderRadius),
 //                       bottomRight: Radius.circular(defaultBorderRadius))),

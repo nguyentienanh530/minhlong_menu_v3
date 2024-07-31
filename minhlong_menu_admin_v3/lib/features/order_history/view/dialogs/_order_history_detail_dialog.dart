@@ -49,7 +49,7 @@ extension _OrderDetailDialog on _OrderViewState {
             onTap: () {
               context.push(AppRoute.printScreen, extra: orderItem);
             },
-            color: AppColors.themeColor),
+            color: context.colorScheme.primary),
       ],
     );
   }

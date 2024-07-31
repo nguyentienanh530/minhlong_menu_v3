@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_admin_v3/common/widget/loading_widget.dart';
+import 'package:minhlong_menu_admin_v3/core/extensions.dart';
 
 import '../../../../Routes/app_route.dart';
 import '../../../../common/widget/common_text_field.dart';
@@ -17,6 +18,7 @@ import '../../../../core/app_string.dart';
 import '../../../../core/app_style.dart';
 import '../../bloc/auth_bloc.dart';
 import '../../data/dto/login_dto.dart';
+
 part '../widgets/_login_body.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -233,11 +235,11 @@ class _ButtonLogin extends StatelessWidget {
           style: ElevatedButton.styleFrom(
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(textFieldBorderRadius)),
-              side: const BorderSide(color: AppColors.themeColor),
+              side: BorderSide(color: context.colorScheme.primary),
               foregroundColor: AppColors.white,
               elevation: 0,
               shadowColor: Colors.transparent,
-              backgroundColor: AppColors.themeColor),
+              backgroundColor: context.colorScheme.primary),
           onPressed: onTap,
           child: Text(AppString.login,
               style: kButtonWhiteStyle.copyWith(fontSize: 15)),

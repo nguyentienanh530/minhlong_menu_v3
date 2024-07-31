@@ -30,7 +30,7 @@ class AppRes {
   //       titleText: Container(),
   //       backgroundColor: positive
   //           ? AppColors.islamicGreen.withOpacity(0.8)
-  //           : AppColors.themeColor,
+  //           : context.colorScheme.primary,
   //       message: msg,
   //       messageText: Row(
   //         children: [
@@ -75,12 +75,12 @@ class AppRes {
   //                         alignment: Alignment.center,
   //                         decoration: BoxDecoration(
   //                             color: AppColors.white,
-  //                             border: Border.all(color: AppColors.themeColor),
+  //                             border: Border.all(color: context.colorScheme.primary),
   //                             borderRadius:
   //                                 BorderRadius.circular(defaultBorderRadius)),
   //                         child: Text('Hủy',
   //                             style: kSubHeadingStyle.copyWith(
-  //                                 color: AppColors.themeColor)))),
+  //                                 color: context.colorScheme.primary)))),
   //                 GestureDetector(
   //                     onTap: onConformTap,
   //                     child: Container(
@@ -88,7 +88,7 @@ class AppRes {
   //                         width: 90,
   //                         alignment: Alignment.center,
   //                         decoration: BoxDecoration(
-  //                             color: AppColors.themeColor,
+  //                             color: context.colorScheme.primary,
   //                             borderRadius:
   //                                 BorderRadius.circular(defaultBorderRadius)),
   //                         child: Text('Xác nhận', style: kButtonWhiteStyle)))
@@ -119,12 +119,12 @@ class AppRes {
   //                         alignment: Alignment.center,
   //                         decoration: BoxDecoration(
   //                             color: AppColors.white,
-  //                             border: Border.all(color: AppColors.themeColor),
+  //                             border: Border.all(color: context.colorScheme.primary),
   //                             borderRadius:
   //                                 BorderRadius.circular(defaultBorderRadius)),
   //                         child: Text('Hủy',
   //                             style: kSubHeadingStyle.copyWith(
-  //                                 color: AppColors.themeColor)))),
+  //                                 color: context.colorScheme.primary)))),
   //                 GestureDetector(
   //                     onTap: onConformTap,
   //                     child: Container(
@@ -132,7 +132,7 @@ class AppRes {
   //                         width: 90,
   //                         alignment: Alignment.center,
   //                         decoration: BoxDecoration(
-  //                             color: AppColors.themeColor,
+  //                             color: context.colorScheme.primary,
   //                             borderRadius:
   //                                 BorderRadius.circular(defaultBorderRadius)),
   //                         child: Text('Xác nhận', style: kSubHeadingStyle)))

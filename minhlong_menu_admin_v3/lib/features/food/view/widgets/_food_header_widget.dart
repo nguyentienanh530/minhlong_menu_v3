@@ -128,7 +128,7 @@ extension _FoodHeaderWidget on _FoodViewState {
         alignment: Alignment.center,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8).r,
-          color: AppColors.themeColor,
+          color: context.colorScheme.primary,
         ),
         child: Text(
           'Thêm',
