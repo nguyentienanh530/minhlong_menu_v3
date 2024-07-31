@@ -1,23 +1,24 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_client_v3/Routes/app_route.dart';
 import 'package:minhlong_menu_client_v3/common/widget/cart_button.dart';
 import 'package:minhlong_menu_client_v3/common/widget/common_back_button.dart';
+import 'package:minhlong_menu_client_v3/common/widget/error_screen.dart';
 import 'package:minhlong_menu_client_v3/common/widget/loading.dart';
 import 'package:minhlong_menu_client_v3/core/api_config.dart';
-import 'package:minhlong_menu_client_v3/core/app_colors.dart';
+import 'package:minhlong_menu_client_v3/core/app_asset.dart';
 import 'package:minhlong_menu_client_v3/core/app_string.dart';
-import 'package:minhlong_menu_client_v3/core/app_style.dart';
 import 'package:minhlong_menu_client_v3/core/extensions.dart';
 import 'package:minhlong_menu_client_v3/features/food/data/model/food_model.dart';
 import 'package:minhlong_menu_client_v3/features/food/data/repositories/food_repository.dart';
+import 'package:minhlong_menu_client_v3/features/user/cubit/user_cubit.dart';
+
 import '../../../../common/snackbar/app_snackbar.dart';
 import '../../../../common/widget/common_item_food.dart';
-// import '../../../../common/widget/empty_widget.dart';
 import '../../../../common/widget/error_build_image.dart';
-import '../../../../common/widget/error_widget.dart';
 import '../../../../core/app_const.dart';
 import '../../../../core/utils.dart';
 import '../../../cart/cubit/cart_cubit.dart';
@@ -99,6 +100,7 @@ class _CategoryViewState extends State<CategoryView> {
   Widget build(BuildContext context) {
     var cart = context.watch<CartCubit>().state;
     var table = context.watch<TableCubit>().state;
+    var user = context.watch<UserCubit>().state;
     return Scaffold(body: BlocBuilder<FoodBloc, FoodState>(
       builder: (context, state) {
         if (state.food.paginationModel != null) {
@@ -110,7 +112,9 @@ class _CategoryViewState extends State<CategoryView> {
         if (state is FoodOnCategoryFetchInProgress) {
           return const Loading();
         } else if (state is FoodOnCategoryFetchFailure) {
-          return ErrWidget(error: state.message);
+          return ErrorScreen(
+            errorMessage: state.message,
+          );
         } else {
           return CustomScrollView(
             controller: controller,
@@ -120,7 +124,8 @@ class _CategoryViewState extends State<CategoryView> {
                 pinned: true,
                 stretch: true,
                 leading: CommonBackButton(onTap: () => context.pop()),
-                backgroundColor: AppColors.transparent,
+                automaticallyImplyLeading: false,
+                backgroundColor: Colors.transparent,
                 expandedHeight: context.isPortrait
                     ? 0.4 * context.sizeDevice.height
                     : 0.4 * context.sizeDevice.width,
@@ -129,9 +134,10 @@ class _CategoryViewState extends State<CategoryView> {
                 ),
                 actions: [
                   CartButton(
-                      onPressed: () => context.push(AppRoute.carts),
+                      onPressed: () =>
+                          context.push(AppRoute.carts, extra: user),
                       number: cart.orderDetail.length.toString(),
-                      colorIcon: AppColors.themeColor),
+                      colorIcon: context.colorScheme.primary),
                   const SizedBox(width: 10),
                 ],
               ),
@@ -168,11 +174,13 @@ class _CategoryViewState extends State<CategoryView> {
           clipBehavior: Clip.antiAlias,
           decoration: const BoxDecoration(),
           width: double.infinity,
-          child: CachedNetworkImage(
-            imageUrl: '${ApiConfig.host}${category.image}',
-            errorWidget: errorBuilderForImage,
-            fit: BoxFit.cover,
-          ),
+          child: category.image.isEmpty
+              ? SvgPicture.asset(AppAsset.noImage)
+              : CachedNetworkImage(
+                  imageUrl: '${ApiConfig.host}${category.image}',
+                  errorWidget: errorBuilderForImage,
+                  fit: BoxFit.cover,
+                ),
         ),
         Positioned(
           top: context.isPortrait
@@ -185,15 +193,15 @@ class _CategoryViewState extends State<CategoryView> {
             children: [
               Text(
                 AppString.category,
-                style:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
+                style: context.titleStyleLarge!
+                    .copyWith(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               Text(
                 widget.categoryModel.name,
-                style: const TextStyle(
+                style: context.titleStyleLarge!.copyWith(
                     fontSize: 40,
-                    fontWeight: FontWeight.w900,
-                    color: AppColors.themeColor,
+                    fontWeight: FontWeight.bold,
+                    color: context.colorScheme.primary,
                     height: 1),
               ),
               ValueListenableBuilder(
@@ -201,8 +209,9 @@ class _CategoryViewState extends State<CategoryView> {
                 builder: (context, value, child) {
                   return Text(
                     '$value Món',
-                    style:
-                        kBodyStyle.copyWith(color: AppColors.secondTextColor),
+                    style: context.bodyMedium!.copyWith(
+                        fontWeight: FontWeight.w800,
+                        color: context.bodyMedium!.color!.withOpacity(0.5)),
                   );
                 },
               ),

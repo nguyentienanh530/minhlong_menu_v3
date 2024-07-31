@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_client_v3/common/widget/common_back_button.dart';
 import 'package:minhlong_menu_client_v3/common/widget/empty_widget.dart';
 import 'package:minhlong_menu_client_v3/common/widget/loading.dart';
-import 'package:minhlong_menu_client_v3/core/app_colors.dart';
-import 'package:minhlong_menu_client_v3/core/app_style.dart';
+import 'package:minhlong_menu_client_v3/core/extensions.dart';
 import 'package:minhlong_menu_client_v3/features/table/cubit/table_cubit.dart';
 import 'package:minhlong_menu_client_v3/features/table/data/model/table_model.dart';
 
 import '../../../../common/widget/error_widget.dart';
-
+import '../../../../core/app_asset.dart';
 import '../../../../core/app_const.dart';
 import '../../../../core/app_string.dart';
 import '../../bloc/table_bloc.dart';
@@ -31,26 +29,13 @@ class _TableViewState extends State<TableView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
         automaticallyImplyLeading: false,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            CommonBackButton(onTap: () => context.pop()),
-            Expanded(
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                child: FittedBox(
-                  child: Text(
-                    AppString.chooseTable,
-                    style: kHeadingStyle.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(width: 20)
-          ],
+        leading: CommonBackButton(onTap: () => context.pop()),
+        centerTitle: true,
+        title: Text(
+          AppString.chooseTable,
+          style: context.titleStyleLarge!.copyWith(fontWeight: FontWeight.bold),
         ),
       ),
       body: Padding(

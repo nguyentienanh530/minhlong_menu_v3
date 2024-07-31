@@ -11,7 +11,8 @@ class AppAsset {
   // static const String fnProductSansBlack = 'ProductSansBlack';
 
   static const String emptyImage = 'assets/image/empty.png';
-  static const String background = 'assets/image/background.png';
+  static const String backgroundLight = 'assets/image/background_light.jpg';
+  static const String backgroundDark = 'assets/image/background_dark.jpg';
   static const String shoppingCart = 'assets/svg/shopping_cart.svg';
   static const String dinnertable = 'assets/image/dinner_table.png';
   static const String utensils = 'assets/svg/utensils.svg';
@@ -35,4 +36,5 @@ class AppAsset {
   static const String noProductImage = 'assets/image/noproduct.png';
   static const String errorImageScreen = 'assets/image/404error.png';
   static const String successImageScreen = 'assets/image/success_cart.png';
+  static const String noImage = 'assets/svg/no_image.svg';
 }

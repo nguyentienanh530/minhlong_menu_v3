@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:minhlong_menu_client_v3/core/extensions.dart';
 
 import '../../core/app_asset.dart';
 import '../../core/app_const.dart';
-import '../../core/app_style.dart';
 
 class EmptyScreen extends StatelessWidget {
   const EmptyScreen({super.key});
@@ -22,13 +22,13 @@ class EmptyScreen extends StatelessWidget {
           const SizedBox(height: 16),
           Center(
               child: Text("Không có sản phẩm",
-                  style: kSubHeadingStyle.copyWith(
-                      fontWeight: FontWeight.bold, fontSize: 20))),
+                  style: context.titleStyleMedium!
+                      .copyWith(fontWeight: FontWeight.bold, fontSize: 20))),
           const SizedBox(height: 16),
           Center(
               child: Text(
                   "Xin lỗi, chúng tôi không thể tìm thấy bất kỳ kết quả nào cho mặt hàng của bạn.",
-                  style: kSubHeadingStyle,
+                  style: context.titleStyleMedium,
                   textAlign: TextAlign.center))
         ]
                 .animate(interval: 50.ms)

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:minhlong_menu_client_v3/core/app_style.dart';
+import 'package:minhlong_menu_client_v3/core/extensions.dart';
 
 import '../../core/app_asset.dart';
-import '../../core/app_colors.dart';
 import '../../core/app_const.dart';
 import '../../core/app_string.dart';
 
@@ -14,10 +13,11 @@ class ErrorScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(),
+      width: context.sizeDevice.width,
       padding: const EdgeInsets.all(defaultPadding),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const Spacer(
             flex: 2,
@@ -32,7 +32,8 @@ class ErrorScreen extends StatelessWidget {
           ),
           Expanded(
             child: Text(errorMessage ?? '',
-                style: kHeadingStyle.copyWith(fontWeight: FontWeight.bold)),
+                style:
+                    context.bodyMedium!.copyWith(fontWeight: FontWeight.bold)),
           ),
           const Spacer(
             flex: 2,
@@ -40,7 +41,7 @@ class ErrorScreen extends StatelessWidget {
           Expanded(
             child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.themeColor,
+                  backgroundColor: context.colorScheme.primary,
                   elevation: 4,
                   padding: const EdgeInsets.symmetric(
                       horizontal: defaultPadding * 4),
@@ -48,7 +49,7 @@ class ErrorScreen extends StatelessWidget {
                 onPressed: () => context.pop(),
                 child: Text(
                   AppString.back,
-                  style: kButtonWhiteStyle,
+                  style: context.bodyMedium,
                 )),
           ),
           const Spacer()

@@ -24,20 +24,24 @@ extension _NewsFoodWidget on _HomeViewState {
       width: context.sizeDevice.width,
       height: sizeState.height,
       child: ListView.builder(
-          padding: const EdgeInsets.only(left: 8),
+          padding: const EdgeInsets.only(
+              left: defaultPadding / 2, bottom: defaultPadding / 2),
           physics: const BouncingScrollPhysics(),
           scrollDirection: Axis.horizontal,
           itemCount: foods.length,
           itemBuilder: (context, index) {
-            return ItemFoodView(
-              keyItem: _managerList.keys[index],
-              addToCartOnTap: () {
-                _handleOnTapAddToCart(orderModel, table, foods[index]);
-                // calculatePathAndAnimate(index);
-              },
-              food: foods[index],
-              height: sizeState.height ?? 0.0,
-              width: sizeState.width ?? 0.0,
+            return Padding(
+              padding: const EdgeInsets.only(right: defaultPadding / 2),
+              child: ItemFoodView(
+                keyItem: _managerList.keys[index],
+                addToCartOnTap: () {
+                  _handleOnTapAddToCart(orderModel, table, foods[index]);
+                  // calculatePathAndAnimate(index);
+                },
+                food: foods[index],
+                height: sizeState.height ?? 0.0,
+                width: sizeState.width ?? 0.0,
+              ),
             );
           }),
     );

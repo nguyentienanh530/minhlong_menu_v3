@@ -16,12 +16,10 @@ import '../../../../common/widget/common_text_field.dart';
 import '../../../../common/widget/error_build_image.dart';
 import '../../../../common/widget/loading.dart';
 import '../../../../core/api_config.dart';
-import '../../../../core/app_colors.dart';
 import '../../../../core/app_const.dart';
 import '../../../../core/app_key.dart';
 import '../../../../core/app_res.dart';
 import '../../../../core/app_string.dart';
-import '../../../../core/app_style.dart';
 import '../../../../core/utils.dart';
 import '../../bloc/user_bloc.dart';
 import '../../data/model/user_model.dart';
@@ -81,9 +79,16 @@ class _EditProfileViewState extends State<EditProfileView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
         leading: CommonBackButton(onTap: () => context.pop(_isUpdated)),
         centerTitle: true,
-        title: Text(AppString.editProfile),
+        title: Text(
+          AppString.editProfile,
+          style: context.titleStyleLarge!.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        automaticallyImplyLeading: false,
       ),
       body: BlocListener<UserBloc, UserState>(
         listener: (context, state) {

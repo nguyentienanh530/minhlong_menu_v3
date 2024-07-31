@@ -29,46 +29,52 @@ extension _LoginBody on _LoginScreenState {
   }
 
   Widget _buildLoginInitWidget() {
-    return Container(
-      width: 360,
-      padding: const EdgeInsets.all(35).r,
-      child: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const SizedBox(height: 40),
-            const Center(child: _Wellcome()),
-            44.verticalSpace,
-            _PhoneNumber(
-                emailcontroller: _emailCtrl,
-                onSubmit: (p0) {
+    return Card(
+      elevation: 10,
+      color: context.colorScheme.surface.withOpacity(0.9),
+      child: FittedBox(
+        child: Container(
+          width: 360,
+          padding: const EdgeInsets.all(35).r,
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                20.verticalSpace,
+                const Center(child: _Wellcome()),
+                44.verticalSpace,
+                _PhoneNumber(
+                    emailcontroller: _emailCtrl,
+                    onSubmit: (p0) {
+                      _handleLoginSubmited();
+                    }),
+                20.verticalSpace,
+                _buildPassword(),
+                20.verticalSpace,
+                const SizedBox(
+                  width: 360,
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [_ButtonForgotPassword()]),
+                ),
+                20.verticalSpace,
+                _buildValidPassword(),
+                32.verticalSpace,
+                _ButtonLogin(onTap: () {
                   _handleLoginSubmited();
                 }),
-            20.verticalSpace,
-            _buildPassword(),
-            20.verticalSpace,
-            const SizedBox(
-              width: 360,
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [_ButtonForgotPassword()]),
+                20.verticalSpace,
+              ]
+                  .animate(interval: 50.ms)
+                  .slideX(
+                      begin: -0.1,
+                      end: 0,
+                      curve: Curves.easeInOutCubic,
+                      duration: 400.ms)
+                  .fadeIn(curve: Curves.easeInOutCubic, duration: 400.ms),
             ),
-            20.verticalSpace,
-            _buildValidPassword(),
-            32.verticalSpace,
-            _ButtonLogin(onTap: () {
-              _handleLoginSubmited();
-            }),
-            const SizedBox(height: 40),
-          ]
-              .animate(interval: 50.ms)
-              .slideX(
-                  begin: -0.1,
-                  end: 0,
-                  curve: Curves.easeInOutCubic,
-                  duration: 400.ms)
-              .fadeIn(curve: Curves.easeInOutCubic, duration: 400.ms),
+          ),
         ),
       ),
     );

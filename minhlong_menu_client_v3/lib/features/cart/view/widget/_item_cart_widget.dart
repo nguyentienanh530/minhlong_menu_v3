@@ -39,8 +39,8 @@ extension _ItemCartWidget on _CartViewState {
                           children: [
                             Text(
                               orderItem.foodName,
-                              style: kHeadingStyle.copyWith(
-                                  fontWeight: FontWeight.w700),
+                              style: context.bodyMedium!
+                                  .copyWith(fontWeight: FontWeight.bold),
                             ),
                             FittedBox(
                               fit: BoxFit.scaleDown,
@@ -65,9 +65,9 @@ extension _ItemCartWidget on _CartViewState {
                           children: [
                             Text(
                               '${Ultils.currencyFormat(Ultils.foodPrice(isDiscount: orderItem.isDiscount, foodPrice: orderItem.foodPrice, discount: orderItem.discount))} ₫',
-                              style: kBodyStyle.copyWith(
-                                color: AppColors.themeColor,
-                                fontWeight: FontWeight.w700,
+                              style: context.bodyMedium!.copyWith(
+                                color: context.colorScheme.primary,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                             _buildQuality(orderModel, orderItem),
@@ -84,16 +84,14 @@ extension _ItemCartWidget on _CartViewState {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Divider(
-                        color: AppColors.secondTextColor,
+                        // color: AppColors.secondTextColor,
                         thickness: 0.3,
                       ),
-                      const Text(
-                        "Ghi chú: ",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(orderItem.note, style: kCaptionStyle)
+                      Text("Ghi chú: ", style: context.bodyMedium),
+                      Text(orderItem.note,
+                          style: context.bodySmall!.copyWith(
+                            color: context.bodyMedium!.color!.withOpacity(0.5),
+                          ))
                     ],
                   )
                 : const SizedBox()
@@ -126,12 +124,13 @@ extension _ItemCartWidget on _CartViewState {
           child: Container(
             height: 20,
             width: 20,
-            decoration: const BoxDecoration(
-                shape: BoxShape.circle, color: AppColors.themeColor),
-            child: const Icon(
+            decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: context.colorScheme.primary)),
+            child: Icon(
               Icons.remove,
               size: 15,
-              color: AppColors.white,
+              color: context.colorScheme.primary,
             ),
           ),
         ),
@@ -155,13 +154,10 @@ extension _ItemCartWidget on _CartViewState {
           child: Container(
             height: 20,
             width: 20,
-            decoration: const BoxDecoration(
-                shape: BoxShape.circle, color: AppColors.themeColor),
-            child: const Icon(
-              Icons.add,
-              size: 15,
-              color: AppColors.white,
-            ),
+            decoration: BoxDecoration(
+                shape: BoxShape.circle, color: context.colorScheme.primary),
+            child:
+                Icon(Icons.add, size: 15, color: context.colorScheme.onPrimary),
           ),
         ),
       ],

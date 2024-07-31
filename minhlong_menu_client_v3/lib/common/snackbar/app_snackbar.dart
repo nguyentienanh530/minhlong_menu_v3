@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-import '../../core/app_colors.dart';
+import 'package:minhlong_menu_client_v3/core/extensions.dart';
 
 class AppSnackbar {
   static Future showSnackBar(BuildContext context,
@@ -13,12 +12,15 @@ class AppSnackbar {
           showCloseIcon: true,
           content: Row(
             children: [
-              Icon(isSuccess ? Icons.check : Icons.error, color: Colors.white),
+              Icon(isSuccess ? Icons.check : Icons.error,
+                  color: context.bodyMedium!.color),
               10.horizontalSpace,
               Text(msg ?? ''),
             ],
           ),
-          backgroundColor: isSuccess ? AppColors.islamicGreen : AppColors.red,
+          backgroundColor: isSuccess
+              ? context.colorScheme.primaryContainer
+              : context.colorScheme.tertiaryContainer,
           duration: const Duration(seconds: 3),
         ),
       );

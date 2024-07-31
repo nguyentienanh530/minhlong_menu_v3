@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../../core/app_colors.dart';
+import 'package:minhlong_menu_client_v3/core/extensions.dart';
 // import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class Loading extends StatelessWidget {
@@ -9,12 +8,12 @@ class Loading extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // return const Center(child: SpinKitCircle(color: Colors.red, size: 30));
-    return const Center(
+    return Center(
         child: SizedBox(
       height: 25,
       width: 25,
       child: CircularProgressIndicator(
-        color: AppColors.themeColor,
+        color: context.colorScheme.primary,
         strokeWidth: 4,
         strokeCap: StrokeCap.round,
       ),

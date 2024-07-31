@@ -9,10 +9,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_client_v3/common/animations/add_to_card_animation_manager.dart';
 import 'package:minhlong_menu_client_v3/common/widget/common_item_food.dart';
-import 'package:minhlong_menu_client_v3/core/app_colors.dart';
 import 'package:minhlong_menu_client_v3/core/app_const.dart';
 import 'package:minhlong_menu_client_v3/core/app_string.dart';
-import 'package:minhlong_menu_client_v3/core/app_style.dart';
 import 'package:minhlong_menu_client_v3/core/extensions.dart';
 import 'package:minhlong_menu_client_v3/core/utils.dart';
 import 'package:minhlong_menu_client_v3/features/food/bloc/food_bloc.dart';
@@ -24,6 +22,7 @@ import 'package:minhlong_menu_client_v3/features/table/data/model/table_model.da
 import 'package:minhlong_menu_client_v3/features/user/cubit/user_cubit.dart';
 import 'package:minhlong_menu_client_v3/features/user/data/model/user_model.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+
 import '../../../../Routes/app_route.dart';
 import '../../../../common/snackbar/app_snackbar.dart';
 import '../../../../common/widget/error_build_image.dart';
@@ -31,15 +30,14 @@ import '../../../../common/widget/error_screen.dart';
 import '../../../../common/widget/loading.dart';
 import '../../../../core/api_config.dart';
 import '../../../../core/app_asset.dart';
-
 import '../../../banner/data/model/banner_model.dart';
 import '../../../cart/cubit/cart_cubit.dart';
-
 import '../../../category/data/model/category_model.dart';
 import '../../../food/data/model/food_item.dart';
 import '../../../order/data/model/order_detail.dart';
 import '../../../table/cubit/table_cubit.dart';
 import '../../bloc/home_bloc.dart';
+
 part '../widgets/_appbar_widget.dart';
 part '../widgets/_banner_widget.dart';
 part '../widgets/_category_widget.dart';
@@ -120,7 +118,6 @@ class _HomeViewState extends State<HomeView>
                     titleSpacing: 10,
                     toolbarHeight: 80.h,
                     leadingWidth: 0,
-                    backgroundColor: AppColors.lavender,
                     title: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Row(
@@ -151,17 +148,11 @@ class _HomeViewState extends State<HomeView>
                             children: [
                               Text(
                                 'Xin chào!',
-                                style: kCaptionStyle.copyWith(
-                                  fontWeight: FontWeight.w500,
-                                  color: AppColors.secondTextColor,
-                                ),
+                                style: context.bodySmall!.copyWith(
+                                    color: context.bodySmall!.color!
+                                        .withOpacity(0.5)),
                               ),
-                              Text(
-                                user.fullName,
-                                style: kBodyStyle.copyWith(
-                                  fontWeight: FontWeight.w900,
-                                ),
-                              ),
+                              Text(user.fullName, style: context.bodyLarge),
                             ],
                           ),
                         ],
@@ -219,7 +210,7 @@ class _HomeViewState extends State<HomeView>
                               child: Container(
                                 height: _foodItemSize.value.height,
                                 width: _foodItemSize.value.width,
-                                color: AppColors.lavender,
+                                color: context.colorScheme.onPrimary,
                               )
                                   .animate(
                                     autoPlay: false,
@@ -266,7 +257,7 @@ class _HomeViewState extends State<HomeView>
         : GestureDetector(
             onTap: () => context.push(AppRoute.dinnerTables),
             child: Card(
-              color: AppColors.themeColor,
+              color: context.colorScheme.primary,
               elevation: 4,
               child: Container(
                 height: 40,
@@ -276,7 +267,9 @@ class _HomeViewState extends State<HomeView>
                 child: FittedBox(
                   fit: BoxFit.scaleDown,
                   child: Text(table.name,
-                      textAlign: TextAlign.center, style: kCaptionWhiteStyle),
+                      textAlign: TextAlign.center,
+                      style: context.bodyMedium!
+                          .copyWith(color: context.colorScheme.onPrimary)),
                 ),
               ),
             ),
@@ -286,22 +279,20 @@ class _HomeViewState extends State<HomeView>
   Widget _buildFloatingButton(OrderModel orderModel, UserModel user) {
     return FloatingActionButton(
       key: _cartKey,
-      backgroundColor: AppColors.themeColor,
+      backgroundColor: context.colorScheme.primary,
       onPressed: () => context.push(AppRoute.carts, extra: user),
       child: Padding(
-        padding: const EdgeInsets.all(5),
+        padding: const EdgeInsets.all(defaultPadding / 3),
         child: badges.Badge(
-          badgeStyle:
-              const badges.BadgeStyle(badgeColor: AppColors.islamicGreen),
-          position: badges.BadgePosition.topEnd(top: -14),
+          badgeStyle: const badges.BadgeStyle(badgeColor: Colors.green),
+          position: badges.BadgePosition.topEnd(top: -20, end: -20),
           badgeContent: Text(orderModel.orderDetail.length.toString(),
-              style: kBodyWhiteStyle),
+              style: context.bodyMedium!.copyWith(color: Colors.white)),
           child: SvgPicture.asset(
             AppAsset.shoppingCart,
-            height: double.infinity,
+            height: 30,
             fit: BoxFit.cover,
-            colorFilter:
-                const ColorFilter.mode(AppColors.white, BlendMode.srcIn),
+            colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
           ),
         ),
       ),

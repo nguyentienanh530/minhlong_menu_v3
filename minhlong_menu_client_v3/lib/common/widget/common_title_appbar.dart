@@ -1,7 +1,6 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
-
-import '../../core/app_style.dart';
+import 'package:minhlong_menu_client_v3/core/extensions.dart';
 
 class CommonTitleAppbar extends StatelessWidget {
   const CommonTitleAppbar({super.key, required this.title});
@@ -11,8 +10,8 @@ class CommonTitleAppbar extends StatelessWidget {
     return AnimatedTextKit(
       animatedTexts: [
         TypewriterAnimatedText(title,
-            textStyle: kHeadingStyle.copyWith(
-                fontWeight: FontWeight.bold, fontSize: 30),
+            textStyle: context.titleStyleLarge!
+                .copyWith(fontWeight: FontWeight.bold, fontSize: 30),
             speed: const Duration(milliseconds: 100)),
       ],
       isRepeatingAnimation: false,

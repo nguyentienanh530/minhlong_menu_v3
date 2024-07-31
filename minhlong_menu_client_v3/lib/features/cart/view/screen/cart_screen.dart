@@ -5,16 +5,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_client_v3/common/dialog/app_dialog.dart';
-import 'package:minhlong_menu_client_v3/common/dialog/error_dialog.dart';
 import 'package:minhlong_menu_client_v3/common/widget/common_back_button.dart';
 import 'package:minhlong_menu_client_v3/common/widget/common_icon_button.dart';
 import 'package:minhlong_menu_client_v3/common/widget/error_build_image.dart';
 import 'package:minhlong_menu_client_v3/common/widget/loading.dart';
-import 'package:minhlong_menu_client_v3/core/app_colors.dart';
 import 'package:minhlong_menu_client_v3/core/app_const.dart';
-import 'package:minhlong_menu_client_v3/core/app_style.dart';
 import 'package:minhlong_menu_client_v3/core/const_res.dart';
-
+import 'package:minhlong_menu_client_v3/core/extensions.dart';
 import 'package:minhlong_menu_client_v3/features/cart/cubit/cart_cubit.dart';
 import 'package:minhlong_menu_client_v3/features/order/data/model/order_detail.dart';
 import 'package:minhlong_menu_client_v3/features/order/data/model/order_model.dart';
@@ -31,7 +28,6 @@ import '../../../../core/app_res.dart';
 import '../../../../core/app_string.dart';
 import '../../../../core/utils.dart';
 import '../../../order/bloc/order_bloc.dart';
-
 import '../../../user/data/model/user_model.dart';
 
 part '../widget/_item_cart_widget.dart';
@@ -108,6 +104,8 @@ class _CartViewState extends State<CartView> {
     return Scaffold(
       // backgroundColor: AppColors.background,
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        automaticallyImplyLeading: false,
         centerTitle: true,
         title: FittedBox(child: Text(AppString.cart)),
         leading: CommonBackButton(onTap: () => context.pop()),
@@ -128,7 +126,8 @@ class _CartViewState extends State<CartView> {
                   children: [
                     Text(
                       AppString.total,
-                      style: kBodyStyle.copyWith(fontWeight: FontWeight.bold),
+                      style: context.bodyMedium!
+                          .copyWith(fontWeight: FontWeight.bold),
                     ),
                     Text(
                       '${Ultils.currencyFormat(
@@ -136,9 +135,9 @@ class _CartViewState extends State<CartView> {
                           cartState.totalPrice.toString(),
                         ),
                       )} ₫',
-                      style: kBodyStyle.copyWith(
+                      style: context.bodyMedium!.copyWith(
                           fontWeight: FontWeight.bold,
-                          color: AppColors.themeColor),
+                          color: context.colorScheme.primary),
                     ),
                   ],
                 ),
@@ -167,16 +166,21 @@ class _CartViewState extends State<CartView> {
 
                     break;
                   case OrderCreateFailure():
-                    showDialog(
-                        context: context,
-                        builder: (context) => ErrorDialog(
-                            title: state.error,
-                            onRetryText: 'Thử lại',
-                            onRetryPressed: () {
-                              context
-                                  .read<OrderBloc>()
-                                  .add(OrderCreated(cartState));
-                            }));
+                    AppDialog.showErrorDialog(context,
+                        title: state.error,
+                        confirmText: 'Thử lại', onPressedComfirm: () {
+                      context.read<OrderBloc>().add(OrderCreated(cartState));
+                    });
+                    // showDialog(
+                    //     context: context,
+                    //     builder: (context) => ErrorDialog(
+                    //         title: state.error,
+                    //         onRetryText: 'Thử lại',
+                    //         onRetryPressed: () {
+                    //           context
+                    //               .read<OrderBloc>()
+                    //               .add(OrderCreated(cartState));
+                    //         }));
                     break;
                   default:
                 }
@@ -202,12 +206,14 @@ class _CartViewState extends State<CartView> {
         alignment: Alignment.center,
         width: double.infinity,
         decoration: BoxDecoration(
-          color: order.orderDetail.isEmpty ? Colors.grey : AppColors.themeColor,
+          color: order.orderDetail.isEmpty
+              ? context.colorScheme.outline
+              : context.colorScheme.primary,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Text(
           AppString.pay,
-          style: kBodyWhiteStyle,
+          style: context.bodyMedium!.copyWith(color: Colors.white),
         ),
       ),
     );

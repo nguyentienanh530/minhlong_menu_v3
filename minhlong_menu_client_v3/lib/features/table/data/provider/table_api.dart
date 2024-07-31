@@ -11,7 +11,7 @@ class TableApi {
   Future<List<TableModel>> getTableList() async {
     var response = await _dio.get(ApiConfig.tables);
     return (List<TableModel>.from(
-      response.data['data']['data'].map(
+      response.data['data'].map(
         (table) => TableModel.fromJson(table),
       ),
     ));

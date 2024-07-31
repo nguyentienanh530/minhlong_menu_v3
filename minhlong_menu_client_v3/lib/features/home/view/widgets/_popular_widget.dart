@@ -39,7 +39,8 @@ extension _PopularWidget on _HomeViewState {
               alignment: Alignment.centerLeft,
               fit: BoxFit.scaleDown,
               child: Text(title,
-                  style: kHeadingStyle.copyWith(fontWeight: FontWeight.bold)),
+                  style: context.titleStyleMedium!
+                      .copyWith(fontWeight: FontWeight.bold)),
             ),
           ),
           InkWell(
@@ -50,12 +51,12 @@ extension _PopularWidget on _HomeViewState {
                   alignment: Alignment.centerRight,
                   fit: BoxFit.scaleDown,
                   child: Text(AppString.seeMore,
-                      style: kBodyStyle.copyWith(
+                      style: context.labelMedium!.copyWith(
                           fontStyle: FontStyle.italic,
-                          color: AppColors.themeColor)),
+                          color: context.colorScheme.primary)),
                 ),
-                const Icon(Icons.navigate_next_rounded,
-                    size: 15, color: Colors.red)
+                Icon(Icons.navigate_next_rounded,
+                    size: 15, color: context.colorScheme.primary)
               ]))
         ]));
   }

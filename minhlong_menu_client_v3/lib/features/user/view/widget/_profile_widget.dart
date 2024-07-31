@@ -4,7 +4,6 @@ extension _ProfileWidget on _ProfileScreenState {
   Widget _bodyInfoUser({required UserModel userModel}) {
     return Card(
       elevation: 4,
-      shadowColor: AppColors.lavender,
       margin: EdgeInsets.zero,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
@@ -24,17 +23,107 @@ extension _ProfileWidget on _ProfileScreenState {
                     context.push(AppRoute.editProfile, extra: userModel),
                 svgPath: AppAsset.user,
                 title: AppString.editProfile),
+            5.verticalSpace,
             _ItemProfile(
                 svgPath: AppAsset.lock,
                 title: AppString.changePassword,
                 onTap: () => context.push(AppRoute.changePassword)),
-            // _buildItemPrint(context),
+            _buildThemeWidget(context),
+            5.verticalSpace,
+            ListenableBuilder(
+              listenable: _pickColor,
+              builder: (context, child) {
+                return _ItemProfile(
+                    svgPath: AppAsset.logout,
+                    title: AppString.pickColor,
+                    leftIcon: Icon(Icons.color_lens_outlined,
+                        color: context.colorScheme.primary),
+                    rightIcon: Container(
+                      margin: const EdgeInsets.only(right: defaultPadding / 2),
+                      height: 30,
+                      width: 30,
+                      decoration: BoxDecoration(
+                          color: _pickColor.value, shape: BoxShape.circle),
+                    ),
+                    onTap: () async => _showDialogPickThemes());
+              },
+            ),
             _ItemProfile(
                 svgPath: AppAsset.logout,
-                title: 'Đăng xuất',
+                title: AppString.logout,
                 onTap: () => _showDialogLogout()),
           ],
         ),
+      ),
+    );
+  }
+
+  void _showDialogPickThemes() async {
+    await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            elevation: 4,
+            actionsAlignment: MainAxisAlignment.center,
+            title: Text(
+              textAlign: TextAlign.center,
+              'Chọn màu chính',
+              style: context.titleStyleLarge!
+                  .copyWith(fontWeight: FontWeight.bold),
+            ),
+            actions: [
+              ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: context.colorScheme.primary,
+                  ),
+                  onPressed: () => context.pop(),
+                  child: Text(AppString.cancel,
+                      style: context.bodyMedium!.copyWith(color: Colors.white)))
+            ],
+            content: SizedBox(
+              width: 300,
+              child: GridView.count(
+                  crossAxisSpacing: defaultPadding / 2,
+                  mainAxisSpacing: defaultPadding / 2,
+                  crossAxisCount: 6,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: listScheme.map((e) => _buildItemColor(e)).toList()),
+            ),
+          );
+        }).then(
+      (value) {
+        if (value is Color) {
+          _pickColor.value = value;
+        }
+      },
+    );
+  }
+
+  Widget _buildItemColor(ThemeDTO e) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(defaultBorderRadius),
+      onTap: () async {
+        context.pop(e.color);
+        await ThemeLocalDatasource(sf).setSchemeTheme(e.key);
+        if (!mounted) return;
+        context.read<SchemeCubit>().changeScheme(e.key);
+      },
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: e.color,
+                border: e.key == context.read<SchemeCubit>().state
+                    ? Border.all(color: context.colorScheme.primary, width: 2)
+                    : Border.all(color: Colors.transparent)),
+          ),
+          e.key == context.read<SchemeCubit>().state
+              ? const Icon(Icons.check, color: Colors.white)
+              : const SizedBox()
+        ],
       ),
     );
   }
@@ -64,77 +153,64 @@ extension _ProfileWidget on _ProfileScreenState {
     //     });
   }
 
-//   Widget _buildItemPrint(BuildContext context) {
-//     return ValueListenableBuilder(
-//       valueListenable: _isUsePrinter,
-//       builder: (context, value, child) {
-//         return Column(
-//           children: [
-//             Card(
-//                 elevation: 4,
-//                 shadowColor: AppColors.lavender,
-//                 child: SizedBox(
-//                     child: Row(
-//                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                         children: [
-//                       Expanded(
-//                         child: FittedBox(
-//                           alignment: Alignment.centerLeft,
-//                           fit: BoxFit.scaleDown,
-//                           child: Row(children: [
-//                             Padding(
-//                                 padding: const EdgeInsets.all(defaultPadding),
-//                                 child: SvgPicture.asset(AppAsset.print,
-//                                     colorFilter: const ColorFilter.mode(
-//                                         AppColors.themeColor,
-//                                         BlendMode.srcIn))),
-//                             Text(
-//                               AppString.usePrinter,
-//                               style: kBodyStyle.copyWith(
-//                                   color: AppColors.secondTextColor),
-//                             )
-//                           ]),
-//                         ),
-//                       ),
-//                       Expanded(
-//                         child: FittedBox(
-//                           alignment: Alignment.centerRight,
-//                           fit: BoxFit.scaleDown,
-//                           child: Transform.scale(
-//                             scale: 0.8,
-//                             child: Switch(
-//                               activeTrackColor: AppColors.themeColor,
-//                               inactiveTrackColor:
-//                                   AppColors.themeColor.withOpacity(0.5),
-//                               inactiveThumbColor: AppColors.white,
-//                               value: _isUsePrinter.value,
-//                               onChanged: (value) {
-//                                 _isUsePrinter.value = !_isUsePrinter.value;
-//                               },
-//                             ),
-//                           ),
-//                         ),
-//                       ),
-//                     ]))),
-//             _isUsePrinter.value
-//                 ? Padding(
-//                     padding:
-//                         const EdgeInsets.symmetric(horizontal: defaultPadding),
-//                     child: _ItemProfile(
-//                         svgPath: AppAsset.fileConfig,
-//                         title: AppString.settingPrinter,
-//                         titleStyle: kBodyStyle.copyWith(
-//                             color: AppColors.secondTextColor),
-//                         onTap: () {
-//                           //  context.push(RouteName.printSeting)
-//                         }),
-//                   )
-//                 : const SizedBox()
-//           ],
-//         );
-//       },
-//     );
-//   }
+  Widget _buildThemeWidget(BuildContext context) {
+    return ValueListenableBuilder(
+      valueListenable: isDarkMode,
+      builder: (context, value, child) {
+        return Card(
+            elevation: 2,
+            shadowColor: context.colorScheme.onPrimary,
+            child: SizedBox(
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                  Expanded(
+                    child: FittedBox(
+                      alignment: Alignment.centerLeft,
+                      fit: BoxFit.scaleDown,
+                      child: Row(children: [
+                        Padding(
+                            padding: const EdgeInsets.all(defaultPadding),
+                            child: Icon(
+                              isDarkMode.value
+                                  ? Icons.dark_mode_outlined
+                                  : Icons.light_mode_outlined,
+                              color: context.colorScheme.primary,
+                            )),
+                        Text(
+                          isDarkMode.value
+                              ? AppString.darkMode
+                              : AppString.lightMode,
+                          style: context.bodyMedium!,
+                        )
+                      ]),
+                    ),
+                  ),
+                  Expanded(
+                    child: FittedBox(
+                      alignment: Alignment.centerRight,
+                      fit: BoxFit.scaleDown,
+                      child: Transform.scale(
+                        scale: 0.8,
+                        child: Switch(
+                          activeTrackColor: context.colorScheme.primary,
+                          inactiveTrackColor:
+                              context.colorScheme.primary.withOpacity(0.5),
+                          inactiveThumbColor: Colors.white,
+                          value: isDarkMode.value,
+                          onChanged: (value) async {
+                            isDarkMode.value = !isDarkMode.value;
+                            context.read<ThemeCubit>().changeTheme(value);
+                            await ThemeLocalDatasource(sf).setDarkTheme(value);
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                ])));
+      },
+    );
+  }
 }
 
 class _ItemProfile extends StatelessWidget {
@@ -144,19 +220,23 @@ class _ItemProfile extends StatelessWidget {
     required this.onTap,
     this.titleStyle,
     this.colorIcon,
+    this.rightIcon,
+    this.leftIcon,
   });
 
   final Color? colorIcon;
   final String svgPath;
+  final Icon? leftIcon;
   final String title;
   final TextStyle? titleStyle;
+  final Widget? rightIcon;
   final void Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
     return Card(
-        elevation: 4,
-        shadowColor: AppColors.lavender,
+        elevation: 2,
+        shadowColor: context.colorScheme.onPrimary,
         child: InkWell(
           borderRadius: BorderRadius.circular(defaultPadding),
           onTap: onTap,
@@ -171,14 +251,14 @@ class _ItemProfile extends StatelessWidget {
                     child: Row(children: [
                       Padding(
                           padding: const EdgeInsets.all(defaultPadding),
-                          child: SvgPicture.asset(svgPath,
-                              colorFilter: const ColorFilter.mode(
-                                  Colors.red, BlendMode.srcIn))),
+                          child: leftIcon ??
+                              SvgPicture.asset(svgPath,
+                                  colorFilter: ColorFilter.mode(
+                                      context.colorScheme.primary,
+                                      BlendMode.srcIn))),
                       Text(
                         title,
-                        style: titleStyle ??
-                            kBodyStyle.copyWith(
-                                color: AppColors.secondTextColor),
+                        style: titleStyle ?? context.bodyMedium!,
                       )
                     ]),
                   ),
@@ -187,13 +267,13 @@ class _ItemProfile extends StatelessWidget {
                   child: FittedBox(
                     alignment: Alignment.centerRight,
                     fit: BoxFit.scaleDown,
-                    child: Padding(
-                        padding: const EdgeInsets.all(defaultPadding),
-                        child: Icon(
-                          Icons.arrow_forward_ios_rounded,
-                          size: 15,
-                          color: colorIcon ?? AppColors.secondTextColor,
-                        )),
+                    child: rightIcon ??
+                        const Padding(
+                            padding: EdgeInsets.all(defaultPadding),
+                            child: Icon(
+                              Icons.arrow_forward_ios_rounded,
+                              size: 15,
+                            )),
                   ),
                 )
               ])),

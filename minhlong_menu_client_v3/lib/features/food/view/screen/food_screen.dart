@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_client_v3/common/widget/loading.dart';
+import 'package:minhlong_menu_client_v3/core/extensions.dart';
 import 'package:minhlong_menu_client_v3/features/cart/cubit/cart_cubit.dart';
 import 'package:minhlong_menu_client_v3/features/food/data/repositories/food_repository.dart';
 import 'package:minhlong_menu_client_v3/features/user/cubit/user_cubit.dart';
@@ -14,10 +15,7 @@ import '../../../../common/widget/common_back_button.dart';
 import '../../../../common/widget/common_item_food.dart';
 import '../../../../common/widget/empty_widget.dart';
 import '../../../../common/widget/error_widget.dart';
-
-import '../../../../core/app_colors.dart';
 import '../../../../core/app_const.dart';
-import '../../../../core/app_style.dart';
 import '../../../../core/utils.dart';
 import '../../../order/data/model/order_detail.dart';
 import '../../../order/data/model/order_model.dart';
@@ -105,27 +103,23 @@ class _FoodViewState extends State<FoodView> {
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          backgroundColor: AppColors.white,
+          backgroundColor: Colors.transparent,
           automaticallyImplyLeading: false,
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              CommonBackButton(onTap: () => context.pop()),
-              Text(
-                property.contains('created_at')
-                    ? 'Mới nhất'
-                    : 'Được chọn nhiều',
-                style: kHeadingStyle.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              CartButton(
-                onPressed: () => context.push(AppRoute.carts, extra: user),
-                number: cartState.orderDetail.length.toString(),
-                colorIcon: AppColors.themeColor,
-              )
-            ],
+          leading: CommonBackButton(onTap: () => context.pop()),
+          title: Text(
+            property.contains('created_at') ? 'Mới nhất' : 'Được chọn nhiều',
+            style: context.titleStyleLarge!.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
           ),
+          actions: [
+            CartButton(
+              onPressed: () => context.push(AppRoute.carts, extra: user),
+              number: cartState.orderDetail.length.toString(),
+              colorIcon: context.colorScheme.primary,
+            ),
+            10.horizontalSpace
+          ],
         ),
         body: BlocBuilder<FoodBloc, FoodState>(
           builder: (context, state) {

@@ -6,20 +6,24 @@ import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_client_v3/common/widget/error_build_image.dart';
 import 'package:minhlong_menu_client_v3/common/widget/loading.dart';
-import 'package:minhlong_menu_client_v3/core/app_colors.dart';
 import 'package:minhlong_menu_client_v3/core/app_const.dart';
-import 'package:minhlong_menu_client_v3/core/app_style.dart';
+import 'package:minhlong_menu_client_v3/core/app_theme.dart';
 import 'package:minhlong_menu_client_v3/core/extensions.dart';
+import 'package:minhlong_menu_client_v3/features/theme/cubit/scheme_cubit.dart';
+import 'package:minhlong_menu_client_v3/features/theme/data/theme_local_datasource.dart';
 import 'package:minhlong_menu_client_v3/features/user/cubit/user_cubit.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import '../../../../Routes/app_route.dart';
 import '../../../../common/dialog/app_dialog.dart';
 import '../../../../common/widget/common_back_button.dart';
-import '../../../../common/dialog/error_dialog.dart';
 import '../../../../core/api_config.dart';
 import '../../../../core/app_asset.dart';
 import '../../../../core/app_string.dart';
 import '../../../auth/bloc/auth_bloc.dart';
+import '../../../theme/cubit/theme_cubit.dart';
 import '../../data/model/user_model.dart';
+
 part '../widget/_profile_widget.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -30,13 +34,33 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  final _isUsePrinter = ValueNotifier(false);
+  late final SharedPreferences sf;
+  final isDarkMode = ValueNotifier(false);
+  final _pickColor = ValueNotifier(const Color(0xFFED7F29));
 
   @override
   void dispose() {
     super.dispose();
+    _pickColor.dispose();
+    isDarkMode.dispose();
+  }
 
-    _isUsePrinter.dispose();
+  @override
+  void initState() {
+    super.initState();
+    _init();
+  }
+
+  void _init() async {
+    sf = await SharedPreferences.getInstance();
+    isDarkMode.value = await ThemeLocalDatasource(sf).getDartTheme() ?? false;
+
+    var schemeKey = await ThemeLocalDatasource(sf).getSchemeTheme() ?? '';
+    for (var e in listScheme) {
+      if (e.key == schemeKey) {
+        _pickColor.value = e.color;
+      }
+    }
   }
 
   @override
@@ -44,12 +68,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     var user = context.watch<UserCubit>().state;
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
         leading: CommonBackButton(onTap: () => context.pop()),
         automaticallyImplyLeading: false,
         title: Text(
           AppString.profile,
-          style: kHeadingStyle.copyWith(
-            fontWeight: FontWeight.w700,
+          style: context.titleStyleLarge!.copyWith(
+            fontWeight: FontWeight.bold,
           ),
         ),
         centerTitle: true,
@@ -70,10 +95,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       width: 200,
                       height: 200,
                       decoration: BoxDecoration(
-                        color: AppColors.white,
                         shape: BoxShape.circle,
-                        border:
-                            Border.all(color: AppColors.smokeWhite, width: 6),
+                        border: Border.all(
+                            color: context.colorScheme.onPrimary, width: 6),
                       ),
                       child: Container(
                         clipBehavior: Clip.antiAlias,
@@ -90,13 +114,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     Text(
                       user.fullName,
-                      style: kHeadingStyle.copyWith(
-                          fontWeight: FontWeight.bold, fontSize: 20),
+                      style: context.bodyLarge!.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     Text(
                       '+84 ${user.phoneNumber}',
-                      style: kBodyStyle.copyWith(
-                          color: AppColors.secondTextColor, fontSize: 12),
+                      style: context.bodySmall!.copyWith(
+                        color: context.bodySmall!.color!.withOpacity(0.5),
+                      ),
                     ),
                   ],
                 ),
@@ -112,21 +138,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                         break;
                       case AuthLogoutFailure(message: final msg):
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            return ErrorDialog(
-                              title: msg,
-                              onRetryText: 'Thử lại',
-                              onRetryPressed: () {
-                                context.pop();
-                                context
-                                    .read<AuthBloc>()
-                                    .add(AuthLogoutStarted());
-                              },
-                            );
-                          },
-                        );
+                        AppDialog.showErrorDialog(context, title: msg,
+                            onPressedComfirm: () {
+                          context.pop();
+                          context.read<AuthBloc>().add(AuthLogoutStarted());
+                        });
                         break;
                       default:
                         break;

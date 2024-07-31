@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
+import 'package:minhlong_menu_client_v3/common/widget/common_back_button.dart';
+
 import '../../../../common/dialog/app_dialog.dart';
 import '../../../../common/snackbar/app_snackbar.dart';
-import '../../../../common/widget/common_text_field.dart';
-import '../../../../core/app_colors.dart';
+import '../../../../common/widget/common_password_textfield.dart';
 import '../../../../core/app_const.dart';
 import '../../../../core/app_key.dart';
 import '../../../../core/app_res.dart';
 import '../../../../core/app_string.dart';
-import '../../../../core/app_style.dart';
 import '../../../../core/extensions.dart';
 import '../../bloc/user_bloc.dart';
 import '../../data/repositories/user_repository.dart';
@@ -63,7 +64,12 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Đổi mật khẩu', style: kHeadingStyle),
+          backgroundColor: Colors.transparent,
+          automaticallyImplyLeading: false,
+          leading: CommonBackButton(onTap: () => context.pop()),
+          title: Text(AppString.changePassword,
+              style: context.titleStyleLarge!
+                  .copyWith(fontWeight: FontWeight.bold)),
           centerTitle: true,
         ),
         body: _buildChangePassword());
@@ -100,16 +106,43 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _buildOldPassworTextField(),
+              TextFieldPassword(
+                controller: _oldPasswordController,
+                labelText: AppString.oldPassword,
+                validator: (password) => AppRes.validatePassword(password)
+                    ? null
+                    : 'Mật khẩu không hợp lệ',
+                valueListenable: _isShowOldPassword,
+              ),
               20.verticalSpace,
-              _buildNewPassworTextField(),
+              TextFieldPassword(
+                valueListenable: _isShowNewPassword,
+                labelText: AppString.newPassword,
+                controller: _newPasswordController,
+                validator: (password) => AppRes.validatePassword(password)
+                    ? null
+                    : 'Mật khẩu không hợp lệ',
+              ),
               20.verticalSpace,
-              _buildComfirmPassworTextField(),
+              TextFieldPassword(
+                valueListenable: _isShowConfirmPassword,
+                controller: _confirmPasswordController,
+                labelText: AppString.confirNewPassword,
+                validator: (value) {
+                  if (_newPasswordController.text !=
+                      _confirmPasswordController.text) {
+                    return 'Xác nhận mật khẩu không khớp';
+                  }
+                  return AppRes.validatePassword(value)
+                      ? null
+                      : 'mật khẩu không hợp lệ';
+                },
+              ),
               20.verticalSpace,
               Text(
                   'Mật khẩu bao gồm (1 ký tự Hoa, 1 ký tự Thường, 1 ký tự số, 1 ký tự đặc biệt và tối thiểu 8 ký tự)',
-                  style:
-                      kCaptionStyle.copyWith(color: AppColors.secondTextColor)),
+                  style: context.bodySmall!.copyWith(
+                      color: context.bodySmall!.color!.withOpacity(0.5))),
               40.verticalSpace,
               _buttonChangePassword(),
             ],
@@ -122,8 +155,8 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
   Widget _buttonChangePassword() {
     return Center(
       child: ElevatedButton(
-          style:
-              ElevatedButton.styleFrom(backgroundColor: AppColors.themeColor),
+          style: ElevatedButton.styleFrom(
+              backgroundColor: context.colorScheme.primary),
           onPressed: () {
             if (AppKeys.updatePasswordKey.currentState!.validate()) {
               context.read<UserBloc>().add(UserUpdatePasswordStarted(
@@ -132,101 +165,10 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                   ));
             }
           },
-          child: const Text(
-            'Thay đổi mật khẩu',
-            style: kBodyWhiteStyle,
+          child: Text(
+            AppString.changePassword,
+            style: context.bodyMedium!.copyWith(color: Colors.white),
           )),
-    );
-  }
-
-  Widget _buildOldPassworTextField() {
-    return ValueListenableBuilder(
-      valueListenable: _isShowOldPassword,
-      builder: (context, value, child) {
-        return CommonTextField(
-            maxLines: 1,
-            controller: _oldPasswordController,
-            onFieldSubmitted: (p0) {},
-            labelText: '${AppString.oldPassword} *',
-            validator: (password) => AppRes.validatePassword(password)
-                ? null
-                : 'Mật khẩu không hợp lệ',
-            onChanged: (value) {},
-            obscureText: !value,
-            prefixIcon: Icon(
-              Icons.lock_outline,
-              color: AppColors.secondTextColor.withOpacity(0.5),
-            ),
-            suffixIcon: GestureDetector(
-                onTap: () =>
-                    _isShowOldPassword.value = !_isShowOldPassword.value,
-                child: Icon(
-                    !value ? Icons.visibility_off : Icons.remove_red_eye,
-                    color: AppColors.secondTextColor.withOpacity(0.5))));
-      },
-    );
-  }
-
-  Widget _buildNewPassworTextField() {
-    return ValueListenableBuilder(
-      valueListenable: _isShowNewPassword,
-      builder: (context, value, child) {
-        return CommonTextField(
-            maxLines: 1,
-            controller: _newPasswordController,
-            onFieldSubmitted: (p0) {},
-            labelText: '${AppString.newPassword} *',
-            validator: (password) => AppRes.validatePassword(password)
-                ? null
-                : 'Mật khẩu không hợp lệ',
-            onChanged: (value) {},
-            obscureText: !value,
-            prefixIcon: Icon(
-              Icons.lock_outline,
-              color: AppColors.secondTextColor.withOpacity(0.5),
-            ),
-            suffixIcon: GestureDetector(
-                onTap: () =>
-                    _isShowNewPassword.value = !_isShowNewPassword.value,
-                child: Icon(
-                    !value ? Icons.visibility_off : Icons.remove_red_eye,
-                    color: AppColors.secondTextColor.withOpacity(0.5))));
-      },
-    );
-  }
-
-  Widget _buildComfirmPassworTextField() {
-    return ValueListenableBuilder(
-      valueListenable: _isShowConfirmPassword,
-      builder: (context, value, child) {
-        return CommonTextField(
-            maxLines: 1,
-            style: kBodyStyle,
-            controller: _confirmPasswordController,
-            onFieldSubmitted: (p0) {},
-            labelText: '${AppString.reNewPassword} *',
-            validator: (value) {
-              if (_newPasswordController.text !=
-                  _confirmPasswordController.text) {
-                return 'Xác nhận mật khẩu không khớp';
-              }
-              return AppRes.validatePassword(value)
-                  ? null
-                  : 'mật khẩu không hợp lệ';
-            },
-            onChanged: (value) {},
-            obscureText: !value,
-            prefixIcon: Icon(
-              Icons.lock_outline,
-              color: AppColors.secondTextColor.withOpacity(0.5),
-            ),
-            suffixIcon: GestureDetector(
-                onTap: () => _isShowConfirmPassword.value =
-                    !_isShowConfirmPassword.value,
-                child: Icon(
-                    !value ? Icons.visibility_off : Icons.remove_red_eye,
-                    color: AppColors.secondTextColor.withOpacity(0.5))));
-      },
     );
   }
 }

@@ -4,9 +4,9 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:minhlong_menu_client_v3/Routes/app_route.dart';
+import 'package:minhlong_menu_client_v3/core/app_theme.dart';
 import 'package:minhlong_menu_client_v3/features/auth/bloc/auth_bloc.dart';
 import 'package:minhlong_menu_client_v3/features/auth/data/auth_local_datasource/auth_local_datasource.dart';
 import 'package:minhlong_menu_client_v3/features/auth/data/model/access_token.dart';
@@ -14,14 +14,17 @@ import 'package:minhlong_menu_client_v3/features/auth/data/provider/remote/auth_
 import 'package:minhlong_menu_client_v3/features/auth/data/respositories/auth_repository.dart';
 import 'package:minhlong_menu_client_v3/features/home/data/provider/home_api.dart';
 import 'package:minhlong_menu_client_v3/features/home/data/repository/home_repo.dart';
+import 'package:minhlong_menu_client_v3/features/theme/cubit/scheme_cubit.dart';
+import 'package:minhlong_menu_client_v3/features/theme/cubit/theme_cubit.dart';
+import 'package:minhlong_menu_client_v3/features/theme/data/theme_local_datasource.dart';
 import 'package:minhlong_menu_client_v3/features/user/cubit/user_cubit.dart';
 import 'package:minhlong_menu_client_v3/features/user/data/user_local_datasource/user_local_datasource.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import 'bloc_observer.dart';
 import 'common/network/dio_client.dart';
 import 'common/network/dio_interceptor.dart';
 import 'core/api_config.dart';
-import 'core/app_colors.dart';
 import 'features/cart/cubit/cart_cubit.dart';
 import 'features/food/cubit/item_size_cubit.dart';
 import 'features/food/data/provider/food_api.dart';
@@ -46,16 +49,24 @@ void main() async {
   dio.interceptors.add(
     DioInterceptor(sf),
   );
+  var theme = await ThemeLocalDatasource(sf).getDartTheme() ?? false;
+  var scheme = await ThemeLocalDatasource(sf).getSchemeTheme() ?? 'blueWhale';
   runApp(DevicePreview(
-      // enabled: !kReleaseMode,
       enabled: false,
-      builder: (context) => MainApp(sf: sf)));
+      builder: (context) => MainApp(
+            sf: sf,
+            theme: theme,
+            scheme: scheme,
+          )));
 }
 
 class MainApp extends StatelessWidget {
-  const MainApp({super.key, required this.sf});
+  const MainApp(
+      {super.key, required this.sf, required this.theme, required this.scheme});
 
   final SharedPreferences sf;
+  final bool theme;
+  final String? scheme;
 
   @override
   Widget build(BuildContext context) {
@@ -96,6 +107,9 @@ class MainApp extends StatelessWidget {
             ),
           ),
           BlocProvider(
+            create: (context) => ThemeCubit(),
+          ),
+          BlocProvider(
             create: (context) => UserBloc(
               userRepository: context.read<UserRepository>(),
             ),
@@ -112,16 +126,26 @@ class MainApp extends StatelessWidget {
           BlocProvider(
             create: (context) => UserCubit(),
           ),
+          BlocProvider(
+            create: (context) => SchemeCubit(),
+          ),
         ],
-        child: AppContent(sf: sf),
+        child: AppContent(
+          sf: sf,
+          theme: theme,
+          scheme: scheme,
+        ),
       ),
     );
   }
 }
 
 class AppContent extends StatefulWidget {
-  const AppContent({super.key, required this.sf});
+  const AppContent(
+      {super.key, required this.sf, required this.theme, required this.scheme});
   final SharedPreferences sf;
+  final bool theme;
+  final String? scheme;
 
   @override
   State<AppContent> createState() => _AppContentState();
@@ -132,6 +156,8 @@ class _AppContentState extends State<AppContent> {
   void initState() {
     super.initState();
     context.read<AuthBloc>().add(AuthAuthenticateStarted());
+    context.read<ThemeCubit>().changeTheme(widget.theme);
+    context.read<SchemeCubit>().changeScheme(widget.scheme!);
   }
 
   void _handleGetUser(AccessToken accessToken) async {
@@ -157,6 +183,9 @@ class _AppContentState extends State<AppContent> {
   @override
   Widget build(BuildContext context) {
     final state = context.watch<AuthBloc>().state;
+    var themeState = context.watch<ThemeCubit>().state;
+    var schemeState = context.watch<SchemeCubit>().state;
+
     if (state is AuthInitial) {
       return Container();
     }
@@ -188,57 +217,27 @@ class _AppContentState extends State<AppContent> {
             builder: DevicePreview.appBuilder,
             routerConfig: AppRoute.routes,
             scrollBehavior: MyCustomScrollBehavior(),
-            theme: ThemeData(
-              fontFamily: GoogleFonts.rubik().fontFamily,
-              scaffoldBackgroundColor: AppColors.background,
-              textTheme: const TextTheme(
-                  displaySmall: TextStyle(color: AppColors.white),
-                  displayLarge: TextStyle(color: AppColors.white),
-                  displayMedium: TextStyle(color: AppColors.white)),
-              colorScheme: ColorScheme.fromSwatch(
-                primarySwatch: MaterialColor(
-                  AppColors.themeColor.value,
-                  getSwatch(AppColors.themeColor),
-                ),
-              ),
-            ),
+            theme: themeState
+                ? AppTheme(scheme: schemeState).darkTheme
+                : AppTheme(scheme: schemeState).lightTheme,
+            // theme: ThemeData(
+            //   fontFamily: GoogleFonts.rubik().fontFamily,
+            //   scaffoldBackgroundColor: AppColors.background,
+            //   textTheme: const TextTheme(
+            //       displaySmall: TextStyle(color: AppColors.white),
+            //       displayLarge: TextStyle(color: AppColors.white),
+            //       displayMedium: TextStyle(color: AppColors.white)),
+            //   colorScheme: ColorScheme.fromSwatch(
+            //     primarySwatch: MaterialColor(
+            //       context.colorScheme.primary.value,
+            //       getSwatch(context.colorScheme.primary),
+            //     ),
+            //   ),
+            // ),
           );
         },
       ),
     );
-  }
-
-  Map<int, Color> getSwatch(Color color) {
-    final hslColor = HSLColor.fromColor(color);
-    final lightness = hslColor.lightness;
-
-    /// if [500] is the default color, there are at LEAST five
-    /// steps below [500]. (i.e. 400, 300, 200, 100, 50.) A
-    /// divisor of 5 would mean [50] is a lightness of 1.0 or
-    /// a color of #ffffff. A value of six would be near white
-    /// but not quite.
-    const lowDivisor = 6;
-
-    /// if [500] is the default color, there are at LEAST four
-    /// steps above [500]. A divisor of 4 would mean [900] is
-    /// a lightness of 0.0 or color of #000000
-    const highDivisor = 5;
-
-    final lowStep = (1.0 - lightness) / lowDivisor;
-    final highStep = lightness / highDivisor;
-
-    return {
-      50: (hslColor.withLightness(lightness + (lowStep * 5))).toColor(),
-      100: (hslColor.withLightness(lightness + (lowStep * 4))).toColor(),
-      200: (hslColor.withLightness(lightness + (lowStep * 3))).toColor(),
-      300: (hslColor.withLightness(lightness + (lowStep * 2))).toColor(),
-      400: (hslColor.withLightness(lightness + lowStep)).toColor(),
-      500: (hslColor.withLightness(lightness)).toColor(),
-      600: (hslColor.withLightness(lightness - highStep)).toColor(),
-      700: (hslColor.withLightness(lightness - (highStep * 2))).toColor(),
-      800: (hslColor.withLightness(lightness - (highStep * 3))).toColor(),
-      900: (hslColor.withLightness(lightness - (highStep * 4))).toColor(),
-    };
   }
 }
 

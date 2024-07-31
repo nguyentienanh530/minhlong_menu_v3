@@ -22,35 +22,49 @@ extension _CategoryWidget on _HomeViewState {
           context.push(AppRoute.categories, extra: categoryModel);
         },
         child: Card(
+          color: context.colorScheme.primary,
           margin: const EdgeInsets.only(left: 10, bottom: 20),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(100),
           ),
-          color: AppColors.themeColor,
           elevation: 5,
-          shadowColor: AppColors.themeColor,
           child: Column(
             children: [
-              Container(
-                margin: const EdgeInsets.all(5),
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.white,
-                ),
-                child: CachedNetworkImage(
-                  imageUrl: '${ApiConfig.host}${categoryModel.image}',
-                  fit: BoxFit.cover,
-                  placeholder: (context, url) => const Loading(),
-                  errorWidget: errorBuilderForImage,
+              Expanded(
+                flex: 4,
+                child: Container(
+                  clipBehavior: Clip.antiAlias,
+                  margin: const EdgeInsets.all(5),
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.white,
+                  ),
+                  child: categoryModel.image.isEmpty
+                      ? Container(
+                          margin: const EdgeInsets.all(defaultMargin),
+                          child: Icon(
+                            Icons.wallpaper,
+                            color: Colors.black.withOpacity(0.3),
+                          ),
+                        )
+                      : CachedNetworkImage(
+                          imageUrl: '${ApiConfig.host}${categoryModel.image}',
+                          fit: BoxFit.cover,
+                          placeholder: (context, url) => const Loading(),
+                          errorWidget: errorBuilderForImage,
+                        ),
                 ),
               ),
               5.verticalSpace,
               Expanded(
+                flex: 3,
                 child: Text(
                   textAlign: TextAlign.center,
                   categoryModel.name,
-                  style: kBodyWhiteStyle.copyWith(
-                      fontSize: 11, fontWeight: FontWeight.w700),
+                  style: context.bodySmall!.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: context.colorScheme.onPrimary,
+                  ),
                 ),
               ),
             ],
