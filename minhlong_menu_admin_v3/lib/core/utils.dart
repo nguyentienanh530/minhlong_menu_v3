@@ -98,8 +98,14 @@ class Ultils {
   // }
 
   static String formatDateToString(String date,
-      {bool isShort = false, bool isTime = false}) {
+      {bool onlyDayAndMonth = false,
+      bool isShort = false,
+      bool isTime = false}) {
     DateTime dateTime = DateTime.parse(date);
+    if (onlyDayAndMonth) {
+      final formattedDate = DateFormat('dd/MM');
+      return formattedDate.format(dateTime);
+    }
     if (isShort) {
       final formattedDate = DateFormat('dd-MM-yyyy');
       return formattedDate.format(dateTime);

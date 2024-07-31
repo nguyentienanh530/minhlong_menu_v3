@@ -6,9 +6,13 @@ final class OrderFetchNewOrdersStarted extends OrderEvent {
   final int page;
   final int limit;
   final String status;
+  final String? date;
 
   OrderFetchNewOrdersStarted(
-      {required this.status, required this.page, required this.limit});
+      {required this.status,
+      required this.page,
+      required this.limit,
+      this.date});
 }
 
 final class OrderStatusUpdated extends OrderEvent {

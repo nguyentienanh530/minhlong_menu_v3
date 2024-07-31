@@ -8,9 +8,16 @@ class OrderApi {
 
   OrderApi(this.dio);
   Future<OrderModel> getOrders(
-      {required String status, required int page, required int limit}) async {
-    final response = await dio.get(ApiConfig.newOrders,
-        queryParameters: {'page': page, 'limit': limit, 'status': status});
+      {required String status,
+      required int page,
+      required int limit,
+      String? date}) async {
+    final response = await dio.get(ApiConfig.newOrders, queryParameters: {
+      'page': page,
+      'limit': limit,
+      'status': status,
+      'date': date
+    });
 
     return OrderModel.fromJson(response.data['data']);
   }

@@ -13,10 +13,13 @@ class OrderRepository {
   OrderRepository({required OrderApi orderApi}) : _orderApi = orderApi;
 
   Future<Result<OrderModel>> getOrders(
-      {required String status, required int page, required int limit}) async {
+      {required String status,
+      required int page,
+      required int limit,
+      String? date}) async {
     try {
-      final orderList =
-          await _orderApi.getOrders(page: page, limit: limit, status: status);
+      final orderList = await _orderApi.getOrders(
+          page: page, limit: limit, status: status, date: date);
       return Result.success(orderList);
     } on DioException catch (e) {
       Logger().e('get order error: $e');

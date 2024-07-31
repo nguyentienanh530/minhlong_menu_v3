@@ -82,7 +82,7 @@ class Version1 implements Route {
     //======= Order route =======
     Router.group(
       () {
-        Router.get('new-orders', orderCtrl.getOrders);
+        Router.get('orders', orderCtrl.getOrders);
         Router.post('', orderCtrl.create);
         Router.get('new-orders-by-table', orderCtrl.getNewOrdersByTable);
         Router.get('orders-chart', orderCtrl.getOrdersDataChart);
@@ -100,6 +100,7 @@ class Version1 implements Route {
         Router.get('', homeAdminCtrl.index);
         Router.get('best-selling-food', homeAdminCtrl.bestSellingFood);
         Router.get('revenue-filter-on-date', homeAdminCtrl.revenueFilterOnDate);
+        Router.get('daily-revenue', homeAdminCtrl.dailyRevenue);
       },
       prefix: '/admin/home',
       // middleware: [AuthenticateMiddleware()],

@@ -272,6 +272,7 @@ class OrderController extends Controller {
       String status = request.input('status') ?? 'new';
       int page = request.input('page') ?? 1;
       int limit = request.input('limit') ?? 10;
+      String date = request.input('date') ?? '';
 
       if (userID == null || userID == -1) {
         return AppResponse().error(
@@ -279,8 +280,17 @@ class OrderController extends Controller {
           message: 'unauthorized',
         );
       }
-
-      var orders = await orderRepo.getOrders(status, userID);
+      dynamic orders;
+      if (date.isNotEmpty) {
+        print('date: $date datetype: ${date.runtimeType}');
+        DateTime dateTime = DateTime.parse(date);
+        int dateInt =
+            dateTime.year * 10000 + dateTime.month * 100 + dateTime.day;
+        orders = await orderRepo.getOrders(status, userID, date: dateInt);
+        print('dateInt: $dateInt');
+      } else {
+        orders = await orderRepo.getOrders(status, userID);
+      }
 
       List<Map<String, dynamic>> formattedOrders = [];
 

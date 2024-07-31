@@ -61,6 +61,7 @@ class OrderView extends StatefulWidget {
 class _OrderViewState extends State<OrderView>
     with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   final _orderModel = ValueNotifier(OrderModel());
+
   final _listTitleTable = [
     'ID',
     'Ngày',
@@ -73,6 +74,7 @@ class _OrderViewState extends State<OrderView>
   final _limit = ValueNotifier(10);
   late final TabController _tabController;
   final _listStatus = ['completed', 'cancel'];
+  final _datePicker = ValueNotifier<DateTime>(DateTime.now());
 
   @override
   void initState() {
@@ -87,6 +89,7 @@ class _OrderViewState extends State<OrderView>
     _orderModel.dispose();
     _curentPage.dispose();
     _limit.dispose();
+    _datePicker.dispose();
   }
 
   @override
@@ -153,9 +156,12 @@ class _OrderViewState extends State<OrderView>
   }
 
   void _fetchData(
-      {required String status, required int page, required int limit}) {
-    context.read<OrderBloc>().add(
-        OrderFetchNewOrdersStarted(status: status, page: page, limit: limit));
+      {required String status,
+      required int page,
+      required int limit,
+      String? date}) {
+    context.read<OrderBloc>().add(OrderFetchNewOrdersStarted(
+        status: status, page: page, limit: limit, date: date));
   }
 
   String _handleStatus(String status) {

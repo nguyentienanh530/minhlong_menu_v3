@@ -6,8 +6,8 @@ import '../../../../core/app_style.dart';
 import '../../../../core/utils.dart';
 import '../../data/model/data_chart.dart';
 
-class ColumnRevenueChart extends StatelessWidget {
-  const ColumnRevenueChart({super.key, required this.dataCharts});
+class BarChartRevenue extends StatelessWidget {
+  const BarChartRevenue({super.key, required this.dataCharts});
   final List<DataChart> dataCharts;
 
   @override

@@ -6,6 +6,7 @@ import 'package:minhlong_menu_admin_v3/common/widget/error_widget.dart';
 import 'package:minhlong_menu_admin_v3/common/widget/loading.dart';
 import 'package:minhlong_menu_admin_v3/core/extensions.dart';
 import 'package:minhlong_menu_admin_v3/features/dashboard/bloc/best_selling_food/best_selling_food_bloc.dart';
+import 'package:minhlong_menu_admin_v3/features/dashboard/bloc/daily_revenue/daily_revenue_bloc.dart';
 import 'package:minhlong_menu_admin_v3/features/dashboard/bloc/data_chart/data_chart_bloc.dart';
 import 'package:minhlong_menu_admin_v3/features/dashboard/bloc/info/info_bloc.dart';
 import 'package:minhlong_menu_admin_v3/features/dashboard/data/model/info_model.dart';
@@ -20,8 +21,10 @@ import '../../../../core/utils.dart';
 import '../../../dinner_table/cubit/dinner_table_cubit.dart';
 import '../../../order/bloc/order_bloc.dart';
 import '../../data/model/data_chart.dart';
-import '../widgets/_column_revenue_chart.dart';
-import '../widgets/chart_revenue.dart';
+import '../widgets/_bar_chart_revenue.dart';
+import '../widgets/indicator.dart';
+import '../widgets/line_chart_revenue.dart';
+import '../widgets/pie_chart_top4_best_selling.dart';
 part '../widgets/_info_widget.dart';
 
 class DashboardScreen extends StatelessWidget {
@@ -57,6 +60,11 @@ class DashboardScreen extends StatelessWidget {
           create: (context) => OrderBloc(
             context.read<OrderRepository>(),
           ),
+        ),
+        BlocProvider(
+          create: (context) => DailyRevenueBloc(
+            context.read<InfoRespository>(),
+          ),
         )
       ],
       child: DashboardView(userModel: userModel),
@@ -84,12 +92,14 @@ class _DashboardViewState extends State<DashboardView>
     context.read<InfoBloc>().add(InfoFetchStarted());
     context.read<BestSellingFoodBloc>().add(BestSellingFoodFetched());
     context.read<DataChartBloc>().add(DataChartFetched('week'));
+    context.read<DailyRevenueBloc>().add(DailyRevenueFetched());
     _valueDropdown.value = _listDateDropdown.first;
   }
 
   void _onRefreshDataDashboard() {
     context.read<InfoBloc>().add(InfoFetchStarted());
     context.read<BestSellingFoodBloc>().add(BestSellingFoodFetched());
+    context.read<DailyRevenueBloc>().add(DailyRevenueFetched());
     context
         .read<DataChartBloc>()
         .add(DataChartFetched(_handleTypeChart(_valueDropdown.value)));
@@ -139,7 +149,7 @@ class _DashboardViewState extends State<DashboardView>
                         children: [
                           Expanded(
                             flex: 3,
-                            child: _lineChartRevenueWidget(),
+                            child: _barChartRevenueWidget(),
                           ),
                           15.horizontalSpace,
                           Expanded(
@@ -152,7 +162,7 @@ class _DashboardViewState extends State<DashboardView>
                       children: [
                         SizedBox(
                             height: 0.5 * context.sizeDevice.height,
-                            child: _lineChartRevenueWidget()),
+                            child: _barChartRevenueWidget()),
                         15.horizontalSpace,
                         SizedBox(
                             height: 0.5 * context.sizeDevice.height,
@@ -160,6 +170,9 @@ class _DashboardViewState extends State<DashboardView>
                       ],
                     ),
               15.verticalSpace,
+              SizedBox(
+                  height: 0.5 * context.sizeDevice.height,
+                  child: _chartStatisticalWidget())
             ],
           ),
         ),
@@ -167,7 +180,7 @@ class _DashboardViewState extends State<DashboardView>
     );
   }
 
-  Widget _lineChartRevenueWidget() {
+  Widget _barChartRevenueWidget() {
     return Card(
       child: Builder(builder: (context) {
         var dataChartState = context.watch<DataChartBloc>().state;
@@ -200,55 +213,56 @@ class _DashboardViewState extends State<DashboardView>
                   ),
                 ),
                 ListenableBuilder(
-                    listenable: _valueDropdown,
-                    builder: (context, _) {
-                      return DropdownButton(
-                        items: _listDateDropdown
-                            .map((e) =>
-                                DropdownMenuItem(value: e, child: Text(e)))
-                            .toList(),
-                        onChanged: (value) {
-                          switch (value) {
-                            case 'Tuần này':
-                              context
-                                  .read<DataChartBloc>()
-                                  .add(DataChartFetched('week'));
-                              break;
-                            case 'Tháng này':
-                              context
-                                  .read<DataChartBloc>()
-                                  .add(DataChartFetched('month'));
-                              break;
-                            case 'Năm nay':
-                              context
-                                  .read<DataChartBloc>()
-                                  .add(DataChartFetched('year'));
-                              break;
-                            default:
-                              break;
-                          }
-                          _valueDropdown.value = value!;
-                        },
-                        isDense: true,
-                        underline: Container(),
-                        value: _valueDropdown.value,
-                        icon: const Icon(Icons.keyboard_arrow_down_rounded),
-                        dropdownColor: AppColors.white,
-                        style: kBodyStyle,
-                        focusColor: AppColors.white,
-                        borderRadius: BorderRadius.circular(5),
-                        menuMaxHeight: 300,
-                        alignment: Alignment.center,
-                        iconSize: 20,
-                      );
-                    }),
+                  listenable: _valueDropdown,
+                  builder: (context, _) {
+                    return DropdownButton(
+                      items: _listDateDropdown
+                          .map(
+                              (e) => DropdownMenuItem(value: e, child: Text(e)))
+                          .toList(),
+                      onChanged: (value) {
+                        switch (value) {
+                          case 'Tuần này':
+                            context
+                                .read<DataChartBloc>()
+                                .add(DataChartFetched('week'));
+                            break;
+                          case 'Tháng này':
+                            context
+                                .read<DataChartBloc>()
+                                .add(DataChartFetched('month'));
+                            break;
+                          case 'Năm nay':
+                            context
+                                .read<DataChartBloc>()
+                                .add(DataChartFetched('year'));
+                            break;
+                          default:
+                            break;
+                        }
+                        _valueDropdown.value = value!;
+                      },
+                      isDense: true,
+                      underline: Container(),
+                      value: _valueDropdown.value,
+                      icon: const Icon(Icons.keyboard_arrow_down_rounded),
+                      dropdownColor: AppColors.white,
+                      style: kBodyStyle,
+                      focusColor: AppColors.white,
+                      borderRadius: BorderRadius.circular(5),
+                      menuMaxHeight: 300,
+                      alignment: Alignment.center,
+                      iconSize: 20,
+                    );
+                  },
+                ),
               ],
             ),
           ),
           10.verticalSpace,
           Expanded(
             flex: 8,
-            child: ColumnRevenueChart(
+            child: BarChartRevenue(
               dataCharts: dataCharts,
             ),
           ),
@@ -272,13 +286,96 @@ class _DashboardViewState extends State<DashboardView>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Bán chạy',
+                    'Top 4 bán chạy',
                     style:
                         kSubHeadingStyle.copyWith(fontWeight: FontWeight.bold),
                   ),
                   Expanded(
-                    child: PieChartBestSellingFood(
+                    child: PieChartTop4BestSellingFood(
                       bestSellingFood: bestSellingFoodState.bestSellingFoods,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        _ => const SizedBox(),
+      });
+    });
+  }
+
+  Widget _chartStatisticalWidget() {
+    return Builder(builder: (context) {
+      var dailyRevenueState = context.watch<DailyRevenueBloc>().state;
+
+      return (switch (dailyRevenueState) {
+        DailyRevenueFetchInProgress() => const Loading(),
+        DailyRevenueFetchEmpty() => const EmptyWidget(),
+        DailyRevenueFetchFailure() =>
+          ErrWidget(error: dailyRevenueState.message),
+        DailyRevenueFetchSuccess() => Card(
+            child: Container(
+              padding: const EdgeInsets.all(defaultPadding),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  context.isMobile
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Thống kê (30 ngày)',
+                              style: kSubHeadingStyle.copyWith(
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            10.verticalSpace,
+                            Row(children: [
+                              const Indicator(
+                                color: AppColors.red,
+                                text: 'Tổng doanh thu',
+                                isSquare: true,
+                              ),
+                              20.horizontalSpace,
+                              const Indicator(
+                                color: AppColors.islamicGreen,
+                                text: 'Tổng đơn',
+                                isSquare: true,
+                              ),
+                            ])
+                          ],
+                        )
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Thống kê (30 ngày)',
+                              style: kSubHeadingStyle.copyWith(
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            Row(children: [
+                              const Indicator(
+                                color: AppColors.red,
+                                text: 'Tổng doanh thu',
+                                isSquare: true,
+                              ),
+                              20.horizontalSpace,
+                              const Indicator(
+                                color: AppColors.islamicGreen,
+                                text: 'Tổng đơn',
+                                isSquare: true,
+                              ),
+                            ])
+                          ],
+                        ),
+                  30.verticalSpace,
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: defaultPadding * 2),
+                      child: LineChartRevenue(
+                        dailyRevenues: dailyRevenueState.dailyRevenues,
+                      ),
                     ),
                   ),
                 ],

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:minhlong_menu_admin_v3/features/dashboard/data/model/daily_revenue.dart';
 import 'package:minhlong_menu_admin_v3/features/dashboard/data/model/data_chart.dart';
 
 import '../../../../core/api_config.dart';
@@ -30,6 +31,15 @@ class InfoApi {
     return (List<DataChart>.from(
       response.data['data'].map(
         (dataChart) => DataChart.fromJson(dataChart),
+      ),
+    ));
+  }
+
+  Future<List<DailyRevenue>> getDailyRevenue() async {
+    final response = await dio.get(ApiConfig.dailyRevenue);
+    return (List<DailyRevenue>.from(
+      response.data['data'].map(
+        (dailyRevenue) => DailyRevenue.fromJson(dailyRevenue),
       ),
     ));
   }

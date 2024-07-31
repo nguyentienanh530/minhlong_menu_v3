@@ -108,39 +108,52 @@ class OrderRepo {
     }
   }
 
-  Future getOrders(String status, int userID) async {
-    return await orders
-        .query()
-        .select([
-          'orders.id',
-          'orders.status',
-          'table_id',
-          'tables.name as table_name',
-          'order_details.id as order_details_id',
-          'order_details.quantity',
-          'order_details.price',
-          'order_details.quantity',
-          'order_details.note',
-          'order_details.total_amount',
-          'foods.id as food_id',
-          'foods.name',
-          'foods.image1',
-          'foods.image2',
-          'foods.image3',
-          'foods.image4',
-          'foods.is_discount',
-          'foods.discount',
-          'orders.total_price',
-          'orders.payed_at',
-          'orders.created_at',
-          'orders.updated_at'
-        ])
-        .join('order_details', 'orders.id', '=', 'order_details.order_id')
-        .join('foods', 'foods.id', '=', 'order_details.food_id')
-        .join('tables', 'tables.id', '=', 'orders.table_id')
-        .where('status', '=', status)
-        .where('orders.user_id', '=', userID)
-        .get();
+  Future getOrders(String status, int userID, {int? date}) async {
+    var select = [
+      'orders.id',
+      'orders.status',
+      'table_id',
+      'tables.name as table_name',
+      'order_details.id as order_details_id',
+      'order_details.quantity',
+      'order_details.price',
+      'order_details.quantity',
+      'order_details.note',
+      'order_details.total_amount',
+      'foods.id as food_id',
+      'foods.name',
+      'foods.image1',
+      'foods.image2',
+      'foods.image3',
+      'foods.image4',
+      'foods.is_discount',
+      'foods.discount',
+      'orders.total_price',
+      'orders.payed_at',
+      'orders.created_at',
+      'orders.updated_at'
+    ];
+
+    return date == null
+        ? await orders
+            .query()
+            .select(select)
+            .join('order_details', 'orders.id', '=', 'order_details.order_id')
+            .join('foods', 'foods.id', '=', 'order_details.food_id')
+            .join('tables', 'tables.id', '=', 'orders.table_id')
+            .where('status', '=', status)
+            .where('orders.user_id', '=', userID)
+            .get()
+        : await orders
+            .query()
+            .select(select)
+            .join('order_details', 'orders.id', '=', 'order_details.order_id')
+            .join('foods', 'foods.id', '=', 'order_details.food_id')
+            .join('tables', 'tables.id', '=', 'orders.table_id')
+            .where('status', '=', status)
+            .where('orders.user_id', '=', userID)
+            .whereDate('orders.payed_at', '=', date)
+            .get();
   }
 
 // get revenua filter on date
@@ -157,10 +170,9 @@ class OrderRepo {
         ])
         .whereNotNull('payed_at')
         .where('status', 'completed')
-        .where('payed_at', '>=', startDate)
-        .where('payed_at', '<=', endDate)
+        .whereDate('payed_at', '>=', startDate)
+        .whereDate('payed_at', '<=', endDate)
         .where('user_id', '=', userID)
-        // .groupBy('payed_at')
         .get();
   }
 

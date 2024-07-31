@@ -4,14 +4,24 @@ extension _OrderHeaderWidget on _OrderViewState {
   Widget get _orderHeaderWidget => SizedBox(
         // height: 80.h,
         width: double.infinity,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            _buildTabbarWidget(),
-            10.horizontalSpace,
-            _buildDropdown()
-          ],
-        ),
+        child: context.isDesktop || context.is4k
+            ? Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _buildTabbarWidget(),
+                  10.horizontalSpace,
+                  _buildDatePicker(),
+                ],
+              )
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _buildTabbarWidget(),
+                  10.verticalSpace,
+                  _buildDatePicker(),
+                ],
+              ),
       );
 
   Widget _buildTabbarWidget() {
@@ -81,5 +91,66 @@ extension _OrderHeaderWidget on _OrderViewState {
             );
           },
         ));
+  }
+
+  Widget _buildDatePicker() {
+    return ListenableBuilder(
+        listenable: _datePicker,
+        builder: (context, _) {
+          return Row(
+            children: [
+              const IconButton(
+                  onPressed: null, icon: Icon(Icons.calendar_month)),
+              Container(
+                  height: 35,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: defaultPadding),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                      borderRadius:
+                          BorderRadius.circular(textFieldBorderRadius).r,
+                      color: AppColors.white),
+                  child: InkWell(
+                      onTap: () async {
+                        final DateTime? picked = await showDatePicker(
+                            context: context,
+                            locale: const Locale('vi'),
+                            initialEntryMode: DatePickerEntryMode.calendar,
+                            initialDate: _datePicker.value,
+                            firstDate: DateTime(2015, 8),
+                            lastDate: DateTime(2101));
+                        if (picked != null && picked != _datePicker.value) {
+                          _datePicker.value = picked;
+                          _curentPage.value = 1;
+                          _fetchData(
+                              status: _listStatus[_tabController.index],
+                              page: 1,
+                              date: _datePicker.value.toString(),
+                              limit: _limit.value);
+                        }
+                      },
+                      child: Text(Ultils.formatDateToString(
+                          _datePicker.value.toString(),
+                          isShort: true)))),
+              10.horizontalSpace,
+              _buildDropdown(),
+              10.horizontalSpace,
+              IconButton(
+                onPressed: () {
+                  _datePicker.value = DateTime.now();
+                  _curentPage.value = 1;
+                  _limit.value = 10;
+                  _fetchData(
+                      status: _listStatus[_tabController.index],
+                      page: 1,
+                      date: null,
+                      limit: _limit.value);
+                },
+                icon: const Icon(Icons.refresh),
+                tooltip: 'Đặt lại',
+              ),
+            ],
+          );
+        });
   }
 }

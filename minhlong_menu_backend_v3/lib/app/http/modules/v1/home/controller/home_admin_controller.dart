@@ -165,11 +165,10 @@ class HomeAdminController extends Controller {
             startDate: startOfWeekInt,
             endDate: endOfWeekInt,
           );
-          List<dynamic> transactions = response;
 
           Map<String, double> totalByDay = {};
 
-          for (var transaction in transactions) {
+          for (var transaction in response) {
             String payedAt = transaction['payed_at'].substring(8, 10);
             double totalPrice = transaction['total_price'];
 
@@ -203,10 +202,10 @@ class HomeAdminController extends Controller {
             startDate: firstDayOfMonthInt,
             endDate: lastDayOfMonthInt,
           );
-          List<dynamic> transactions = response;
+
           Map<String, double> totalByDay = {};
 
-          for (var transaction in transactions) {
+          for (var transaction in response) {
             String payedAt = transaction['payed_at'].substring(8, 10);
             double totalPrice = transaction['total_price'];
 
@@ -240,10 +239,10 @@ class HomeAdminController extends Controller {
             startDate: firstDayOfYearInt,
             endDate: lastDayOfYearInt,
           );
-          List<dynamic> transactions = response;
+
           Map<String, double> totalByMonth = {};
 
-          for (var transaction in transactions) {
+          for (var transaction in response) {
             String payedAt = transaction['payed_at'].substring(5, 7);
             double totalPrice = transaction['total_price'];
 
@@ -270,6 +269,69 @@ class HomeAdminController extends Controller {
       );
     } catch (e) {
       print('revenueFilterOnDate: $e');
+      return AppResponse().error(
+        statusCode: HttpStatus.internalServerError,
+        message: 'connection error',
+      );
+    }
+  }
+
+  //statistical
+  Future<Response> dailyRevenue(Request request) async {
+    int? userID = request.headers[ConstRes.userID] != null
+        ? int.tryParse(request.headers[ConstRes.userID])
+        : -1;
+    DateTime now = DateTime.now();
+    DateTime start = now.subtract(Duration(days: 30));
+    int startDate = start.year * 10000 + start.month * 100 + start.day;
+    int endDate = now.year * 10000 + now.month * 100 + now.day;
+    print('startDate: $startDate');
+    print('endDate: $endDate');
+    List<Map<String, dynamic>> responseData = [];
+    try {
+      if (userID == null) {
+        return AppResponse().error(
+          statusCode: HttpStatus.unauthorized,
+          message: 'unauthorized',
+        );
+      }
+
+      Map<String, double> totalByDay = {};
+      Map<String, int> orderCountByDay = {};
+      var response = await orderRepo.getRevenueFiller(
+          userID: userID, startDate: startDate, endDate: endDate);
+      print('response: $response');
+      for (var statisticalItem in response) {
+        String payedAt = statisticalItem['payed_at'].substring(0, 10);
+        double totalPrice = statisticalItem['total_price'];
+
+        if (orderCountByDay.containsKey(payedAt)) {
+          orderCountByDay[payedAt] = orderCountByDay[payedAt]! + 1;
+        } else {
+          orderCountByDay[payedAt] = 1;
+        }
+
+        if (totalByDay.containsKey(payedAt)) {
+          totalByDay[payedAt] = totalByDay[payedAt]! + totalPrice;
+        } else {
+          totalByDay[payedAt] = totalPrice;
+        }
+      }
+      totalByDay.forEach((key, value) {
+        int orderCount = orderCountByDay[key] ?? 0;
+        responseData.add({
+          "total_price": value,
+          "date": key,
+          "order_count": orderCount,
+        });
+      });
+      return AppResponse().ok(
+        statusCode: HttpStatus.ok,
+        message: 'success',
+        data: responseData,
+      );
+    } catch (e) {
+      print('statistical: $e');
       return AppResponse().error(
         statusCode: HttpStatus.internalServerError,
         message: 'connection error',

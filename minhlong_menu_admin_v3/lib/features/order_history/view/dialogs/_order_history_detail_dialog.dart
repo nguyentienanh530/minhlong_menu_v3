@@ -13,27 +13,29 @@ extension _OrderDetailDialog on _OrderViewState {
         height: 890.h,
         child: Padding(
           padding: const EdgeInsets.all(defaultPadding),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildTimeOrderDialog(orderItem),
-              10.verticalSpace,
-              _buildBodyDialog(orderItem),
-              10.verticalSpace,
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Tổng tiền: ',
-                    style: kBodyStyle.copyWith(fontWeight: FontWeight.w700),
-                  ),
-                  Text(
-                    '${Ultils.currencyFormat(orderItem.totalPrice)} đ',
-                    style: kBodyStyle.copyWith(fontWeight: FontWeight.w700),
-                  ),
-                ],
-              ),
-            ],
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _buildTimeOrderDialog(orderItem),
+                10.verticalSpace,
+                _buildBodyDialog(orderItem),
+                10.verticalSpace,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Tổng tiền: ',
+                      style: kBodyStyle.copyWith(fontWeight: FontWeight.w700),
+                    ),
+                    Text(
+                      '${Ultils.currencyFormat(orderItem.totalPrice)} đ',
+                      style: kBodyStyle.copyWith(fontWeight: FontWeight.w700),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -118,34 +120,15 @@ extension _OrderDetailDialog on _OrderViewState {
   }
 
   _buildBodyDialog(OrderItem orderItem) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          Container(
-            color: AppColors.white,
-            child: Table(
-                border: const TableBorder(
-                  top: BorderSide(color: AppColors.secondTextColor),
-                  left: BorderSide(color: AppColors.secondTextColor),
-                  right: BorderSide(color: AppColors.secondTextColor),
-                ),
-                columnWidths: const <int, TableColumnWidth>{
-                  0: FlexColumnWidth(),
-                  1: FlexColumnWidth(0.5),
-                  2: FlexColumnWidth(),
-                },
-                defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                children: [
-                  TableRow(children: [
-                    _buildItemTitle(title: 'Món ăn'),
-                    _buildItemTitle(title: 'Số lượng'),
-                    _buildItemTitle(title: 'Giá')
-                  ])
-                ]),
-          ),
-          Table(
-              border: TableBorder.all(
-                color: AppColors.secondTextColor,
+    return Column(
+      children: [
+        Container(
+          color: AppColors.white,
+          child: Table(
+              border: const TableBorder(
+                top: BorderSide(color: AppColors.secondTextColor),
+                left: BorderSide(color: AppColors.secondTextColor),
+                right: BorderSide(color: AppColors.secondTextColor),
               ),
               columnWidths: const <int, TableColumnWidth>{
                 0: FlexColumnWidth(),
@@ -153,14 +136,31 @@ extension _OrderDetailDialog on _OrderViewState {
                 2: FlexColumnWidth(),
               },
               defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-              children: orderItem.foodOrders
-                  .asMap()
-                  .map((index, value) =>
-                      MapEntry(index, _buildRowTableDialog(value)))
-                  .values
-                  .toList()),
-        ],
-      ),
+              children: [
+                TableRow(children: [
+                  _buildItemTitle(title: 'Món ăn'),
+                  _buildItemTitle(title: 'Số lượng'),
+                  _buildItemTitle(title: 'Giá')
+                ])
+              ]),
+        ),
+        Table(
+            border: TableBorder.all(
+              color: AppColors.secondTextColor,
+            ),
+            columnWidths: const <int, TableColumnWidth>{
+              0: FlexColumnWidth(),
+              1: FlexColumnWidth(0.5),
+              2: FlexColumnWidth(),
+            },
+            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+            children: orderItem.foodOrders
+                .asMap()
+                .map((index, value) =>
+                    MapEntry(index, _buildRowTableDialog(value)))
+                .values
+                .toList()),
+      ],
     );
   }
 

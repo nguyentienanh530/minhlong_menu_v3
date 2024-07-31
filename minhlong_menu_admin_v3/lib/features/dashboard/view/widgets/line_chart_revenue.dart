@@ -1,36 +1,67 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:minhlong_menu_admin_v3/core/utils.dart';
 
 import '../../../../core/app_colors.dart';
 import '../../../../core/app_style.dart';
+import '../../data/model/daily_revenue.dart';
 
 class LineChartRevenue extends StatelessWidget {
-  const LineChartRevenue({super.key});
+  const LineChartRevenue({super.key, required this.dailyRevenues});
+  final List<DailyRevenue> dailyRevenues;
 
   @override
   Widget build(BuildContext context) {
+    double maxTotalPrice;
+
+    if (dailyRevenues.isNotEmpty) {
+      maxTotalPrice = dailyRevenues
+          .map((e) => e.revenue)
+          .reduce((max, current) => max > current ? max : current)
+          .toDouble();
+    } else {
+      maxTotalPrice = 0.0;
+    }
+    dailyRevenues.sort((a, b) => a.date.compareTo(b.date));
     return LineChart(
-      lineChart,
+      lineChart(maxTotalPrice),
       duration: const Duration(milliseconds: 250),
     );
   }
 
-  LineChartData get lineChart => LineChartData(
+  LineChartData lineChart(double max) => LineChartData(
         lineTouchData: lineTouch,
         gridData: gridData,
         titlesData: titles,
         borderData: borderData,
-        lineBarsData: lineBars,
+        lineBarsData: lineBars(),
         minX: 0,
-        maxX: 14,
-        maxY: 11,
+        maxX: dailyRevenues.length.toDouble() - 1,
+        maxY: max,
         minY: 0,
       );
 
   LineTouchData get lineTouch => LineTouchData(
         handleBuiltInTouches: true,
         touchTooltipData: LineTouchTooltipData(
-          getTooltipColor: (touchedSpot) => Colors.blueGrey.withOpacity(0.8),
+          getTooltipColor: (touchedSpot) => AppColors.white.withOpacity(0.8),
+          getTooltipItems: (touchedSpots) {
+            return touchedSpots.map((spot) {
+              return spot.barIndex == 0
+                  ? LineTooltipItem(
+                      'Đơn: ${Ultils.currencyFormat(spot.y / 500000)}\n',
+                      kBodyStyle.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.islamicGreen,
+                      ))
+                  : LineTooltipItem(
+                      '${Ultils.currencyFormat(spot.y)}\n',
+                      kBodyStyle.copyWith(
+                        color: AppColors.red,
+                        fontWeight: FontWeight.bold,
+                      ));
+            }).toList();
+          },
         ),
       );
 
@@ -49,8 +80,8 @@ class LineChartRevenue extends StatelessWidget {
         ),
       );
 
-  List<LineChartBarData> get lineBars => [
-        lineChartBar_1,
+  List<LineChartBarData> lineBars() => [
+        lineChartBarOrderCount(),
         lineChartBar_2,
       ];
 
@@ -104,31 +135,19 @@ class LineChartRevenue extends StatelessWidget {
 
   SideTitles leftTitles() => SideTitles(
         getTitlesWidget: leftTitleWidgets,
-        showTitles: true,
+        showTitles: false,
         interval: 1,
         reservedSize: 40,
       );
 
   Widget bottomTitleWidgets(double value, TitleMeta meta) {
-    Widget text;
-    switch (value.toInt()) {
-      case 2:
-        text = const Text('SEPT', style: kBodyStyle);
-        break;
-      case 7:
-        text = const Text('OCT', style: kBodyStyle);
-        break;
-      case 12:
-        text = const Text('DEC', style: kBodyStyle);
-        break;
-      default:
-        text = const Text('');
-        break;
-    }
-
     return SideTitleWidget(
       axisSide: meta.axisSide,
-      child: text,
+      child: Text(
+        Ultils.formatDateToString(dailyRevenues[value.toInt()].date,
+            onlyDayAndMonth: true),
+        style: kCaptionStyle,
+      ),
     );
   }
 
@@ -154,21 +173,20 @@ class LineChartRevenue extends StatelessWidget {
         ),
       );
 
-  LineChartBarData get lineChartBar_1 => LineChartBarData(
+  LineChartBarData lineChartBarOrderCount() => LineChartBarData(
         isCurved: true,
         color: AppColors.islamicGreen,
         barWidth: 2,
         isStrokeCapRound: true,
         dotData: const FlDotData(show: false),
         belowBarData: BarAreaData(show: false),
-        spots: const [
-          FlSpot(1, 1),
-          FlSpot(3, 1.5),
-          FlSpot(5, 1.4),
-          FlSpot(7, 3.4),
-          FlSpot(10, 2),
-          FlSpot(12, 2.2),
-          FlSpot(13, 1.8),
+        spots: [
+          ...dailyRevenues.asMap().map((key, value) {
+            return MapEntry(
+                key,
+                FlSpot(key.toDouble(),
+                    double.parse(((value.orderCount * 500000)).toString())));
+          }).values,
         ],
       );
 
@@ -182,13 +200,10 @@ class LineChartRevenue extends StatelessWidget {
           show: false,
           color: Colors.pink.withOpacity(0),
         ),
-        spots: const [
-          FlSpot(1, 1),
-          FlSpot(3, 2.8),
-          FlSpot(7, 1.2),
-          FlSpot(10, 2.8),
-          FlSpot(12, 2.6),
-          FlSpot(13, 3.9),
+        spots: [
+          ...dailyRevenues.asMap().map((key, value) {
+            return MapEntry(key, FlSpot(key.toDouble(), value.revenue));
+          }).values,
         ],
       );
 }

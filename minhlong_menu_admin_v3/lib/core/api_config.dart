@@ -48,7 +48,7 @@ class ApiConfig {
   //===== Order =====
   static const String orders = '/admin/orders';
   static const String updateStatus = '/$orders/status';
-  static const String newOrders = '/$orders/new-orders';
+  static const String newOrders = '/$orders/orders';
   static const String newOrdersByTable = '/$orders/new-orders-by-table';
   static const String createOrder = '/$orders/create-order';
   static const String orderCompleted = '/$orders/orders-completed';
@@ -59,6 +59,7 @@ class ApiConfig {
   static const String info = '/admin/home';
   static const String bestSellingFood = '/$info/best-selling-food';
   static const String dataChart = '/$info/revenue-filter-on-date';
+  static const String dailyRevenue = '/$info/daily-revenue';
 
   //===== Upload image =====
   static const String uploadImage = '/upload-image';

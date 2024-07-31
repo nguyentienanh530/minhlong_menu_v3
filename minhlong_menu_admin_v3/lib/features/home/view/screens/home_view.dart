@@ -264,8 +264,7 @@ class HomeViewState extends State<HomeView>
               valueListenable: _title,
               builder: (context, value, child) {
                 return Text(value,
-                    style: kHeadingStyle.copyWith(
-                        fontWeight: FontWeight.w700, fontSize: 25));
+                    style: kHeadingStyle.copyWith(fontWeight: FontWeight.w900));
               }),
           const SizedBox(
             height: 40,
@@ -286,8 +285,8 @@ class HomeViewState extends State<HomeView>
       child: CachedNetworkImage(
         imageUrl: imageUrl,
         imageBuilder: (context, imageProvider) => Container(
-          height: 45,
-          width: 45,
+          // height: 40,
+          // width: 40,
           clipBehavior: Clip.hardEdge,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
@@ -300,8 +299,8 @@ class HomeViewState extends State<HomeView>
         fit: BoxFit.fill,
         errorWidget: errorBuilderForImage,
         placeholder: (context, url) => const Loading(),
-        height: 45,
-        width: 45,
+        height: 40,
+        width: 40,
       ),
     );
   }
@@ -313,8 +312,7 @@ class HomeViewState extends State<HomeView>
           'Xin chào! ${user.fullName}',
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: kSubHeadingStyle.copyWith(
-              fontWeight: FontWeight.w700, fontSize: 20),
+          style: kBodyStyle.copyWith(fontWeight: FontWeight.w700),
         ),
         10.horizontalSpace,
         _buildAvatar('${ApiConfig.host}${user.image}'),
@@ -331,10 +329,12 @@ class HomeViewState extends State<HomeView>
           ListenableBuilder(
               listenable: _title,
               builder: (context, _) {
-                return Text(_title.value,
-                    style: kHeadingStyle.copyWith(
-                        fontWeight: FontWeight.w700,
-                        fontSize: context.isMobile ? 25 : 36));
+                return Text(
+                  _title.value,
+                  style: kHeadingStyle.copyWith(
+                    fontWeight: FontWeight.w900,
+                  ),
+                );
               }),
           const Spacer(),
           _buildUserInfo(user),

@@ -29,6 +29,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       page: event.page,
       limit: event.limit,
       status: event.status,
+      date: event.date,
     );
     result.when(
       success: (orderList) {

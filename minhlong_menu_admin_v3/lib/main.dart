@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -191,6 +192,10 @@ class _AppContentState extends State<AppContent> {
             debugShowCheckedModeBanner: false,
             routerConfig: AppRoute.routes,
             scrollBehavior: MyCustomScrollBehavior(),
+            localizationsDelegates: const [
+              GlobalMaterialLocalizations.delegate
+            ],
+            supportedLocales: const [Locale('en'), Locale('vi')],
             theme: ThemeData(
               useMaterial3: true,
               fontFamily: GoogleFonts.beVietnamPro().fontFamily,

@@ -1,19 +1,19 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-
 import '../../../../core/app_colors.dart';
 import '../../data/model/best_selling_food.dart';
 import 'indicator.dart';
 
-class PieChartBestSellingFood extends StatefulWidget {
-  const PieChartBestSellingFood({super.key, required this.bestSellingFood});
+class PieChartTop4BestSellingFood extends StatefulWidget {
+  const PieChartTop4BestSellingFood({super.key, required this.bestSellingFood});
   final List<BestSellingFood> bestSellingFood;
 
   @override
-  State<StatefulWidget> createState() => PieChart2State();
+  State<StatefulWidget> createState() => _PieChartTop4BestSellingFoodState();
 }
 
-class PieChart2State extends State<PieChartBestSellingFood> {
+class _PieChartTop4BestSellingFoodState
+    extends State<PieChartTop4BestSellingFood> {
   int touchedIndex = -1;
   late List<BestSellingFood> _bestSellingFood;
 
