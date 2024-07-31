@@ -53,7 +53,7 @@ void main() async {
   var scheme =
       await ThemeLocalDatasource(sf).getSchemeTheme() ?? listScheme.first.key;
   runApp(DevicePreview(
-      enabled: false,
+      enabled: true,
       builder: (context) => MainApp(
             sf: sf,
             theme: theme,

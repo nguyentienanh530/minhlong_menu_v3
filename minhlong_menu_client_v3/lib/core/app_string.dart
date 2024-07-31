@@ -44,6 +44,7 @@ class AppString {
   static String priceSell = 'Giá bán';
   static String quantity = 'Số lượng';
   static String note = 'Ghi chú :';
+  static String noteToChef = 'Ghi chú cho đầu bếp';
   static String addedToCart = 'Đã thêm vào giỏ hàng.';
   static String addToCart = 'Thêm vào giỏ hàng';
   static String cart = 'Giỏ hàng';

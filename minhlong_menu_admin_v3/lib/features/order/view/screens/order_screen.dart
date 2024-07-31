@@ -48,6 +48,9 @@ class OrderScreen extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
+          create: (context) => TableIndexSelectedCubit(),
+        ),
+        BlocProvider(
             create: (context) => OrderBloc(context.read<OrderRepository>())),
         BlocProvider(
           create: (context) => PaginationCubit(),

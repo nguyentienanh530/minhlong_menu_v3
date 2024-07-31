@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:minhlong_menu_client_v3/common/widget/common_back_button.dart';
+
 import 'package:minhlong_menu_client_v3/common/widget/common_text_field.dart';
 import 'package:minhlong_menu_client_v3/common/widget/error_build_image.dart';
 import 'package:minhlong_menu_client_v3/core/app_asset.dart';
@@ -21,6 +21,7 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../../../../Routes/app_route.dart';
 import '../../../../common/snackbar/app_snackbar.dart';
 import '../../../../common/widget/cart_button.dart';
+import '../../../../common/widget/loading.dart';
 import '../../../../core/api_config.dart';
 import '../../../../core/app_const.dart';
 import '../../../../core/app_string.dart';
@@ -69,91 +70,191 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var cartState = context.watch<CartCubit>().state;
+    var tableState = context.watch<TableCubit>().state;
+    var user = context.watch<UserCubit>().state;
     return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: ValueListenableBuilder(
+          valueListenable: _indexImage,
+          builder: (context, value, child) {
+            return _buildIndicator(context, 4);
+          },
+        ),
+        actions: [
+          CartButton(
+            onPressed: () => context.push(AppRoute.carts, extra: user),
+            number: cartState.orderDetail.length.toString(),
+            colorIcon: context.colorScheme.primary,
+          ),
+        ],
+      ),
       body: Builder(builder: (context) {
-        var cartState = context.watch<CartCubit>().state;
-        var tableState = context.watch<TableCubit>().state;
-        var user = context.watch<UserCubit>().state;
-        return Column(
-          children: [
-            Expanded(
-              child: CustomScrollView(
-                physics: const BouncingScrollPhysics(),
-                slivers: [
-                  SliverAppBar(
-                    centerTitle: true,
-                    expandedHeight: 0.5 * context.sizeDevice.height,
-                    pinned: true,
-                    stretch: true,
-                    automaticallyImplyLeading: false,
-                    actions: [
-                      CartButton(
-                        onPressed: () =>
-                            context.push(AppRoute.carts, extra: user),
-                        number: cartState.orderDetail.length.toString(),
-                        colorIcon: context.colorScheme.primary,
-                      ),
-                    ],
-                    leading: CommonBackButton(onTap: () => context.pop()),
-                    title: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: ValueListenableBuilder(
-                        valueListenable: _indexImage,
-                        builder: (context, value, child) {
-                          return _buildIndicator(context, 4);
-                        },
-                      ),
-                    ),
-                    flexibleSpace: FlexibleSpaceBar(
-                      background: _buildFoodImage(_foodItem),
-                    ),
-                  ),
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: defaultPadding),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
+        // return Column(
+        //   children: [
+        //     Expanded(
+        //       child: CustomScrollView(
+        //         physics: const BouncingScrollPhysics(),
+        //         slivers: [
+        //           SliverAppBar(
+        //             centerTitle: true,
+        //             expandedHeight: 0.5 * context.sizeDevice.height,
+        //             pinned: true,
+        //             stretch: true,
+        //             automaticallyImplyLeading: false,
+        //             actions: [
+        //               CartButton(
+        //                 onPressed: () =>
+        //                     context.push(AppRoute.carts, extra: user),
+        //                 number: cartState.orderDetail.length.toString(),
+        //                 colorIcon: context.colorScheme.primary,
+        //               ),
+        //             ],
+        //             leading: CommonBackButton(onTap: () => context.pop()),
+        //             title: FittedBox(
+        //               fit: BoxFit.scaleDown,
+        //               child: ValueListenableBuilder(
+        //                 valueListenable: _indexImage,
+        //                 builder: (context, value, child) {
+        //                   return _buildIndicator(context, 4);
+        //                 },
+        //               ),
+        //             ),
+        //             flexibleSpace: FlexibleSpaceBar(
+        //               stretchModes: const [
+        //                 StretchMode.zoomBackground,
+        //               ],
+        //               background: _buildFoodImage(_foodItem),
+        //             ),
+        //           ),
+        //           SliverToBoxAdapter(
+        //             child: Padding(
+        //               padding: const EdgeInsets.symmetric(
+        //                   horizontal: defaultPadding),
+        //               child: Column(
+        //                 crossAxisAlignment: CrossAxisAlignment.start,
+        //                 mainAxisAlignment: MainAxisAlignment.start,
+        //                 children: [
+        //                   20.verticalSpace,
+        //                   FittedBox(
+        //                       fit: BoxFit.scaleDown,
+        //                       child: _buildFoodDetailsName(_foodItem)),
+        //                   20.verticalSpace,
+        //                   Row(
+        //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //                     children: [
+        //                       Expanded(
+        //                           child: FittedBox(
+        //                               alignment: Alignment.centerLeft,
+        //                               fit: BoxFit.scaleDown,
+        //                               child:
+        //                                   _buildFoodDetailsPrice(_foodItem))),
+        //                       5.horizontalSpace,
+        //                       Expanded(
+        //                           child: FittedBox(
+        //                               alignment: Alignment.centerRight,
+        //                               fit: BoxFit.scaleDown,
+        //                               child: _buildQuantity())),
+        //                     ],
+        //                   ),
+        //                   10.verticalSpace,
+        //                   _buildNoteWidget(),
+        //                   20.verticalSpace,
+        //                   _foodItem.description.isNotEmpty
+        //                       ? _buildFoodDetailsDescription(_foodItem)
+        //                       : const SizedBox(),
+        //                   20.verticalSpace,
+        //                 ],
+        //               ),
+        //             ),
+        //           ),
+        //         ],
+        //       ),
+        //     ),
+        //     _buildAddToCartButton(cartState, tableState),
+        //   ],
+        // );
+        return SizedBox(
+          height: context.sizeDevice.height,
+          width: context.sizeDevice.width,
+          child: Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Stack(
+                    children: [
+                      _buildFoodImage(_foodItem),
+                      Column(
                         children: [
-                          20.verticalSpace,
-                          FittedBox(
-                              fit: BoxFit.scaleDown,
-                              child: _buildFoodDetailsName(_foodItem)),
-                          20.verticalSpace,
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                  child: FittedBox(
-                                      alignment: Alignment.centerLeft,
-                                      fit: BoxFit.scaleDown,
-                                      child:
-                                          _buildFoodDetailsPrice(_foodItem))),
-                              5.horizontalSpace,
-                              Expanded(
-                                  child: FittedBox(
-                                      alignment: Alignment.centerRight,
-                                      fit: BoxFit.scaleDown,
-                                      child: _buildQuantity())),
-                            ],
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: defaultPadding),
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                  height:
+                                      (context.sizeDevice.height * 0.6) + 60,
+                                ),
+                                10.verticalSpace,
+                                _buildFoodDetailsDescription(_foodItem),
+                              ],
+                            ),
                           ),
-                          10.verticalSpace,
-                          _buildNoteWidget(),
-                          20.verticalSpace,
-                          _foodItem.description.isNotEmpty
-                              ? _buildFoodDetailsDescription(_foodItem)
-                              : const SizedBox(),
-                          20.verticalSpace,
                         ],
                       ),
-                    ),
+                      Positioned(
+                        top: context.sizeDevice.height * 0.4,
+                        right: 10,
+                        left: 10,
+                        child: Card(
+                          elevation: 10,
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: defaultPadding),
+                          child: FittedBox(
+                            child: Container(
+                              padding: const EdgeInsets.all(defaultPadding),
+                              constraints: BoxConstraints(
+                                  maxWidth: context.sizeDevice.width * 0.8),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  _buildFoodDetailsName(_foodItem),
+                                  10.verticalSpace,
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      _buildCategoryName(_foodItem),
+                                      _buildOrderCount(_foodItem),
+                                    ],
+                                  ),
+                                  10.verticalSpace,
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      _buildFoodDetailsPrice(_foodItem),
+                                      _buildQuantity()
+                                    ],
+                                  ),
+                                  10.verticalSpace,
+                                  _buildNoteWidget(),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
                   ),
-                ],
+                ),
               ),
-            ),
-            _buildAddToCartButton(cartState, tableState),
-          ],
+              _buildAddToCartButton(cartState, tableState),
+            ],
+          ),
         );
       }),
     );
@@ -163,15 +264,25 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
     var images = [food.image1, food.image2, food.image3, food.image4];
     return CarouselSlider.builder(
       itemBuilder: (context, index, realIndex) {
-        return SizedBox(
-          width: double.infinity,
-          child: CachedNetworkImage(
-            imageUrl: images[index]!.isEmpty
-                ? ''
-                : '${ApiConfig.host}${images[index]}',
-            fit: BoxFit.cover,
-            errorWidget: errorBuilderForImage,
+        return CachedNetworkImage(
+          imageUrl:
+              images[index]!.isEmpty ? '' : '${ApiConfig.host}${images[index]}',
+          placeholder: (context, url) => const Loading(),
+          imageBuilder: (context, imageProvider) => Container(
+            height: context.sizeDevice.height * 0.5,
+            width: context.sizeDevice.width,
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(defaultBorderRadius * 2),
+                  bottomRight: Radius.circular(defaultBorderRadius * 2)),
+              image: DecorationImage(
+                image: imageProvider,
+                fit: BoxFit.cover,
+              ),
+            ),
           ),
+          fit: BoxFit.cover,
+          errorWidget: errorBuilderForImage,
         );
       },
       options: CarouselOptions(
@@ -188,9 +299,10 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
       builder: (context, quantity, child) => Center(
         child: Container(
           height: 40,
-          width: 120,
+          width: 100,
           padding: const EdgeInsets.symmetric(horizontal: 5),
           decoration: BoxDecoration(
+            color: context.colorScheme.primary,
             borderRadius: BorderRadius.circular(defaultBorderRadius * 3),
           ),
           child: Row(
@@ -198,11 +310,11 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 _buildCounter(context,
-                    icon: Icons.remove,
-                    iconColor: context.colorScheme.primary, onTap: () {
+                    icon: Icons.remove, iconColor: Colors.white, onTap: () {
                   decrementQuaranty();
                 }),
-                Text(quantity.toString(), style: context.bodyLarge!),
+                Text(quantity.toString(),
+                    style: context.bodyLarge!.copyWith(color: Colors.white)),
                 _buildCounter(context,
                     icon: Icons.add,
                     colorBg: context.colorScheme.primary,
@@ -232,10 +344,10 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
     return GestureDetector(
         onTap: onTap,
         child: Container(
-            decoration: BoxDecoration(
-                color: colorBg,
-                shape: BoxShape.circle,
-                border: Border.all(color: context.colorScheme.primary)),
+            // decoration: BoxDecoration(
+            //     color: colorBg,
+            //     shape: BoxShape.circle,
+            //     border: Border.all(color: context.colorScheme.primary)),
             height: 30,
             width: 30,
             alignment: Alignment.center,
@@ -250,7 +362,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
             activeDotColor: context.colorScheme.primary,
             dotHeight: 8,
             dotWidth: 8,
-            dotColor: Colors.white));
+            dotColor: context.colorScheme.inversePrimary));
   }
 
   Widget _buildFoodDetailsName(FoodItem food) {
@@ -275,30 +387,29 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
     return !food.isDiscount!
         ? Row(children: [
             Text(
-                '₫ ${Ultils.currencyFormat(double.parse(food.price.toString()))}',
-                style: context.bodyMedium!.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: context.colorScheme.primary)),
+                '${Ultils.currencyFormat(double.parse(food.price.toString()))} ₫',
+                style: context.titleStyleLarge!
+                    .copyWith(fontWeight: FontWeight.bold)),
           ])
-        : Row(children: [
-            Text(
-                '₫ ${Ultils.currencyFormat(double.parse(food.price.toString()))}',
-                style: context.bodyMedium!.copyWith(
-                    color: context.colorScheme.outline,
-                    decoration: TextDecoration.lineThrough,
-                    decorationThickness: 3,
-                    decorationColor: context.colorScheme.primary,
-                    decorationStyle: TextDecorationStyle.solid)),
-            5.horizontalSpace,
-            Text(
-                Ultils.currencyFormat(Ultils.foodPrice(
-                    isDiscount: food.isDiscount!,
-                    foodPrice: food.price!,
-                    discount: food.discount!)),
-                style: context.bodyMedium!.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: context.colorScheme.primary)),
-          ]);
+        : Row(
+            children: [
+              Text(
+                  '${Ultils.currencyFormat(double.parse(food.price.toString()))} ₫',
+                  style: context.titleStyleLarge!.copyWith(
+                      color: context.colorScheme.outline,
+                      decoration: TextDecoration.lineThrough,
+                      decorationThickness: 3,
+                      decorationColor: Colors.red,
+                      decorationStyle: TextDecorationStyle.solid)),
+              10.horizontalSpace,
+              Text(
+                '${Ultils.currencyFormat(Ultils.foodPrice(isDiscount: food.isDiscount!, foodPrice: food.price!, discount: food.discount!))} ₫',
+                style: context.titleStyleLarge!.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          );
   }
 
   Widget _buildFoodDetailsDescription(FoodItem food) {
@@ -327,65 +438,50 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
   }
 
   Widget _buildNoteWidget() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          AppString.note,
-          style: context.bodyLarge!.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        10.verticalSpace,
-        CommonTextField(
-          prefixIcon: Icon(
-            Icons.description_outlined,
-            color: context.colorScheme.primary.withOpacity(0.7),
-          ),
-          onChanged: (value) {},
-          style: context.bodyMedium,
-          controller: _noteController,
-        ),
-      ],
+    return CommonTextField(
+      prefixIcon: Icon(
+        Icons.description_outlined,
+        color: context.colorScheme.primary.withOpacity(0.7),
+      ),
+      onChanged: (value) {},
+      style: context.bodyMedium,
+      labelText: AppString.noteToChef,
+      controller: _noteController,
     );
   }
 
   Widget _buildAddToCartButton(OrderModel order, TableModel table) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          FilledButton.icon(
-            style: ElevatedButton.styleFrom(
-              backgroundColor:
-                  context.colorScheme.primary, // Button background color
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30), // Rounded corners
-              ),
-            ),
-            onPressed: () {
-              _handleOnTapAddToCart(order, table);
-            },
-            icon: Container(
-                margin:
-                    const EdgeInsets.symmetric(vertical: defaultPadding / 2),
-                padding: const EdgeInsets.all(defaultPadding / 2),
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: context.colorScheme.onPrimary),
-                child: SvgPicture.asset(
-                  AppAsset.shoppingCart,
-                  height: 20,
-                  colorFilter: ColorFilter.mode(
-                      context.colorScheme.primary, BlendMode.srcIn),
-                )),
-            label: Text(
-              AppString.addToCart,
-              style: context.bodyMedium!.copyWith(color: Colors.white),
+      child: Container(
+        color: Colors.transparent,
+        child: FilledButton.icon(
+          style: ElevatedButton.styleFrom(
+            backgroundColor:
+                context.colorScheme.primary, // Button background color
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30), // Rounded corners
             ),
           ),
-        ],
+          onPressed: () {
+            _handleOnTapAddToCart(order, table);
+          },
+          icon: Container(
+              margin: const EdgeInsets.symmetric(vertical: defaultPadding / 2),
+              padding: const EdgeInsets.all(defaultPadding / 2),
+              decoration: BoxDecoration(
+                  shape: BoxShape.circle, color: context.colorScheme.onPrimary),
+              child: SvgPicture.asset(
+                AppAsset.shoppingCart,
+                height: 20,
+                colorFilter: ColorFilter.mode(
+                    context.colorScheme.primary, BlendMode.srcIn),
+              )),
+          label: Text(
+            AppString.addToCart,
+            style: context.bodyMedium!.copyWith(color: Colors.white),
+          ),
+        ),
       ),
     );
   }
@@ -435,5 +531,21 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
       }
     }
     return isExist;
+  }
+
+  Widget _buildCategoryName(FoodItem foodItem) {
+    return RichText(
+        text: TextSpan(children: [
+      TextSpan(text: 'Danh mục - ', style: context.bodySmall),
+      TextSpan(text: foodItem.categoryName, style: context.bodyMedium)
+    ]));
+  }
+
+  Widget _buildOrderCount(FoodItem foodItem) {
+    return RichText(
+        text: TextSpan(children: [
+      TextSpan(text: 'Lượt đặt - ', style: context.bodySmall),
+      TextSpan(text: foodItem.orderCount.toString(), style: context.bodyMedium)
+    ]));
   }
 }

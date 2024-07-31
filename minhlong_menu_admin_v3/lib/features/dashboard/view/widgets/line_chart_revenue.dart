@@ -37,7 +37,7 @@ class LineChartRevenue extends StatelessWidget {
         lineBarsData: lineBars(),
         minX: 0,
         maxX: dailyRevenues.length.toDouble() - 1,
-        maxY: max,
+        maxY: max + 1000000,
         minY: 0,
       );
 
@@ -49,7 +49,7 @@ class LineChartRevenue extends StatelessWidget {
             return touchedSpots.map((spot) {
               return spot.barIndex == 0
                   ? LineTooltipItem(
-                      'Đơn: ${Ultils.currencyFormat(spot.y / 500000)}\n',
+                      'Đơn: ${Ultils.currencyFormat(spot.y / 100000)}\n',
                       kBodyStyle.copyWith(
                         fontWeight: FontWeight.bold,
                         color: AppColors.islamicGreen,
@@ -185,7 +185,7 @@ class LineChartRevenue extends StatelessWidget {
             return MapEntry(
                 key,
                 FlSpot(key.toDouble(),
-                    double.parse(((value.orderCount * 500000)).toString())));
+                    double.parse(((value.orderCount * 100000)).toString())));
           }).values,
         ],
       );

@@ -14,6 +14,29 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
+-- Dumping structure for table menu_db.users
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `full_name` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `phone_number` int NOT NULL,
+  `sub_phone_number` int DEFAULT NULL,
+  `email` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `address` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `password` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `image` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `subscription_end_date` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Dumping data for table menu_db.users: ~3 rows (approximately)
+INSERT INTO `users` (`id`, `full_name`, `phone_number`, `sub_phone_number`, `email`, `address`, `password`, `image`, `subscription_end_date`, `created_at`, `updated_at`) VALUES
+	(1, 'Nguyen Tien Anh', 328023993, NULL, NULL, NULL, 'Io6x4kQrdfsifmhAWqoHDNAmCB0z71LMdlps/wA00AQeeG4mFfs8Ye5ZiN7wQk/3Nu2EAEAUFGTn8LUWZm2Pyz5JRg==', '/users/1/1721380675493.webp', '2025-07-31 11:06:34', '2024-06-14 07:21:57', '2024-07-31 11:06:56'),
+	(4, 'Nguyen Tien Anh', 123456789, NULL, NULL, NULL, 'Io6x4kQrdfsifmhAWqoHDNAmCB0z71LMdlps/wA00AQeeG4mFfs8Ye5ZiN7wQk/3Nu2EAEAUFGTn8LUWZm2Pyz5JRg==', NULL, NULL, '2024-07-17 06:08:41', '2024-07-20 08:16:41'),
+	(5, 'Nguyen Tien Anh', 1234567891, NULL, NULL, NULL, 'Io6x4kQrdfsifmhAWqoHDNAmCB0z71LMdlps/wA00AQeeG4mFfs8Ye5ZiN7wQk/3Nu2EAEAUFGTn8LUWZm2Pyz5JRg==', NULL, NULL, '2024-07-17 06:11:50', '2024-07-20 08:16:41');
+
+
 -- Dumping structure for table menu_db.banners
 CREATE TABLE IF NOT EXISTS `banners` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
@@ -572,27 +595,6 @@ INSERT INTO `tables` (`id`, `name`, `seats`, `is_use`, `user_id`, `created_at`, 
 	(6, 'B2', 2, 1, 1, '2024-07-17 04:23:49', '2024-07-27 04:34:25'),
 	(7, 'B3', 3, 1, 1, '2024-07-17 04:23:56', '2024-07-27 04:34:13');
 
--- Dumping structure for table menu_db.users
-CREATE TABLE IF NOT EXISTS `users` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `full_name` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `phone_number` int NOT NULL,
-  `sub_phone_number` int DEFAULT NULL,
-  `email` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `address` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `password` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `image` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `subscription_end_date` timestamp NULL DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- Dumping data for table menu_db.users: ~3 rows (approximately)
-INSERT INTO `users` (`id`, `full_name`, `phone_number`, `sub_phone_number`, `email`, `address`, `password`, `image`, `subscription_end_date`, `created_at`, `updated_at`) VALUES
-	(1, 'Nguyen Tien Anh', 328023993, NULL, NULL, NULL, 'Io6x4kQrdfsifmhAWqoHDNAmCB0z71LMdlps/wA00AQeeG4mFfs8Ye5ZiN7wQk/3Nu2EAEAUFGTn8LUWZm2Pyz5JRg==', '/users/1/1721380675493.webp', '2025-07-31 11:06:34', '2024-06-14 07:21:57', '2024-07-31 11:06:56'),
-	(4, 'Nguyen Tien Anh', 123456789, NULL, NULL, NULL, 'Io6x4kQrdfsifmhAWqoHDNAmCB0z71LMdlps/wA00AQeeG4mFfs8Ye5ZiN7wQk/3Nu2EAEAUFGTn8LUWZm2Pyz5JRg==', NULL, NULL, '2024-07-17 06:08:41', '2024-07-20 08:16:41'),
-	(5, 'Nguyen Tien Anh', 1234567891, NULL, NULL, NULL, 'Io6x4kQrdfsifmhAWqoHDNAmCB0z71LMdlps/wA00AQeeG4mFfs8Ye5ZiN7wQk/3Nu2EAEAUFGTn8LUWZm2Pyz5JRg==', NULL, NULL, '2024-07-17 06:11:50', '2024-07-20 08:16:41');
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

@@ -19,7 +19,8 @@ class PrintScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('In hóa đơn')),
       body: PdfPreview(
-        maxPageWidth: 80,
+        maxPageWidth: 800,
+        initialPageFormat: PdfPageFormat.roll80,
         // useActions: false,
         build: (format) => _generatePdf(format),
       ),
@@ -30,7 +31,7 @@ class PrintScreen extends StatelessWidget {
     final pdf = pw.Document(version: PdfVersion.pdf_1_5, compress: true);
     final font = await PdfGoogleFonts.robotoRegular();
     final fontTitle = await PdfGoogleFonts.robotoBold();
-    double? bodySize = 11;
+    double? bodySize = 8;
     var bodyStyle = pw.TextStyle(font: font, fontSize: bodySize);
     pdf.addPage(
       pw.Page(
@@ -56,7 +57,7 @@ class PrintScreen extends StatelessWidget {
                   fontSize: 14,
                 ),
               ),
-              pw.SizedBox(height: 10),
+              pw.SizedBox(height: 5),
               pw.Text(
                 'Bàn: ${order.tableName}',
                 style: pw.TextStyle(
@@ -90,11 +91,19 @@ class PrintScreen extends StatelessWidget {
                     children: [
                       pw.Expanded(
                           flex: 3, child: pw.Text("Tên món", style: bodyStyle)),
-                      pw.Expanded(child: pw.Text("SL", style: bodyStyle)),
                       pw.Expanded(
-                          flex: 2, child: pw.Text("Giá", style: bodyStyle)),
+                          child: pw.Text("SL",
+                              style: bodyStyle,
+                              textAlign: pw.TextAlign.center)),
                       pw.Expanded(
-                          flex: 2, child: pw.Text("T.Tiền", style: bodyStyle)),
+                          flex: 2,
+                          child: pw.Text("Giá",
+                              style: bodyStyle,
+                              textAlign: pw.TextAlign.center)),
+                      pw.Expanded(
+                          flex: 2,
+                          child: pw.Text("T.Tiền",
+                              style: bodyStyle, textAlign: pw.TextAlign.right)),
                     ]),
               ]),
               pw.Table(
@@ -132,17 +141,20 @@ class PrintScreen extends StatelessWidget {
   pw.TableRow _buildRowData(FoodOrderModel foodOrder, pw.TextStyle bodyStyle) {
     return pw.TableRow(children: [
       _buildItem(foodOrder.name, bodyStyle, flex: 3),
-      _buildItem(foodOrder.quantity.toString(), bodyStyle),
-      _buildItem(Ultils.currencyFormat(foodOrder.price), bodyStyle, flex: 2),
+      _buildItem(foodOrder.quantity.toString(), bodyStyle,
+          textAlign: pw.TextAlign.center),
+      _buildItem(Ultils.currencyFormat(foodOrder.price), bodyStyle,
+          flex: 2, textAlign: pw.TextAlign.center),
       _buildItem(Ultils.currencyFormat(foodOrder.totalAmount), bodyStyle,
-          flex: 2),
+          textAlign: pw.TextAlign.right, flex: 2),
     ]);
   }
 
-  pw.Widget _buildItem(String value, pw.TextStyle bodyStyle, {int flex = 1}) {
+  pw.Widget _buildItem(String value, pw.TextStyle bodyStyle,
+      {int flex = 1, pw.TextAlign? textAlign = pw.TextAlign.left}) {
     return pw.Expanded(
       flex: flex,
-      child: pw.Text(value, style: bodyStyle),
+      child: pw.Text(value, style: bodyStyle, textAlign: textAlign),
     );
   }
 }

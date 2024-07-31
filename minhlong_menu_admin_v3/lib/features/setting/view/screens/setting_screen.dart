@@ -49,13 +49,9 @@ class _SettingScreenState extends State<SettingScreen> {
   void _init() async {
     sf = await SharedPreferences.getInstance();
     isDarkMode.value = await ThemeLocalDatasource(sf).getDartTheme() ?? false;
-
     var schemeKey = await ThemeLocalDatasource(sf).getSchemeTheme() ?? '';
-    for (var e in listScheme) {
-      if (e.key == schemeKey) {
-        _pickColor.value = e.color;
-      }
-    }
+    _pickColor.value =
+        listScheme.firstWhere((element) => element.key == schemeKey).color;
   }
 
   @override

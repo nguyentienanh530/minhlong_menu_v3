@@ -42,13 +42,7 @@ class AppTheme {
         fontFamily: GoogleFonts.roboto().fontFamily,
       );
   FlexScheme getFlexScheme(String scheme) {
-    FlexScheme flexScheme = FlexScheme.blueWhale;
-    for (var element in listScheme) {
-      if (element.key == scheme) {
-        flexScheme = element.scheme;
-      }
-    }
-    return flexScheme;
+    return listScheme.firstWhere((element) => element.key == scheme).scheme;
   }
 }
 

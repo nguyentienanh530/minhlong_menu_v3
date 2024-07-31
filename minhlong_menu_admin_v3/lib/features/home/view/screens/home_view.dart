@@ -13,8 +13,8 @@ import 'package:minhlong_menu_admin_v3/features/dinner_table/view/screens/dinner
 import 'package:minhlong_menu_admin_v3/features/food/view/screens/food_screen.dart';
 import 'package:minhlong_menu_admin_v3/features/order/view/screens/order_screen.dart';
 import 'package:minhlong_menu_admin_v3/features/setting/view/screens/setting_screen.dart';
+import 'package:minhlong_menu_admin_v3/features/user/cubit/user_cubit.dart';
 import 'package:minhlong_menu_admin_v3/features/user/data/model/user_model.dart';
-
 import '../../../../Routes/app_route.dart';
 import '../../../../common/dialog/app_dialog.dart';
 import '../../../../common/widget/error_build_image.dart';
@@ -25,8 +25,6 @@ import '../../../../core/app_colors.dart';
 import '../../../../core/app_style.dart';
 import '../../../auth/bloc/auth_bloc.dart';
 import '../../../order_history/view/screens/order_history_screen.dart';
-import '../../../user/cubit/user_cubit.dart';
-
 part '../widgets/_side_menu.dart';
 
 class HomeView extends StatefulWidget {
@@ -107,6 +105,7 @@ class HomeViewState extends State<HomeView>
     _pageCtrl.dispose();
     _sideMenuCtrl.dispose();
     _title.dispose();
+    _indexPage.dispose();
   }
 
   @override
@@ -206,17 +205,15 @@ class HomeViewState extends State<HomeView>
                           listenable: _indexPage,
                           builder: (context, _) {
                             return switch (_indexPage.value) {
-                              0 => DashboardScreen(userModel: user),
-                              1 => OrderScreen(
-                                  user: user,
-                                ),
+                              0 => const DashboardScreen(),
+                              1 => OrderScreen(user: user),
                               2 => const OrderHistoryScreen(),
                               3 => const FoodScreen(),
                               4 => const DinnerTableScreen(),
                               5 => const CategoryScreen(),
                               6 => const BannerScreen(),
                               7 => const SettingScreen(),
-                              _ => DashboardScreen(userModel: user)
+                              _ => const DashboardScreen()
                             };
                           })),
                 ],

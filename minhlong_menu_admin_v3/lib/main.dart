@@ -229,22 +229,6 @@ class _AppContentState extends State<AppContent> {
             theme: themeState
                 ? AppTheme(scheme: schemeState).darkTheme
                 : AppTheme(scheme: schemeState).lightTheme,
-
-            // theme: ThemeData(
-            //   useMaterial3: true,
-            //   fontFamily: GoogleFonts.beVietnamPro().fontFamily,
-            //   scaffoldBackgroundColor: AppColors.background,
-            //   // textTheme: const TextTheme(
-            //   //     displaySmall: TextStyle(color: AppColors.white),
-            //   //     displayLarge: TextStyle(color: AppColors.white),
-            //   //     displayMedium: TextStyle(color: AppColors.white)),
-            //   colorScheme: ColorScheme.fromSwatch(
-            //     primarySwatch: MaterialColor(
-            //       context.colorScheme.primary.value,
-            //       getSwatch(context.colorScheme.primary),
-            //     ),
-            //   ),
-            // ),
           );
         },
       ),

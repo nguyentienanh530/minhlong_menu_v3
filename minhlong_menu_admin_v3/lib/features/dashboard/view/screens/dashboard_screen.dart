@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
+import 'package:minhlong_menu_admin_v3/Routes/app_route.dart';
 import 'package:minhlong_menu_admin_v3/common/widget/empty_widget.dart';
 import 'package:minhlong_menu_admin_v3/common/widget/error_widget.dart';
 import 'package:minhlong_menu_admin_v3/common/widget/loading.dart';
@@ -13,13 +15,18 @@ import 'package:minhlong_menu_admin_v3/features/dashboard/data/model/info_model.
 import 'package:minhlong_menu_admin_v3/features/dashboard/data/respositories/info_respository.dart';
 import 'package:minhlong_menu_admin_v3/features/home/cubit/table_index_selected_cubit.dart';
 import 'package:minhlong_menu_admin_v3/features/order/data/repositories/order_repository.dart';
+import 'package:minhlong_menu_admin_v3/features/user/cubit/user_cubit.dart';
 import 'package:minhlong_menu_admin_v3/features/user/data/model/user_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/app_colors.dart';
 import '../../../../core/app_const.dart';
 import '../../../../core/app_style.dart';
 import '../../../../core/utils.dart';
+import '../../../auth/bloc/auth_bloc.dart';
+import '../../../auth/data/auth_local_datasource/auth_local_datasource.dart';
 import '../../../dinner_table/cubit/dinner_table_cubit.dart';
 import '../../../order/bloc/order_bloc.dart';
+import '../../../user/bloc/user_bloc.dart';
 import '../../data/model/data_chart.dart';
 import '../widgets/_bar_chart_revenue.dart';
 import '../widgets/indicator.dart';
@@ -28,8 +35,7 @@ import '../widgets/pie_chart_top4_best_selling.dart';
 part '../widgets/_info_widget.dart';
 
 class DashboardScreen extends StatelessWidget {
-  const DashboardScreen({super.key, required this.userModel});
-  final UserModel userModel;
+  const DashboardScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -67,15 +73,33 @@ class DashboardScreen extends StatelessWidget {
           ),
         )
       ],
-      child: DashboardView(userModel: userModel),
+      child: BlocConsumer<UserBloc, UserState>(
+        listener: (context, state) async {
+          if (state is UserFecthFailure) {
+            context.read<UserCubit>().userChanged(UserModel());
+            await AuthLocalDatasource(await SharedPreferences.getInstance())
+                .removeAccessToken();
+            if (!context.mounted) return;
+            context.read<AuthBloc>().add(AuthAuthenticateStarted());
+            context.go(AppRoute.login);
+          }
+        },
+        builder: (context, state) {
+          return (switch (state) {
+            UserFecthSuccess() => DashboardView(user: state.user),
+            UserFecthFailure() => ErrWidget(error: state.errorMessage),
+            UserFecthInProgress() => const Loading(),
+            _ => Container(),
+          });
+        },
+      ),
     );
   }
 }
 
 class DashboardView extends StatefulWidget {
-  const DashboardView({super.key, required this.userModel});
-  final UserModel userModel;
-
+  const DashboardView({super.key, required this.user});
+  final UserModel user;
   @override
   State<DashboardView> createState() => _DashboardViewState();
 }
@@ -88,7 +112,7 @@ class _DashboardViewState extends State<DashboardView>
   @override
   void initState() {
     super.initState();
-
+    context.read<UserCubit>().userChanged(widget.user);
     context.read<InfoBloc>().add(InfoFetchStarted());
     context.read<BestSellingFoodBloc>().add(BestSellingFoodFetched());
     context.read<DataChartBloc>().add(DataChartFetched('week'));

@@ -22,6 +22,7 @@ import '../../../../core/app_const.dart';
 import '../../../../core/app_res.dart';
 import '../../../../core/app_string.dart';
 import '../../../../core/app_style.dart';
+import '../../cubit/user_cubit.dart';
 import '../../data/model/user_model.dart';
 
 class EditProfileWidget extends StatefulWidget {
@@ -87,6 +88,7 @@ class __EditSettingWidgetState extends State<EditProfileWidget> {
               context.isMobile ? pop(context, 2) : pop(context, 1);
               OverlaySnackbar.show(context, 'Thao tác thành công');
               _isUpdated = true;
+              context.read<UserCubit>().userChanged(_user);
             }
             if (state is UserUpdateFailure) {
               context.isMobile ? pop(context, 2) : pop(context, 1);
