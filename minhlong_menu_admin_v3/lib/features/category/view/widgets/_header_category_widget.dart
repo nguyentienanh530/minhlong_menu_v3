@@ -82,7 +82,7 @@ extension _HeaderCategoryWidget on _CategoryViewState {
         alignment: Alignment.center,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8).r,
-          color: AppColors.themeColor,
+          color: context.colorScheme.primary,
         ),
         child: Text(
           'Thêm',

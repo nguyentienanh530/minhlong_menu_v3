@@ -212,7 +212,7 @@ class _CreateOrUpdateDinnerTableDialogState
         alignment: Alignment.center,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(defaultBorderRadius),
-            color: AppColors.themeColor),
+            color: context.colorScheme.primary),
         child: Text(
           _mode == ScreenType.create ? 'Thêm mới' : 'Sửa',
           style: kBodyWhiteStyle.copyWith(

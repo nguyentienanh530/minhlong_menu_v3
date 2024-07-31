@@ -136,7 +136,7 @@ extension _FoodBodyWidget on _CategoryViewState {
                         buttonRadius: textFieldBorderRadius,
                         pageTotal: pagination.totalPage,
                         pageInit: _curentPage.value,
-                        colorPrimary: AppColors.themeColor,
+                        colorPrimary: context.colorScheme.primary,
                       ),
                     );
                   },

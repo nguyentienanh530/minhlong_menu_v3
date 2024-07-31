@@ -111,7 +111,7 @@ class DashboardLoadingScreen extends StatelessWidget {
                 return Card(
                   elevation: 10,
                   child: Container(
-                    color: AppColors.themeColor,
+                    color: context.colorScheme.primary,
                     height: 50,
                     width: 50,
                     child: const Text('data'),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-import '../../core/app_colors.dart';
+import 'package:minhlong_menu_admin_v3/core/extensions.dart';
 
 class CommonIconButton extends StatelessWidget {
   const CommonIconButton(
@@ -22,13 +21,13 @@ class CommonIconButton extends StatelessWidget {
           padding: const EdgeInsets.all(4),
           decoration: BoxDecoration(
               color: color?.withOpacity(0.2) ??
-                  AppColors.themeColor.withOpacity(0.2),
+                  context.colorScheme.primary.withOpacity(0.2),
               borderRadius: BorderRadius.circular(5),
-              border: Border.all(color: color ?? AppColors.themeColor)),
+              border: Border.all(color: color ?? context.colorScheme.primary)),
           child: FittedBox(
             child: Icon(
               icon ?? Icons.remove_red_eye,
-              color: color ?? AppColors.themeColor,
+              color: color ?? context.colorScheme.primary,
             ),
           ),
         ),

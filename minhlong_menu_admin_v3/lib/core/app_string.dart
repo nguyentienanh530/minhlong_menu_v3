@@ -5,6 +5,8 @@ class AppString {
   static const refreshTokenkey = "refresh_token";
   static const usePrinterkey = "printer_key";
   static const userIDKey = "user_id";
+  static const themeKey = "theme_key";
+  static const schemeKey = "scheme_key";
 
   //Api call error
   static const cancelRequest = "Request to API server was cancelled";
@@ -75,4 +77,7 @@ class AppString {
   static String oldPassword = 'Mật khẩu cũ';
   static String newPassword = 'Mật khẩu mới';
   static String reNewPassword = 'Nhập lại mật khẩu mới ';
+  static String darkMode = 'Chế độ tối';
+  static String lightMode = 'Chế độ sáng';
+  static String pickColor = 'Chọn màu ';
 }

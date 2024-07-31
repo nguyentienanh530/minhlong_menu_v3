@@ -53,7 +53,7 @@ extension _SettingWidgets on _SettingScreenState {
   Widget _editInfoUser(UserModel user) {
     return _ItemProfile(
       onTap: () => context.push<bool>(AppRoute.editProfile, extra: user),
-      colorIcon: AppColors.themeColor,
+      colorIcon: context.colorScheme.primary,
       svgPath: AppAsset.user,
       title: AppString.editProfile,
     );
@@ -62,68 +62,172 @@ extension _SettingWidgets on _SettingScreenState {
   Widget _buildTitleChangePassword() {
     return _ItemProfile(
       onTap: () => context.push(AppRoute.updatePassword),
-      colorIcon: AppColors.themeColor,
+      colorIcon: context.colorScheme.primary,
       svgPath: AppAsset.lock,
       title: AppString.changePassword,
     );
   }
 
-  Widget _buildItemPrint(BuildContext context) {
+  Widget _buildTitleChangePassword2() {
+    return _ItemProfile(
+      colorIcon: context.colorScheme.primary,
+      svgPath: AppAsset.lock,
+      title: AppString.changePassword,
+      onTap: () => AppDialog.showErrorDialog(
+        context,
+        title: '132123',
+        onPressedComfirm: () => context.pop(),
+        cancelText: 'ok',
+        confirmText: 'cancel',
+        description: 'Do you want to change your password',
+        haveCancelButton: true,
+      ),
+    );
+  }
+
+  Widget _buildColorThemeWidget() {
+    return ListenableBuilder(
+      listenable: _pickColor,
+      builder: (context, child) {
+        return _ItemProfile(
+          svgPath: AppAsset.logout,
+          title: AppString.pickColor,
+          leftIcon: const Icon(Icons.color_lens_outlined),
+          rightIcon: Container(
+            margin: const EdgeInsets.only(right: defaultPadding / 2),
+            height: 30,
+            width: 30,
+            decoration:
+                BoxDecoration(color: _pickColor.value, shape: BoxShape.circle),
+          ),
+          onTap: () async => _showDialogPickThemes(),
+        );
+      },
+    );
+  }
+
+  void _showDialogPickThemes() async {
+    await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            elevation: 4,
+            actionsAlignment: MainAxisAlignment.center,
+            title: Text(
+              textAlign: TextAlign.center,
+              'Chọn màu chính',
+              style: context.titleStyleLarge!
+                  .copyWith(fontWeight: FontWeight.bold),
+            ),
+            actions: [
+              ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: context.colorScheme.primary,
+                  ),
+                  onPressed: () => context.pop(),
+                  child: Text(AppString.cancel,
+                      style: context.bodyMedium!.copyWith(color: Colors.white)))
+            ],
+            content: SizedBox(
+              width: 300,
+              child: GridView.count(
+                  crossAxisSpacing: defaultPadding / 2,
+                  mainAxisSpacing: defaultPadding / 2,
+                  crossAxisCount: 6,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: listScheme.map((e) => _buildItemColor(e)).toList()),
+            ),
+          );
+        }).then(
+      (value) {
+        if (value is Color) {
+          _pickColor.value = value;
+        }
+      },
+    );
+  }
+
+  Widget _buildItemColor(ThemeDTO e) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(defaultBorderRadius),
+      onTap: () async {
+        context.pop(e.color);
+        await ThemeLocalDatasource(sf).setSchemeTheme(e.key);
+        if (!mounted) return;
+        context.read<SchemeCubit>().changeScheme(e.key);
+      },
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: e.color,
+                border: e.key == context.read<SchemeCubit>().state
+                    ? Border.all(color: context.colorScheme.primary, width: 2)
+                    : Border.all(color: Colors.transparent)),
+          ),
+          e.key == context.read<SchemeCubit>().state
+              ? const Icon(Icons.check, color: Colors.white)
+              : const SizedBox()
+        ],
+      ),
+    );
+  }
+
+  Widget _buildThemeWidget(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: _isUsePrinter,
+      valueListenable: isDarkMode,
       builder: (context, value, child) {
         return Card(
-          elevation: 4,
-          child: Column(
-            children: [
-              SizedBox(
-                  width: double.infinity,
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          flex: 2,
-                          child: FittedBox(
-                            fit: BoxFit.scaleDown,
-                            alignment: Alignment.centerLeft,
-                            child: Row(children: [
-                              Padding(
-                                  padding: const EdgeInsets.all(defaultPadding),
-                                  child: SvgPicture.asset(AppAsset.print,
-                                      colorFilter: const ColorFilter.mode(
-                                          AppColors.themeColor,
-                                          BlendMode.srcIn))),
-                              Text(
-                                AppString.usePrinter,
-                                style: kBodyStyle.copyWith(
-                                    color: AppColors.secondTextColor),
-                              )
-                            ]),
-                          ),
+            elevation: 2,
+            // shadowColor: context.colorScheme.onPrimary,
+            child: SizedBox(
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                  Expanded(
+                    child: FittedBox(
+                      alignment: Alignment.centerLeft,
+                      fit: BoxFit.scaleDown,
+                      child: Row(children: [
+                        Padding(
+                            padding: const EdgeInsets.all(defaultPadding - 3),
+                            child: Icon(
+                              Icons.dark_mode_outlined,
+                              color: context.colorScheme.primary,
+                            )),
+                        Text(
+                          AppString.darkMode,
+                          style: kBodyStyle.copyWith(
+                              color: AppColors.secondTextColor),
+                        )
+                      ]),
+                    ),
+                  ),
+                  Expanded(
+                    child: FittedBox(
+                      alignment: Alignment.centerRight,
+                      fit: BoxFit.scaleDown,
+                      child: Transform.scale(
+                        scale: 0.8,
+                        child: Switch(
+                          activeTrackColor: context.colorScheme.primary,
+                          inactiveTrackColor:
+                              context.colorScheme.primary.withOpacity(0.5),
+                          inactiveThumbColor: Colors.white,
+                          value: isDarkMode.value,
+                          onChanged: (value) async {
+                            isDarkMode.value = !isDarkMode.value;
+                            context.read<ThemeCubit>().changeTheme(value);
+                            await ThemeLocalDatasource(sf).setDarkTheme(value);
+                          },
                         ),
-                        Transform.scale(
-                          scale: 0.8,
-                          child: Switch(
-                            activeTrackColor: AppColors.themeColor,
-                            inactiveTrackColor:
-                                AppColors.themeColor.withOpacity(0.5),
-                            inactiveThumbColor: AppColors.white,
-                            value: _isUsePrinter.value,
-                            onChanged: (value) {
-                              _isUsePrinter.value = !_isUsePrinter.value;
-                            },
-                          ),
-                        ),
-                      ])),
-              _isUsePrinter.value
-                  ? _ItemProfile(
-                      svgPath: AppAsset.fileConfig,
-                      title: AppString.settingPrinter,
-                      onTap: () {})
-                  : const SizedBox()
-            ],
-          ),
-        );
+                      ),
+                    ),
+                  ),
+                ])));
       },
     );
   }
@@ -134,65 +238,65 @@ class _ItemProfile extends StatelessWidget {
     required this.svgPath,
     required this.title,
     required this.onTap,
+    this.titleStyle,
     this.colorIcon,
+    this.rightIcon,
+    this.leftIcon,
   });
+
   final Color? colorIcon;
   final String svgPath;
+  final Icon? leftIcon;
   final String title;
-
+  final TextStyle? titleStyle;
+  final Widget? rightIcon;
   final void Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: InkWell(
-        // borderRadius: BorderRadius.circular(defaultBorderRadius),
-        onTap: onTap,
-        child: SizedBox(
-          height: 50,
-          width: double.infinity,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                flex: 2,
-                child: FittedBox(
-                  alignment: Alignment.centerLeft,
-                  fit: BoxFit.scaleDown,
-                  child: Row(
-                    children: [
+        elevation: 2,
+        shadowColor: AppColors.white,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(defaultPadding),
+          onTap: onTap,
+          child: SizedBox(
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                Expanded(
+                  child: FittedBox(
+                    alignment: Alignment.centerLeft,
+                    fit: BoxFit.scaleDown,
+                    child: Row(children: [
                       Padding(
                           padding: const EdgeInsets.all(defaultPadding),
-                          child: SvgPicture.asset(svgPath,
-                              colorFilter: const ColorFilter.mode(
-                                  Colors.red, BlendMode.srcIn))),
-                      FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Text(
-                          title,
-                          style: kBodyStyle.copyWith(
-                              color: AppColors.secondTextColor),
-                        ),
+                          child: leftIcon ??
+                              SvgPicture.asset(svgPath,
+                                  colorFilter: ColorFilter.mode(
+                                      context.colorScheme.primary,
+                                      BlendMode.srcIn))),
+                      Text(
+                        title,
+                        style: titleStyle ?? kBodyStyle,
                       )
-                    ],
+                    ]),
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(right: defaultPadding),
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Icon(
-                    Icons.arrow_forward_ios_rounded,
-                    size: 15,
-                    color: colorIcon ?? AppColors.secondTextColor,
+                Expanded(
+                  child: FittedBox(
+                    alignment: Alignment.centerRight,
+                    fit: BoxFit.scaleDown,
+                    child: rightIcon ??
+                        const Padding(
+                            padding: EdgeInsets.all(defaultPadding),
+                            child: Icon(
+                              Icons.arrow_forward_ios_rounded,
+                              size: 15,
+                            )),
                   ),
-                ),
-              )
-            ],
-          ),
-        ),
-      ),
-    );
+                )
+              ])),
+        ));
   }
 }

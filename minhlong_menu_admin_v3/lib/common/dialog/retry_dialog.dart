@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:minhlong_menu_admin_v3/core/extensions.dart';
 
 import '../../core/app_colors.dart';
 import '../../core/app_const.dart';
@@ -47,7 +48,7 @@ class RetryDialog extends StatelessWidget {
             children: [
               // OutlinedButton(
               //   style: OutlinedButton.styleFrom(
-              //     side: const BorderSide(color: AppColors.themeColor),
+              //     side: const BorderSide(color: context.colorScheme.primary),
               //   ),
               //   onPressed: () => Navigator.pop(context),
               //   child: const Text("Hủy"),
@@ -55,7 +56,7 @@ class RetryDialog extends StatelessWidget {
               const SizedBox(width: 15),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.themeColor,
+                    backgroundColor: context.colorScheme.primary,
                     foregroundColor: AppColors.white),
                 onPressed: onRetryPressed,
                 child: Text(onRetryText ?? "Thử lại", style: kButtonWhiteStyle),

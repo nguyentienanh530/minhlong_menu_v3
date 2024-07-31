@@ -39,7 +39,7 @@ extension _OrderHeaderWidget on _OrderViewState {
         indicatorSize: TabBarIndicatorSize.tab,
         indicator: BoxDecoration(
             borderRadius: BorderRadius.circular(textFieldBorderRadius),
-            color: AppColors.themeColor),
+            color: context.colorScheme.primary),
         unselectedLabelStyle:
             kBodyStyle.copyWith(color: AppColors.secondTextColor),
         splashBorderRadius: BorderRadius.circular(textFieldBorderRadius),

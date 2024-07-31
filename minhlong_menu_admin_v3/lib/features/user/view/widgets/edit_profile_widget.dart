@@ -10,6 +10,7 @@ import 'package:minhlong_menu_admin_v3/core/app_key.dart';
 import 'package:minhlong_menu_admin_v3/core/extensions.dart';
 import 'package:minhlong_menu_admin_v3/core/utils.dart';
 import 'package:minhlong_menu_admin_v3/features/user/bloc/user_bloc.dart';
+
 import '../../../../common/dialog/app_dialog.dart';
 import '../../../../common/snackbar/overlay_snackbar.dart';
 import '../../../../common/widget/common_text_field.dart';
@@ -243,7 +244,8 @@ class __EditSettingWidgetState extends State<EditProfileWidget> {
     return Container(
       alignment: Alignment.center,
       child: ElevatedButton(
-        style: ElevatedButton.styleFrom(backgroundColor: AppColors.themeColor),
+        style: ElevatedButton.styleFrom(
+            backgroundColor: context.colorScheme.primary),
         onPressed: () async {
           if (AppKeys.updateUserKey.currentState!.validate()) {
             if (_imageFile.value.path.isNotEmpty) {

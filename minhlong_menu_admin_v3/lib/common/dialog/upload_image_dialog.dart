@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:minhlong_menu_admin_v3/core/extensions.dart';
 
 import '../../core/app_colors.dart';
 import '../../core/app_const.dart';
@@ -19,8 +20,8 @@ class UploadImageWidget extends StatelessWidget {
           children: [
             Row(
               children: [
-                const Icon(Icons.file_present_rounded,
-                    color: AppColors.themeColor),
+                Icon(Icons.file_present_rounded,
+                    color: context.colorScheme.primary),
                 const SizedBox(width: defaultPadding),
                 Expanded(
                   child: Text(
@@ -41,7 +42,7 @@ class UploadImageWidget extends StatelessWidget {
                     child: LinearProgressIndicator(
                       value: progress,
                       borderRadius: BorderRadius.circular(defaultPadding),
-                      color: AppColors.themeColor,
+                      color: context.colorScheme.primary,
                       backgroundColor: AppColors.smokeWhite,
 
                       // value: _userController.uploadProgress.value,

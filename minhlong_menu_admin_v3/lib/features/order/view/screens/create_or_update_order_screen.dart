@@ -14,6 +14,7 @@ import 'package:minhlong_menu_admin_v3/features/dinner_table/data/model/table_it
 import 'package:minhlong_menu_admin_v3/features/order/data/dto/status_dto.dart';
 import 'package:minhlong_menu_admin_v3/features/order/data/model/food_order_model.dart';
 import 'package:minhlong_menu_admin_v3/features/order/data/model/order_item.dart';
+
 import '../../../../common/dialog/app_dialog.dart';
 import '../../../../common/widget/common_text_field.dart';
 import '../../../../common/widget/error_build_image.dart';
@@ -96,7 +97,7 @@ class _CreateOrUpdateOrderViewState extends State<CreateOrUpdateOrderView> {
     print('order: ${widget.order}');
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: AppColors.themeColor,
+        backgroundColor: context.colorScheme.primary,
         foregroundColor: AppColors.white,
         centerTitle: true,
         leading: IconButton(
@@ -165,7 +166,7 @@ class _CreateOrUpdateOrderViewState extends State<CreateOrUpdateOrderView> {
               underline: const SizedBox(),
               style: kBodyWhiteStyle.copyWith(fontWeight: FontWeight.w900),
               iconEnabledColor: AppColors.white,
-              dropdownColor: AppColors.themeColor,
+              dropdownColor: context.colorScheme.primary,
               items: tables
                   .map(
                     (e) => DropdownMenuItem(
@@ -201,7 +202,7 @@ class _CreateOrUpdateOrderViewState extends State<CreateOrUpdateOrderView> {
               // borderRadius: BorderRadius.circular(defaultBorderRadius).r,
               underline: const SizedBox(),
               style: kBodyWhiteStyle.copyWith(fontWeight: FontWeight.w900),
-              dropdownColor: AppColors.themeColor,
+              dropdownColor: context.colorScheme.primary,
               iconEnabledColor: AppColors.white,
               items: _listStatus
                   .map(
@@ -422,7 +423,7 @@ class _CreateOrUpdateOrderViewState extends State<CreateOrUpdateOrderView> {
                               alignment: Alignment.center,
                               color: AppColors.white,
                               style: IconButton.styleFrom(
-                                  backgroundColor: AppColors.themeColor,
+                                  backgroundColor: context.colorScheme.primary,
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(
                                           textFieldBorderRadius))),
@@ -449,7 +450,7 @@ class _CreateOrUpdateOrderViewState extends State<CreateOrUpdateOrderView> {
                               alignment: Alignment.center,
                               color: AppColors.white,
                               style: IconButton.styleFrom(
-                                  backgroundColor: AppColors.themeColor,
+                                  backgroundColor: context.colorScheme.primary,
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(
                                           textFieldBorderRadius))),
@@ -537,7 +538,7 @@ class _CreateOrUpdateOrderViewState extends State<CreateOrUpdateOrderView> {
           Container(
             padding: const EdgeInsets.symmetric(
                 horizontal: defaultPadding / 2, vertical: defaultPadding / 2),
-            color: AppColors.themeColor,
+            color: context.colorScheme.primary,
             child: Column(
               children: [
                 context.isMobile
@@ -651,7 +652,7 @@ class _CreateOrUpdateOrderViewState extends State<CreateOrUpdateOrderView> {
                             decoration: BoxDecoration(
                               color: _order.value.foodOrders.isEmpty
                                   ? AppColors.darkGray
-                                  : AppColors.themeColor,
+                                  : context.colorScheme.primary,
                               borderRadius: const BorderRadius.all(
                                 Radius.circular(textFieldBorderRadius),
                               ),

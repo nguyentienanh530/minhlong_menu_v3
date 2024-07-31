@@ -225,7 +225,7 @@ class _CreateOrUpdateBannerState extends State<CreateOrUpdateBanner> {
         alignment: Alignment.center,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8).r,
-          color: AppColors.themeColor,
+          color: context.colorScheme.primary,
         ),
         child: Text(
           _type == ScreenType.create ? 'Thêm' : 'Cập nhật',

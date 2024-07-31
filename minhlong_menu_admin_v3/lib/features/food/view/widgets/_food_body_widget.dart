@@ -140,7 +140,7 @@ extension _FoodBodyWidget on _FoodViewState {
                       buttonRadius: textFieldBorderRadius,
                       pageTotal: pagination.totalPage,
                       pageInit: _curentPage.value,
-                      colorPrimary: AppColors.themeColor,
+                      colorPrimary: context.colorScheme.primary,
                     );
                   },
                 ),
@@ -251,11 +251,12 @@ extension _FoodBodyWidget on _FoodViewState {
             valueListenable: isShowFood,
             builder: (context, value, child) {
               return Switch(
-                  activeColor: AppColors.themeColor,
+                  activeColor: context.colorScheme.primary,
                   inactiveThumbColor: AppColors.black.withOpacity(0.5),
                   inactiveTrackColor:
                       AppColors.secondTextColor.withOpacity(0.3),
-                  activeTrackColor: AppColors.themeColor.withOpacity(0.3),
+                  activeTrackColor:
+                      context.colorScheme.primary.withOpacity(0.3),
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   dragStartBehavior: DragStartBehavior.start,
                   hoverColor: AppColors.lavender,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:minhlong_menu_admin_v3/core/app_style.dart';
-import '../../core/app_colors.dart';
+import 'package:minhlong_menu_admin_v3/core/extensions.dart';
 
 class LoadingWidget extends StatelessWidget {
   const LoadingWidget({super.key, required this.title});
@@ -11,11 +11,11 @@ class LoadingWidget extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const SizedBox(
+        SizedBox(
           height: 30,
           width: 30,
           child: CircularProgressIndicator(
-            color: AppColors.themeColor,
+            color: context.colorScheme.primary,
             strokeWidth: 5,
             strokeCap: StrokeCap.round,
             semanticsValue: 'Loading...',

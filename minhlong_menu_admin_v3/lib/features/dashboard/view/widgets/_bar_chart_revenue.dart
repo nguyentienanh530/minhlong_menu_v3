@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:minhlong_menu_admin_v3/core/extensions.dart';
 
 import '../../../../core/app_colors.dart';
 import '../../../../core/app_style.dart';
@@ -25,10 +26,10 @@ class BarChartRevenue extends StatelessWidget {
     dataCharts.sort((a, b) => a.date.compareTo(b.date));
     return BarChart(
       BarChartData(
-        barTouchData: barTouchData,
+        barTouchData: barTouchData(context),
         titlesData: titlesData,
         borderData: borderData,
-        barGroups: barGroups(),
+        barGroups: barGroups(context),
         gridData: const FlGridData(show: false),
         alignment: BarChartAlignment.spaceAround,
         maxY: maxTotalPrice + 1000000,
@@ -36,7 +37,7 @@ class BarChartRevenue extends StatelessWidget {
     );
   }
 
-  BarTouchData get barTouchData => BarTouchData(
+  BarTouchData barTouchData(BuildContext context) => BarTouchData(
         enabled: false,
         touchTooltipData: BarTouchTooltipData(
           getTooltipColor: (group) => Colors.transparent,
@@ -52,7 +53,7 @@ class BarChartRevenue extends StatelessWidget {
               Ultils.currencyFormat(rod.toY),
               kBodyStyle.copyWith(
                 fontWeight: FontWeight.w700,
-                color: AppColors.themeColor,
+                color: context.colorScheme.primary,
               ),
             );
           },
@@ -103,16 +104,17 @@ class BarChartRevenue extends StatelessWidget {
 
   FlBorderData get borderData => FlBorderData(show: false);
 
-  LinearGradient get _barsGradient => LinearGradient(
+  LinearGradient _barsGradient(BuildContext context) => LinearGradient(
         colors: [
-          AppColors.themeColor.withOpacity(0.2),
-          AppColors.themeColor,
+          context.colorScheme.primary.withOpacity(0.2),
+          context.colorScheme.primary,
         ],
         begin: Alignment.bottomCenter,
         end: Alignment.topCenter,
       );
 
-  BarChartGroupData itemChart({
+  BarChartGroupData itemChart(
+    BuildContext context, {
     required int x,
     required double toY,
     bool isTouched = false,
@@ -126,24 +128,24 @@ class BarChartRevenue extends StatelessWidget {
           borderRadius:
               isTouched ? BorderRadius.circular(10) : BorderRadius.circular(5),
           toY: toY,
-          color: isTouched ? AppColors.themeColor : AppColors.lavender,
+          color: isTouched ? context.colorScheme.primary : AppColors.lavender,
           borderSide: isTouched
-              ? const BorderSide(color: AppColors.themeColor, width: 2)
+              ? BorderSide(color: context.colorScheme.primary, width: 2)
               : const BorderSide(color: Colors.white, width: 0),
-          gradient: _barsGradient,
+          gradient: _barsGradient(context),
         )
       ],
       showingTooltipIndicators: [0],
     );
   }
 
-  List<BarChartGroupData> barGroups() {
+  List<BarChartGroupData> barGroups(BuildContext context) {
     return dataCharts
         .asMap()
         .map(
           (key, value) => MapEntry(
             key,
-            itemChart(x: key, toY: value.totalPrice),
+            itemChart(context, x: key, toY: value.totalPrice),
           ),
         )
         .values
