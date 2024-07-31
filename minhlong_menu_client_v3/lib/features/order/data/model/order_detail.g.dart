@@ -18,7 +18,7 @@ _$OrderDetailImpl _$$OrderDetailImplFromJson(Map<String, dynamic> json) =>
       foodPrice: (json['foodPrice'] as num?)?.toDouble() ?? 0,
       quantity: (json['quantity'] as num?)?.toInt() ?? 1,
       note: json['note'] as String? ?? '',
-      totalPrice: (json['totalPrice'] as num?)?.toDouble() ?? 0,
+      totalAmount: (json['total_amount'] as num?)?.toDouble() ?? 0,
     );
 
 Map<String, dynamic> _$$OrderDetailImplToJson(_$OrderDetailImpl instance) =>
@@ -33,5 +33,5 @@ Map<String, dynamic> _$$OrderDetailImplToJson(_$OrderDetailImpl instance) =>
       'foodPrice': instance.foodPrice,
       'quantity': instance.quantity,
       'note': instance.note,
-      'totalPrice': instance.totalPrice,
+      'total_amount': instance.totalAmount,
     };

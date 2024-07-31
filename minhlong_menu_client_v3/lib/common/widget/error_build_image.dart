@@ -24,7 +24,6 @@ class ImageNotFound extends StatelessWidget {
           child: Text(
             '(>_<)'.toUpperCase(),
             style: context.titleStyleSmall!.copyWith(
-              color: tintcolor ?? context.colorScheme.onPrimary,
               fontSize: 50,
             ),
           ),

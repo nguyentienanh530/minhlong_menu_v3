@@ -7,13 +7,16 @@ import '../../core/app_string.dart';
 import '../widget/loading_widget.dart';
 
 class AppDialog {
-  static Future<dynamic> showErrorDialog(BuildContext context,
-      {required void Function()? onPressedComfirm,
-      String? title,
-      String? description,
-      String? cancelText,
-      String? confirmText,
-      bool haveCancelButton = false}) {
+  static Future<dynamic> showErrorDialog(
+    BuildContext context, {
+    required void Function()? onPressedComfirm,
+    String? title,
+    String? description,
+    String? cancelText,
+    String? confirmText,
+    bool haveCancelButton = false,
+    int returnedLevel = 1,
+  }) {
     return showDialog(
       barrierDismissible: false,
       context: context,
@@ -66,7 +69,7 @@ class AppDialog {
                                   color: context.colorScheme.primary,
                                 ),
                               ),
-                              onPressed: () => Navigator.pop(context),
+                              onPressed: () => pop(context, returnedLevel),
                               child: FittedBox(
                                 fit: BoxFit.scaleDown,
                                 child: Text(

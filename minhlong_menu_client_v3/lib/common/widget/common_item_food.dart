@@ -105,12 +105,12 @@ class ItemFoodView extends StatelessWidget {
         elevation: 4,
         shape: const CircleBorder(),
         color: context.colorScheme.primary,
-        child: SizedBox(
+        child: const SizedBox(
             height: 35,
             width: 35,
             child: Icon(
               Icons.add,
-              color: context.colorScheme.onPrimary,
+              color: Colors.white,
               size: 30,
             )),
       ),
@@ -150,8 +150,7 @@ class ItemFoodView extends StatelessWidget {
             ),
             child: Row(
               children: [
-                Icon(Icons.check_circle,
-                    color: context.colorScheme.primaryContainer, size: 16),
+                const Icon(Icons.check_circle, color: Colors.green, size: 16),
                 5.horizontalSpace,
                 Text(food.name,
                     textAlign: TextAlign.center,
@@ -181,9 +180,8 @@ class ItemFoodView extends StatelessWidget {
                       const EdgeInsets.symmetric(horizontal: defaultPadding),
                   child: Text(
                       '${Ultils.currencyFormat(double.parse(food.price.toString()))} ₫',
-                      style: context.labelLarge!.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: context.colorScheme.primary)),
+                      style: context.bodyMedium!
+                          .copyWith(fontWeight: FontWeight.bold)),
                 ),
               ),
             ),
@@ -194,23 +192,25 @@ class ItemFoodView extends StatelessWidget {
                 Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: defaultPadding),
-                  child: Row(children: [
-                    Text(
-                        '${Ultils.currencyFormat(double.parse(food.price.toString()))} ₫',
-                        style: context.labelLarge!.copyWith(
-                            color: context.colorScheme.outline,
-                            decoration: TextDecoration.lineThrough,
-                            decorationThickness: 1,
-                            decorationColor: context.colorScheme.primary,
-                            decorationStyle: TextDecorationStyle.solid)),
-                    3.horizontalSpace,
-                    Text(
+                  child: Row(
+                    children: [
+                      Text(
+                          '${Ultils.currencyFormat(double.parse(food.price.toString()))} ₫',
+                          style: context.bodyMedium!.copyWith(
+                              color: context.colorScheme.outline,
+                              decoration: TextDecoration.lineThrough,
+                              decorationThickness: 1,
+                              decorationColor: Colors.red,
+                              decorationStyle: TextDecorationStyle.solid)),
+                      3.horizontalSpace,
+                      Text(
                         '${Ultils.currencyFormat(double.parse(discountedPrice.toString()))} ₫',
-                        style: context.labelLarge!.copyWith(
+                        style: context.bodyMedium!.copyWith(
                           fontWeight: FontWeight.bold,
-                          color: context.colorScheme.primary,
-                        )),
-                  ]),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),

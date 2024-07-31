@@ -50,7 +50,8 @@ void main() async {
     DioInterceptor(sf),
   );
   var theme = await ThemeLocalDatasource(sf).getDartTheme() ?? false;
-  var scheme = await ThemeLocalDatasource(sf).getSchemeTheme() ?? 'blueWhale';
+  var scheme =
+      await ThemeLocalDatasource(sf).getSchemeTheme() ?? listScheme.first.key;
   runApp(DevicePreview(
       enabled: false,
       builder: (context) => MainApp(

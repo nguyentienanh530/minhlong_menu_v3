@@ -10,17 +10,21 @@ class AppSnackbar {
       ..showSnackBar(
         SnackBar(
           showCloseIcon: true,
+          closeIconColor: Colors.white,
           content: Row(
             children: [
-              Icon(isSuccess ? Icons.check : Icons.error,
-                  color: context.bodyMedium!.color),
+              Icon(
+                isSuccess ? Icons.check : Icons.error,
+                color: Colors.white,
+              ),
               10.horizontalSpace,
-              Text(msg ?? ''),
+              Text(msg ?? '',
+                  style: context.bodyMedium!.copyWith(color: Colors.white)),
             ],
           ),
           backgroundColor: isSuccess
-              ? context.colorScheme.primaryContainer
-              : context.colorScheme.tertiaryContainer,
+              ? context.colorScheme.primary
+              : context.colorScheme.error,
           duration: const Duration(seconds: 3),
         ),
       );

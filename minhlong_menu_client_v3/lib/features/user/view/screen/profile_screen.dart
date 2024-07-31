@@ -36,7 +36,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   late final SharedPreferences sf;
   final isDarkMode = ValueNotifier(false);
-  final _pickColor = ValueNotifier(const Color(0xFFED7F29));
+  final _pickColor = ValueNotifier(listScheme.first.color);
 
   @override
   void dispose() {

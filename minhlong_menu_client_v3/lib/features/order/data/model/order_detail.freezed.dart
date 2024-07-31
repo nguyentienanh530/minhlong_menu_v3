@@ -32,7 +32,8 @@ mixin _$OrderDetail {
   double get foodPrice => throw _privateConstructorUsedError;
   int get quantity => throw _privateConstructorUsedError;
   String get note => throw _privateConstructorUsedError;
-  double get totalPrice => throw _privateConstructorUsedError;
+  @JsonKey(name: 'total_amount')
+  double get totalAmount => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -57,7 +58,7 @@ abstract class $OrderDetailCopyWith<$Res> {
       double foodPrice,
       int quantity,
       String note,
-      double totalPrice});
+      @JsonKey(name: 'total_amount') double totalAmount});
 }
 
 /// @nodoc
@@ -83,7 +84,7 @@ class _$OrderDetailCopyWithImpl<$Res, $Val extends OrderDetail>
     Object? foodPrice = null,
     Object? quantity = null,
     Object? note = null,
-    Object? totalPrice = null,
+    Object? totalAmount = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -126,9 +127,9 @@ class _$OrderDetailCopyWithImpl<$Res, $Val extends OrderDetail>
           ? _value.note
           : note // ignore: cast_nullable_to_non_nullable
               as String,
-      totalPrice: null == totalPrice
-          ? _value.totalPrice
-          : totalPrice // ignore: cast_nullable_to_non_nullable
+      totalAmount: null == totalAmount
+          ? _value.totalAmount
+          : totalAmount // ignore: cast_nullable_to_non_nullable
               as double,
     ) as $Val);
   }
@@ -153,7 +154,7 @@ abstract class _$$OrderDetailImplCopyWith<$Res>
       double foodPrice,
       int quantity,
       String note,
-      double totalPrice});
+      @JsonKey(name: 'total_amount') double totalAmount});
 }
 
 /// @nodoc
@@ -177,7 +178,7 @@ class __$$OrderDetailImplCopyWithImpl<$Res>
     Object? foodPrice = null,
     Object? quantity = null,
     Object? note = null,
-    Object? totalPrice = null,
+    Object? totalAmount = null,
   }) {
     return _then(_$OrderDetailImpl(
       id: null == id
@@ -220,9 +221,9 @@ class __$$OrderDetailImplCopyWithImpl<$Res>
           ? _value.note
           : note // ignore: cast_nullable_to_non_nullable
               as String,
-      totalPrice: null == totalPrice
-          ? _value.totalPrice
-          : totalPrice // ignore: cast_nullable_to_non_nullable
+      totalAmount: null == totalAmount
+          ? _value.totalAmount
+          : totalAmount // ignore: cast_nullable_to_non_nullable
               as double,
     ));
   }
@@ -242,7 +243,7 @@ class _$OrderDetailImpl implements _OrderDetail {
       this.foodPrice = 0,
       this.quantity = 1,
       this.note = '',
-      this.totalPrice = 0});
+      @JsonKey(name: 'total_amount') this.totalAmount = 0});
 
   factory _$OrderDetailImpl.fromJson(Map<String, dynamic> json) =>
       _$$OrderDetailImplFromJson(json);
@@ -278,12 +279,12 @@ class _$OrderDetailImpl implements _OrderDetail {
   @JsonKey()
   final String note;
   @override
-  @JsonKey()
-  final double totalPrice;
+  @JsonKey(name: 'total_amount')
+  final double totalAmount;
 
   @override
   String toString() {
-    return 'OrderDetail(id: $id, orderID: $orderID, foodID: $foodID, foodName: $foodName, foodImage: $foodImage, isDiscount: $isDiscount, discount: $discount, foodPrice: $foodPrice, quantity: $quantity, note: $note, totalPrice: $totalPrice)';
+    return 'OrderDetail(id: $id, orderID: $orderID, foodID: $foodID, foodName: $foodName, foodImage: $foodImage, isDiscount: $isDiscount, discount: $discount, foodPrice: $foodPrice, quantity: $quantity, note: $note, totalAmount: $totalAmount)';
   }
 
   @override
@@ -307,14 +308,14 @@ class _$OrderDetailImpl implements _OrderDetail {
             (identical(other.quantity, quantity) ||
                 other.quantity == quantity) &&
             (identical(other.note, note) || other.note == note) &&
-            (identical(other.totalPrice, totalPrice) ||
-                other.totalPrice == totalPrice));
+            (identical(other.totalAmount, totalAmount) ||
+                other.totalAmount == totalAmount));
   }
 
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, id, orderID, foodID, foodName,
-      foodImage, isDiscount, discount, foodPrice, quantity, note, totalPrice);
+      foodImage, isDiscount, discount, foodPrice, quantity, note, totalAmount);
 
   @JsonKey(ignore: true)
   @override
@@ -332,17 +333,18 @@ class _$OrderDetailImpl implements _OrderDetail {
 
 abstract class _OrderDetail implements OrderDetail {
   factory _OrderDetail(
-      {final int id,
-      @JsonKey(name: 'order_id') final int orderID,
-      @JsonKey(name: 'food_id') final int foodID,
-      final String foodName,
-      final String foodImage,
-      final bool isDiscount,
-      final int discount,
-      final double foodPrice,
-      final int quantity,
-      final String note,
-      final double totalPrice}) = _$OrderDetailImpl;
+          {final int id,
+          @JsonKey(name: 'order_id') final int orderID,
+          @JsonKey(name: 'food_id') final int foodID,
+          final String foodName,
+          final String foodImage,
+          final bool isDiscount,
+          final int discount,
+          final double foodPrice,
+          final int quantity,
+          final String note,
+          @JsonKey(name: 'total_amount') final double totalAmount}) =
+      _$OrderDetailImpl;
 
   factory _OrderDetail.fromJson(Map<String, dynamic> json) =
       _$OrderDetailImpl.fromJson;
@@ -370,7 +372,8 @@ abstract class _OrderDetail implements OrderDetail {
   @override
   String get note;
   @override
-  double get totalPrice;
+  @JsonKey(name: 'total_amount')
+  double get totalAmount;
   @override
   @JsonKey(ignore: true)
   _$$OrderDetailImplCopyWith<_$OrderDetailImpl> get copyWith =>

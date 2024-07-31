@@ -14,24 +14,6 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
--- Dumping structure for table menu_db.users
-CREATE TABLE IF NOT EXISTS `users` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `full_name` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `phone_number` int NOT NULL,
-  `password` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `image` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- Dumping data for table menu_db.users: ~3 rows (approximately)
-INSERT INTO `users` (`id`, `full_name`, `phone_number`, `password`, `image`, `created_at`, `updated_at`) VALUES
-	(1, 'Nguyen Tien Anh', 328023993, 'Io6x4kQrdfsifmhAWqoHDNAmCB0z71LMdlps/wA00AQeeG4mFfs8Ye5ZiN7wQk/3Nu2EAEAUFGTn8LUWZm2Pyz5JRg==', '/users/1/1721380675493.webp', '2024-06-14 07:21:57', '2024-07-20 08:16:41'),
-	(4, 'Nguyen Tien Anh', 123456789, 'Io6x4kQrdfsifmhAWqoHDNAmCB0z71LMdlps/wA00AQeeG4mFfs8Ye5ZiN7wQk/3Nu2EAEAUFGTn8LUWZm2Pyz5JRg==', NULL, '2024-07-17 06:08:41', '2024-07-20 08:16:41'),
-	(5, 'Nguyen Tien Anh', 1234567891, 'Io6x4kQrdfsifmhAWqoHDNAmCB0z71LMdlps/wA00AQeeG4mFfs8Ye5ZiN7wQk/3Nu2EAEAUFGTn8LUWZm2Pyz5JRg==', NULL, '2024-07-17 06:11:50', '2024-07-20 08:16:41');
-
 -- Dumping structure for table menu_db.banners
 CREATE TABLE IF NOT EXISTS `banners` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
@@ -45,7 +27,7 @@ CREATE TABLE IF NOT EXISTS `banners` (
   CONSTRAINT `fk_users_banners` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumping data for table menu_db.banners: ~3 rows (approximately)
+-- Dumping data for table menu_db.banners: ~5 rows (approximately)
 INSERT INTO `banners` (`id`, `user_id`, `image`, `show`, `created_at`, `updated_at`) VALUES
 	(10, 1, '/banners/1/1721315983555.webp', 1, '2024-07-17 02:54:05', '2024-07-23 04:33:54'),
 	(11, 1, '/banners/1/1721316009109.webp', 0, '2024-07-17 02:54:11', '2024-07-23 08:39:37'),
@@ -65,9 +47,9 @@ CREATE TABLE IF NOT EXISTS `categories` (
   PRIMARY KEY (`id`) USING BTREE,
   KEY `user_id` (`user_id`),
   CONSTRAINT `fk_users_categories` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumping data for table menu_db.categories: ~10 rows (approximately)
+-- Dumping data for table menu_db.categories: ~11 rows (approximately)
 INSERT INTO `categories` (`id`, `user_id`, `name`, `image`, `serial`, `created_at`, `updated_at`) VALUES
 	(6, 1, 'Nước uống', '/categories/1/coffe.png', 85, '2024-07-17 03:38:05', '2024-07-23 03:27:29'),
 	(7, 1, 'Sushi', '/categories/1/1721638113710.webp', 9, '2024-07-17 03:38:49', '2024-07-22 09:10:51'),
@@ -75,10 +57,11 @@ INSERT INTO `categories` (`id`, `user_id`, `name`, `image`, `serial`, `created_a
 	(9, 1, 'Cơm', '/categories/1/rice.png', 44, '2024-07-17 03:39:38', '2024-07-22 10:58:43'),
 	(12, 1, 'Trái cây', '/categories/1/1721632831042.webp', 34, '2024-07-22 07:20:30', '2024-07-22 10:38:51'),
 	(13, 1, 'Mì', '/categories/1/1721632903941.webp', 64, '2024-07-22 07:21:43', '2024-07-23 03:27:23'),
-	(14, 1, 'Salad', '/categories/1/1721632952405.webp', 8, '2024-07-22 07:22:31', NULL),
+	(14, 1, 'Salad', '/categories/1/1721632952405.webp', 8, '2024-07-22 07:22:31', '2024-07-27 04:35:33'),
 	(15, 1, 'Nướng', '/categories/1/1721641756875.webp', 9, '2024-07-22 07:32:09', '2024-07-22 09:49:16'),
 	(16, 1, 'Lẩu', '/categories/1/1721633835563.webp', 8, '2024-07-22 07:37:14', '2024-07-22 09:41:00'),
-	(18, 1, 'Sashimi', '/categories/1/1721638127809.webp', 33, '2024-07-22 08:48:47', '2024-07-22 10:39:04');
+	(18, 1, 'Sashimi', '/categories/1/1721638127809.webp', 33, '2024-07-22 08:48:47', '2024-07-22 10:39:04'),
+	(19, 1, 'cức', '', 2, '2024-07-27 04:35:47', NULL);
 
 -- Dumping structure for table menu_db.foods
 CREATE TABLE IF NOT EXISTS `foods` (
@@ -104,12 +87,12 @@ CREATE TABLE IF NOT EXISTS `foods` (
   CONSTRAINT `fk_users_foods` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=183 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumping data for table menu_db.foods: ~134 rows (approximately)
+-- Dumping data for table menu_db.foods: ~157 rows (approximately)
 INSERT INTO `foods` (`id`, `user_id`, `name`, `image1`, `image2`, `image3`, `image4`, `category_id`, `order_count`, `description`, `discount`, `is_discount`, `is_show`, `price`, `created_at`, `updated_at`) VALUES
-	(25, 1, 'an nhanh', '/foods/1/Breakfast-board28-500x500.jpg', '', '', '', 8, 14, 'Food is any substance consumed by an organism for nutritional support. Food is usually of plant, animal, or fungal origin and contains essential nutrients such as carbohydrates, fats, proteins, vitamins, or minerals. The substance is ingested by an organism and assimilated by the organism\'s cells to provide energy, maintain life, or stimulate growth. Different species of animals have different feeding behaviours that satisfy the needs of their metabolisms and have evolved to fill a specific ecological niche within specific geographical contexts.\n\nOmnivorous humans are highly adaptable and have adapted to obtain food in many different ecosystems. Humans generally use cooking to prepare food for consumption. The majority of the food energy required is supplied by the industrial food industry, which produces food through intensive agriculture and distributes it through complex food processing and food distribution systems. This system of conventional agriculture relies heavily on fossil fuels, which means that the food and agricultural systems are one of the major contributors to climate change, accounting for as much as 37% of total greenhouse gas emissions.[1]\n\nThe food system has significant impacts on a wide range of other social and political issues, including sustainability, biological diversity, economics, population growth, water supply, and food security. Food safety and security are monitored by international agencies like the International Association for Food Protection, the World Resources Institute, the World Food Programme, the Food and Agriculture Organization, and the International Food Information Council.', 1, 1, 1, 21000, '2024-07-17 05:37:55', '2024-07-20 11:06:35'),
-	(26, 1, 'com', '/foods/1/party-food-500x500.jpg', '', '', '', 9, 18, '', 5, 1, 1, 30000, '2024-07-17 05:38:48', '2024-07-20 11:06:35'),
+	(25, 1, 'an nhanh2 ', '/foods/1/Breakfast-board28-500x500.jpg', '', '', '', 8, 15, 'Food is any substance consumed by an organism for nutritional support. Food is usually of plant, animal, or fungal origin and contains essential nutrients such as carbohydrates, fats, proteins, vitamins, or minerals. The substance is ingested by an organism and assimilated by the organism\'s cells to provide energy, maintain life, or stimulate growth. Different species of animals have different feeding behaviours that satisfy the needs of their metabolisms and have evolved to fill a specific ecological niche within specific geographical contexts.\n\nOmnivorous humans are highly adaptable and have adapted to obtain food in many different ecosystems. Humans generally use cooking to prepare food for consumption. The majority of the food energy required is supplied by the industrial food industry, which produces food through intensive agriculture and distributes it through complex food processing and food distribution systems. This system of conventional agriculture relies heavily on fossil fuels, which means that the food and agricultural systems are one of the major contributors to climate change, accounting for as much as 37% of total greenhouse gas emissions.[1]\n\nThe food system has significant impacts on a wide range of other social and political issues, including sustainability, biological diversity, economics, population growth, water supply, and food security. Food safety and security are monitored by international agencies like the International Association for Food Protection, the World Resources Institute, the World Food Programme, the Food and Agriculture Organization, and the International Food Information Council.', 1, 1, 1, 21000, '2024-07-17 05:37:55', '2024-07-31 09:56:59'),
+	(26, 1, 'Cơm chiên', '/foods/1/party-food-500x500.jpg', '', '', '', 9, 18, '', 5, 1, 1, 30000, '2024-07-17 05:38:48', '2024-07-27 07:34:54'),
 	(27, 1, 'asdasd', '/foods/1/dinner-ideas-2-500x500.jpg', '', '', '', 7, 13, 'Every time that I want to refactor a name of a class in my code I need to change the class name and also change the file name. I think this is a waste of time to change the name of the same thing twice, this is an another step to make refactor harder. For example, I have a class that have the name of NodeKey and I want to change the class name to FileKey I need to change the class name and the file name from node_key.dart to file_key.dart.\n\nI thing that this process need to be automated and it will same time for many users and make refactoring easier. On Change Symble that change class name the extension will check if the file name have the same name as the changed class name (taking into consideration the name conventions of UpperCamelCase for class names and lowercase_with_underscores for file names) and if they have the same name change also the file name to the new name (with the name conventions).\n\nAlternative solutions are: use existing extensions that does it, if you know any, or this is already possible in this extension and I don\'t know about it or make a new extension that does it.\n\nI will be happy to implement this if it is possible :) If possible you know any file/files you think that I need to change to make this feature?', 0, 0, 1, 25000, '2024-07-17 05:55:50', '2024-07-20 11:06:35'),
-	(28, 1, 'Nước giải khát Coca Cola', '/foods/1/1721635906704.webp', '/foods/1/1721635906712.webp', '/foods/1/1721635702296.webp', '/foods/1/1721635702321.webp', 6, 2, '- Là loại nước ngọt được nhiều người yêu thích với hương vị thơm ngon, sảng khoái. Nước ngọt Cocacola vị nguyên bản với lượng gas lớn sẽ giúp bạn xua tan mọi cảm giác mệt mỏi, căng thẳng, đem lại cảm giác thoải mái sau khi hoạt động ngoài trời.', 0, 0, 1, 20000, '2024-07-22 08:08:22', '2024-07-22 09:15:06'),
+	(28, 1, 'Nước giải khát Coca Cola', '/foods/1/1721635906704.webp', '/foods/1/1721635906712.webp', '/foods/1/1721635702296.webp', '/foods/1/1721635702321.webp', 6, 3, '- Là loại nước ngọt được nhiều người yêu thích với hương vị thơm ngon, sảng khoái. Nước ngọt Cocacola vị nguyên bản với lượng gas lớn sẽ giúp bạn xua tan mọi cảm giác mệt mỏi, căng thẳng, đem lại cảm giác thoải mái sau khi hoạt động ngoài trời.', 0, 0, 1, 20000, '2024-07-22 08:08:22', '2024-07-31 11:20:26'),
 	(29, 1, 'Nước uống giải khát Pepsi', '/foods/1/1721636150342.webp', '/foods/1/1721636150350.webp', '/foods/1/1721636150356.webp', '/foods/1/1721636150362.webp', 6, 0, '- Sản phẩm nước ngọt chính hãng từ thương hiệu Pepsi nổi tiếng toàn cầuvới hương vị thơm ngon, sảng khoái. Sản phẩm với lượng gas lớn sẽ giúp bạn bổ sung năng lượng làm việc mỗi ngày', 10, 1, 1, 20000, '2024-07-22 08:15:50', NULL),
 	(30, 1, 'Sinh tố bơ', '/foods/1/1721636339935.webp', '/foods/1/1721636339944.webp', '/foods/1/1721636339950.webp', '/foods/1/1721636339956.webp', 6, 0, 'Bạn lo ngại mình chế biến không được giống với hương vị của quán và sẽ làm mất đi vị ngon vốn có của món sinh tố này. Đừng lo, bạn chỉ cần làm theo công thức dưới đây vừa đơn giản lại chẳng kém cạnh gì so với ngoài quán.', 0, 0, 1, 30000, '2024-07-22 08:18:59', NULL),
 	(31, 1, 'Sinh tố dâu việt quất', '/foods/1/1721636596347.webp', '/foods/1/1721636596357.webp', '/foods/1/1721636596363.webp', '/foods/1/1721636596372.webp', 6, 0, 'Cho tất các các nguyên liệu vào máy xay trong vòng 1 phút đến khi đạt được độ nhuyễn mịn mong muốn, có thể thêm mật ong hoặc nước để điều chỉnh độ ngọt cũng như mức độ đặc của sinh tố theo nhu cầu của bạn.\r\n\r\nRót sinh tố ra ly, trang trí theo ý thích và thưởng thức.', 0, 0, 1, 30000, '2024-07-22 08:23:16', NULL),
@@ -145,7 +128,7 @@ INSERT INTO `foods` (`id`, `user_id`, `name`, `image1`, `image2`, `image3`, `ima
 	(61, 1, 'Thịt heo nướng sốt chanh', '/foods/1/1721639386554.webp', '', '', '', 15, 0, 'Phần nước sốt chanh được làm từ dầu hào, nước cốt canh, bột tiêu đen, sốt cà chua, gừng rồi ướp với thịt heo khoảng 2 tiếng cho thấm gia vị.\r\n\r\nKhi nướng thịt, bạn có thể phết thêm nước sốt lên trên bề mặt cho thịt đậm đà hơn.', 0, 0, 1, 79000, '2024-07-22 09:09:46', NULL),
 	(62, 1, 'Bò lá lốt', '/foods/1/1721639421043.webp', '', '', '', 15, 0, 'Băm nhuyễn thịt bò trộn cùng với thịt heo xay, mỡ heo xay. Sau đó trộn thịt với 30g lá lốt thái nhỏ, hành tím, sả băm, tỏi băm, lạc đã dập sơ, hạt tiêu xay, đường, hạt nêm, dầu hào, 8 muỗng canh dầu ăn.\r\n\r\nDùng lá lốt cuộn nhân thịt thành từng miếng vừa ăn.\r\n\r\nQuét chút dầu ăn lên vỉ và bắt đầu nướng.', 0, 0, 1, 49000, '2024-07-22 09:10:20', NULL),
 	(63, 1, 'Dưa lưới ', '/foods/1/1721639630179.webp', '', '', '', 12, 0, 'Ăn dưa đê', 0, 0, 1, 40000, '2024-07-22 09:13:49', NULL),
-	(64, 1, 'Combo trái cây 2', '/foods/1/1721639677786.webp', '', '', '', 12, 0, 'Cách cắt trái cây đẹp mắt hoàn toàn nằm trong khả năng của bạn', 0, 0, 1, 30000, '2024-07-22 09:14:37', NULL),
+	(64, 1, 'Combo trái cây', '/foods/1/1721639677786.webp', '', '', '', 12, 0, 'Cách cắt trái cây đẹp mắt hoàn toàn nằm trong khả năng của bạn', 0, 0, 1, 30000, '2024-07-22 09:14:37', '2024-07-27 07:28:05'),
 	(65, 1, 'Combo Cam Táo Dâu', '/foods/1/1721639759182.webp', '', '', '', 12, 0, 'hoa quả đẹp mắt, miễn chê.', 0, 0, 1, 30000, '2024-07-22 09:15:58', NULL),
 	(66, 1, 'Combo cam Dưa hấu', '/foods/1/1721639814448.webp', '', '', '', 12, 0, 'Để làm trái cây dĩa đẹp thì phải thật tỉ mỉ bạn nhé!', 0, 0, 1, 30000, '2024-07-22 09:16:53', NULL),
 	(67, 1, 'Lẩu Tứ Xuyên', '/foods/1/1721640134211.webp', '', '', '', 16, 0, 'Lẩu Tứ Xuyên là một trong những món lẩu ngon trên thế giới, không chỉ nổi tiếng của Trung Quốc mà còn tại nhiều nước khác. Món ăn này xuất phát từ điều kiện địa lý đặc biệt của miền đất Tứ Xuyên. Vì tỉnh này có độ ẩm cao, mùa đông lạnh nên người dân đã sáng tạo nên món lẩu nóng hổi, cay xè. ', 0, 0, 1, 340000, '2024-07-22 09:22:13', NULL),
@@ -194,7 +177,6 @@ INSERT INTO `foods` (`id`, `user_id`, `name`, `image1`, `image2`, `image3`, `ima
 	(110, 1, 'Khoai mì hấp nước cốt dừa', '/foods/1/1721642969590.webp', '', '', '', 8, 0, 'Khi ăn, bạn chỉ lần lấy khoai mì ra bắt, rưới nước cốt dừa và rắc muối đậu lên. Hương vị thơm ngon, ngọt bùi của món ăn này chắc sẽ khiến bạn ăn đến no nê mới dừng lại được.', 0, 0, 1, 32000, '2024-07-22 10:09:28', NULL),
 	(111, 1, 'Khoai tây nghiền', '/foods/1/1721643012726.webp', '', '', '', 8, 0, 'Khoai tây nghiền là một trong những món ăn vặt dễ làm tại nhà, có thể ăn kèm với gà rán, gà nướng hoặc soup…', 0, 0, 1, 32000, '2024-07-22 10:10:11', NULL),
 	(112, 1, 'Bánh quy bơ', '/foods/1/1721643036576.webp', '', '', '', 8, 0, 'Một trong những món ăn vặt dễ làm tại nhà là món bánh quy bơ. Miếng bánh giòn tan hòa quyện hương bơ thơm phức mà bất cứ ai cũng khó có thể từ chối.', 0, 0, 1, 43000, '2024-07-22 10:10:35', NULL),
-	(113, 1, 'Đậu hũ hạnh nhân', '/foods/1/1721643070397.webp', '', '', '', 8, 0, 'Đậu hũ thơm ngon, ngọt thanh, phảng phất hương quế chắc chắn bạn ăn một lần sẽ nhớ mãi. Đây là một trong những món ăn vặt dễ làm tại nhà mà vụng về đến mấy bạn cũng có thể làm được.', 0, 0, 1, 23000, '2024-07-22 10:11:09', NULL),
 	(114, 1, 'Chè hạt sen', '/foods/1/1721644202985.webp', '', '', '', 8, 0, 'Chè hạt sen là món chè thường được vua chúa thời xưa thưởng thức trong các buổi yến tiệc cung đình. Theo Đông y, hạt sen là vị thuốc quý giúp dưỡng tâm an thần, ích thận, bổ tỳ và hỗ trợ điều trị bệnh mất ngủ, tiêu chảy, sốt cao…\r\n\r\n', 0, 0, 1, 43000, '2024-07-22 10:30:01', NULL),
 	(115, 1, 'Chè khúc bạch', '/foods/1/1721644251716.webp', '', '', '', 8, 0, 'Chè khúc bạch từng có một thời tạo nên “sức hút mãnh liệt” theo trào lưu giới trẻ. Món chè cuốn hút thị giác với những viên khúc bạch mềm dẻo và hạt sen tròn tròn, thêm chút hạnh nhân rang đẹp mắt.', 0, 0, 1, 43000, '2024-07-22 10:30:50', NULL),
 	(116, 1, 'Sương sáo', '/foods/1/1721644281273.webp', '', '', '', 8, 0, 'Nhắc đến sương sáo thì ai cũng nhớ ngay đến một món giải nhiệt có màu đen tuyền ấn tượng với hương thơm dịu nhẹ. Bạn chỉ cần cắt nhỏ sương sáo rồi rưới thêm chút đường và nước cốt dừa là đã có ngay món giải nhiệt thơm ngon rồi.', 0, 0, 1, 32000, '2024-07-22 10:31:20', NULL),
@@ -221,7 +203,7 @@ INSERT INTO `foods` (`id`, `user_id`, `name`, `image1`, `image2`, `image3`, `ima
 	(137, 1, 'Cơm chiên cá mặn chay', '/foods/1/1721645630381.webp', '', '', '', 9, 0, 'Dĩa cơm chiên nhiều màu sắc và dinh dưỡng với ớt chuông xanh đỏ, bắp hạt vàng ươm nhìn thật bắt mắt; cho vào miệng một miếng thì cảm nhận được hương vị boarô phi thơm lừng, bắp hạt ngọt giòn, cơm thì dẻo bùi, đặc biệt là vị cá mặn chay thơm thơm ghiền ghiền đó!', 0, 0, 1, 320000, '2024-07-22 10:53:49', NULL),
 	(138, 1, 'Cơm chiên chay', '/foods/1/1721645655291.webp', '', '', '', 9, 1, 'Nếu chị em muốn tìm công thức làm món cơm chiên chay truyện thống thì phải chọn ngay món này nhé! Với sự kết hợp với rất nhiều loại rau củ giúp cả nhà dễ dàng thay đổi khẩu vị, bên cạnh đó còn tận dụng được hết các nguyên liệu dư nữa nè!', 0, 0, 1, 430000, '2024-07-22 10:54:14', '2024-07-23 07:28:30'),
 	(139, 1, 'Cơm gạo lức chiên nghêu', '/foods/1/1721645698401.webp', '', '', '', 9, 0, 'Gạo lức tốt cho sức khỏe vì có nhiều chất dinh dưỡng. Tuy nhiên, không phải ai cũng biết cách chế biến để cơm gạo lức dễ ăn hơn. Thay vì chiên cơm trắng như ngày thường, chị em còn có thể biến tấu bằng cách làm món Cơm Gạo Lức thơm ngon và rất dễ ăn này nữa nè!', 0, 0, 1, 43000, '2024-07-22 10:54:57', NULL),
-	(140, 1, 'Cơm sen cốm', '/foods/1/1721645727396.webp', '', '', '', 9, 1, 'Cơm sen cốm là món cơm chiên chay mới lạ, nhiều dinh dưỡng mà nhất định chị em phải thử. Với có sự kết hợp thanh đạm của sen và cốm, chắc chắn sẽ trở thành 1 món ngon thích hợp cho cả nhà thuộc “fan” món cơm chiên.', 0, 0, 1, 430000, '2024-07-22 10:55:26', '2024-07-23 07:28:30'),
+	(140, 1, 'Cơm sen cốm', '/foods/1/1721645727396.webp', '', '', '', 9, 2, 'Cơm sen cốm là món cơm chiên chay mới lạ, nhiều dinh dưỡng mà nhất định chị em phải thử. Với có sự kết hợp thanh đạm của sen và cốm, chắc chắn sẽ trở thành 1 món ngon thích hợp cho cả nhà thuộc “fan” món cơm chiên.', 0, 0, 1, 430000, '2024-07-22 10:55:26', '2024-07-31 11:17:53'),
 	(141, 1, 'Cơm hoàng bào', '/foods/1/1721645757336.webp', '', '', '', 9, 0, 'Cơm Hoàng bào là món ăn truyền thống với hình thức bắt mắt và hương vị thơm ngon bắt nguồn từ trong cung đình khi xưa. Nhìn bên ngoài tuy cầu kì nhưng cách làm món ăn lại đơn giản; dùng món này để thay đổi khẩu vị trong các bữa ăn hằng ngày của gia đình hay trong các đám tiệc đều rất hợp lý nhé!', 0, 0, 1, 43000, '2024-07-22 10:55:56', NULL),
 	(142, 1, 'Cơm trân châu', '/foods/1/1721645784582.webp', '', '', '', 9, 0, 'Dựa trên công thức món sushi Nhật nhưng có cải tiến đôi chút cho phù hợp với khẩu vị của người Việt hơn. Đây là món ăn ngon, dễ chế biến và đảm bảo dinh dưỡng cho các em nhỏ trong dịp cuối tuần nè!', 0, 0, 1, 430000, '2024-07-22 10:56:23', NULL),
 	(143, 1, 'Cơm chanh Ấn Độ', '/foods/1/1721645811748.webp', '', '', '', 9, 0, 'Các món ăn Ấn Độ luôn có nhiều gia vị siêu hấp dẫn, nhưng không phải dễ để tìm một công thức “chuẩn vị” đâu nha. Để Món Ngon Mỗi Ngày hướng dẫn bạn cách làm món Cơm chiên kiểu Ấn Độ vừa dễ, mà vừa ngon đúng vị nhé!', 0, 0, 1, 43000, '2024-07-22 10:56:50', NULL),
@@ -254,16 +236,16 @@ INSERT INTO `foods` (`id`, `user_id`, `name`, `image1`, `image2`, `image3`, `ima
 	(170, 1, 'Salad cầu vồng', '/foods/1/1721705714904.webp', '', '', '', 14, 0, 'Yêu thích rau củ và những món ăn có vẻ ngoài bắt mắt thì hãy thử món salad cầu vồng. Sự hòa trộn của ức gà mềm ngon cùng với vị thanh ngọt từ nhiều loại rau củ như cà rốt, ngô, dưa leo... hòa quyện.\r\n\r\nVới hương vị nước sốt đậm đà mang đến cho bạn một món salad vừa bắt mắt, vừa thơm ngon, ăn đến đâu cũng thấy mùi vị khác lạ khó có thể ngán được.', 0, 0, 1, 40000, '2024-07-23 03:35:15', NULL),
 	(171, 1, 'Salad rong nho', '/foods/1/1721705737033.webp', '', '', '', 14, 0, 'Món salad rong nho ngon mê ly nhìn thôi đã thấy muốn ăn thử một miếng, rong nho tươi mát, ăn đến đâu giòn tan đến đó, kết hợp với nhiều màu sắc của rau củ thấm vị béo của mè rang, vị chua ngọt của sốt giấm ngon khó cưỡng, ớt chuông không quá cay mà còn làm tăng thêm hương vị cho món ăn càng hấp dẫn, càng ăn càng mê.', 0, 0, 1, 40000, '2024-07-23 03:35:37', NULL),
 	(172, 1, 'Salad ớt chuông', '/foods/1/1721705777785.webp', '', '', '', 14, 0, 'Ớt chuông được biết đến như một loại rau củ tốt cho da và sức khỏe, đặc khi chế biến thành món salad chẳng những giữ được mùi vị đặc trưng, khi quyện cùng các loại sốt và rau củ khác càng tăng thêm hương vị.\r\n\r\nỚt chuông và hành tây thơm nồng, chỉ cay nhè nhẹ kết hợp với vị ngọt tươi ngon của thịt tôm và ức gà thấm các gia vị và nước sốt salad chắc chắn sẽ làm bùng nổ vị giác của cả gia đình.', 0, 0, 1, 40000, '2024-07-23 03:36:18', NULL),
-	(173, 1, 'Salad trái cây', '/foods/1/1721705802759.webp', '', '', '', 14, 1, 'Salad trái cây không chỉ dễ ăn mà còn bổ sung lượng vitamin đáng kể cũng như các khoáng chất cần thiết khác cho cơ thể. Chỉ với vài bước đơn giản là bạn đã thực hiện xong salad trái cây ngon tuyệt.\r\n\r\nTrái cây có vị chua chua ngọt ngọt sẽ kích thích vị giác tột độ, rắc một ít phô mai Feta cho món ăn trở nên thơm béo hơn hay có thể kết hợp cùng sữa chua, sau đó cho vào ngăn mát tủ lạnh 30 phút, bạn sẽ có một tô salad trái cây ngon tuyệt vời.\r\n\r\n', 0, 0, 1, 40000, '2024-07-23 03:36:43', '2024-07-23 07:28:30'),
+	(173, 1, 'Salad trái cây', '/foods/1/1721705802759.webp', '', '', '', 14, 2, 'Salad trái cây không chỉ dễ ăn mà còn bổ sung lượng vitamin đáng kể cũng như các khoáng chất cần thiết khác cho cơ thể. Chỉ với vài bước đơn giản là bạn đã thực hiện xong salad trái cây ngon tuyệt.\r\n\r\nTrái cây có vị chua chua ngọt ngọt sẽ kích thích vị giác tột độ, rắc một ít phô mai Feta cho món ăn trở nên thơm béo hơn hay có thể kết hợp cùng sữa chua, sau đó cho vào ngăn mát tủ lạnh 30 phút, bạn sẽ có một tô salad trái cây ngon tuyệt vời.\r\n\r\n', 0, 0, 1, 40000, '2024-07-23 03:36:43', '2024-07-31 11:20:26'),
 	(174, 1, 'Salad hoa quả họ Berry', '/foods/1/1721705852855.webp', '', '', '', 14, 1, 'Salad hoa quả vừa ngon vừa giúp giảm cân và thanh lọc cơ thể. Salad hoa quả họ Berry chứa rất nhiều các vitamin thiết yếu như vitamin A, C, E,.. giúp đẹp da, giữ dáng đồng thời cung cấp chất xơ cho cơ thể cùng với vị chua chua ngọt ngọt ngon tuyệt từ những quả mọng mang lại.\r\n\r\nSalad trái cây có thể kết hợp với sữa chua hoặc nước cốt chanh và mật ong, món salad này chính là tổng hòa giữa vị chua chua của dâu tây và việt quất, mùi thơm của mận, vị ngọt của nho đen và độ mọng nước từ dưa hấu. Ăn đến đâu thích đến đấy, chỉ cần nhìn màu sắc đã không thể chối từ.', 0, 0, 1, 40000, '2024-07-23 03:37:33', '2024-07-23 07:28:30'),
 	(175, 1, 'Salad dưa lưới', '/foods/1/1721705899930.webp', '', '', '', 14, 1, 'Dưa lưới là loại trái cây thanh mát, chứa nhiều vitamin và dưỡng chất tốt cho sức khỏe thì salad dưa lưới chính là lựa chọn tuyệt vời.\r\n\r\nVới mùi thơm nức mũi, chỉ cần cắn vào là sự mọng nước từ dưa lưới sẽ tan ra trên đầu lưỡi, cùng các loại trái cây giòn ngọt và vị cay nhẹ của lá bạc hà không chỉ đem lại dinh dưỡng mà còn cho bữa ăn thêm phong phú hơn.', 0, 0, 1, 40000, '2024-07-23 03:38:20', '2024-07-23 07:28:30'),
 	(176, 1, 'Salad đào', '/foods/1/1721705929144.webp', '', '', '', 14, 1, 'Salad đào với cách làm đơn giản nhưng thành phẩm cực kì đáng mong đợi. Vị chua ngọt và mùi thơm đặc trưng của đào nướng kết hợp với độ mềm, ngọt của thịt ức gà, vị đậm đà của nước sốt và tươi mát của rau - một sự kết hợp không thể hoàn hảo hơn.\r\n\r\nMón salad đào nướng rất thích hợp để dùng cho người đang ăn kiêng, đang giảm cân đấy!', 0, 0, 1, 40000, '2024-07-23 03:38:49', '2024-07-23 07:28:30'),
 	(177, 1, 'Salad quýt', '/foods/1/1721706002130.webp', '', '', '', 14, 1, 'Quýt không chỉ được ăn theo cách thông thường mà có thể chế biến thành salad rất thơm ngon, lạ miệng đấy! Với cách làm đơn giản và nhanh gọn, món ăn có màu sắc bắt mắt của những múi quýt kết hợp cùng xanh mát của bơ và rau củ.\r\n\r\nQuýt chua chua ngọt ngọt kết hợp với vị bùi béo của bơ vô cùng lạ miệng, các loại rau thấm nhẹ gia vị từ mật ong, giấm và dầu oliu tạo thành món ăn vô cùng đặc sắc với nhiều chất xơ và vitamin tốt cho cơ thể.', 0, 0, 1, 40000, '2024-07-23 03:40:02', '2024-07-23 07:28:30'),
 	(178, 1, 'Salad bơ', '/foods/1/1721706023513.webp', '', '', '', 14, 1, 'Bơ được biết đến như loại trái cây tốt cho sức khỏe và cả sắc đẹp. Không có lý do gì lại không kết hợp bơ với các loại rau củ khác để tạo nên món salad vừa lạ miệng, thơm ngon lại cung cấp cho các thể những dưỡng chất thiếu yếu giúp dưỡng da, giữ dáng hiệu quả.\r\n\r\nSalad bơ là sự kết hợp giữa nước sốt dứa tươi mát cùng với vị béo bùi của bơ, dứa nướng thơm lừng vẫn còn giữ được nước, thịt bò đậm vị sẽ tạo nên sức hấp dẫn khó cưỡng cho món salad thơm ngon này.', 0, 0, 1, 40000, '2024-07-23 03:40:23', '2024-07-23 07:28:30'),
 	(179, 1, 'Salad kiwi', '/foods/1/1721706052019.webp', '', '', '', 14, 1, 'Kiwi vốn dĩ đã chứa nhiều công dụng tốt cho sức khỏe, khi kết hợp với các loại rau củ để tạo thành món salad kiwi lại càng thêm bổ dưỡng. Chỉ cần vài thao tác đơn giản, bạn đã chế biến xong món salad kiwi ngon lành giúp giảm cân với màu sắc hấp dẫn nhìn là mê ngay.\r\n\r\nKiwi chua chua ngọt ngọt kết hợp với sốt mayonaise sẽ làm tăng thêm phần béo đậm đà khiến món salad trở nên độc đáo hơn, nếu không thích vị béo hãy thử kết hợp với sốt cam chanh mật ong, vừa thơm mùi cam, ngọt thanh từ mật ong quyện với các loại trái cây, đảm bảo vô cùng đặc sắc.', 0, 0, 1, 40000, '2024-07-23 03:40:52', '2024-07-23 07:28:30'),
-	(180, 1, 'Salad dưa hấu', '/foods/1/1721706087116.webp', '', '', '', 14, 1, 'Dưa hấu chứa nhiều vitamin có lợi cho sức khỏe và giúp giải nhiệt trong những ngày hè rất tốt, thử ngay món salad dưa hấu với vị ngọt thanh, mọng nước của dưa hấu kết hợp với sự thanh mát nhiều loại rau củ, xen lẫn với một tí mùi cay nồng từ tiêu và hành tây, đây hứa hẹn sẽ là một món cực thích hợp cho những ngày nóng bức đấy!', 0, 0, 1, 40000, '2024-07-23 03:41:27', '2024-07-23 07:28:30'),
-	(181, 1, 'Greek salad', '/foods/1/1721706130525.webp', '', '', '', 14, 1, 'Greek salad chính là lựa chọn tuyệt vời đối với các bạn đang muốn "tăng cơ, giảm mỡ" bởi hàm lượng đạm trong Greek salad khá thấp nên đây là món ăn rất thích hợp để hỗ trợ cải thiện vóc dáng.\r\n\r\nXà lách thấm vị thơm từ dầu oliu và vị chua của giấm, dưa leo và hành tây giòn có chút hăng nhẹ, chút cay nồng từ ớt chuông được trung hòa bởi vị thơm béo từ phô mai Feta. Tất cả tạo nên một món salad vừa đẹp mắt vừa dinh dưỡng.', 0, 0, 1, 40000, '2024-07-23 03:42:10', '2024-07-23 07:28:30'),
-	(182, 1, 'Salad  cam đậu đỏ', '/foods/1/1721706201580.webp', '', '', '', 14, 1, 'Thêm một cách chế biến món salad nữa mà bạn không thể bỏ qua đó là salad cam đậu đỏ. Món ăn này độc đáo bởi sự kết hợp của các nguyên liệu như lòng đỏ trứng, húng lũi, giá sống, thịt nguội,... đặc biệt là đậu đỏ, đậu bi Hà Lan, đậu cove và cam vàng. Tất cả nguyên liệu hòa quyện cùng nước sốt mayonnaise beo béo ngon miệng.', 0, 0, 1, 40000, '2024-07-23 03:43:21', '2024-07-23 07:28:30');
+	(180, 1, 'Salad dưa hấu', '/foods/1/1721706087116.webp', '', '', '', 14, 4, 'Dưa hấu chứa nhiều vitamin có lợi cho sức khỏe và giúp giải nhiệt trong những ngày hè rất tốt, thử ngay món salad dưa hấu với vị ngọt thanh, mọng nước của dưa hấu kết hợp với sự thanh mát nhiều loại rau củ, xen lẫn với một tí mùi cay nồng từ tiêu và hành tây, đây hứa hẹn sẽ là một món cực thích hợp cho những ngày nóng bức đấy!', 0, 0, 1, 40000, '2024-07-23 03:41:27', '2024-07-31 11:20:26'),
+	(181, 1, 'Greek salad', '/foods/1/1721706130525.webp', '', '', '', 14, 5, 'Greek salad chính là lựa chọn tuyệt vời đối với các bạn đang muốn "tăng cơ, giảm mỡ" bởi hàm lượng đạm trong Greek salad khá thấp nên đây là món ăn rất thích hợp để hỗ trợ cải thiện vóc dáng.\r\n\r\nXà lách thấm vị thơm từ dầu oliu và vị chua của giấm, dưa leo và hành tây giòn có chút hăng nhẹ, chút cay nồng từ ớt chuông được trung hòa bởi vị thơm béo từ phô mai Feta. Tất cả tạo nên một món salad vừa đẹp mắt vừa dinh dưỡng.', 0, 0, 1, 40000, '2024-07-23 03:42:10', '2024-07-31 11:20:26'),
+	(182, 1, 'Salad  cam đậu đỏ', '/foods/1/1721706201580.webp', '', '', '', 14, 1, 'Thêm một cách chế biến món salad nữa mà bạn không thể bỏ qua đó là salad cam đậu đỏ. Món ăn này độc đáo bởi sự kết hợp của các nguyên liệu như lòng đỏ trứng, húng lũi, giá sống, thịt nguội,... đặc biệt là đậu đỏ, đậu bi Hà Lan, đậu cove và cam vàng. Tất cả nguyên liệu hòa quyện cùng nước sốt mayonnaise beo béo ngon miệng.', 0, 0, 1, 40000, '2024-07-23 03:43:21', '2024-07-27 04:31:46');
 
 -- Dumping structure for table menu_db.orders
 CREATE TABLE IF NOT EXISTS `orders` (
@@ -280,18 +262,16 @@ CREATE TABLE IF NOT EXISTS `orders` (
   KEY `status` (`status`,`created_at`) USING BTREE,
   KEY `fk_users_orders` (`user_id`),
   CONSTRAINT `fk_users_orders` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=72 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=83 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumping data for table menu_db.orders: ~17 rows (approximately)
+-- Dumping data for table menu_db.orders: ~27 rows (approximately)
 INSERT INTO `orders` (`id`, `user_id`, `status`, `total_price`, `table_id`, `payed_at`, `created_at`, `updated_at`) VALUES
 	(52, 1, 'cancel', 28500, 5, NULL, '2024-07-20 02:47:04', '2024-07-20 08:51:17'),
 	(53, 1, 'cancel', 85500, 5, NULL, '2024-07-20 02:47:04', '2024-07-20 08:51:55'),
 	(54, 1, 'completed', 57000, 7, '2024-07-22 06:14:28', '2024-07-20 02:47:04', '2024-07-22 06:14:28'),
-	(55, 1, 'completed', 57000, 7, '2024-07-24 06:14:31', '2024-07-20 02:47:04', '2024-07-22 06:15:02'),
 	(56, 1, 'completed', 57000, 5, '2024-07-22 06:14:33', '2024-07-20 02:47:04', '2024-07-22 06:14:33'),
 	(57, 1, 'completed', 74290, 5, '2024-07-23 03:37:35', '2024-07-20 02:47:04', '2024-07-22 03:37:48'),
 	(59, 1, 'cancel', 74290, 6, NULL, '2024-07-20 02:47:04', '2024-07-20 08:02:30'),
-	(60, 1, 'cancel', 74290, 6, NULL, '2024-07-20 02:48:28', '2024-07-20 08:05:34'),
 	(62, 1, 'completed', 74290, 7, '2024-07-25 02:50:44', '2024-07-20 06:25:34', '2024-07-22 06:15:10'),
 	(63, 1, 'completed', 74290, 6, '2024-07-22 02:50:46', '2024-07-20 06:25:55', '2024-07-22 02:50:46'),
 	(64, 1, 'completed', 74290, 5, '2024-07-27 06:14:19', '2024-07-20 08:55:27', '2024-07-22 06:15:16'),
@@ -299,9 +279,20 @@ INSERT INTO `orders` (`id`, `user_id`, `status`, `total_price`, `table_id`, `pay
 	(66, 1, 'completed', 25000, 6, '2024-07-22 09:44:46', '2024-07-20 08:56:03', '2024-07-22 09:44:46'),
 	(67, 1, 'completed', 53500, 5, '2024-07-22 09:44:48', '2024-07-20 11:03:35', '2024-07-22 09:44:48'),
 	(68, 1, 'new', 74290, 7, NULL, '2024-07-20 11:06:06', '2024-07-20 11:06:06'),
-	(69, 1, 'new', 28500, 5, NULL, '2024-07-20 11:06:19', '2024-07-20 11:06:19'),
-	(70, 1, 'new', 74290, 7, NULL, '2024-07-20 11:06:35', '2024-07-20 11:06:35'),
-	(71, 1, 'completed', 1602000, 6, '2024-07-23 07:28:51', '2024-07-23 07:28:30', '2024-07-23 07:28:51');
+	(69, 1, 'completed', 28500, 5, '2024-07-27 03:26:06', '2024-07-20 11:06:19', '2024-07-27 03:26:05'),
+	(70, 1, 'processing', 74290, 7, NULL, '2024-07-20 11:06:35', '2024-07-27 08:00:30'),
+	(71, 1, 'completed', 1602000, 6, '2024-07-23 07:28:51', '2024-07-23 07:28:30', '2024-07-23 07:28:51'),
+	(72, 1, 'new', 80000, 7, NULL, '2024-07-31 09:23:50', NULL),
+	(73, 1, 'new', 80000, 0, NULL, '2024-07-31 09:24:50', NULL),
+	(74, 1, 'new', 80000, 0, NULL, '2024-07-31 09:24:52', NULL),
+	(75, 1, 'new', 80000, 0, NULL, '2024-07-31 09:26:05', NULL),
+	(76, 1, 'new', 80000, 0, NULL, '2024-07-31 09:26:40', NULL),
+	(77, 1, 'new', 40000, 7, NULL, '2024-07-31 09:27:55', NULL),
+	(78, 1, 'new', 40000, 7, NULL, '2024-07-31 09:30:39', NULL),
+	(79, 1, 'new', 247900, 7, NULL, '2024-07-31 09:56:59', NULL),
+	(80, 1, 'new', 80000, 5, NULL, '2024-07-31 09:57:36', NULL),
+	(81, 1, 'new', 510000, 7, NULL, '2024-07-31 11:17:53', NULL),
+	(82, 1, 'new', 140000, 7, NULL, '2024-07-31 11:20:26', NULL);
 
 -- Dumping structure for table menu_db.order_details
 CREATE TABLE IF NOT EXISTS `order_details` (
@@ -319,14 +310,13 @@ CREATE TABLE IF NOT EXISTS `order_details` (
   KEY `order_id` (`order_id`),
   CONSTRAINT `fk_orders_foods` FOREIGN KEY (`food_id`) REFERENCES `foods` (`id`),
   CONSTRAINT `fk_orders_order_details` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=130 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=141 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumping data for table menu_db.order_details: ~36 rows (approximately)
+-- Dumping data for table menu_db.order_details: ~56 rows (approximately)
 INSERT INTO `order_details` (`id`, `order_id`, `food_id`, `quantity`, `price`, `total_amount`, `created_at`, `updated_at`, `note`) VALUES
 	(75, 52, 26, 1, 30000, 28500, '2024-07-18 11:13:47', NULL, ''),
 	(76, 53, 26, 3, 30000, 85500, '2024-07-18 11:16:30', NULL, ''),
 	(77, 54, 26, 2, 30000, 57000, '2024-07-18 11:18:06', NULL, ''),
-	(78, 55, 26, 2, 30000, 57000, '2024-07-18 11:18:48', NULL, ''),
 	(79, 56, 26, 2, 30000, 57000, '2024-07-18 11:33:59', NULL, ''),
 	(80, 57, 27, 1, 25000, 25000, '2024-07-19 09:39:33', NULL, ''),
 	(81, 57, 26, 1, 30000, 28500, '2024-07-19 09:39:33', NULL, ''),
@@ -334,9 +324,6 @@ INSERT INTO `order_details` (`id`, `order_id`, `food_id`, `quantity`, `price`, `
 	(86, 59, 27, 1, 25000, 25000, '2024-07-20 02:44:13', NULL, ''),
 	(87, 59, 26, 1, 30000, 28500, '2024-07-20 02:44:13', NULL, ''),
 	(88, 59, 25, 1, 21000, 20790, '2024-07-20 02:44:13', NULL, ''),
-	(89, 60, 27, 1, 25000, 25000, '2024-07-20 02:48:28', NULL, ''),
-	(90, 60, 26, 1, 30000, 28500, '2024-07-20 02:48:28', NULL, ''),
-	(91, 60, 25, 1, 21000, 20790, '2024-07-20 02:48:28', NULL, ''),
 	(95, 62, 27, 1, 25000, 25000, '2024-07-20 06:25:34', NULL, ''),
 	(96, 62, 26, 1, 30000, 28500, '2024-07-20 06:25:34', NULL, ''),
 	(97, 62, 25, 1, 21000, 20790, '2024-07-20 06:25:34', NULL, ''),
@@ -371,7 +358,18 @@ INSERT INTO `order_details` (`id`, `order_id`, `food_id`, `quantity`, `price`, `
 	(126, 71, 173, 1, 40000, 40000, '2024-07-23 07:28:30', NULL, ''),
 	(127, 71, 144, 1, 342000, 342000, '2024-07-23 07:28:30', NULL, ''),
 	(128, 71, 140, 1, 430000, 430000, '2024-07-23 07:28:30', NULL, ''),
-	(129, 71, 138, 1, 430000, 430000, '2024-07-23 07:28:30', NULL, '');
+	(129, 71, 138, 1, 430000, 430000, '2024-07-23 07:28:30', NULL, ''),
+	(130, 79, 181, 1, 40000, 40000, '2024-07-31 09:56:59', NULL, ''),
+	(131, 79, 25, 10, 21000, 207900, '2024-07-31 09:56:59', NULL, ''),
+	(132, 80, 181, 1, 40000, 40000, '2024-07-31 09:57:36', NULL, ''),
+	(133, 80, 180, 1, 40000, 40000, '2024-07-31 09:57:36', NULL, ''),
+	(134, 81, 181, 1, 40000, 40000, '2024-07-31 11:17:53', NULL, ''),
+	(135, 81, 180, 1, 40000, 40000, '2024-07-31 11:17:53', NULL, ''),
+	(136, 81, 140, 1, 430000, 430000, '2024-07-31 11:17:53', NULL, ''),
+	(137, 82, 181, 1, 40000, 40000, '2024-07-31 11:20:26', NULL, ''),
+	(138, 82, 180, 1, 40000, 40000, '2024-07-31 11:20:26', NULL, ''),
+	(139, 82, 28, 1, 20000, 20000, '2024-07-31 11:20:26', NULL, ''),
+	(140, 82, 173, 1, 40000, 40000, '2024-07-31 11:20:26', NULL, '');
 
 -- Dumping structure for table menu_db.personal_access_tokens
 CREATE TABLE IF NOT EXISTS `personal_access_tokens` (
@@ -384,9 +382,9 @@ CREATE TABLE IF NOT EXISTS `personal_access_tokens` (
   `deleted_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `token` (`token`)
-) ENGINE=InnoDB AUTO_INCREMENT=322 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=355 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumping data for table menu_db.personal_access_tokens: ~123 rows (approximately)
+-- Dumping data for table menu_db.personal_access_tokens: ~165 rows (approximately)
 INSERT INTO `personal_access_tokens` (`id`, `name`, `tokenable_id`, `token`, `last_used_at`, `created_at`, `deleted_at`) VALUES
 	(161, 'default', 1, '306fb750759458309bb809f80695359d', '2024-07-16 03:50:20', '2024-07-16 02:51:56', NULL),
 	(162, 'default', 1, 'e0e2b53991a87e9527d857219d4cc3a8', '2024-07-16 03:57:05', '2024-07-16 03:57:05', '2024-07-16 04:03:11'),
@@ -513,13 +511,46 @@ INSERT INTO `personal_access_tokens` (`id`, `name`, `tokenable_id`, `token`, `la
 	(311, 'default', 1, '8eac7374cf3b913d211c6474f9b67c4b', '2024-07-23 03:22:08', '2024-07-22 10:12:58', NULL),
 	(312, 'default', 1, 'c8025417bc7859be90f74fcdeff5417e', '2024-07-23 03:44:59', '2024-07-23 03:44:59', NULL),
 	(314, 'default', 1, '945a7e35680da047c1395dcf5083f9bd', '2024-07-23 03:45:13', '2024-07-23 03:45:12', '2024-07-23 03:45:20'),
-	(315, 'default', 1, 'c80bfb626da794c9b00e84acffac2d20', '2024-07-23 08:39:37', '2024-07-23 03:45:28', NULL),
+	(315, 'default', 1, 'c80bfb626da794c9b00e84acffac2d20', '2024-07-27 03:30:52', '2024-07-23 03:45:28', NULL),
 	(316, 'default', 1, 'a039d46d3e8eca97d399d651e0ef66d4', '2024-07-23 03:57:18', '2024-07-23 03:57:18', NULL),
 	(317, 'default', 1, 'f955637da4e3bf6cf134091191594bdc', '2024-07-23 04:02:48', '2024-07-23 04:02:48', NULL),
 	(318, 'default', 1, 'fa28326e1011767b25ccb88399b0f3f7', '2024-07-23 04:14:17', '2024-07-23 04:14:17', NULL),
 	(319, 'default', 1, '5e4658c055766446b200278085f09f8a', '2024-07-23 05:07:14', '2024-07-23 04:30:35', NULL),
-	(320, 'default', 1, '3bfae1871e10085c5e679871f0498b71', '2024-07-24 02:54:04', '2024-07-23 05:36:02', NULL),
-	(321, 'default', 1, '701c1f91deb4e66aaa66550eb7ea5f18', '2024-07-24 02:58:57', '2024-07-23 07:27:17', NULL);
+	(320, 'default', 1, '3bfae1871e10085c5e679871f0498b71', '2024-07-31 11:12:55', '2024-07-23 05:36:02', NULL),
+	(321, 'default', 1, '701c1f91deb4e66aaa66550eb7ea5f18', '2024-07-31 11:26:08', '2024-07-23 07:27:17', NULL),
+	(322, 'default', 1, '28e3a683f44ff810e5f2d4d901613950', '2024-07-27 02:50:57', '2024-07-27 02:50:57', NULL),
+	(323, 'default', 1, '275ebf3578039c3ca5220977a7c0a5fa', '2024-07-27 02:54:42', '2024-07-27 02:54:42', NULL),
+	(324, 'default', 1, '5729ad38aaf2ef72d740d92f809973e2', '2024-07-27 02:57:20', '2024-07-27 02:56:40', NULL),
+	(325, 'default', 1, '0faa1c3d31368f0fa6e6b70f82887411', '2024-07-27 02:59:11', '2024-07-27 02:59:11', NULL),
+	(326, 'default', 1, '5ba5ec4711766f55da641f8db048e08c', '2024-07-27 03:01:08', '2024-07-27 03:00:14', NULL),
+	(327, 'default', 1, 'ad56932137968de2a548b940cb87de56', '2024-07-27 03:01:31', '2024-07-27 03:01:22', NULL),
+	(328, 'default', 1, '34bfa14a952bd177e7dfcc478d68af12', '2024-07-27 03:02:53', '2024-07-27 03:02:43', NULL),
+	(329, 'default', 1, '56d65eafad774dcdc369efe26d8eb872', '2024-07-27 03:03:48', '2024-07-27 03:03:45', NULL),
+	(330, 'default', 1, 'a606b1fa38823483e59d7c38c2d787de', '2024-07-27 03:06:23', '2024-07-27 03:05:53', NULL),
+	(331, 'default', 1, '51fed3177c577f05439b44788bf1257b', '2024-07-27 03:07:42', '2024-07-27 03:07:08', NULL),
+	(332, 'default', 1, '3b244154147dd374753c2c88258f37d3', '2024-07-27 03:08:38', '2024-07-27 03:08:38', NULL),
+	(333, 'default', 1, '00ba97cd1d9332e092ad72d9dad31c3b', '2024-07-27 03:10:24', '2024-07-27 03:09:56', NULL),
+	(334, 'default', 1, '0b5b956fed01df1fc0ac5c15e6add477', '2024-07-27 03:11:47', '2024-07-27 03:10:58', NULL),
+	(335, 'default', 1, 'e47a5ec56fbfe297450c6f29d88af098', '2024-07-27 03:13:17', '2024-07-27 03:12:19', NULL),
+	(336, 'default', 1, '85c2a21faabab08ad6bde801ac6e985d', '2024-07-27 03:14:24', '2024-07-27 03:13:31', NULL),
+	(337, 'default', 1, '33a8359f20bc15ac1cf322172e138532', '2024-07-27 03:15:41', '2024-07-27 03:14:43', NULL),
+	(338, 'default', 1, '061b05cc9b1dc891b910139bba2ea3be', '2024-07-27 03:16:20', '2024-07-27 03:15:47', NULL),
+	(339, 'default', 1, 'b52bd24494fa6e96d6eee0c6e57c0aab', '2024-07-27 03:17:55', '2024-07-27 03:17:05', NULL),
+	(340, 'default', 1, '415ffd91c222d8ed5d4e836ce8974614', '2024-07-27 03:18:55', '2024-07-27 03:18:07', NULL),
+	(341, 'default', 1, '19aeb4e4864b742733c2e5b2458c778e', '2024-07-27 03:28:46', '2024-07-27 03:28:46', NULL),
+	(342, 'default', 1, '7f8874f56c45d6c8738b276334fcaae8', '2024-07-27 03:31:55', '2024-07-27 03:30:58', NULL),
+	(343, 'default', 1, '1b8b976ff16721ab16186588e7fc23d6', '2024-07-27 03:32:20', '2024-07-27 03:32:01', NULL),
+	(344, 'default', 1, '85e7376bf1e610088162b908f26cda1a', '2024-07-27 03:34:57', '2024-07-27 03:34:57', NULL),
+	(345, 'default', 1, 'ef9cedbe3b430eab036333400ee7815b', '2024-07-27 03:36:43', '2024-07-27 03:36:02', NULL),
+	(346, 'default', 1, '5e5e81aabdbfa7c583017665c3273608', '2024-07-27 03:37:07', '2024-07-27 03:37:07', NULL),
+	(347, 'default', 1, 'e50e6db75dd65d6b932dcddad16dedc8', '2024-07-27 11:19:46', '2024-07-27 03:38:37', NULL),
+	(348, 'default', 1, '4288713e8f532a3dd878060199ebc1f8', '2024-07-27 03:40:35', '2024-07-27 03:40:35', NULL),
+	(349, 'default', 1, '8b89c0da4bb62db52f9a186c66c571bb', '2024-07-27 03:42:30', '2024-07-27 03:42:30', NULL),
+	(350, 'default', 1, '92ac65c4d4cfd0f07caab7ca3d0ef500', '2024-07-27 06:51:46', '2024-07-27 03:46:22', NULL),
+	(351, 'default', 1, 'c7a63da54e4d71f4f2e6dc9659c8ed8b', '2024-07-27 06:51:59', '2024-07-27 06:51:58', NULL),
+	(352, 'default', 1, 'f5bc427e5264ea18ae13c4fa9804c9e8', '2024-07-27 06:52:31', '2024-07-27 06:52:30', NULL),
+	(353, 'default', 1, '8b98dfa3dc59f4082da19ae9fc4a69bb', '2024-07-27 09:29:19', '2024-07-27 06:53:47', NULL),
+	(354, 'default', 1, 'ebd28933dd0a4586173cc97066f81a14', '2024-07-27 11:49:47', '2024-07-27 09:29:27', NULL);
 
 -- Dumping structure for table menu_db.tables
 CREATE TABLE IF NOT EXISTS `tables` (
@@ -533,17 +564,35 @@ CREATE TABLE IF NOT EXISTS `tables` (
   PRIMARY KEY (`id`),
   KEY `fk_users_tables` (`user_id`),
   CONSTRAINT `fk_users_tables` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Dumping data for table menu_db.tables: ~3 rows (approximately)
 INSERT INTO `tables` (`id`, `name`, `seats`, `is_use`, `user_id`, `created_at`, `updated_at`) VALUES
-	(5, 'ban 1', 2, 1, 1, '2024-07-17 04:23:25', '2024-07-18 11:13:47'),
-	(6, 'ban 2', 2, 1, 1, '2024-07-17 04:23:49', '2024-07-20 02:44:13'),
-	(7, 'ban 3', 3, 1, 1, '2024-07-17 04:23:56', '2024-07-18 11:18:06');
+	(5, 'B1', 2, 1, 1, '2024-07-17 04:23:25', '2024-07-27 04:34:19'),
+	(6, 'B2', 2, 1, 1, '2024-07-17 04:23:49', '2024-07-27 04:34:25'),
+	(7, 'B3', 3, 1, 1, '2024-07-17 04:23:56', '2024-07-27 04:34:13');
 
+-- Dumping structure for table menu_db.users
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `full_name` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `phone_number` int NOT NULL,
+  `sub_phone_number` int DEFAULT NULL,
+  `email` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `address` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `password` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `image` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `subscription_end_date` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-
-
+-- Dumping data for table menu_db.users: ~3 rows (approximately)
+INSERT INTO `users` (`id`, `full_name`, `phone_number`, `sub_phone_number`, `email`, `address`, `password`, `image`, `subscription_end_date`, `created_at`, `updated_at`) VALUES
+	(1, 'Nguyen Tien Anh', 328023993, NULL, NULL, NULL, 'Io6x4kQrdfsifmhAWqoHDNAmCB0z71LMdlps/wA00AQeeG4mFfs8Ye5ZiN7wQk/3Nu2EAEAUFGTn8LUWZm2Pyz5JRg==', '/users/1/1721380675493.webp', '2025-07-31 11:06:34', '2024-06-14 07:21:57', '2024-07-31 11:06:56'),
+	(4, 'Nguyen Tien Anh', 123456789, NULL, NULL, NULL, 'Io6x4kQrdfsifmhAWqoHDNAmCB0z71LMdlps/wA00AQeeG4mFfs8Ye5ZiN7wQk/3Nu2EAEAUFGTn8LUWZm2Pyz5JRg==', NULL, NULL, '2024-07-17 06:08:41', '2024-07-20 08:16:41'),
+	(5, 'Nguyen Tien Anh', 1234567891, NULL, NULL, NULL, 'Io6x4kQrdfsifmhAWqoHDNAmCB0z71LMdlps/wA00AQeeG4mFfs8Ye5ZiN7wQk/3Nu2EAEAUFGTn8LUWZm2Pyz5JRg==', NULL, NULL, '2024-07-17 06:11:50', '2024-07-20 08:16:41');
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

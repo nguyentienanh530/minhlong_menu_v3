@@ -18,7 +18,6 @@ import 'package:minhlong_menu_client_v3/features/table/cubit/table_cubit.dart';
 import 'package:minhlong_menu_client_v3/features/table/data/model/table_model.dart';
 import 'package:readmore/readmore.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-
 import '../../../../Routes/app_route.dart';
 import '../../../../common/snackbar/app_snackbar.dart';
 import '../../../../common/widget/cart_button.dart';
@@ -258,9 +257,9 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Icon(
+        const Icon(
           Icons.check_circle,
-          color: context.colorScheme.primaryContainer,
+          color: Colors.green,
           size: 24,
         ),
         5.horizontalSpace,
@@ -404,19 +403,19 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
             foodImage: _foodItem.image1 ?? '',
             foodName: _foodItem.name,
             quantity: _quantity.value,
-            totalPrice: _totalPrice.value,
+            totalAmount: _totalPrice.value,
             note: _noteController.text,
             discount: _foodItem.discount ?? 0,
             foodPrice: _foodItem.price ?? 0,
             isDiscount: _foodItem.isDiscount ?? false);
         var newFoods = [...order.orderDetail, newFoodOrder];
         double newTotalPrice = newFoods.fold(
-            0, (double total, currentFood) => total + currentFood.totalPrice);
+            0, (double total, currentFood) => total + currentFood.totalAmount);
         order = order.copyWith(
             // tableName: table.name,
             // tableID: table.id,
             orderDetail: newFoods,
-            // status: 'new',
+            status: 'new',
             totalPrice: newTotalPrice);
         context.read<CartCubit>().setOrderModel(order);
         AppSnackbar.showSnackBar(context,

@@ -5,7 +5,7 @@ import 'package:minhlong_menu_client_v3/core/extensions.dart';
 import '../../core/app_const.dart';
 
 class TextFieldPassword extends StatelessWidget {
-  TextFieldPassword(
+  const TextFieldPassword(
       {super.key,
       required this.valueListenable,
       required this.controller,
@@ -14,7 +14,7 @@ class TextFieldPassword extends StatelessWidget {
   final ValueNotifier<bool> valueListenable;
   final TextEditingController controller;
   final String? Function(String?)? validator;
-  String? labelText;
+  final String? labelText;
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(

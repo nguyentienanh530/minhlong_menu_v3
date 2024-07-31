@@ -59,7 +59,9 @@ class SuccessScreen extends StatelessWidget {
                 },
                 child: Text(
                   'Trở lại'.toUpperCase(),
-                  style: context.bodyMedium,
+                  style: context.bodyMedium!.copyWith(
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),

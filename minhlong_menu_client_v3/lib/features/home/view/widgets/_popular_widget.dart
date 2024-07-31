@@ -50,13 +50,13 @@ extension _PopularWidget on _HomeViewState {
                 FittedBox(
                   alignment: Alignment.centerRight,
                   fit: BoxFit.scaleDown,
-                  child: Text(AppString.seeMore,
-                      style: context.labelMedium!.copyWith(
-                          fontStyle: FontStyle.italic,
-                          color: context.colorScheme.primary)),
+                  child: Text(
+                    AppString.seeMore,
+                    style: context.labelMedium!
+                        .copyWith(fontStyle: FontStyle.italic),
+                  ),
                 ),
-                Icon(Icons.navigate_next_rounded,
-                    size: 15, color: context.colorScheme.primary)
+                const Icon(Icons.navigate_next_rounded, size: 15)
               ]))
         ]));
   }

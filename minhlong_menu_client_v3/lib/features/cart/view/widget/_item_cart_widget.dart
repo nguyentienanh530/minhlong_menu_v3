@@ -30,49 +30,46 @@ extension _ItemCartWidget on _CartViewState {
               Expanded(
                 child: SizedBox(
                   height: 80,
-                  child: Column(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Expanded(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              orderItem.foodName,
-                              style: context.bodyMedium!
-                                  .copyWith(fontWeight: FontWeight.bold),
-                            ),
-                            FittedBox(
-                              fit: BoxFit.scaleDown,
-                              child: CommonIconButton(
-                                onTap: () {
-                                  context
-                                      .read<CartCubit>()
-                                      .removeOrderItem(orderItem);
-                                },
-                                icon: Icons.delete,
-                                size: 25,
-                                iconSize: 15,
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text(
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            orderItem.foodName,
+                            style: context.bodyMedium!
+                                .copyWith(fontWeight: FontWeight.bold),
+                          ),
+                          Text(
                               '${Ultils.currencyFormat(Ultils.foodPrice(isDiscount: orderItem.isDiscount, foodPrice: orderItem.foodPrice, discount: orderItem.discount))} ₫',
-                              style: context.bodyMedium!.copyWith(
-                                color: context.colorScheme.primary,
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: context.bodySmall!),
+                          Text(
+                            'Tổng: ${Ultils.currencyFormat(orderItem.totalAmount)}',
+                            style: context.bodyMedium!.copyWith(
+                              fontWeight: FontWeight.bold,
                             ),
-                            _buildQuality(orderModel, orderItem),
-                          ],
-                        ),
+                          ),
+                        ],
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          CommonIconButton(
+                            onTap: () {
+                              context
+                                  .read<CartCubit>()
+                                  .removeOrderItem(orderItem);
+                            },
+                            icon: Icons.delete,
+                            size: 25,
+                            iconSize: 15,
+                            color: context.colorScheme.error,
+                          ),
+                          _buildQuality(orderModel, orderItem),
+                        ],
                       ),
                     ],
                   ),
@@ -173,7 +170,7 @@ extension _ItemCartWidget on _CartViewState {
       var existingFoodOrder = orderModel.orderDetail[index];
       var updatedFoodOrder = existingFoodOrder.copyWith(
           quantity: quantity,
-          totalPrice: quantity *
+          totalAmount: quantity *
               AppRes.foodPrice(
                   isDiscount: existingFoodOrder.isDiscount,
                   foodPrice: existingFoodOrder.foodPrice,
@@ -182,7 +179,7 @@ extension _ItemCartWidget on _CartViewState {
       List<OrderDetail> updatedFoods = List.from(orderModel.orderDetail);
       updatedFoods[index] = updatedFoodOrder;
       double newTotalPrice = updatedFoods.fold(
-          0, (double total, currentFood) => total + currentFood.totalPrice);
+          0, (double total, currentFood) => total + currentFood.totalAmount);
       orderModel = orderModel.copyWith(
           orderDetail: updatedFoods, totalPrice: newTotalPrice);
       context.read<CartCubit>().setOrderModel(orderModel);

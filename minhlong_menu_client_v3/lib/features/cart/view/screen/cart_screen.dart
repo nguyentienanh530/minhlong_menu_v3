@@ -20,7 +20,6 @@ import 'package:minhlong_menu_client_v3/features/table/cubit/table_cubit.dart';
 import 'package:minhlong_menu_client_v3/features/table/data/model/table_model.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
-
 import '../../../../Routes/app_route.dart';
 import '../../../../common/widget/no_product.dart';
 import '../../../../core/api_config.dart';
@@ -29,7 +28,6 @@ import '../../../../core/app_string.dart';
 import '../../../../core/utils.dart';
 import '../../../order/bloc/order_bloc.dart';
 import '../../../user/data/model/user_model.dart';
-
 part '../widget/_item_cart_widget.dart';
 
 class CartScreen extends StatelessWidget {
@@ -167,22 +165,16 @@ class _CartViewState extends State<CartView> {
                     break;
                   case OrderCreateFailure():
                     AppDialog.showErrorDialog(context,
+                        returnedLevel: 2,
+                        haveCancelButton: true,
                         title: state.error,
                         confirmText: 'Thử lại', onPressedComfirm: () {
                       context.read<OrderBloc>().add(OrderCreated(cartState));
                     });
-                    // showDialog(
-                    //     context: context,
-                    //     builder: (context) => ErrorDialog(
-                    //         title: state.error,
-                    //         onRetryText: 'Thử lại',
-                    //         onRetryPressed: () {
-                    //           context
-                    //               .read<OrderBloc>()
-                    //               .add(OrderCreated(cartState));
-                    //         }));
+
                     break;
                   default:
+                    break;
                 }
               },
               child: ListView.builder(
@@ -212,7 +204,7 @@ class _CartViewState extends State<CartView> {
           borderRadius: BorderRadius.circular(10),
         ),
         child: Text(
-          AppString.pay,
+          AppString.order,
           style: context.bodyMedium!.copyWith(color: Colors.white),
         ),
       ),

@@ -47,7 +47,7 @@ class DioExceptions implements Exception {
       case 422:
         return AppString.duplicateEmail;
       case 500:
-        return AppString.internalServerError;
+        return AppString.connectionError;
       case 502:
         return AppString.badGateway;
       default:

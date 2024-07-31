@@ -61,9 +61,7 @@ class _HomeViewState extends State<HomeView>
   final _cartKey = GlobalKey();
   var _foodPosition = Offset.zero;
   var _path = Path();
-
   var cartPosition = Offset.zero;
-
   var cartBottomRight = Offset.zero;
 
   @override
@@ -152,7 +150,9 @@ class _HomeViewState extends State<HomeView>
                                     color: context.bodySmall!.color!
                                         .withOpacity(0.5)),
                               ),
-                              Text(user.fullName, style: context.bodyLarge),
+                              Text(user.fullName,
+                                  style: context.bodyLarge!
+                                      .copyWith(fontWeight: FontWeight.w900)),
                             ],
                           ),
                         ],
@@ -268,8 +268,8 @@ class _HomeViewState extends State<HomeView>
                   fit: BoxFit.scaleDown,
                   child: Text(table.name,
                       textAlign: TextAlign.center,
-                      style: context.bodyMedium!
-                          .copyWith(color: context.colorScheme.onPrimary)),
+                      style: context.bodyMedium!.copyWith(
+                          color: Colors.white, fontWeight: FontWeight.bold)),
                 ),
               ),
             ),
@@ -324,7 +324,7 @@ class _HomeViewState extends State<HomeView>
             foodImage: food.image1 ?? '',
             foodName: food.name,
             quantity: 1,
-            totalPrice: Ultils.foodPrice(
+            totalAmount: Ultils.foodPrice(
                 isDiscount: food.isDiscount ?? false,
                 foodPrice: food.price ?? 0,
                 discount: food.discount ?? 0),
@@ -334,7 +334,7 @@ class _HomeViewState extends State<HomeView>
             isDiscount: food.isDiscount ?? false);
         var newFoods = [...order.orderDetail, newFoodOrder];
         double newTotalPrice = newFoods.fold(
-            0, (double total, currentFood) => total + currentFood.totalPrice);
+            0, (double total, currentFood) => total + currentFood.totalAmount);
         order =
             order.copyWith(orderDetail: newFoods, totalPrice: newTotalPrice);
         context.read<CartCubit>().setOrderModel(order);

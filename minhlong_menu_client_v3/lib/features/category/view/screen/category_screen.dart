@@ -273,7 +273,7 @@ class _CategoryViewState extends State<CategoryView> {
             foodImage: food.image1 ?? '',
             foodName: food.name,
             quantity: 1,
-            totalPrice: Ultils.foodPrice(
+            totalAmount: Ultils.foodPrice(
                 isDiscount: food.isDiscount ?? false,
                 foodPrice: food.price ?? 0,
                 discount: food.discount ?? 0),
@@ -283,7 +283,7 @@ class _CategoryViewState extends State<CategoryView> {
             isDiscount: food.isDiscount ?? false);
         var newFoods = [...order.orderDetail, newFoodOrder];
         double newTotalPrice = newFoods.fold(
-            0, (double total, currentFood) => total + currentFood.totalPrice);
+            0, (double total, currentFood) => total + currentFood.totalAmount);
         order =
             order.copyWith(orderDetail: newFoods, totalPrice: newTotalPrice);
         context.read<CartCubit>().setOrderModel(order);

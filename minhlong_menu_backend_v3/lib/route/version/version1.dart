@@ -42,7 +42,7 @@ class Version1 implements Route {
         Router.patch("{id}", categoryCtrl.update);
         Router.delete("{id}", categoryCtrl.destroy);
       },
-      prefix: 'admin/categories',
+      prefix: '/admin/categories',
     );
 
     //======= Table route =======
@@ -91,7 +91,7 @@ class Version1 implements Route {
         Router.post('payment', orderCtrl.paymentOrder);
         Router.delete('{id}', orderCtrl.destroy);
       },
-      prefix: 'admin/orders',
+      prefix: '/admin/orders',
     );
 
     //======= Home admin =======
@@ -114,10 +114,10 @@ class Version1 implements Route {
     Router.group(
       () {
         Router.get('home', homeClientController.getHomeDataForUser);
-        Router.get('foods/category/{id}', foodCtrl.getFoodsOnCategory);
-        Router.get('foods', foodCtrl.index);
-        Router.get("tables/all", tableCtrl.getAllTables);
-        Router.post('orders', orderCtrl.create);
+        Router.get('/foods/category/{id}', foodCtrl.getFoodsOnCategory);
+        Router.get('/foods', foodCtrl.index);
+        Router.get("/tables/all", tableCtrl.getAllTables);
+        Router.post('/orders', orderCtrl.create);
       },
       prefix: '/client',
     );
