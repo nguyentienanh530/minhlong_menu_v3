@@ -98,8 +98,9 @@ extension _EditProfileWidget on _EditProfileViewState {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TextBoxProfile(
-                  controllers: _nameController,
+              CommonTextField(
+                  controller: _nameController,
+                  onChanged: (p0) {},
                   labelText: AppString.fullName,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -108,9 +109,50 @@ extension _EditProfileWidget on _EditProfileViewState {
                     return null;
                   }),
               20.verticalSpace,
-              TextBoxProfile(
-                  controllers: _phoneController,
-                  labelText: '${AppString.phoneNumber} *',
+              Row(
+                children: [
+                  Expanded(
+                    child: CommonTextField(
+                        onChanged: (p0) {},
+                        controller: _phoneController,
+                        labelText: '${AppString.phoneNumber} *',
+                        validator: (value) {
+                          return AppRes.validatePhoneNumber(
+                                  _phoneController.text)
+                              ? null
+                              : 'Vui lòng nhập số điện thoại';
+                        }),
+                  ),
+                  10.horizontalSpace,
+                  Expanded(
+                    child: CommonTextField(
+                        onChanged: (p0) {},
+                        controller: _subPhoneController,
+                        labelText: AppString.subPhoneNumber,
+                        validator: (value) {
+                          return AppRes.validatePhoneNumber(
+                                  _phoneController.text)
+                              ? null
+                              : 'Vui lòng nhập số điện thoại';
+                        }),
+                  ),
+                ],
+              ),
+              20.verticalSpace,
+              CommonTextField(
+                  onChanged: (p0) {},
+                  controller: _phoneController,
+                  labelText: AppString.email,
+                  validator: (value) {
+                    return AppRes.validatePhoneNumber(_phoneController.text)
+                        ? null
+                        : 'Vui lòng nhập số điện thoại';
+                  }),
+              20.verticalSpace,
+              CommonTextField(
+                  onChanged: (p0) {},
+                  controller: _phoneController,
+                  labelText: AppString.address,
                   validator: (value) {
                     return AppRes.validatePhoneNumber(_phoneController.text)
                         ? null
@@ -152,36 +194,6 @@ extension _EditProfileWidget on _EditProfileViewState {
             AppString.edit,
             style: context.bodyMedium!.copyWith(color: Colors.white),
           )),
-    );
-  }
-}
-
-class TextBoxProfile extends StatelessWidget {
-  const TextBoxProfile({
-    super.key,
-    required this.controllers,
-    this.labelText,
-    this.validator,
-  });
-  final TextEditingController controllers;
-  final String? labelText;
-  final String? Function(String?)? validator;
-
-  @override
-  Widget build(BuildContext context) {
-    return CommonTextField(
-      onChanged: (p0) {},
-      labelText: labelText,
-      labelStyle: context.bodyMedium,
-      controller: controllers,
-      style: context.bodyMedium,
-      validator: validator,
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(defaultBorderRadius / 3),
-        borderSide: BorderSide(
-          color: context.colorScheme.primary,
-        ),
-      ),
     );
   }
 }

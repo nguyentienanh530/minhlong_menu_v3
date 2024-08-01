@@ -155,59 +155,42 @@ extension _ProfileWidget on _ProfileScreenState {
 
   Widget _buildThemeWidget(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: isDarkMode,
+      valueListenable: _isDarkMode,
       builder: (context, value, child) {
         return Card(
-            elevation: 2,
-            shadowColor: context.colorScheme.onPrimary,
-            child: SizedBox(
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                  Expanded(
-                    child: FittedBox(
-                      alignment: Alignment.centerLeft,
-                      fit: BoxFit.scaleDown,
-                      child: Row(children: [
-                        Padding(
-                            padding: const EdgeInsets.all(defaultPadding),
-                            child: Icon(
-                              isDarkMode.value
-                                  ? Icons.dark_mode_outlined
-                                  : Icons.light_mode_outlined,
-                              color: context.colorScheme.primary,
-                            )),
-                        Text(
-                          isDarkMode.value
-                              ? AppString.darkMode
-                              : AppString.lightMode,
-                          style: context.bodyMedium!,
-                        )
-                      ]),
-                    ),
-                  ),
-                  Expanded(
-                    child: FittedBox(
-                      alignment: Alignment.centerRight,
-                      fit: BoxFit.scaleDown,
-                      child: Transform.scale(
-                        scale: 0.8,
-                        child: Switch(
-                          activeTrackColor: context.colorScheme.primary,
-                          inactiveTrackColor:
-                              context.colorScheme.primary.withOpacity(0.5),
-                          inactiveThumbColor: Colors.white,
-                          value: isDarkMode.value,
-                          onChanged: (value) async {
-                            isDarkMode.value = !isDarkMode.value;
-                            context.read<ThemeCubit>().changeTheme(value);
-                            await ThemeLocalDatasource(sf).setDarkTheme(value);
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
-                ])));
+          elevation: 2,
+          shadowColor: context.colorScheme.onPrimary,
+          child: SizedBox(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Padding(
+                        padding: const EdgeInsets.all(defaultPadding),
+                        child: Icon(
+                          Icons.dark_mode_outlined,
+                          color: context.colorScheme.primary,
+                        )),
+                    Text(
+                      AppString.darkMode,
+                      style: context.bodyMedium!,
+                    )
+                  ],
+                ),
+                Switch(
+                  thumbIcon: thumbIcon,
+                  value: _isDarkMode.value,
+                  onChanged: (value) async {
+                    _isDarkMode.value = !_isDarkMode.value;
+                    context.read<ThemeCubit>().changeTheme(value);
+                    await ThemeLocalDatasource(sf).setDarkTheme(value);
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
       },
     );
   }

@@ -35,14 +35,22 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   late final SharedPreferences sf;
-  final isDarkMode = ValueNotifier(false);
+  final _isDarkMode = ValueNotifier(false);
   final _pickColor = ValueNotifier(listScheme.first.color);
-
+  final WidgetStateProperty<Icon?> thumbIcon =
+      WidgetStateProperty.resolveWith<Icon?>(
+    (Set<WidgetState> states) {
+      if (states.contains(WidgetState.selected)) {
+        return const Icon(Icons.check);
+      }
+      return const Icon(Icons.close);
+    },
+  );
   @override
   void dispose() {
     super.dispose();
     _pickColor.dispose();
-    isDarkMode.dispose();
+    _isDarkMode.dispose();
   }
 
   @override
@@ -53,14 +61,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   void _init() async {
     sf = await SharedPreferences.getInstance();
-    isDarkMode.value = await ThemeLocalDatasource(sf).getDartTheme() ?? false;
+    _isDarkMode.value = await ThemeLocalDatasource(sf).getDartTheme() ?? false;
 
     var schemeKey = await ThemeLocalDatasource(sf).getSchemeTheme() ?? '';
-    for (var e in listScheme) {
-      if (e.key == schemeKey) {
-        _pickColor.value = e.color;
-      }
-    }
+    _pickColor.value =
+        listScheme.firstWhere((element) => element.key == schemeKey).color;
   }
 
   @override

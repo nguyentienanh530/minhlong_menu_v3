@@ -8,11 +8,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_client_v3/common/animations/add_to_card_animation_manager.dart';
+import 'package:minhlong_menu_client_v3/common/dialog/app_dialog.dart';
+import 'package:minhlong_menu_client_v3/common/snackbar/app_snackbar.dart';
 import 'package:minhlong_menu_client_v3/common/widget/common_item_food.dart';
 import 'package:minhlong_menu_client_v3/core/app_const.dart';
 import 'package:minhlong_menu_client_v3/core/app_string.dart';
 import 'package:minhlong_menu_client_v3/core/extensions.dart';
-import 'package:minhlong_menu_client_v3/core/utils.dart';
 import 'package:minhlong_menu_client_v3/features/food/bloc/food_bloc.dart';
 import 'package:minhlong_menu_client_v3/features/food/cubit/item_size_cubit.dart';
 import 'package:minhlong_menu_client_v3/features/food/data/dto/item_food_size_dto.dart';
@@ -22,9 +23,7 @@ import 'package:minhlong_menu_client_v3/features/table/data/model/table_model.da
 import 'package:minhlong_menu_client_v3/features/user/cubit/user_cubit.dart';
 import 'package:minhlong_menu_client_v3/features/user/data/model/user_model.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-
 import '../../../../Routes/app_route.dart';
-import '../../../../common/snackbar/app_snackbar.dart';
 import '../../../../common/widget/error_build_image.dart';
 import '../../../../common/widget/error_screen.dart';
 import '../../../../common/widget/loading.dart';
@@ -34,10 +33,8 @@ import '../../../banner/data/model/banner_model.dart';
 import '../../../cart/cubit/cart_cubit.dart';
 import '../../../category/data/model/category_model.dart';
 import '../../../food/data/model/food_item.dart';
-import '../../../order/data/model/order_detail.dart';
 import '../../../table/cubit/table_cubit.dart';
 import '../../bloc/home_bloc.dart';
-
 part '../widgets/_appbar_widget.dart';
 part '../widgets/_banner_widget.dart';
 part '../widgets/_category_widget.dart';
@@ -89,7 +86,6 @@ class _HomeViewState extends State<HomeView>
     _foodItemSize.value = const Size(0, 0);
     _foodPosition = Offset.zero;
     _path = Path();
-
     _cartKey.currentState?.dispose();
   }
 
@@ -101,154 +97,174 @@ class _HomeViewState extends State<HomeView>
     var user = context.watch<UserCubit>().state;
 
     return Scaffold(
-      floatingActionButton: _buildFloatingButton(cartState, user),
-      body: BlocBuilder<HomeBloc, HomeState>(
-        builder: (context, state) {
-          return (switch (state) {
-            HomeFetchInProgress() => const Loading(),
-            HomeFetchFailure() => ErrorScreen(errorMessage: state.message),
-            HomeFetchSuccess() => CustomScrollView(
-                physics: const BouncingScrollPhysics(),
-                slivers: [
-                  SliverAppBar(
-                    stretch: true,
-                    pinned: true,
-                    titleSpacing: 10,
-                    toolbarHeight: 80.h,
-                    leadingWidth: 0,
-                    title: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          Card(
-                            elevation: 4,
-                            shape: const CircleBorder(),
-                            child: Container(
-                              width: 40,
-                              height: 40,
-                              clipBehavior: Clip.antiAlias,
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                              ),
-                              child: ClipRRect(
-                                child: CachedNetworkImage(
-                                    imageUrl: '${ApiConfig.host}${user.image}',
-                                    placeholder: (context, url) =>
-                                        const Loading(),
-                                    errorWidget: errorBuilderForImage,
-                                    fit: BoxFit.cover),
+      floatingActionButton: _buildFloatingButton(cartState.order, user),
+      body: BlocListener<CartCubit, CartState>(
+        listener: (context, state) {
+          if (state is AddToCartSuccess) {
+            AppSnackbar.showSnackBar(context,
+                msg: state.message, type: AppSnackbarType.success);
+          }
+          if (state is AddToCartFailure) {
+            AppDialog.showErrorDialog(context,
+                description: state.errorMessage,
+                title: 'Thêm món thất bại',
+                haveCancelButton: true,
+                cancelText: 'Thoát',
+                confirmText: 'Chọn bàn', onPressedComfirm: () {
+              context.pop();
+              context.push(AppRoute.dinnerTables);
+            });
+          }
+        },
+        child: BlocBuilder<HomeBloc, HomeState>(
+          builder: (context, state) {
+            return (switch (state) {
+              HomeFetchInProgress() => const Loading(),
+              HomeFetchFailure() => ErrorScreen(errorMessage: state.message),
+              HomeFetchSuccess() => CustomScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  slivers: [
+                    SliverAppBar(
+                      stretch: true,
+                      pinned: true,
+                      titleSpacing: 10,
+                      toolbarHeight: 80.h,
+                      leadingWidth: 0,
+                      title: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            Card(
+                              elevation: 4,
+                              shape: const CircleBorder(),
+                              child: Container(
+                                width: 40,
+                                height: 40,
+                                clipBehavior: Clip.antiAlias,
+                                decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                ),
+                                child: ClipRRect(
+                                  child: CachedNetworkImage(
+                                      imageUrl:
+                                          '${ApiConfig.host}${user.image}',
+                                      placeholder: (context, url) =>
+                                          const Loading(),
+                                      errorWidget: errorBuilderForImage,
+                                      fit: BoxFit.cover),
+                                ),
                               ),
                             ),
-                          ),
-                          10.horizontalSpace,
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Xin chào!',
-                                style: context.bodySmall!.copyWith(
-                                    color: context.bodySmall!.color!
-                                        .withOpacity(0.5)),
-                              ),
-                              Text(user.fullName,
-                                  style: context.bodyLarge!
-                                      .copyWith(fontWeight: FontWeight.w900)),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    bottom: PreferredSize(
-                        preferredSize: const Size(double.infinity, 40),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: defaultPadding / 2),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              5.horizontalSpace,
-                              Expanded(child: _buildSearchWidget()),
-                              10.horizontalSpace,
-                              _buildIconTableWidget(tableState),
-                              5.horizontalSpace
-                            ],
-                          ),
-                        )),
-                    actions: [
-                      _iconActionButtonAppBar(
-                          icon: Icons.tune,
-                          onPressed: () => context.push(AppRoute.profile)),
-                      5.horizontalSpace
-                    ],
-                  ),
-                  SliverToBoxAdapter(
-                    child: AspectRatio(
-                        aspectRatio: 16 / 9,
-                        child: _bannerHome(state.homeModel.banners)),
-                  ),
-                  SliverToBoxAdapter(
-                    child: Stack(
-                      children: [
-                        Column(
-                          children: [
-                            30.verticalSpace,
-                            categoryListView(state.homeModel.categories),
-                            10.verticalSpace,
-                            _buildListNewFood(state.homeModel.newFoods,
-                                cartState, tableState),
-                            20.verticalSpace,
-                            _popularGridView(state.homeModel.popularFoods,
-                                cartState, tableState),
+                            10.horizontalSpace,
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Xin chào!',
+                                  style: context.bodySmall!.copyWith(
+                                      color: context.bodySmall!.color!
+                                          .withOpacity(0.5)),
+                                ),
+                                Text(user.fullName,
+                                    style: context.bodyLarge!
+                                        .copyWith(fontWeight: FontWeight.w900)),
+                              ],
+                            ),
                           ],
                         ),
-                        ListenableBuilder(
-                          listenable: _foodItemSize,
-                          builder: (context, _) {
-                            return SizedBox(
-                              height: _foodItemSize.value.height,
-                              width: _foodItemSize.value.width,
-                              child: Container(
+                      ),
+                      bottom: PreferredSize(
+                          preferredSize: const Size(double.infinity, 40),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: defaultPadding / 2),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                5.horizontalSpace,
+                                Expanded(child: _buildSearchWidget()),
+                                10.horizontalSpace,
+                                _buildIconTableWidget(tableState),
+                                5.horizontalSpace
+                              ],
+                            ),
+                          )),
+                      actions: [
+                        _iconActionButtonAppBar(
+                            icon: Icons.tune,
+                            onPressed: () => context.push(AppRoute.profile)),
+                        5.horizontalSpace
+                      ],
+                    ),
+                    SliverToBoxAdapter(
+                      child: AspectRatio(
+                          aspectRatio: 16 / 9,
+                          child: _bannerHome(state.homeModel.banners)),
+                    ),
+                    SliverToBoxAdapter(
+                      child: Stack(
+                        children: [
+                          Column(
+                            children: [
+                              30.verticalSpace,
+                              categoryListView(state.homeModel.categories),
+                              10.verticalSpace,
+                              _buildListNewFood(state.homeModel.newFoods,
+                                  cartState.order, tableState),
+                              20.verticalSpace,
+                              _popularGridView(state.homeModel.popularFoods,
+                                  cartState.order, tableState),
+                            ],
+                          ),
+                          ListenableBuilder(
+                            listenable: _foodItemSize,
+                            builder: (context, _) {
+                              return SizedBox(
                                 height: _foodItemSize.value.height,
                                 width: _foodItemSize.value.width,
-                                color: context.colorScheme.onPrimary,
+                                child: Container(
+                                  height: _foodItemSize.value.height,
+                                  width: _foodItemSize.value.width,
+                                  color: context.colorScheme.onPrimary,
+                                )
+                                    .animate(
+                                      autoPlay: false,
+                                      controller: _animationController,
+                                    )
+                                    .scale(
+                                      duration: 2.seconds,
+                                      begin: const Offset(1, 1),
+                                      end: Offset.zero,
+                                    ),
                               )
                                   .animate(
                                     autoPlay: false,
                                     controller: _animationController,
+                                    onComplete: (controller) {
+                                      _resetAnimation();
+                                      _animationController.reset();
+                                    },
                                   )
-                                  .scale(
-                                    duration: 2.seconds,
-                                    begin: const Offset(1, 1),
-                                    end: Offset.zero,
-                                  ),
-                            )
-                                .animate(
-                                  autoPlay: false,
-                                  controller: _animationController,
-                                  onComplete: (controller) {
-                                    _resetAnimation();
-                                    _animationController.reset();
-                                  },
-                                )
-                                .followPath(
-                                    path: _path,
-                                    duration: 2.seconds,
-                                    curve: Curves.easeInOutCubic);
-                          },
-                        )
-                      ],
+                                  .followPath(
+                                      path: _path,
+                                      duration: 2.seconds,
+                                      curve: Curves.easeInOutCubic);
+                            },
+                          )
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            _ => Container(),
-          });
-        },
+                  ],
+                ),
+              _ => Container(),
+            });
+          },
+        ),
       ),
     );
   }
 
-  _buildIconTableWidget(TableModel table) {
+  Widget _buildIconTableWidget(TableModel table) {
     return table.name.isEmpty
         ? _iconActionButtonAppBar(
             icon: Icons.table_restaurant,
@@ -297,51 +313,6 @@ class _HomeViewState extends State<HomeView>
         ),
       ),
     );
-  }
-
-  bool checkExistFood(OrderModel orderModel, int foodID) {
-    var isExist = false;
-    for (OrderDetail e in orderModel.orderDetail) {
-      if (e.foodID == foodID) {
-        isExist = true;
-        break;
-      }
-    }
-    return isExist;
-  }
-
-  void _handleOnTapAddToCart(
-      OrderModel order, TableModel table, FoodItem food) async {
-    if (table.name.isEmpty) {
-      AppSnackbar.showSnackBar(context, msg: 'Chưa chọn bàn', isSuccess: false);
-    } else {
-      if (checkExistFood(order, food.id)) {
-        AppSnackbar.showSnackBar(context,
-            msg: 'Món ăn đã có trong giỏ hàng.', isSuccess: false);
-      } else {
-        var newFoodOrder = OrderDetail(
-            foodID: food.id,
-            foodImage: food.image1 ?? '',
-            foodName: food.name,
-            quantity: 1,
-            totalAmount: Ultils.foodPrice(
-                isDiscount: food.isDiscount ?? false,
-                foodPrice: food.price ?? 0,
-                discount: food.discount ?? 0),
-            note: '',
-            discount: food.discount ?? 0,
-            foodPrice: food.price ?? 0,
-            isDiscount: food.isDiscount ?? false);
-        var newFoods = [...order.orderDetail, newFoodOrder];
-        double newTotalPrice = newFoods.fold(
-            0, (double total, currentFood) => total + currentFood.totalAmount);
-        order =
-            order.copyWith(orderDetail: newFoods, totalPrice: newTotalPrice);
-        context.read<CartCubit>().setOrderModel(order);
-        AppSnackbar.showSnackBar(context,
-            msg: 'Món ăn đã được thêm.', isSuccess: true);
-      }
-    }
   }
 
   void triggerAnimation() {

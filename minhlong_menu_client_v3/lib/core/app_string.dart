@@ -54,6 +54,7 @@ class AppString {
   static String logout = 'Đăng xuất';
   static String welcomeBack = 'Đăng Nhập';
   static String phoneNumber = 'Số điện thoại';
+  static String subPhoneNumber = 'Số điện thoại phụ';
   static String forgotPassword = 'Quên mật khẩu?';
   static String seachLabelText = 'Tìm kiếm món ăn';
   static String newFoodTitle = 'Món ăn mới';
@@ -84,9 +85,10 @@ class AppString {
   static String changePassword = 'Thay đổi mật khẩu';
   static String newPassword = 'Mật khẩu mới';
   static String oldPassword = 'Mật khẩu cũ';
-  static String confirNewPassword = 'Xác nhận mật khẩu mới';
+  static String confirmPassword = 'Xác nhận mật khẩu mới';
   // static String confirPassword = 'Xác nhận mật khẩu ';
   static String total = 'Tổng tiền';
   static String description = 'Mô tả :';
   static String pickColor = 'Chọn màu ';
+  static String address = 'Địa chỉ';
 }

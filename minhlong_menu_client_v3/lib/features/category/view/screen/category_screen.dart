@@ -15,16 +15,11 @@ import 'package:minhlong_menu_client_v3/core/extensions.dart';
 import 'package:minhlong_menu_client_v3/features/food/data/model/food_model.dart';
 import 'package:minhlong_menu_client_v3/features/food/data/repositories/food_repository.dart';
 import 'package:minhlong_menu_client_v3/features/user/cubit/user_cubit.dart';
-
-import '../../../../common/snackbar/app_snackbar.dart';
 import '../../../../common/widget/common_item_food.dart';
 import '../../../../common/widget/error_build_image.dart';
 import '../../../../core/app_const.dart';
-import '../../../../core/utils.dart';
 import '../../../cart/cubit/cart_cubit.dart';
 import '../../../food/bloc/food_bloc.dart';
-import '../../../food/data/model/food_item.dart';
-import '../../../order/data/model/order_detail.dart';
 import '../../../order/data/model/order_model.dart';
 import '../../../table/cubit/table_cubit.dart';
 import '../../../table/data/model/table_model.dart';
@@ -136,7 +131,7 @@ class _CategoryViewState extends State<CategoryView> {
                   CartButton(
                       onPressed: () =>
                           context.push(AppRoute.carts, extra: user),
-                      number: cart.orderDetail.length.toString(),
+                      number: cart.order.orderDetail.length.toString(),
                       colorIcon: context.colorScheme.primary),
                   const SizedBox(width: 10),
                 ],
@@ -145,7 +140,7 @@ class _CategoryViewState extends State<CategoryView> {
                 slivers: [
                   SliverToBoxAdapter(
                       child: _buildWidgetWhenFetchSuccess(
-                          cart, table, state.food)),
+                          cart.order, table, state.food)),
                   SliverPadding(
                     padding: const EdgeInsets.only(bottom: defaultPadding),
                     sliver: SliverToBoxAdapter(
@@ -234,8 +229,11 @@ class _CategoryViewState extends State<CategoryView> {
       itemCount: food.foodItems.length,
       itemBuilder: (context, index) {
         return CommonItemFood(
-          addToCartOnTap: () =>
-              _handleOnTapAddToCart(order, table, food.foodItems[index]),
+          // addToCartOnTap: () =>
+          //     _handleOnTapAddToCart(order, table, food.foodItems[index]),
+          addToCartOnTap: () => context
+              .read<CartCubit>()
+              .addToCart(food: food.foodItems[index], table: table),
           food: food.foodItems[index],
         );
       },
@@ -246,50 +244,5 @@ class _CategoryViewState extends State<CategoryView> {
         crossAxisCount: 2,
       ),
     );
-  }
-
-  bool checkExistFood(OrderModel orderModel, int foodID) {
-    var isExist = false;
-    for (OrderDetail e in orderModel.orderDetail) {
-      if (e.foodID == foodID) {
-        isExist = true;
-        break;
-      }
-    }
-    return isExist;
-  }
-
-  void _handleOnTapAddToCart(
-      OrderModel order, TableModel table, FoodItem food) async {
-    if (table.name.isEmpty) {
-      AppSnackbar.showSnackBar(context, msg: 'Chưa chọn bàn', isSuccess: false);
-    } else {
-      if (checkExistFood(order, food.id)) {
-        AppSnackbar.showSnackBar(context,
-            msg: 'Món ăn đã có trong giỏ hàng.', isSuccess: false);
-      } else {
-        var newFoodOrder = OrderDetail(
-            foodID: food.id,
-            foodImage: food.image1 ?? '',
-            foodName: food.name,
-            quantity: 1,
-            totalAmount: Ultils.foodPrice(
-                isDiscount: food.isDiscount ?? false,
-                foodPrice: food.price ?? 0,
-                discount: food.discount ?? 0),
-            note: '',
-            discount: food.discount ?? 0,
-            foodPrice: food.price ?? 0,
-            isDiscount: food.isDiscount ?? false);
-        var newFoods = [...order.orderDetail, newFoodOrder];
-        double newTotalPrice = newFoods.fold(
-            0, (double total, currentFood) => total + currentFood.totalAmount);
-        order =
-            order.copyWith(orderDetail: newFoods, totalPrice: newTotalPrice);
-        context.read<CartCubit>().setOrderModel(order);
-        AppSnackbar.showSnackBar(context,
-            msg: 'Món ăn đã được thêm.', isSuccess: true);
-      }
-    }
   }
 }

@@ -32,7 +32,7 @@ class AppDialog {
             children: [
               Icon(
                 Icons.warning_rounded,
-                color: context.colorScheme.tertiaryContainer,
+                color: context.colorScheme.error,
                 size: 80,
               ),
               16.verticalSpace,

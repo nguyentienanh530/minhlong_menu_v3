@@ -4,11 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:minhlong_menu_client_v3/common/widget/common_password_textfield.dart';
 import 'package:minhlong_menu_client_v3/core/app_asset.dart';
 import 'package:minhlong_menu_client_v3/core/extensions.dart';
 import 'package:minhlong_menu_client_v3/features/auth/data/respositories/auth_repository.dart';
-
 import '../../../../common/dialog/app_dialog.dart';
 import '../../../../common/snackbar/app_snackbar.dart';
 import '../../../../common/widget/common_back_button.dart';
@@ -103,12 +101,13 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                 _passwordController.clear();
                 _confirmPasswordController.clear();
                 AppSnackbar.showSnackBar(context,
-                    msg: 'Đổi mật khẩu thành công!', isSuccess: true);
+                    msg: 'Đổi mật khẩu thành công!',
+                    type: AppSnackbarType.success);
               }
               if (state is AuthForgotPasswordFailure) {
                 context.pop();
                 AppSnackbar.showSnackBar(context,
-                    msg: state.message, isSuccess: false);
+                    msg: state.message, type: AppSnackbarType.error);
               }
             },
             child: SizedBox(
@@ -127,26 +126,9 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                     20.verticalSpace,
                     _buildPhoneField(),
                     20.verticalSpace,
-                    TextFieldPassword(
-                        valueListenable: _isShowPassword,
-                        controller: _passwordController,
-                        labelText: AppString.newPassword,
-                        validator: (value) {
-                          return AppRes.validatePassword(value)
-                              ? null
-                              : 'mật khẩu không hợp lệ';
-                        }),
+                    _buildPasswordField(),
                     20.verticalSpace,
-                    TextFieldPassword(
-                      valueListenable: _isShowConfirmPassword,
-                      controller: _confirmPasswordController,
-                      labelText: AppString.confirNewPassword,
-                      validator: (value) {
-                        return AppRes.validatePassword(value)
-                            ? null
-                            : 'mật khẩu không hợp lệ';
-                      },
-                    ),
+                    _buildConfirmPasswordField(),
                     10.verticalSpace,
                     SizedBox(
                       width: 360,
@@ -201,6 +183,71 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
     );
   }
 
+  Widget _buildConfirmPasswordField() {
+    return ListenableBuilder(
+      listenable: _isShowConfirmPassword,
+      builder: (context, _) {
+        return CommonTextField(
+          maxLines: 1,
+          controller: _confirmPasswordController,
+          onFieldSubmitted: (p0) {},
+          labelText: AppString.confirmPassword,
+          validator: (password) => AppRes.validatePassword(password)
+              ? null
+              : 'Mật khẩu không hợp lệ',
+          onChanged: (value) {},
+          obscureText: !_isShowConfirmPassword.value,
+          prefixIcon: Icon(
+            Icons.lock_outline,
+            color: context.colorScheme.primary.withOpacity(0.8),
+          ),
+          suffixIcon: GestureDetector(
+            onTap: () =>
+                _isShowConfirmPassword.value = !_isShowConfirmPassword.value,
+            child: Icon(
+              !_isShowConfirmPassword.value
+                  ? Icons.visibility_off
+                  : Icons.remove_red_eye,
+              color: context.bodyMedium!.color!.withOpacity(0.5),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildPasswordField() {
+    return ListenableBuilder(
+      listenable: _isShowPassword,
+      builder: (context, _) {
+        return CommonTextField(
+          maxLines: 1,
+          controller: _passwordController,
+          onFieldSubmitted: (p0) {},
+          labelText: AppString.newPassword,
+          validator: (password) => AppRes.validatePassword(password)
+              ? null
+              : 'Mật khẩu không hợp lệ',
+          onChanged: (value) {},
+          obscureText: !_isShowPassword.value,
+          prefixIcon: Icon(
+            Icons.lock_outline,
+            color: context.colorScheme.primary.withOpacity(0.8),
+          ),
+          suffixIcon: GestureDetector(
+            onTap: () => _isShowPassword.value = !_isShowPassword.value,
+            child: Icon(
+              !_isShowPassword.value
+                  ? Icons.visibility_off
+                  : Icons.remove_red_eye,
+              color: context.bodyMedium!.color!.withOpacity(0.5),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   Widget _buildPhoneField() => CommonTextField(
         controller: _phoneController,
         onChanged: (p0) {},
@@ -214,10 +261,6 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
         labelText: 'Số điện thoại',
         labelStyle: context.bodyMedium,
         style: context.bodyMedium,
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(defaultBorderRadius / 3),
-          borderSide: BorderSide(color: context.colorScheme.primary),
-        ),
         prefixIcon: Icon(
           Icons.phone_android_outlined,
           color: context.colorScheme.primary.withOpacity(0.9),

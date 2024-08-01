@@ -35,7 +35,10 @@ extension _NewsFoodWidget on _HomeViewState {
               child: ItemFoodView(
                 keyItem: _managerList.keys[index],
                 addToCartOnTap: () {
-                  _handleOnTapAddToCart(orderModel, table, foods[index]);
+                  context
+                      .read<CartCubit>()
+                      .addToCart(table: table, food: foods[index]);
+                  // _handleOnTapAddToCart(orderModel, table, foods[index]);
                   // calculatePathAndAnimate(index);
                 },
                 food: foods[index],

@@ -20,8 +20,11 @@ extension _PopularWidget on _HomeViewState {
               crossAxisSpacing: defaultPadding / 2,
               crossAxisCount: 2),
           itemBuilder: (context, index) => CommonItemFood(
-            addToCartOnTap: () =>
-                _handleOnTapAddToCart(order, table, foods[index]),
+            // addToCartOnTap: () =>
+            //     _handleOnTapAddToCart(order, table, foods[index]),
+            addToCartOnTap: () => context
+                .read<CartCubit>()
+                .addToCart(table: table, food: foods[index]),
             food: foods[index],
           ),
         ),

@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
-import 'package:minhlong_menu_client_v3/common/widget/common_back_button.dart';
-
 import '../../../../common/dialog/app_dialog.dart';
 import '../../../../common/snackbar/app_snackbar.dart';
-import '../../../../common/widget/common_password_textfield.dart';
+import '../../../../common/widget/common_text_field.dart';
 import '../../../../core/app_const.dart';
 import '../../../../core/app_key.dart';
 import '../../../../core/app_res.dart';
@@ -64,9 +61,6 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          automaticallyImplyLeading: false,
-          leading: CommonBackButton(onTap: () => context.pop()),
           title: Text(AppString.changePassword,
               style: context.titleStyleLarge!
                   .copyWith(fontWeight: FontWeight.bold)),
@@ -85,7 +79,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
           case UserUpdatePasswordSuccess():
             pop(context, 1);
             AppSnackbar.showSnackBar(context,
-                msg: 'Thao tác thành công', isSuccess: true);
+                msg: 'Thao tác thành công', type: AppSnackbarType.success);
             _oldPasswordController.clear();
             _newPasswordController.clear();
             _confirmPasswordController.clear();
@@ -93,7 +87,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
           case UserUpdatePasswordFailure():
             pop(context, 1);
             AppSnackbar.showSnackBar(context,
-                msg: state.errorMessage, isSuccess: false);
+                msg: state.errorMessage, type: AppSnackbarType.error);
             break;
           default:
         }
@@ -106,36 +100,104 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              TextFieldPassword(
-                controller: _oldPasswordController,
-                labelText: AppString.oldPassword,
-                validator: (password) => AppRes.validatePassword(password)
-                    ? null
-                    : 'Mật khẩu không hợp lệ',
-                valueListenable: _isShowOldPassword,
+              ListenableBuilder(
+                listenable: _isShowOldPassword,
+                builder: (context, _) {
+                  return CommonTextField(
+                    maxLines: 1,
+                    controller: _oldPasswordController,
+                    onFieldSubmitted: (p0) {},
+                    labelText: AppString.oldPassword,
+                    labelStyle: context.bodyMedium,
+                    validator: (password) => AppRes.validatePassword(password)
+                        ? null
+                        : 'Mật khẩu không hợp lệ',
+                    onChanged: (value) {},
+                    obscureText: !_isShowOldPassword.value,
+                    prefixIcon: Icon(
+                      Icons.lock_outline,
+                      color: context.colorScheme.primary.withOpacity(0.8),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius:
+                          BorderRadius.circular(defaultBorderRadius / 3),
+                      borderSide: BorderSide(
+                        color: context.colorScheme.primary,
+                      ),
+                    ),
+                    suffixIcon: GestureDetector(
+                      onTap: () =>
+                          _isShowOldPassword.value = !_isShowOldPassword.value,
+                      child: Icon(
+                        !_isShowOldPassword.value
+                            ? Icons.visibility_off
+                            : Icons.remove_red_eye,
+                        color: context.bodyMedium!.color!.withOpacity(0.5),
+                      ),
+                    ),
+                  );
+                },
               ),
               20.verticalSpace,
-              TextFieldPassword(
-                valueListenable: _isShowNewPassword,
-                labelText: AppString.newPassword,
-                controller: _newPasswordController,
-                validator: (password) => AppRes.validatePassword(password)
-                    ? null
-                    : 'Mật khẩu không hợp lệ',
+              ListenableBuilder(
+                listenable: _isShowNewPassword,
+                builder: (context, _) {
+                  return CommonTextField(
+                    maxLines: 1,
+                    controller: _newPasswordController,
+                    onFieldSubmitted: (p0) {},
+                    labelText: AppString.newPassword,
+                    validator: (password) => AppRes.validatePassword(password)
+                        ? null
+                        : 'Mật khẩu không hợp lệ',
+                    onChanged: (value) {},
+                    obscureText: !_isShowNewPassword.value,
+                    prefixIcon: Icon(
+                      Icons.lock_outline,
+                      color: context.colorScheme.primary.withOpacity(0.8),
+                    ),
+                    suffixIcon: GestureDetector(
+                      onTap: () =>
+                          _isShowNewPassword.value = !_isShowNewPassword.value,
+                      child: Icon(
+                        !_isShowNewPassword.value
+                            ? Icons.visibility_off
+                            : Icons.remove_red_eye,
+                        color: context.bodyMedium!.color!.withOpacity(0.5),
+                      ),
+                    ),
+                  );
+                },
               ),
               20.verticalSpace,
-              TextFieldPassword(
-                valueListenable: _isShowConfirmPassword,
-                controller: _confirmPasswordController,
-                labelText: AppString.confirNewPassword,
-                validator: (value) {
-                  if (_newPasswordController.text !=
-                      _confirmPasswordController.text) {
-                    return 'Xác nhận mật khẩu không khớp';
-                  }
-                  return AppRes.validatePassword(value)
-                      ? null
-                      : 'mật khẩu không hợp lệ';
+              ListenableBuilder(
+                listenable: _isShowConfirmPassword,
+                builder: (context, _) {
+                  return CommonTextField(
+                    maxLines: 1,
+                    controller: _confirmPasswordController,
+                    onFieldSubmitted: (p0) {},
+                    labelText: AppString.confirmPassword,
+                    validator: (password) => AppRes.validatePassword(password)
+                        ? null
+                        : 'Mật khẩu không hợp lệ',
+                    onChanged: (value) {},
+                    obscureText: !_isShowConfirmPassword.value,
+                    prefixIcon: Icon(
+                      Icons.lock_outline,
+                      color: context.colorScheme.primary.withOpacity(0.8),
+                    ),
+                    suffixIcon: GestureDetector(
+                      onTap: () => _isShowConfirmPassword.value =
+                          !_isShowConfirmPassword.value,
+                      child: Icon(
+                        !_isShowConfirmPassword.value
+                            ? Icons.visibility_off
+                            : Icons.remove_red_eye,
+                        color: context.bodyMedium!.color!.withOpacity(0.5),
+                      ),
+                    ),
+                  );
                 },
               ),
               20.verticalSpace,
