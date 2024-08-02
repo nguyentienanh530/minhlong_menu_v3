@@ -48,6 +48,8 @@ class _EditProfileViewState extends State<EditProfileView> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _subPhoneController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
   final _imageFile = ValueNotifier(File(''));
   var _imageUrl = '';
   final _loading = ValueNotifier(0.0);
@@ -60,6 +62,8 @@ class _EditProfileViewState extends State<EditProfileView> {
     _phoneController.dispose();
     _loading.dispose();
     _subPhoneController.dispose();
+    _emailController.dispose();
+    _addressController.dispose();
   }
 
   @override
@@ -68,8 +72,11 @@ class _EditProfileViewState extends State<EditProfileView> {
     _userModel = widget.userModel;
     _nameController.text = _userModel.fullName;
     _phoneController.text = '0${_userModel.phoneNumber}';
+    _subPhoneController.text =
+        _userModel.subPhoneNumber == 0 ? '' : '0${_userModel.subPhoneNumber}';
     _imageUrl = _userModel.image;
-    _subPhoneController.text = '0${_userModel.phoneNumber}';
+    _emailController.text = _userModel.email;
+    _addressController.text = _userModel.address;
   }
 
   @override

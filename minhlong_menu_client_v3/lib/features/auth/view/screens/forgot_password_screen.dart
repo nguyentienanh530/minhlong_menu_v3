@@ -290,17 +290,24 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
   }
 
   Widget _buildHaveAccount() {
-    return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-      Text('Đã có tài khoản,',
-          style: context.bodyMedium!
-              .copyWith(color: context.bodyMedium!.color!.withOpacity(0.6))),
-      const SizedBox(width: defaultPadding / 2),
-      GestureDetector(
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text('Đã có tài khoản,',
+            style: context.bodyMedium!
+                .copyWith(color: context.bodyMedium!.color!.withOpacity(0.6))),
+        const SizedBox(width: defaultPadding / 2),
+        GestureDetector(
           onTap: () => context.pop(),
-          child: Text('Quay lại đăng nhập',
-              style: context.bodyMedium!.copyWith(
-                  color: context.colorScheme.primary.withOpacity(0.6),
-                  fontWeight: FontWeight.bold)))
-    ]);
+          child: Text(
+            'Quay lại đăng nhập',
+            style: context.bodyMedium!.copyWith(
+              color: context.colorScheme.primary.withOpacity(0.6),
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }

@@ -131,7 +131,7 @@ extension _EditProfileWidget on _EditProfileViewState {
                         labelText: AppString.subPhoneNumber,
                         validator: (value) {
                           return AppRes.validatePhoneNumber(
-                                  _phoneController.text)
+                                  _subPhoneController.text)
                               ? null
                               : 'Vui lòng nhập số điện thoại';
                         }),
@@ -141,23 +141,19 @@ extension _EditProfileWidget on _EditProfileViewState {
               20.verticalSpace,
               CommonTextField(
                   onChanged: (p0) {},
-                  controller: _phoneController,
+                  controller: _emailController,
                   labelText: AppString.email,
                   validator: (value) {
-                    return AppRes.validatePhoneNumber(_phoneController.text)
+                    return AppRes.validateEmail(_emailController.text)
                         ? null
-                        : 'Vui lòng nhập số điện thoại';
+                        : 'Vui lòng nhập email';
                   }),
               20.verticalSpace,
               CommonTextField(
-                  onChanged: (p0) {},
-                  controller: _phoneController,
-                  labelText: AppString.address,
-                  validator: (value) {
-                    return AppRes.validatePhoneNumber(_phoneController.text)
-                        ? null
-                        : 'Vui lòng nhập số điện thoại';
-                  }),
+                onChanged: (p0) {},
+                controller: _addressController,
+                labelText: AppString.address,
+              ),
               20.verticalSpace,
               _buttonEditProfile(),
             ],
@@ -186,6 +182,9 @@ extension _EditProfileWidget on _EditProfileViewState {
                 fullName: _nameController.text,
                 phoneNumber: int.parse(_phoneController.text),
                 image: _imageUrl,
+                subPhoneNumber: int.parse(_subPhoneController.text),
+                email: _emailController.text,
+                address: _addressController.text,
               );
               _updateUser(_userModel);
             }

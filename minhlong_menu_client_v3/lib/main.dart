@@ -52,13 +52,16 @@ void main() async {
   var theme = await ThemeLocalDatasource(sf).getDartTheme() ?? false;
   var scheme =
       await ThemeLocalDatasource(sf).getSchemeTheme() ?? listScheme.first.key;
-  runApp(DevicePreview(
+  runApp(
+    DevicePreview(
       enabled: true,
       builder: (context) => MainApp(
-            sf: sf,
-            theme: theme,
-            scheme: scheme,
-          )));
+        sf: sf,
+        theme: theme,
+        scheme: scheme,
+      ),
+    ),
+  );
 }
 
 class MainApp extends StatelessWidget {

@@ -90,47 +90,109 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: Column(
             children: [
               20.verticalSpace,
-              SizedBox(
-                height: 250,
-                width: double.infinity,
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(2),
+                    width: 200,
+                    // height: 200,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                          color: context.colorScheme.onPrimary, width: 6),
+                    ),
+                    child: Container(
+                      clipBehavior: Clip.antiAlias,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                      ),
+                      child: CachedNetworkImage(
+                        imageUrl: '${ApiConfig.host}${user.image}',
+                        errorWidget: errorBuilderForImage,
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => const Loading(),
+                      ),
+                    ),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        user.fullName,
+                        style: context.titleStyleLarge!.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      10.verticalSpace,
+                      Text(
+                        '+84 ${user.phoneNumber}',
+                        style: context.bodyLarge!.copyWith(
+                          color: context.bodyLarge!.color!.withOpacity(0.5),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              10.verticalSpace,
+              const Divider(
+                height: 1,
+              ),
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: defaultPadding),
+                width: context.sizeDevice.width,
+                padding: const EdgeInsets.all(defaultPadding),
                 child: Column(
                   children: [
-                    Container(
-                      padding: const EdgeInsets.all(2),
-                      width: 200,
-                      height: 200,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                            color: context.colorScheme.onPrimary, width: 6),
-                      ),
-                      child: Container(
-                        clipBehavior: Clip.antiAlias,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
+                    Row(
+                      children: [
+                        const Icon(Icons.phone),
+                        5.horizontalSpace,
+                        RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                  text: '0${user.phoneNumber}',
+                                  style: context.bodySmall),
+                              TextSpan(
+                                text: user.phoneNumber != 0
+                                    ? ' - 0${user.subPhoneNumber}'
+                                    : '',
+                                style: context.bodySmall,
+                              )
+                            ],
+                          ),
                         ),
-                        child: CachedNetworkImage(
-                          imageUrl: '${ApiConfig.host}${user.image}',
-                          errorWidget: errorBuilderForImage,
-                          fit: BoxFit.cover,
-                          placeholder: (context, url) => const Loading(),
+                      ],
+                    ),
+                    10.verticalSpace,
+                    Row(
+                      children: [
+                        const Icon(Icons.email_rounded),
+                        5.horizontalSpace,
+                        Text(
+                          user.email,
+                          style: context.bodySmall,
                         ),
-                      ),
+                      ],
                     ),
-                    Text(
-                      user.fullName,
-                      style: context.bodyLarge!.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      '+84 ${user.phoneNumber}',
-                      style: context.bodySmall!.copyWith(
-                        color: context.bodySmall!.color!.withOpacity(0.5),
-                      ),
+                    10.verticalSpace,
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        const Icon(Icons.location_on),
+                        5.horizontalSpace,
+                        Text(
+                          user.address,
+                          style: context.bodySmall,
+                        ),
+                      ],
                     ),
                   ],
                 ),
+              ),
+              const Divider(
+                height: 1,
               ),
               20.verticalSpace,
               Expanded(

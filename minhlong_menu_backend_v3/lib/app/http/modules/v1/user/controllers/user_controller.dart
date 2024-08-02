@@ -13,10 +13,7 @@ class UserController extends Controller {
   Future<Response> index() async {
     try {
       Map? user = Auth().user();
-      print('user: $user');
-      print('user: $user');
       user?.remove('password');
-
       return AppResponse().ok(statusCode: HttpStatus.ok, data: user);
     } catch (e) {
       print('connection error: $e');
@@ -39,6 +36,10 @@ class UserController extends Controller {
     String? fullName = request.input('full_name');
     int? phoneNumber = request.input('phone_number');
     String? image = request.input('image');
+    int? subPhoneNumber = request.input('sub_phone_number');
+    String? email = request.input('email');
+    String? address = request.input('address');
+    String? subscriptionEndDate = request.input('subscription_end_date');
 
     try {
       if (userID == null || userID == -1) {
@@ -57,6 +58,11 @@ class UserController extends Controller {
         'full_name': fullName ?? user['full_name'],
         'phone_number': phoneNumber ?? user['phone_number'],
         'image': image ?? user['image'],
+        'sub_phone_number': subPhoneNumber ?? user['sub_phone_number'],
+        'email': email ?? user['email'],
+        'address': address ?? user['address'],
+        'subscription_end_date':
+            subscriptionEndDate ?? user['subscription_end_date']
       };
       await userRepo.updateUser(userID: userID, data: userUpdateData);
 
