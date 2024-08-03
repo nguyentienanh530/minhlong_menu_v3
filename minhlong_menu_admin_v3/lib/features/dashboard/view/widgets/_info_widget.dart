@@ -32,7 +32,7 @@ extension _InfoWidget on _DashboardViewState {
       scrollDirection: Axis.horizontal,
       children: [
         _buildItemInfo(
-            backgroundColor: AppColors.lavender,
+            backgroundColor: Colors.white60,
             icon: Icons.payment,
             title: 'Doanh thu ngày',
             value: '${Ultils.currencyFormat(infoModel.revenueToday)} đ',
@@ -134,9 +134,9 @@ extension _InfoWidget on _DashboardViewState {
                       fit: BoxFit.scaleDown,
                       child: Text(
                         title,
-                        style: kBodyStyle.copyWith(
+                        style: context.bodyMedium!.copyWith(
                           fontWeight: FontWeight.w700,
-                          color: AppColors.secondTextColor,
+                          color: Colors.black.withOpacity(0.6),
                         ),
                       ),
                     ),
@@ -149,9 +149,9 @@ extension _InfoWidget on _DashboardViewState {
                         children: [
                           Text(
                             value,
-                            style: kSubHeadingStyle.copyWith(
-                              fontWeight: FontWeight.w900,
-                            ),
+                            style: context.titleStyleMedium!.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black),
                           ),
                           10.horizontalSpace,
                           percent
@@ -178,7 +178,7 @@ extension _InfoWidget on _DashboardViewState {
             const Icon(Icons.arrow_upward, size: 10, color: Colors.green),
             Text(
               '${Ultils.currencyFormat(percent)}%',
-              style: kCaptionStyle.copyWith(
+              style: context.bodyMedium!.copyWith(
                 fontSize: 10,
                 color: Colors.green,
                 fontWeight: FontWeight.w900,
@@ -191,7 +191,7 @@ extension _InfoWidget on _DashboardViewState {
             const Icon(Icons.arrow_downward, size: 10, color: Colors.red),
             Text(
               '${Ultils.currencyFormat(percent).replaceFirst('-', '')}%',
-              style: kCaptionStyle.copyWith(
+              style: context.bodyMedium!.copyWith(
                 fontSize: 10,
                 color: Colors.red,
                 fontWeight: FontWeight.w900,
@@ -204,7 +204,7 @@ extension _InfoWidget on _DashboardViewState {
             const Icon(Icons.arrow_back, size: 10, color: Colors.orange),
             Text(
               '${Ultils.currencyFormat(percent)}%',
-              style: kCaptionStyle.copyWith(
+              style: context.bodyMedium!.copyWith(
                 fontSize: 10,
                 color: Colors.orange,
                 fontWeight: FontWeight.w900,

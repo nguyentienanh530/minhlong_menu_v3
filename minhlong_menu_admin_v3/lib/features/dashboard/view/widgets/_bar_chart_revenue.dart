@@ -2,8 +2,6 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:minhlong_menu_admin_v3/core/extensions.dart';
 
-import '../../../../core/app_colors.dart';
-import '../../../../core/app_style.dart';
 import '../../../../core/utils.dart';
 import '../../data/model/data_chart.dart';
 
@@ -27,7 +25,7 @@ class BarChartRevenue extends StatelessWidget {
     return BarChart(
       BarChartData(
         barTouchData: barTouchData(context),
-        titlesData: titlesData,
+        titlesData: titlesData(context),
         borderData: borderData,
         barGroups: barGroups(context),
         gridData: const FlGridData(show: false),
@@ -51,7 +49,7 @@ class BarChartRevenue extends StatelessWidget {
           ) {
             return BarTooltipItem(
               Ultils.currencyFormat(rod.toY),
-              kBodyStyle.copyWith(
+              context.bodyMedium!.copyWith(
                 fontWeight: FontWeight.w700,
                 color: context.colorScheme.primary,
               ),
@@ -69,26 +67,27 @@ class BarChartRevenue extends StatelessWidget {
         // },
       );
 
-  Widget getTitles(double value, TitleMeta meta) {
+  Widget getTitles(BuildContext context, double value, TitleMeta meta) {
     return SideTitleWidget(
       axisSide: meta.axisSide,
       space: 4,
       child: Text(
         dataCharts[value.toInt()].date,
-        style: kBodyStyle.copyWith(
+        style: context.bodyMedium!.copyWith(
           fontWeight: FontWeight.w700,
         ),
       ),
     );
   }
 
-  FlTitlesData get titlesData => FlTitlesData(
+  FlTitlesData titlesData(BuildContext context) => FlTitlesData(
         show: true,
         bottomTitles: AxisTitles(
           sideTitles: SideTitles(
             showTitles: true,
             reservedSize: 30,
-            getTitlesWidget: getTitles,
+            getTitlesWidget: (value, meta) =>
+                getTitles(context, value, meta), // có thể lỗi
           ),
         ),
         leftTitles: const AxisTitles(
@@ -128,7 +127,7 @@ class BarChartRevenue extends StatelessWidget {
           borderRadius:
               isTouched ? BorderRadius.circular(10) : BorderRadius.circular(5),
           toY: toY,
-          color: isTouched ? context.colorScheme.primary : AppColors.lavender,
+          color: isTouched ? context.colorScheme.primary : Colors.white54,
           borderSide: isTouched
               ? BorderSide(color: context.colorScheme.primary, width: 2)
               : const BorderSide(color: Colors.white, width: 0),

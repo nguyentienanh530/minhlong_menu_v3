@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:minhlong_menu_admin_v3/core/extensions.dart';
 
-import '../../core/app_colors.dart';
 import '../../core/app_const.dart';
-import '../../core/app_style.dart';
 
 class ErrorDialog extends StatelessWidget {
   const ErrorDialog({
@@ -31,7 +29,8 @@ class ErrorDialog extends StatelessWidget {
           const SizedBox(height: defaultPadding),
           Text(
             "Có lỗi xảy ra",
-            style: kHeadingStyle.copyWith(fontWeight: FontWeight.bold),
+            style:
+                context.titleStyleLarge!.copyWith(fontWeight: FontWeight.bold),
           )
         ],
       ),
@@ -40,18 +39,19 @@ class ErrorDialog extends StatelessWidget {
         children: [
           Text(
             title,
-            style: kSubHeadingStyle.copyWith(
-                fontSize: 14, color: AppColors.black.withOpacity(0.5)),
+            style: context.titleStyleLarge!.copyWith(
+                fontSize: 14,
+                color: context.titleStyleMedium!.color!.withOpacity(0.5)),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 15),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
                 backgroundColor: context.colorScheme.primary,
-                foregroundColor: AppColors.white),
+                foregroundColor: Colors.white),
             onPressed: onRetryPressed,
             child: Text(onRetryText ?? "Quay lại đăng nhập",
-                style: kButtonWhiteStyle),
+                style: context.bodyMedium),
           ),
         ],
       ),

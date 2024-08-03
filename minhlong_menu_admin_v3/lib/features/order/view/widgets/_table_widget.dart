@@ -61,14 +61,15 @@ extension _TableWidget on _OrderViewState {
                   child: Text(
                     e.orderCount.toString(),
                     textAlign: TextAlign.center,
-                    style: kBodyWhiteStyle.copyWith(
+                    style: context.bodyMedium!.copyWith(
+                      color: Colors.white,
                       fontSize: 10,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                 ),
                 child: InkWell(
-                  hoverColor: AppColors.transparent,
+                  hoverColor: Colors.transparent,
                   onTap: () {
                     context.read<TableIndexSelectedCubit>().changeIndex(e.id);
                     Ultils.sendSocket(_orderChannel, 'orders',
@@ -76,28 +77,27 @@ extension _TableWidget on _OrderViewState {
                   },
                   child: Card(
                     elevation: 4,
-                    color: AppColors.white,
+                    shadowColor: context.colorScheme.onSurface.withOpacity(0.5),
                     shape: OutlineInputBorder(
                       borderSide: BorderSide(
                         color: index == e.id
                             ? context.colorScheme.primary
-                            : AppColors.white,
+                            : Colors.white,
                       ),
                       borderRadius: BorderRadius.circular(
                         textFieldBorderRadius,
                       ),
                     ),
-                    shadowColor: AppColors.lavender,
                     child: Padding(
                       padding: const EdgeInsets.all(3.5),
                       child: Text(
                         e.name,
-                        style: kBodyStyle.copyWith(
-                          fontWeight: FontWeight.w700,
-                          color: index == e.id
-                              ? context.colorScheme.primary
-                              : AppColors.secondTextColor,
-                        ),
+                        style: context.bodyMedium!.copyWith(
+                            fontWeight: FontWeight.w700,
+                            color: index == e.id
+                                ? context.colorScheme.primary
+                                : context.titleStyleMedium!.color!
+                                    .withOpacity(0.5)),
                       ),
                     ),
                   ),

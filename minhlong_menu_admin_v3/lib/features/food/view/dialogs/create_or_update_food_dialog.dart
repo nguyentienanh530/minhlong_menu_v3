@@ -17,10 +17,8 @@ import '../../../../common/widget/error_build_image.dart';
 import '../../../../common/widget/error_widget.dart';
 import '../../../../common/widget/loading.dart';
 import '../../../../core/api_config.dart';
-import '../../../../core/app_colors.dart';
 import '../../../../core/app_const.dart';
 import '../../../../core/app_enum.dart';
-import '../../../../core/app_style.dart';
 import '../../../../core/extensions.dart';
 import '../../../category/bloc/category_bloc.dart';
 import '../../../category/data/repositories/category_repository.dart';
@@ -153,9 +151,10 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
                                 _mode == ScreenType.create
                                     ? 'Thêm món mới'.toUpperCase()
                                     : 'Chỉnh sửa'.toUpperCase(),
-                                style: kHeadingStyle.copyWith(
-                                    color: AppColors.secondTextColor,
-                                    fontWeight: FontWeight.w700,
+                                style: context.titleStyleLarge!.copyWith(
+                                    color: context.titleStyleLarge!.color!
+                                        .withOpacity(0.5),
+                                    fontWeight: FontWeight.bold,
                                     fontSize: 40)),
                             _buildBodyCreateOrUpdateFoodDialog(
                                 categoryState.categoryModel.categoryItems),
@@ -231,8 +230,8 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
                 children: [
                   Radio<FoodDiscountType>(
                     value: FoodDiscountType.apply,
-                    fillColor:
-                        WidgetStateProperty.all(AppColors.secondTextColor),
+                    fillColor: WidgetStateProperty.all(
+                        context.bodyMedium!.color!.withOpacity(0.5)),
                     groupValue: _applyforDiscount.value,
                     onChanged: (value) {
                       _applyforDiscount.value = value!;
@@ -243,8 +242,8 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
                       fit: BoxFit.scaleDown,
                       child: Text(
                         'Áp dụng',
-                        style: kCaptionStyle.copyWith(
-                            color: AppColors.secondTextColor),
+                        style: context.bodyMedium!.copyWith(
+                            color: context.bodyMedium!.color!.withOpacity(0.5)),
                       ),
                     ),
                   ),
@@ -255,8 +254,8 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
               child: Row(
                 children: [
                   Radio<FoodDiscountType>(
-                    fillColor:
-                        WidgetStateProperty.all(AppColors.secondTextColor),
+                    fillColor: WidgetStateProperty.all(
+                        context.bodyMedium!.color!.withOpacity(0.5)),
                     value: FoodDiscountType.doNotApply,
                     groupValue: _applyforDiscount.value,
                     onChanged: (value) {
@@ -267,8 +266,9 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
                     child: FittedBox(
                       fit: BoxFit.scaleDown,
                       child: Text('Không',
-                          style: kBodyStyle.copyWith(
-                              color: AppColors.secondTextColor)),
+                          style: context.bodyMedium!.copyWith(
+                              color:
+                                  context.bodyMedium!.color!.withOpacity(0.5))),
                     ),
                   ),
                 ],
@@ -298,15 +298,15 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
                   }
                 : null,
             maxLines: 1,
-            suffixIcon: const Icon(
+            suffixIcon: Icon(
               Icons.percent_outlined,
               size: 20,
-              color: AppColors.secondTextColor,
+              color: context.bodyMedium!.color!.withOpacity(0.5),
             ),
-            prefixIcon: const Icon(
+            prefixIcon: Icon(
               Icons.discount_rounded,
               size: 20,
-              color: AppColors.secondTextColor,
+              color: context.bodyMedium!.color!.withOpacity(0.5),
             ),
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
           );
@@ -325,10 +325,10 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
         return null;
       },
       maxLines: 1,
-      prefixIcon: const Icon(
+      prefixIcon: Icon(
         Icons.fastfood_outlined,
         size: 20,
-        color: AppColors.secondTextColor,
+        color: context.bodyMedium!.color!.withOpacity(0.5),
       ),
     );
   }
@@ -339,10 +339,10 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
       hintText: 'Mô tả món ăn',
       filled: true,
       // maxLines: 1,
-      prefixIcon: const Icon(
+      prefixIcon: Icon(
         Icons.description_outlined,
         size: 20,
-        color: AppColors.secondTextColor,
+        color: context.bodyMedium!.color!.withOpacity(0.5),
       ),
     );
   }
@@ -353,8 +353,11 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
       child: Row(
         children: [
           _buildItemImage(imageFile: _imageFile1, image: _image1),
+          10.horizontalSpace,
           _buildItemImage(imageFile: _imageFile2, image: _image2),
+          10.horizontalSpace,
           _buildItemImage(imageFile: _imageFile3, image: _image3),
+          10.horizontalSpace,
           _buildItemImage(imageFile: _imageFile4, image: _image4),
         ],
       ),
@@ -367,6 +370,7 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
       builder: (context, value, child) {
         return Expanded(
           child: InkWell(
+            borderRadius: BorderRadius.circular(defaultPadding),
             onTap: () async => await Ultils.pickImage().then((value) {
               if (value == null) {
                 return;
@@ -376,24 +380,27 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
             child: Container(
               clipBehavior: Clip.antiAlias,
               decoration: BoxDecoration(
-                color: AppColors.white,
                 borderRadius: BorderRadius.circular(defaultBorderRadius).r,
-                border: Border.all(color: AppColors.lavender),
+                border: Border.all(
+                    color: context.colorScheme.onPrimaryContainer
+                        .withOpacity(0.5)),
               ),
               child: imageFile.value.path.isEmpty
                   ? image.isEmpty
                       ? Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Icon(
+                            Icon(
                               Icons.add_photo_alternate_outlined,
-                              color: AppColors.secondTextColor,
+                              color:
+                                  context.bodyMedium!.color!.withOpacity(0.5),
                               size: 20,
                             ),
                             Text(
                               '500 x 500',
-                              style: kCaptionStyle.copyWith(
-                                color: AppColors.secondTextColor,
+                              style: context.bodyMedium!.copyWith(
+                                color:
+                                    context.bodyMedium!.color!.withOpacity(0.5),
                               ),
                             ),
                           ],
@@ -428,10 +435,10 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
         return null;
       },
       maxLines: 1,
-      prefixIcon: const Icon(
+      prefixIcon: Icon(
         Icons.attach_money_outlined,
         size: 20,
-        color: AppColors.secondTextColor,
+        color: context.bodyMedium!.color!.withOpacity(0.5),
       ),
     );
   }
@@ -451,7 +458,7 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
         ),
         child: Text(
           _mode == ScreenType.create ? 'Tạo món' : 'Sửa',
-          style: kButtonWhiteStyle,
+          style: context.bodyMedium!.copyWith(color: Colors.white),
         ),
       ),
     );
@@ -461,16 +468,15 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
-        color: AppColors.white,
         borderRadius: BorderRadius.circular(textFieldBorderRadius).r,
-        border: Border.all(color: AppColors.lavender),
+        border: Border.all(color: Colors.white54),
       ),
       child: Row(
         children: [
-          const Icon(
+          Icon(
             Icons.category_outlined,
             size: 20,
-            color: AppColors.secondTextColor,
+            color: context.bodyMedium!.color!.withOpacity(0.8),
           ),
           10.horizontalSpace,
           ValueListenableBuilder(
@@ -480,15 +486,15 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
                 child: DropdownButton<CategoryItem>(
                   isExpanded: true,
                   hint: Text('Danh mục',
-                      style: kBodyStyle.copyWith(
-                          color: AppColors.secondTextColor)),
+                      style: context.bodyMedium!.copyWith(
+                          color: context.bodyMedium!.color!.withOpacity(0.8))),
                   padding: const EdgeInsets.all(0),
                   value: _categoryValueNotifier.value,
                   icon: const Icon(Icons.arrow_drop_down_rounded),
                   borderRadius: BorderRadius.circular(defaultBorderRadius).r,
                   underline: const SizedBox(),
-                  style: kBodyStyle.copyWith(color: AppColors.secondTextColor),
-                  dropdownColor: AppColors.white,
+                  style: context.bodyMedium!.copyWith(
+                      color: context.bodyMedium!.color!.withOpacity(0.8)),
                   // value: _categoryId,
                   items: categories.map((category) {
                     return DropdownMenuItem(

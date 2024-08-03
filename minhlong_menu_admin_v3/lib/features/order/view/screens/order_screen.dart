@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:badges/badges.dart' as badges;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,10 +14,8 @@ import 'package:minhlong_menu_admin_v3/common/snackbar/overlay_snackbar.dart';
 import 'package:minhlong_menu_admin_v3/common/widget/common_icon_button.dart';
 import 'package:minhlong_menu_admin_v3/common/widget/error_widget.dart';
 import 'package:minhlong_menu_admin_v3/common/widget/loading.dart';
-import 'package:minhlong_menu_admin_v3/core/app_colors.dart';
 import 'package:minhlong_menu_admin_v3/core/app_const.dart';
 import 'package:minhlong_menu_admin_v3/core/app_enum.dart';
-import 'package:minhlong_menu_admin_v3/core/app_style.dart';
 import 'package:minhlong_menu_admin_v3/core/extensions.dart';
 import 'package:minhlong_menu_admin_v3/core/utils.dart';
 import 'package:minhlong_menu_admin_v3/features/order/cubit/pagination_cubit.dart';
@@ -24,6 +23,7 @@ import 'package:minhlong_menu_admin_v3/features/order/data/model/food_order_mode
 import 'package:minhlong_menu_admin_v3/features/user/data/model/user_model.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
+
 import '../../../../common/widget/empty_widget.dart';
 import '../../../../common/widget/error_build_image.dart';
 import '../../../../core/api_config.dart';
@@ -33,9 +33,9 @@ import '../../../home/cubit/table_index_selected_cubit.dart';
 import '../../bloc/order_bloc.dart';
 import '../../data/model/order_item.dart';
 import '../../data/repositories/order_repository.dart';
-import 'package:badges/badges.dart' as badges;
-part '../widgets/_order_header_widget.dart';
+
 part '../dialogs/_order_detail_dialog.dart';
+part '../widgets/_order_header_widget.dart';
 part '../widgets/_orders_on_table_widget.dart';
 part '../widgets/_table_widget.dart';
 
@@ -194,10 +194,9 @@ class _OrderViewState extends State<OrderView>
                 tableIndexSelectedState,
                 ordersList,
               ),
-              10.verticalSpace,
-              const SizedBox(height: defaultPadding),
+              16.verticalSpace,
               _buildTablesWidget(index: tableIndexSelectedState),
-              const SizedBox(height: defaultPadding),
+              16.verticalSpace,
               Expanded(
                 child: SingleChildScrollView(
                     child: _buildOrdersOnTable(tableIndexSelectedState)),
@@ -227,16 +226,16 @@ class _OrderViewState extends State<OrderView>
   Color _handleColor(String status) {
     switch (status) {
       case 'new':
-        return AppColors.red;
+        return Colors.red;
       case 'processing':
-        return AppColors.blue;
+        return Colors.blue;
       case 'completed':
-        return AppColors.islamicGreen;
+        return Colors.green;
       case 'cancel':
-        return AppColors.red;
+        return Colors.red;
 
       default:
-        return AppColors.black;
+        return Colors.black;
     }
   }
 

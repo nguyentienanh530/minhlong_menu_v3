@@ -33,7 +33,7 @@ extension _LoginBody on _LoginScreenState {
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(defaultBorderRadius)),
       margin: const EdgeInsets.all(20),
-      color: AppColors.white.withOpacity(0.2),
+      color: context.colorScheme.surface.withOpacity(0.4),
       elevation: 30,
       child: FittedBox(
         child: Container(
@@ -61,6 +61,7 @@ extension _LoginBody on _LoginScreenState {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [_ButtonForgotPassword()]),
                 ),
+                10.verticalSpace,
                 _buildValidPassword(),
                 20.verticalSpace,
                 _ButtonLogin(onTap: () {

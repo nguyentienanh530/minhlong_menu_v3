@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:minhlong_menu_admin_v3/common/widget/common_text_field.dart';
-import 'package:minhlong_menu_admin_v3/core/app_colors.dart';
 import 'package:minhlong_menu_admin_v3/core/app_const.dart';
 import 'package:minhlong_menu_admin_v3/core/app_key.dart';
 import 'package:minhlong_menu_admin_v3/features/dinner_table/bloc/dinner_table_bloc.dart';
@@ -12,7 +11,6 @@ import 'package:minhlong_menu_admin_v3/features/dinner_table/data/model/table_it
 import '../../../../common/dialog/app_dialog.dart';
 import '../../../../common/snackbar/overlay_snackbar.dart';
 import '../../../../core/app_enum.dart';
-import '../../../../core/app_style.dart';
 import '../../../../core/extensions.dart';
 
 class CreateOrUpdateDinnerTableDialog extends StatefulWidget {
@@ -93,10 +91,10 @@ class _CreateOrUpdateDinnerTableDialogState
                   children: [
                     Text(
                       _mode == ScreenType.create ? 'THÊM BÀN MỚI' : 'SỬA BÀN',
-                      style: kBodyStyle.copyWith(
+                      style: context.bodyMedium!.copyWith(
                           fontWeight: FontWeight.w700,
                           fontSize: 40.sp,
-                          color: AppColors.secondTextColor),
+                          color: context.bodyMedium!.color!.withOpacity(0.5)),
                     ),
                     20.verticalSpace,
                     _buildDinnerTableNameTextField(),
@@ -120,10 +118,10 @@ class _CreateOrUpdateDinnerTableDialogState
       hintText: 'Tên bàn',
       filled: true,
       maxLines: 1,
-      prefixIcon: const Icon(
+      prefixIcon: Icon(
         Icons.table_bar_outlined,
         size: 20,
-        color: AppColors.secondTextColor,
+        color: context.bodyMedium!.color!.withOpacity(0.5),
       ),
       validator: (value) {
         if (value == null || value.isEmpty) {
@@ -145,7 +143,8 @@ class _CreateOrUpdateDinnerTableDialogState
               children: [
                 Radio<DinnerTableStatus>(
                   value: DinnerTableStatus.active,
-                  fillColor: WidgetStateProperty.all(AppColors.secondTextColor),
+                  fillColor: WidgetStateProperty.all(
+                      context.bodyMedium!.color!.withOpacity(0.5)),
                   groupValue: _dinnerTableStatus.value,
                   onChanged: (value) {
                     _dinnerTableStatus.value = value!;
@@ -153,8 +152,8 @@ class _CreateOrUpdateDinnerTableDialogState
                 ),
                 Text(
                   'Sử dụng',
-                  style:
-                      kCaptionStyle.copyWith(color: AppColors.secondTextColor),
+                  style: context.bodyMedium!.copyWith(
+                      color: context.bodyMedium!.color!.withOpacity(0.5)),
                 ),
               ],
             ),
@@ -162,7 +161,8 @@ class _CreateOrUpdateDinnerTableDialogState
             Row(
               children: [
                 Radio<DinnerTableStatus>(
-                  fillColor: WidgetStateProperty.all(AppColors.secondTextColor),
+                  fillColor: WidgetStateProperty.all(
+                      context.bodyMedium!.color!.withOpacity(0.5)),
                   value: DinnerTableStatus.inactive,
                   groupValue: _dinnerTableStatus.value,
                   onChanged: (value) {
@@ -170,8 +170,8 @@ class _CreateOrUpdateDinnerTableDialogState
                   },
                 ),
                 Text('Không sử dụng',
-                    style:
-                        kBodyStyle.copyWith(color: AppColors.secondTextColor)),
+                    style: context.bodyMedium!.copyWith(
+                        color: context.bodyMedium!.color!.withOpacity(0.5))),
               ],
             ),
           ],
@@ -187,10 +187,10 @@ class _CreateOrUpdateDinnerTableDialogState
       filled: true,
       maxLines: 1,
       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-      prefixIcon: const Icon(
+      prefixIcon: Icon(
         Icons.chair_alt_outlined,
         size: 20,
-        color: AppColors.secondTextColor,
+        color: context.bodyMedium!.color!.withOpacity(0.5),
       ),
       validator: (p0) {
         if (p0 == null || p0.isEmpty) {
@@ -215,7 +215,8 @@ class _CreateOrUpdateDinnerTableDialogState
             color: context.colorScheme.primary),
         child: Text(
           _mode == ScreenType.create ? 'Thêm mới' : 'Sửa',
-          style: kBodyWhiteStyle.copyWith(
+          style: context.bodyMedium!.copyWith(
+            color: Colors.white,
             fontWeight: FontWeight.w700,
           ),
         ),

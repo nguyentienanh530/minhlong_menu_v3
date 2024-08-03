@@ -1,6 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import '../../../../core/app_colors.dart';
+
 import '../../data/model/best_selling_food.dart';
 import 'indicator.dart';
 
@@ -114,7 +114,7 @@ class _PieChartTop4BestSellingFoodState
             titleStyle: TextStyle(
               fontSize: fontSize,
               fontWeight: FontWeight.bold,
-              color: AppColors.white,
+              color: Colors.white,
               shadows: shadows,
             ),
           );
@@ -127,7 +127,7 @@ class _PieChartTop4BestSellingFoodState
             titleStyle: TextStyle(
               fontSize: fontSize,
               fontWeight: FontWeight.bold,
-              color: AppColors.white,
+              color: Colors.white,
               shadows: shadows,
             ),
           );
@@ -140,7 +140,7 @@ class _PieChartTop4BestSellingFoodState
             titleStyle: TextStyle(
               fontSize: fontSize,
               fontWeight: FontWeight.bold,
-              color: AppColors.white,
+              color: Colors.white,
               shadows: shadows,
             ),
           );
@@ -153,7 +153,7 @@ class _PieChartTop4BestSellingFoodState
             titleStyle: TextStyle(
               fontSize: fontSize,
               fontWeight: FontWeight.bold,
-              color: AppColors.white,
+              color: Colors.white,
               shadows: shadows,
             ),
           );

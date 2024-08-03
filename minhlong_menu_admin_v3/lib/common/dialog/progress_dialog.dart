@@ -3,9 +3,6 @@ import 'package:minhlong_menu_admin_v3/core/extensions.dart';
 
 // import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-import '../../core/app_colors.dart';
-import '../../core/app_style.dart';
-
 class ProgressDialog extends StatelessWidget {
   const ProgressDialog({
     super.key,
@@ -21,9 +18,9 @@ class ProgressDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: AppColors.white,
+      backgroundColor: Colors.white,
       title: isProgressed
-          ? const Text("Vui lòng đợi...", style: kHeadingStyle)
+          ? Text("Vui lòng đợi...", style: context.titleStyleLarge)
           : Icon(Icons.check_circle_outline_rounded,
               color: context.colorScheme.primary, size: 100),
       content: Column(
@@ -42,10 +39,10 @@ class ProgressDialog extends StatelessWidget {
                 : ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: context.colorScheme.primary,
-                      foregroundColor: AppColors.white,
+                      foregroundColor: Colors.white,
                     ),
                     onPressed: onPressed,
-                    child: const Text("Xác nhận", style: kButtonWhiteStyle),
+                    child: Text("Xác nhận", style: context.bodyMedium),
                   ),
           )
         ],

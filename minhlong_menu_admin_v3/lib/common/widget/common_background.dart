@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../core/app_asset.dart';
-import '../../core/app_colors.dart';
 
 class CommonBackground extends StatelessWidget {
   const CommonBackground({super.key});
@@ -12,7 +11,7 @@ class CommonBackground extends StatelessWidget {
       height: double.infinity,
       width: double.infinity,
       child: Image.asset(AppAsset.background,
-          color: AppColors.black.withOpacity(0.15)),
+          color: Colors.black.withOpacity(0.15)),
     );
   }
 }

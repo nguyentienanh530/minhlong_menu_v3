@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:minhlong_menu_admin_v3/core/app_colors.dart';
 import 'package:minhlong_menu_admin_v3/core/app_const.dart';
 import 'package:minhlong_menu_admin_v3/core/app_string.dart';
 import 'package:minhlong_menu_admin_v3/core/extensions.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../../../core/app_asset.dart';
-import '../../../../core/app_style.dart';
 
 class SettingLoadingScreen extends StatelessWidget {
   const SettingLoadingScreen({super.key});
@@ -17,8 +15,8 @@ class SettingLoadingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Shimmer.fromColors(
-          baseColor: AppColors.smokeWhite1,
-          highlightColor: AppColors.smokeWhite2,
+          baseColor: Colors.white54,
+          highlightColor: Colors.white60,
           child: Container(
             padding: const EdgeInsets.all(defaultPadding * 2),
             width: double.infinity,
@@ -31,7 +29,7 @@ class SettingLoadingScreen extends StatelessWidget {
                         width: 0.25 * context.sizeDevice.height,
                         height: 0.25 * context.sizeDevice.height,
                         decoration: const BoxDecoration(
-                            shape: BoxShape.circle, color: AppColors.white),
+                            shape: BoxShape.circle, color: Colors.white),
                         child: SizedBox(
                           height: 0.25 * context.sizeDevice.height,
                         ),
@@ -40,13 +38,13 @@ class SettingLoadingScreen extends StatelessWidget {
                       Container(
                         height: 25,
                         width: 200,
-                        color: AppColors.white,
+                        color: Colors.white,
                       ),
                       10.verticalSpace,
                       Container(
                         height: 15,
                         width: 100,
-                        color: AppColors.white,
+                        color: Colors.white,
                       ),
                       _ItemProfile(
                           svgPath: AppAsset.user,
@@ -75,7 +73,7 @@ class SettingLoadingScreen extends StatelessWidget {
                                   height: 0.25 * context.sizeDevice.height,
                                   decoration: const BoxDecoration(
                                       shape: BoxShape.circle,
-                                      color: AppColors.white),
+                                      color: Colors.white),
                                   child: SizedBox(
                                     height: 0.25 * context.sizeDevice.height,
                                   ),
@@ -84,13 +82,13 @@ class SettingLoadingScreen extends StatelessWidget {
                                 Container(
                                   height: 25,
                                   width: 200,
-                                  color: AppColors.white,
+                                  color: Colors.white,
                                 ),
                                 10.verticalSpace,
                                 Container(
                                   height: 15,
                                   width: 100,
-                                  color: AppColors.white,
+                                  color: Colors.white,
                                 ),
                                 _ItemProfile(
                                     svgPath: AppAsset.user,
@@ -154,8 +152,9 @@ class _ItemProfile extends StatelessWidget {
                         fit: BoxFit.scaleDown,
                         child: Text(
                           title,
-                          style: kBodyStyle.copyWith(
-                              color: AppColors.secondTextColor),
+                          style: context.bodyMedium!.copyWith(
+                              color:
+                                  context.bodyMedium!.color!.withOpacity(0.5)),
                         ),
                       )
                     ],
@@ -169,7 +168,8 @@ class _ItemProfile extends StatelessWidget {
                   child: Icon(
                     Icons.arrow_forward_ios_rounded,
                     size: 15,
-                    color: colorIcon ?? AppColors.secondTextColor,
+                    color: colorIcon ??
+                        context.bodyMedium!.color!.withOpacity(0.5),
                   ),
                 ),
               )

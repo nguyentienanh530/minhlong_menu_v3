@@ -5,7 +5,6 @@ extension _FoodBodyWidget on _DinnerTableViewState {
     return Container(
       padding: const EdgeInsets.all(5).r,
       decoration: BoxDecoration(
-        color: AppColors.white,
         borderRadius: BorderRadius.circular(defaultBorderRadius).r,
       ),
       child: _tableWidget(),
@@ -70,8 +69,8 @@ extension _FoodBodyWidget on _DinnerTableViewState {
                   return Center(
                     child: Text(
                       'Không có dữ liệu',
-                      style:
-                          kBodyStyle.copyWith(color: AppColors.secondTextColor),
+                      style: context.bodyMedium!.copyWith(
+                          color: context.bodyMedium!.color!.withOpacity(0.5)),
                     ),
                   );
 
@@ -112,8 +111,9 @@ extension _FoodBodyWidget on _DinnerTableViewState {
                               valueListenable: _limit,
                               builder: (context, limit, child) => Text(
                                 'Hiển thị 1 đến $limit trong số ${pagination.totalItem} món',
-                                style: kBodyStyle.copyWith(
-                                  color: AppColors.secondTextColor,
+                                style: context.bodyMedium!.copyWith(
+                                  color: context.bodyMedium!.color!
+                                      .withOpacity(0.5),
                                 ),
                               ),
                             );
@@ -140,6 +140,7 @@ extension _FoodBodyWidget on _DinnerTableViewState {
                         pageTotal: pagination.totalPage,
                         pageInit: _curentPage.value,
                         colorPrimary: context.colorScheme.primary,
+                        colorSub: context.colorScheme.surface,
                       ),
                     );
                   },
@@ -177,9 +178,9 @@ extension _FoodBodyWidget on _DinnerTableViewState {
           .map((e) => Text(
                 e,
                 textAlign: TextAlign.center,
-                style: kBodyStyle.copyWith(
+                style: context.bodyMedium!.copyWith(
                     fontWeight: FontWeight.w600,
-                    color: AppColors.secondTextColor),
+                    color: context.bodyMedium!.color!.withOpacity(0.5)),
               ))
           .toList(),
     );
@@ -188,8 +189,9 @@ extension _FoodBodyWidget on _DinnerTableViewState {
   TableRow _buildRowTable(int index, TableItem tableItem) {
     return TableRow(
       decoration: BoxDecoration(
-        color:
-            index.isEven ? AppColors.black.withOpacity(0.1) : AppColors.white,
+        color: index.isEven
+            ? context.colorScheme.surface
+            : context.colorScheme.onSecondaryContainer.withOpacity(0.1),
       ),
       children: <Widget>[
         Container(
@@ -197,14 +199,16 @@ extension _FoodBodyWidget on _DinnerTableViewState {
             alignment: Alignment.center,
             child: Text(
               '${tableItem.id}',
-              style: kBodyStyle.copyWith(color: AppColors.secondTextColor),
+              style: context.bodyMedium!
+                  .copyWith(color: context.bodyMedium!.color!.withOpacity(0.5)),
             )),
         Container(
           height: 70.h,
           alignment: Alignment.center,
           child: Text(
             tableItem.name,
-            style: kBodyStyle.copyWith(color: AppColors.secondTextColor),
+            style: context.bodyMedium!
+                .copyWith(color: context.bodyMedium!.color!.withOpacity(0.5)),
           ),
         ),
         Container(
@@ -212,7 +216,8 @@ extension _FoodBodyWidget on _DinnerTableViewState {
           alignment: Alignment.center,
           child: Text(
             tableItem.seats.toString(),
-            style: kBodyStyle.copyWith(color: AppColors.secondTextColor),
+            style: context.bodyMedium!
+                .copyWith(color: context.bodyMedium!.color!.withOpacity(0.5)),
           ),
         ),
         Container(
@@ -220,8 +225,8 @@ extension _FoodBodyWidget on _DinnerTableViewState {
           alignment: Alignment.center,
           child: Text(
             tableItem.isUse ? 'Đang sử dụng' : 'Không sử dụng',
-            style: kBodyStyle.copyWith(
-              color: tableItem.isUse ? AppColors.islamicGreen : AppColors.red,
+            style: context.bodyMedium!.copyWith(
+              color: tableItem.isUse ? Colors.green : Colors.red,
             ),
           ),
         ),
@@ -237,7 +242,7 @@ extension _FoodBodyWidget on _DinnerTableViewState {
                       mode: ScreenType.update, tableItem: tableItem);
                 },
                 icon: Icons.edit,
-                color: AppColors.sun,
+                color: context.colorScheme.primary,
                 tooltip: 'Chỉnh sửa',
               ),
             ),
@@ -266,7 +271,7 @@ extension _FoodBodyWidget on _DinnerTableViewState {
                   // );
                 },
                 icon: Icons.delete_outline,
-                color: AppColors.red,
+                color: Colors.red,
                 tooltip: 'Xóa bàn',
               ),
             ),

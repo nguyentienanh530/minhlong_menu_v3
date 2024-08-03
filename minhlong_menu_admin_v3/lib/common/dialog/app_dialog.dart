@@ -20,7 +20,6 @@ class AppDialog {
       context: context,
       builder: (context) {
         return AlertDialog(
-          backgroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(
               defaultBorderRadius,
@@ -28,9 +27,9 @@ class AppDialog {
           ),
           title: Column(
             children: [
-              const Icon(
+              Icon(
                 Icons.warning_rounded,
-                color: Colors.redAccent,
+                color: context.colorScheme.error,
                 size: 80,
               ),
               const SizedBox(height: defaultPadding),
@@ -52,9 +51,7 @@ class AppDialog {
                     color: context.titleStyleLarge!.color!.withOpacity(0.5)),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(
-                height: 15,
-              ),
+              15.verticalSpace,
               SizedBox(
                 height: 40,
                 child: Row(
@@ -91,7 +88,8 @@ class AppDialog {
                           fit: BoxFit.scaleDown,
                           child: Text(
                             confirmText ?? "Đăng xuất",
-                            style: context.bodyMedium,
+                            style: context.bodyMedium!
+                                .copyWith(color: Colors.white),
                           ),
                         ),
                       ),
@@ -118,7 +116,6 @@ class AppDialog {
       context: context,
       builder: (context) {
         return AlertDialog(
-          backgroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(
               defaultBorderRadius,
@@ -191,7 +188,8 @@ class AppDialog {
                           fit: BoxFit.scaleDown,
                           child: Text(
                             confirmText ?? 'Xác nhận',
-                            style: context.bodyMedium,
+                            style: context.bodyMedium!
+                                .copyWith(color: Colors.white),
                           ),
                         ),
                       ),
@@ -217,7 +215,6 @@ class AppDialog {
       context: context,
       builder: (context) {
         return AlertDialog(
-          backgroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(
               defaultBorderRadius,
@@ -268,7 +265,8 @@ class AppDialog {
                           fit: BoxFit.scaleDown,
                           child: Text(
                             confirmText!,
-                            style: context.bodyMedium,
+                            style: context.bodyMedium!
+                                .copyWith(color: Colors.white),
                           ),
                         ),
                       ),
@@ -290,7 +288,6 @@ class AppDialog {
       context: context,
       builder: (context) => AlertDialog(
         scrollable: true,
-        backgroundColor: Colors.white,
         content: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,

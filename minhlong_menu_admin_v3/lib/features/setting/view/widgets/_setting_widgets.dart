@@ -11,9 +11,10 @@ extension _SettingWidgets on _SettingScreenState {
           width: 0.25 * context.sizeDevice.height,
           height: 0.25 * context.sizeDevice.height,
           decoration: BoxDecoration(
-            color: AppColors.white,
             shape: BoxShape.circle,
-            border: Border.all(color: AppColors.smokeWhite, width: 6),
+            border: Border.all(
+                color: context.colorScheme.onPrimaryContainer.withOpacity(0.3),
+                width: 6),
           ),
           child: Container(
             clipBehavior: Clip.antiAlias,
@@ -30,6 +31,7 @@ extension _SettingWidgets on _SettingScreenState {
         ),
         10.verticalSpace,
         _nameAndPhoneWidgets(user),
+        20.verticalSpace
       ],
     );
   }
@@ -39,12 +41,12 @@ extension _SettingWidgets on _SettingScreenState {
       children: [
         Text(
           user.fullName,
-          style: kHeadingStyle.copyWith(fontWeight: FontWeight.bold),
+          style: context.titleStyleLarge!.copyWith(fontWeight: FontWeight.bold),
         ),
         Text(
           '+84 ${user.phoneNumber}',
-          style: kBodyStyle.copyWith(
-              color: AppColors.secondTextColor, fontSize: 12),
+          style: context.bodyMedium!.copyWith(
+              color: context.bodyMedium!.color!.withOpacity(0.5), fontSize: 12),
         ),
       ],
     );
@@ -56,6 +58,8 @@ extension _SettingWidgets on _SettingScreenState {
       colorIcon: context.colorScheme.primary,
       svgPath: AppAsset.user,
       title: AppString.editProfile,
+      titleStyle: context.bodyMedium!
+          .copyWith(color: context.bodyMedium!.color!.withOpacity(0.5)),
     );
   }
 
@@ -65,23 +69,8 @@ extension _SettingWidgets on _SettingScreenState {
       colorIcon: context.colorScheme.primary,
       svgPath: AppAsset.lock,
       title: AppString.changePassword,
-    );
-  }
-
-  Widget _buildTitleChangePassword2() {
-    return _ItemProfile(
-      colorIcon: context.colorScheme.primary,
-      svgPath: AppAsset.lock,
-      title: AppString.changePassword,
-      onTap: () => AppDialog.showErrorDialog(
-        context,
-        title: '132123',
-        onPressedComfirm: () => context.pop(),
-        cancelText: 'ok',
-        confirmText: 'cancel',
-        description: 'Do you want to change your password',
-        haveCancelButton: true,
-      ),
+      titleStyle: context.bodyMedium!
+          .copyWith(color: context.bodyMedium!.color!.withOpacity(0.5)),
     );
   }
 
@@ -92,7 +81,11 @@ extension _SettingWidgets on _SettingScreenState {
         return _ItemProfile(
           svgPath: AppAsset.logout,
           title: AppString.pickColor,
-          leftIcon: const Icon(Icons.color_lens_outlined),
+          titleStyle: context.bodyMedium!.copyWith(
+            color: context.bodyMedium!.color!.withOpacity(0.5),
+          ),
+          leftIcon: Icon(Icons.color_lens_outlined,
+              color: context.colorScheme.primary),
           rightIcon: Container(
             margin: const EdgeInsets.only(right: defaultPadding / 2),
             height: 30,
@@ -152,7 +145,7 @@ extension _SettingWidgets on _SettingScreenState {
     return InkWell(
       borderRadius: BorderRadius.circular(defaultBorderRadius),
       onTap: () async {
-        context.pop(e.color);
+        context.pop(isDarkMode.value ? e.colorDark : e.colorLight);
         await ThemeLocalDatasource(sf).setSchemeTheme(e.key);
         if (!mounted) return;
         context.read<SchemeCubit>().changeScheme(e.key);
@@ -163,7 +156,7 @@ extension _SettingWidgets on _SettingScreenState {
           Container(
             decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: e.color,
+                color: isDarkMode.value ? e.colorDark : e.colorLight,
                 border: e.key == context.read<SchemeCubit>().state
                     ? Border.all(color: context.colorScheme.primary, width: 2)
                     : Border.all(color: Colors.transparent)),
@@ -182,52 +175,63 @@ extension _SettingWidgets on _SettingScreenState {
       builder: (context, value, child) {
         return Card(
             elevation: 2,
-            // shadowColor: context.colorScheme.onPrimary,
-            child: SizedBox(
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                  Expanded(
-                    child: FittedBox(
-                      alignment: Alignment.centerLeft,
-                      fit: BoxFit.scaleDown,
-                      child: Row(children: [
-                        Padding(
-                            padding: const EdgeInsets.all(defaultPadding - 3),
-                            child: Icon(
-                              Icons.dark_mode_outlined,
-                              color: context.colorScheme.primary,
-                            )),
-                        Text(
-                          AppString.darkMode,
-                          style: kBodyStyle.copyWith(
-                              color: AppColors.secondTextColor),
-                        )
-                      ]),
+            shadowColor: context.colorScheme.onPrimaryContainer,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(defaultPadding),
+              child: SizedBox(
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                    Expanded(
+                      child: FittedBox(
+                        alignment: Alignment.centerLeft,
+                        fit: BoxFit.scaleDown,
+                        child: Row(children: [
+                          Padding(
+                              padding: const EdgeInsets.all(defaultPadding - 3),
+                              child: Icon(
+                                Icons.dark_mode_outlined,
+                                color: context.colorScheme.primary,
+                              )),
+                          Text(
+                            AppString.darkMode,
+                            style: context.bodyMedium!.copyWith(
+                                color: context.bodyMedium!.color!
+                                    .withOpacity(0.5)),
+                          )
+                        ]),
+                      ),
                     ),
-                  ),
-                  Expanded(
-                    child: FittedBox(
-                      alignment: Alignment.centerRight,
-                      fit: BoxFit.scaleDown,
-                      child: Transform.scale(
-                        scale: 0.8,
-                        child: Switch(
-                          activeTrackColor: context.colorScheme.primary,
-                          inactiveTrackColor:
-                              context.colorScheme.primary.withOpacity(0.5),
-                          inactiveThumbColor: Colors.white,
-                          value: isDarkMode.value,
-                          onChanged: (value) async {
-                            isDarkMode.value = !isDarkMode.value;
-                            context.read<ThemeCubit>().changeTheme(value);
-                            await ThemeLocalDatasource(sf).setDarkTheme(value);
-                          },
+                    Expanded(
+                      child: FittedBox(
+                        alignment: Alignment.centerRight,
+                        fit: BoxFit.scaleDown,
+                        child: Transform.scale(
+                          scale: 0.8,
+                          child: Switch(
+                            trackOutlineWidth: const WidgetStatePropertyAll(0),
+                            trackOutlineColor: const WidgetStatePropertyAll(
+                                Colors.transparent),
+                            activeTrackColor:
+                                context.colorScheme.primary.withOpacity(0.3),
+                            inactiveTrackColor:
+                                context.colorScheme.primary.withOpacity(0.2),
+                            inactiveThumbColor: context.colorScheme.primary,
+                            activeColor: context.colorScheme.primary,
+                            value: isDarkMode.value,
+                            onChanged: (value) async {
+                              isDarkMode.value = !isDarkMode.value;
+
+                              context.read<ThemeCubit>().changeTheme(value);
+                              await ThemeLocalDatasource(sf)
+                                  .setDarkTheme(value);
+                            },
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ])));
+                  ])),
+            ));
       },
     );
   }
@@ -256,7 +260,7 @@ class _ItemProfile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
         elevation: 2,
-        shadowColor: AppColors.white,
+        shadowColor: Colors.white,
         child: InkWell(
           borderRadius: BorderRadius.circular(defaultPadding),
           onTap: onTap,
@@ -278,7 +282,7 @@ class _ItemProfile extends StatelessWidget {
                                       BlendMode.srcIn))),
                       Text(
                         title,
-                        style: titleStyle ?? kBodyStyle,
+                        style: titleStyle ?? context.bodyMedium,
                       )
                     ]),
                   ),

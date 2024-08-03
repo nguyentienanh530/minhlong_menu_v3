@@ -13,10 +13,8 @@ import 'package:minhlong_menu_admin_v3/features/category/data/model/category_ite
 
 import '../../../../common/dialog/app_dialog.dart';
 import '../../../../common/snackbar/overlay_snackbar.dart';
-import '../../../../core/app_colors.dart';
 import '../../../../core/app_const.dart';
 import '../../../../core/app_enum.dart';
-import '../../../../core/app_style.dart';
 import '../../../../core/extensions.dart';
 import '../../bloc/category_bloc.dart';
 
@@ -103,8 +101,8 @@ class _CreateOrUpdateCategoryState extends State<CreateOrUpdateCategory> {
               children: [
                 Text(
                   _type == ScreenType.create ? 'Thêm danh mục' : 'Sửa danh mục',
-                  style: kBodyStyle.copyWith(
-                    color: AppColors.secondTextColor,
+                  style: context.bodyMedium!.copyWith(
+                    color: context.bodyMedium!.color!.withOpacity(0.5),
                     fontWeight: FontWeight.w700,
                     fontSize: 40.sp,
                   ),
@@ -127,6 +125,7 @@ class _CreateOrUpdateCategoryState extends State<CreateOrUpdateCategory> {
 
   _buildCategoryImageWidget() {
     return InkWell(
+      borderRadius: BorderRadius.circular(defaultBorderRadius).r,
       onTap: () async => await Ultils.pickImage().then((value) {
         if (value != null) {
           _imageFile.value = value;
@@ -134,7 +133,7 @@ class _CreateOrUpdateCategoryState extends State<CreateOrUpdateCategory> {
       }),
       child: Card(
         elevation: 4,
-        shadowColor: AppColors.lavender,
+        shadowColor: Colors.white54,
         child: Container(
           clipBehavior: Clip.antiAlias,
           height: 150,
@@ -151,15 +150,17 @@ class _CreateOrUpdateCategoryState extends State<CreateOrUpdateCategory> {
                       ? Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Icon(
+                            Icon(
                               Icons.add_photo_alternate_outlined,
-                              color: AppColors.secondTextColor,
+                              color:
+                                  context.bodyMedium!.color!.withOpacity(0.5),
                               size: 20,
                             ),
                             Text(
                               '500 x 500',
-                              style: kCaptionStyle.copyWith(
-                                color: AppColors.secondTextColor,
+                              style: context.bodyMedium!.copyWith(
+                                color:
+                                    context.bodyMedium!.color!.withOpacity(0.5),
                               ),
                             ),
                           ],
@@ -182,10 +183,10 @@ class _CreateOrUpdateCategoryState extends State<CreateOrUpdateCategory> {
       hintText: 'Tên danh mục',
       filled: true,
       maxLines: 1,
-      prefixIcon: const Icon(
+      prefixIcon: Icon(
         Icons.category_outlined,
         size: 20,
-        color: AppColors.secondTextColor,
+        color: context.bodyMedium!.color!.withOpacity(0.5),
       ),
       validator: (value) {
         if (value == null || value.isEmpty) {
@@ -208,10 +209,10 @@ class _CreateOrUpdateCategoryState extends State<CreateOrUpdateCategory> {
         }
         return null;
       },
-      prefixIcon: const Icon(
+      prefixIcon: Icon(
         Icons.format_list_numbered_rounded,
         size: 20,
-        color: AppColors.secondTextColor,
+        color: context.bodyMedium!.color!.withOpacity(0.5),
       ),
     );
   }
@@ -231,7 +232,7 @@ class _CreateOrUpdateCategoryState extends State<CreateOrUpdateCategory> {
         ),
         child: Text(
           _type == ScreenType.create ? 'Thêm' : 'Cập nhật',
-          style: kBodyStyle.copyWith(color: AppColors.white),
+          style: context.bodyMedium!.copyWith(color: Colors.white),
         ),
       ),
     );

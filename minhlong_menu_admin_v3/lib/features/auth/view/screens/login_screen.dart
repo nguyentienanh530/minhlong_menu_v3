@@ -6,16 +6,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_admin_v3/common/widget/loading_widget.dart';
 import 'package:minhlong_menu_admin_v3/core/extensions.dart';
+import 'package:minhlong_menu_admin_v3/features/theme/cubit/theme_cubit.dart';
 
 import '../../../../Routes/app_route.dart';
 import '../../../../common/widget/common_text_field.dart';
 import '../../../../common/widget/error_widget.dart';
 import '../../../../core/app_asset.dart';
-import '../../../../core/app_colors.dart';
 import '../../../../core/app_const.dart';
 import '../../../../core/app_res.dart';
 import '../../../../core/app_string.dart';
-import '../../../../core/app_style.dart';
 import '../../bloc/auth_bloc.dart';
 import '../../data/dto/login_dto.dart';
 
@@ -54,12 +53,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var isDarkMode = context.watch<ThemeCubit>().state;
     return Scaffold(
       body: Stack(
         children: [
           SizedBox.expand(
             child: Image.asset(
-              AppAsset.backgroundLogin,
+              isDarkMode ? AppAsset.backgroundDark : AppAsset.backgroundLight,
               fit: BoxFit.cover,
             ),
           ),
@@ -76,11 +76,13 @@ class _LoginScreenState extends State<LoginScreen> {
         builder: (context, value, child) {
           return CommonTextField(
               maxLines: 1,
-              style: kBodyWhiteStyle,
+              style: context.bodyMedium!
+                  .copyWith(color: context.bodyMedium!.color),
               controller: _passwordCtrl,
               onFieldSubmitted: (p0) {
                 _handleLoginSubmited();
               },
+              labelStyle: context.bodyMedium,
               labelText: AppString.password,
               // labelText: AppString.password,
               validator: (password) => AppRes.validatePassword(password)
@@ -111,13 +113,13 @@ class _LoginScreenState extends State<LoginScreen> {
               obscureText: !value,
               prefixIcon: Icon(
                 Icons.lock_outline,
-                color: AppColors.white.withOpacity(0.5),
+                color: context.bodyMedium!.color!.withOpacity(0.5),
               ),
               suffixIcon: GestureDetector(
                   onTap: () => isShowPassword.value = !isShowPassword.value,
                   child: Icon(
                       !value ? Icons.visibility_off : Icons.remove_red_eye,
-                      color: AppColors.white.withOpacity(0.5))));
+                      color: context.bodyMedium!.color!.withOpacity(0.5))));
         });
   }
 
@@ -138,7 +140,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   _buildItemValidPassword(
                       valueListenable: _oneLowerCase, label: 'Ký tự thường')
                 ])),
-            const SizedBox(width: 16),
+            16.verticalSpace,
             Expanded(
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -172,15 +174,14 @@ class _LoginScreenState extends State<LoginScreen> {
             builder: (context, value, child) => Row(children: [
                   Icon(Icons.check_circle_rounded,
                       size: 15,
-                      color: value
-                          ? AppColors.islamicGreen
-                          : AppColors.white.withOpacity(0.5)),
+                      color:
+                          value ? Colors.green : Colors.white.withOpacity(0.5)),
                   const SizedBox(width: 8),
                   Text(label,
-                      style: kCaptionStyle.copyWith(
+                      style: context.bodyMedium!.copyWith(
                           color: value
-                              ? AppColors.islamicGreen
-                              : AppColors.white.withOpacity(0.5)))
+                              ? Colors.green
+                              : Colors.white.withOpacity(0.5)))
                 ])));
   }
 }
@@ -191,8 +192,8 @@ class _Wellcome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(AppString.welcomeBack.toUpperCase(),
-        style: kHeadingWhiteStyle.copyWith(
-            fontSize: 48, fontWeight: FontWeight.w700));
+        style: context.titleStyleLarge!
+            .copyWith(fontSize: 36, fontWeight: FontWeight.bold));
   }
 }
 
@@ -213,9 +214,9 @@ class _PhoneNumber extends StatelessWidget {
         },
         prefixIcon: Icon(
           Icons.phone_android_outlined,
-          color: AppColors.white.withOpacity(0.5),
+          color: context.bodyMedium!.color!.withOpacity(0.5),
         ),
-        style: kBodyWhiteStyle,
+        style: context.bodyMedium!.copyWith(color: context.bodyMedium!.color),
         onFieldSubmitted: onSubmit,
         onChanged: (value) => emailcontroller.text = value);
   }
@@ -236,13 +237,14 @@ class _ButtonLogin extends StatelessWidget {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(textFieldBorderRadius)),
               side: BorderSide(color: context.colorScheme.primary),
-              foregroundColor: AppColors.white,
+              foregroundColor: Colors.white,
               elevation: 0,
               shadowColor: Colors.transparent,
               backgroundColor: context.colorScheme.primary),
           onPressed: onTap,
           child: Text(AppString.login,
-              style: kButtonWhiteStyle.copyWith(fontSize: 15)),
+              style: context.bodyMedium!
+                  .copyWith(fontSize: 15, color: Colors.white)),
         ));
   }
 }
@@ -257,6 +259,8 @@ class _ButtonForgotPassword extends StatelessWidget {
           context.go(AppRoute.forgotPassword);
         },
         child: Text(AppString.forgotPassword,
-            style: kCaptionStyle.copyWith(color: AppColors.sun)));
+            style: context.bodyMedium!.copyWith(
+                color: context.colorScheme.primary,
+                fontWeight: FontWeight.bold)));
   }
 }

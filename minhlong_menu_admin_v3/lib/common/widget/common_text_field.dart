@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:minhlong_menu_admin_v3/core/extensions.dart';
 
-import '../../core/app_colors.dart';
 import '../../core/app_const.dart';
-import '../../core/app_style.dart';
 
 class CommonTextField extends StatelessWidget {
   const CommonTextField(
@@ -60,7 +59,7 @@ class CommonTextField extends StatelessWidget {
         key: key,
         readOnly: readOnly ?? false,
         maxLines: maxLines,
-        style: style ?? kBodyStyle,
+        style: style ?? context.bodyMedium,
         textAlign: TextAlign.start,
         keyboardType: keyboardType ?? TextInputType.text,
         autocorrect: false,
@@ -74,21 +73,21 @@ class CommonTextField extends StatelessWidget {
             // isDense: true,
             focusedErrorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(textFieldBorderRadius).r,
-                borderSide: const BorderSide(color: AppColors.red)),
+                borderSide: const BorderSide(color: Colors.red)),
             errorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(textFieldBorderRadius).r,
-                borderSide: const BorderSide(color: AppColors.red)),
+                borderSide: const BorderSide(color: Colors.red)),
             enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(textFieldBorderRadius).r,
-                borderSide: const BorderSide(color: AppColors.lavender)),
+                borderSide: const BorderSide(color: Colors.white54)),
             disabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(textFieldBorderRadius).r,
-                borderSide: const BorderSide(color: AppColors.lavender)),
+                borderSide: const BorderSide(color: Colors.white54)),
             suffixIcon: suffixIcon,
             prefixIcon: prefixIcon,
             focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(textFieldBorderRadius).r,
-                borderSide: const BorderSide(color: AppColors.lavender)),
+                borderSide: const BorderSide(color: Colors.white54)),
             errorText: errorText,
             contentPadding:
                 const EdgeInsets.symmetric(horizontal: 16, vertical: 16).r,
@@ -96,11 +95,12 @@ class CommonTextField extends StatelessWidget {
             hintText: hintText,
             labelText: labelText,
             floatingLabelBehavior: FloatingLabelBehavior.always,
-            errorStyle: kBodyStyle.copyWith(color: AppColors.red),
+            errorStyle: context.bodyMedium!.copyWith(color: Colors.red),
             hintStyle: hintStyle ??
-                kBodyStyle.copyWith(color: AppColors.secondTextColor),
-            labelStyle:
-                labelStyle ?? kBodyWhiteStyle.copyWith(color: AppColors.white)),
+                context.bodyMedium!.copyWith(
+                    color: context.bodyMedium!.color!.withOpacity(0.5)),
+            labelStyle: labelStyle ??
+                context.bodyMedium!.copyWith(color: Colors.white)),
         onChanged: onChanged);
   }
 }

@@ -17,11 +17,9 @@ import '../../../../common/widget/common_text_field.dart';
 import '../../../../common/widget/error_build_image.dart';
 import '../../../../common/widget/loading.dart';
 import '../../../../core/api_config.dart';
-import '../../../../core/app_colors.dart';
 import '../../../../core/app_const.dart';
 import '../../../../core/app_res.dart';
 import '../../../../core/app_string.dart';
-import '../../../../core/app_style.dart';
 import '../../cubit/user_cubit.dart';
 import '../../data/model/user_model.dart';
 
@@ -66,7 +64,7 @@ class __EditSettingWidgetState extends State<EditProfileWidget> {
       resizeToAvoidBottomInset: false,
       // backgroundColor: AppColors.white,
       appBar: AppBar(
-        title: const Text('Cập nhật thông tin', style: kHeadingStyle),
+        title: Text('Cập nhật thông tin', style: context.titleStyleMedium),
         centerTitle: true,
         automaticallyImplyLeading: false,
         leading: IconButton(
@@ -132,10 +130,9 @@ class __EditSettingWidgetState extends State<EditProfileWidget> {
                       width: 0.25 * context.sizeDevice.height,
                       height: 0.25 * context.sizeDevice.height,
                       decoration: BoxDecoration(
-                        color: AppColors.white,
+                        color: Colors.white,
                         shape: BoxShape.circle,
-                        border:
-                            Border.all(color: AppColors.smokeWhite, width: 6),
+                        border: Border.all(color: Colors.white54, width: 6),
                       ),
                       child: Container(
                         clipBehavior: Clip.antiAlias,
@@ -177,10 +174,10 @@ class __EditSettingWidgetState extends State<EditProfileWidget> {
         elevation: 3,
         child: Container(
           padding: const EdgeInsets.all(5),
-          child: const Icon(
+          child: Icon(
             Icons.camera_enhance,
             size: 16,
-            color: AppColors.secondTextColor,
+            color: context.titleStyleMedium!.color!.withOpacity(0.5),
           ),
         ),
       ),
@@ -218,9 +215,10 @@ class __EditSettingWidgetState extends State<EditProfileWidget> {
         }
         return null;
       },
-      labelStyle: kBodyStyle.copyWith(color: AppColors.secondTextColor),
-      hintStyle: kBodyStyle,
-      style: kBodyStyle,
+      labelStyle: context.bodyMedium!
+          .copyWith(color: context.titleStyleMedium!.color!.withOpacity(0.5)),
+      hintStyle: context.bodyMedium,
+      style: context.bodyMedium,
     );
   }
 
@@ -236,9 +234,10 @@ class __EditSettingWidgetState extends State<EditProfileWidget> {
       },
       controller: _phoneController,
       labelText: AppString.phoneNumber,
-      labelStyle: kBodyStyle.copyWith(color: AppColors.secondTextColor),
-      hintStyle: kBodyStyle,
-      style: kBodyStyle,
+      labelStyle: context.bodyMedium!
+          .copyWith(color: context.titleStyleMedium!.color!.withOpacity(0.5)),
+      hintStyle: context.bodyMedium,
+      style: context.bodyMedium,
     );
   }
 
@@ -267,7 +266,7 @@ class __EditSettingWidgetState extends State<EditProfileWidget> {
         },
         child: Text(
           AppString.edit,
-          style: kBodyWhiteStyle,
+          style: context.bodyMedium!.copyWith(color: Colors.white),
         ),
       ),
     );

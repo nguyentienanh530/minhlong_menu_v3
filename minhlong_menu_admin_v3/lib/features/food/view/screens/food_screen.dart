@@ -9,19 +9,18 @@ import 'package:minhlong_menu_admin_v3/common/widget/common_text_field.dart';
 import 'package:minhlong_menu_admin_v3/common/widget/error_build_image.dart';
 import 'package:minhlong_menu_admin_v3/core/api_config.dart';
 import 'package:minhlong_menu_admin_v3/core/app_key.dart';
-import 'package:minhlong_menu_admin_v3/core/app_style.dart';
 import 'package:minhlong_menu_admin_v3/core/extensions.dart';
 import 'package:minhlong_menu_admin_v3/features/food/bloc/food_bloc/food_bloc.dart';
 import 'package:minhlong_menu_admin_v3/features/food/data/model/food_item.dart';
 import 'package:minhlong_menu_admin_v3/features/food/data/model/food_model.dart';
 import 'package:minhlong_menu_admin_v3/features/food/data/provider/food_api.dart';
+
 import '../../../../common/dialog/app_dialog.dart';
 import '../../../../common/snackbar/overlay_snackbar.dart';
 import '../../../../common/widget/common_icon_button.dart';
 import '../../../../common/widget/error_widget.dart';
 import '../../../../common/widget/loading.dart';
 import '../../../../common/widget/number_pagination.dart';
-import '../../../../core/app_colors.dart';
 import '../../../../core/app_const.dart';
 import '../../../../core/app_enum.dart';
 import '../../../../core/utils.dart';
@@ -30,8 +29,8 @@ import '../../bloc/search_food_bloc/search_food_bloc.dart';
 import '../../data/repositories/food_repository.dart';
 import '../dialogs/create_or_update_food_dialog.dart';
 
-part '../widgets/_food_header_widget.dart';
 part '../widgets/_food_body_widget.dart';
+part '../widgets/_food_header_widget.dart';
 
 class FoodScreen extends StatelessWidget {
   const FoodScreen({super.key});

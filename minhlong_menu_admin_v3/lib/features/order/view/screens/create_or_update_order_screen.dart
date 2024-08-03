@@ -20,11 +20,9 @@ import '../../../../common/widget/common_text_field.dart';
 import '../../../../common/widget/error_build_image.dart';
 import '../../../../common/widget/loading.dart';
 import '../../../../core/api_config.dart';
-import '../../../../core/app_colors.dart';
 import '../../../../core/app_enum.dart';
 import '../../../../core/app_key.dart';
 import '../../../../core/app_res.dart';
-import '../../../../core/app_style.dart';
 import '../../../dinner_table/data/repositories/table_repository.dart';
 import '../../../food/bloc/search_food_bloc/search_food_bloc.dart';
 import '../../../food/data/model/food_item.dart';
@@ -98,7 +96,7 @@ class _CreateOrUpdateOrderViewState extends State<CreateOrUpdateOrderView> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: context.colorScheme.primary,
-        foregroundColor: AppColors.white,
+        foregroundColor: Colors.white,
         centerTitle: true,
         leading: IconButton(
             onPressed: () => context.pop(_isUpdated),
@@ -109,7 +107,7 @@ class _CreateOrUpdateOrderViewState extends State<CreateOrUpdateOrderView> {
             _typeScreen == ScreenType.create
                 ? 'Tạo đơn'
                 : 'Sửa đơn #${widget.order!.id}',
-            style: kHeadingWhiteStyle),
+            style: context.titleStyleLarge),
       ),
       body: GestureDetector(
         onTap: () {
@@ -151,7 +149,8 @@ class _CreateOrUpdateOrderViewState extends State<CreateOrUpdateOrderView> {
     return Row(
       children: [
         10.horizontalSpace,
-        const Text('Chọn bàn: ', style: kBodyWhiteStyle),
+        Text('Chọn bàn: ',
+            style: context.bodyMedium!.copyWith(color: Colors.white)),
         ListenableBuilder(
           listenable: _table,
           builder: (context, _) {
@@ -164,8 +163,9 @@ class _CreateOrUpdateOrderViewState extends State<CreateOrUpdateOrderView> {
               ),
               // borderRadius: BorderRadius.circular(defaultBorderRadius).r,
               underline: const SizedBox(),
-              style: kBodyWhiteStyle.copyWith(fontWeight: FontWeight.w900),
-              iconEnabledColor: AppColors.white,
+              style: context.bodyMedium!
+                  .copyWith(fontWeight: FontWeight.w900, color: Colors.white),
+              iconEnabledColor: Colors.white,
               dropdownColor: context.colorScheme.primary,
               items: tables
                   .map(
@@ -190,7 +190,8 @@ class _CreateOrUpdateOrderViewState extends State<CreateOrUpdateOrderView> {
   Widget _buildStatusDropdown() {
     return Row(
       children: [
-        const Text('Trạng thái: ', style: kBodyWhiteStyle),
+        Text('Trạng thái: ',
+            style: context.bodyMedium!.copyWith(color: Colors.white)),
         ListenableBuilder(
           listenable: _status,
           builder: (context, _) {
@@ -201,9 +202,10 @@ class _CreateOrUpdateOrderViewState extends State<CreateOrUpdateOrderView> {
               icon: const Icon(Icons.arrow_drop_down),
               // borderRadius: BorderRadius.circular(defaultBorderRadius).r,
               underline: const SizedBox(),
-              style: kBodyWhiteStyle.copyWith(fontWeight: FontWeight.w900),
+              style: context.bodyMedium!
+                  .copyWith(fontWeight: FontWeight.bold, color: Colors.white),
               dropdownColor: context.colorScheme.primary,
-              iconEnabledColor: AppColors.white,
+              iconEnabledColor: Colors.white,
               items: _listStatus
                   .map(
                     (e) => DropdownMenuItem(
@@ -245,15 +247,14 @@ class _CreateOrUpdateOrderViewState extends State<CreateOrUpdateOrderView> {
                 .read<SearchFoodBloc>()
                 .add(SearchFoodStarted(query: _searchController.text));
           },
-          prefixIcon:
-              const Icon(Icons.search, color: AppColors.secondTextColor),
+          prefixIcon: Icon(Icons.search, color: Colors.white.withOpacity(0.5)),
           suffixIcon: InkWell(
             onTap: () {
               _searchController.clear();
               context.read<SearchFoodBloc>().add(SearchFoodReset());
             },
-            child: const SizedBox(
-              child: Icon(Icons.clear, color: AppColors.secondTextColor),
+            child: SizedBox(
+              child: Icon(Icons.clear, color: Colors.white.withOpacity(0.5)),
             ),
           ),
         ),
@@ -280,7 +281,7 @@ class _CreateOrUpdateOrderViewState extends State<CreateOrUpdateOrderView> {
             color: Colors.transparent,
             child: Card(
               elevation: 30,
-              shadowColor: AppColors.lavender,
+              shadowColor: context.bodyMedium!.color!.withOpacity(0.5),
               child: SizedBox(
                 height: 300,
                 child: Padding(
@@ -296,8 +297,9 @@ class _CreateOrUpdateOrderViewState extends State<CreateOrUpdateOrderView> {
                         FoodSearchEmpty() => Center(
                             child: Text(
                               'Không có dữ liệu',
-                              style: kBodyStyle.copyWith(
-                                color: AppColors.secondTextColor,
+                              style: context.bodyMedium!.copyWith(
+                                color:
+                                    context.bodyMedium!.color!.withOpacity(0.5),
                               ),
                             ),
                           ),
@@ -360,7 +362,7 @@ class _CreateOrUpdateOrderViewState extends State<CreateOrUpdateOrderView> {
       },
       title: Text(
         foodItem.name,
-        style: kBodyStyle,
+        style: context.bodyMedium,
       ),
       leading: SizedBox(
         height: 35,
@@ -421,7 +423,7 @@ class _CreateOrUpdateOrderViewState extends State<CreateOrUpdateOrderView> {
                           child: IconButton(
                               iconSize: 15,
                               alignment: Alignment.center,
-                              color: AppColors.white,
+                              color: Colors.white,
                               style: IconButton.styleFrom(
                                   backgroundColor: context.colorScheme.primary,
                                   shape: RoundedRectangleBorder(
@@ -448,7 +450,7 @@ class _CreateOrUpdateOrderViewState extends State<CreateOrUpdateOrderView> {
                           child: IconButton(
                               iconSize: 15,
                               alignment: Alignment.center,
-                              color: AppColors.white,
+                              color: Colors.white,
                               style: IconButton.styleFrom(
                                   backgroundColor: context.colorScheme.primary,
                                   shape: RoundedRectangleBorder(
@@ -488,7 +490,7 @@ class _CreateOrUpdateOrderViewState extends State<CreateOrUpdateOrderView> {
                 },
                 icon: const Icon(
                   Icons.delete,
-                  color: AppColors.red,
+                  color: Colors.red,
                 ),
               )
             ],
@@ -577,8 +579,9 @@ class _CreateOrUpdateOrderViewState extends State<CreateOrUpdateOrderView> {
                         ? Center(
                             child: Text(
                               'Không có dữ liệu',
-                              style: kBodyStyle.copyWith(
-                                color: AppColors.secondTextColor,
+                              style: context.bodyMedium!.copyWith(
+                                color:
+                                    context.bodyMedium!.color!.withOpacity(0.5),
                               ),
                             ),
                           )
@@ -608,16 +611,16 @@ class _CreateOrUpdateOrderViewState extends State<CreateOrUpdateOrderView> {
                       children: [
                         Text(
                           'Tổng tiền',
-                          style:
-                              kBodyStyle.copyWith(fontWeight: FontWeight.w900),
+                          style: context.bodyMedium!
+                              .copyWith(fontWeight: FontWeight.bold),
                         ),
                         ListenableBuilder(
                           listenable: _order,
                           builder: (context, _) {
                             return Text(
                               Ultils.currencyFormat(_order.value.totalPrice),
-                              style: kBodyStyle.copyWith(
-                                  fontWeight: FontWeight.w900),
+                              style: context.bodyMedium!
+                                  .copyWith(fontWeight: FontWeight.w900),
                             );
                           },
                         )
@@ -651,7 +654,7 @@ class _CreateOrUpdateOrderViewState extends State<CreateOrUpdateOrderView> {
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
                               color: _order.value.foodOrders.isEmpty
-                                  ? AppColors.darkGray
+                                  ? context.colorScheme.shadow
                                   : context.colorScheme.primary,
                               borderRadius: const BorderRadius.all(
                                 Radius.circular(textFieldBorderRadius),
@@ -661,7 +664,8 @@ class _CreateOrUpdateOrderViewState extends State<CreateOrUpdateOrderView> {
                               _typeScreen == ScreenType.create
                                   ? 'Tạo đơn'
                                   : 'Sửa đơn',
-                              style: kButtonWhiteStyle,
+                              style: context.bodyMedium!
+                                  .copyWith(color: Colors.white),
                             ),
                           ),
                         );
@@ -688,7 +692,6 @@ class _CreateOrUpdateOrderViewState extends State<CreateOrUpdateOrderView> {
     context.pop();
     order = order.copyWith(
         tableId: table.id, tableName: table.name, status: _status.value.key);
-    print('update order: $order');
     context.read<OrderBloc>().add(OrderUpdated(order: order));
   }
 
