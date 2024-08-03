@@ -121,5 +121,13 @@ class Version1 implements Route {
       },
       prefix: '/client',
     );
+
+    // ======= Manage route =======
+    Router.group(
+      () {
+        Router.get('users', userCtrl.listUsers);
+      },
+      prefix: '/manager',
+    );
   }
 }

@@ -81,83 +81,72 @@ extension _EditProfileWidget on _EditProfileViewState {
   }
 
   Widget _bodyEditInfoUser() {
-    return Card(
-      elevation: 4,
-      margin: EdgeInsets.zero,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(defaultBorderRadius * 2),
-          topRight: Radius.circular(defaultBorderRadius * 2),
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-            horizontal: defaultPadding, vertical: defaultPadding * 2),
-        child: Form(
-          key: AppKeys.updateUserKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CommonTextField(
-                  controller: _nameController,
-                  onChanged: (p0) {},
-                  labelText: AppString.fullName,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Vui lòng nhập tên';
-                    }
-                    return null;
-                  }),
-              20.verticalSpace,
-              Row(
-                children: [
-                  Expanded(
-                    child: CommonTextField(
-                        onChanged: (p0) {},
-                        controller: _phoneController,
-                        labelText: '${AppString.phoneNumber} *',
-                        validator: (value) {
-                          return AppRes.validatePhoneNumber(
-                                  _phoneController.text)
-                              ? null
-                              : 'Vui lòng nhập số điện thoại';
-                        }),
-                  ),
-                  10.horizontalSpace,
-                  Expanded(
-                    child: CommonTextField(
-                        onChanged: (p0) {},
-                        controller: _subPhoneController,
-                        labelText: AppString.subPhoneNumber,
-                        validator: (value) {
-                          return AppRes.validatePhoneNumber(
-                                  _subPhoneController.text)
-                              ? null
-                              : 'Vui lòng nhập số điện thoại';
-                        }),
-                  ),
-                ],
-              ),
-              20.verticalSpace,
-              CommonTextField(
-                  onChanged: (p0) {},
-                  controller: _emailController,
-                  labelText: AppString.email,
-                  validator: (value) {
-                    return AppRes.validateEmail(_emailController.text)
-                        ? null
-                        : 'Vui lòng nhập email';
-                  }),
-              20.verticalSpace,
-              CommonTextField(
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+          horizontal: defaultPadding, vertical: defaultPadding * 2),
+      child: Form(
+        key: AppKeys.updateUserKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CommonTextField(
+                controller: _nameController,
                 onChanged: (p0) {},
-                controller: _addressController,
-                labelText: AppString.address,
-              ),
-              20.verticalSpace,
-              _buttonEditProfile(),
-            ],
-          ),
+                labelText: AppString.fullName,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Vui lòng nhập tên';
+                  }
+                  return null;
+                }),
+            20.verticalSpace,
+            Row(
+              children: [
+                Expanded(
+                  child: CommonTextField(
+                      onChanged: (p0) {},
+                      controller: _phoneController,
+                      labelText: '${AppString.phoneNumber} *',
+                      validator: (value) {
+                        return AppRes.validatePhoneNumber(_phoneController.text)
+                            ? null
+                            : 'Vui lòng nhập số điện thoại';
+                      }),
+                ),
+                10.horizontalSpace,
+                Expanded(
+                  child: CommonTextField(
+                      onChanged: (p0) {},
+                      controller: _subPhoneController,
+                      labelText: AppString.subPhoneNumber,
+                      validator: (value) {
+                        return AppRes.validatePhoneNumber(
+                                _subPhoneController.text)
+                            ? null
+                            : 'Vui lòng nhập số điện thoại';
+                      }),
+                ),
+              ],
+            ),
+            20.verticalSpace,
+            CommonTextField(
+                onChanged: (p0) {},
+                controller: _emailController,
+                labelText: AppString.email,
+                validator: (value) {
+                  return AppRes.validateEmail(_emailController.text)
+                      ? null
+                      : 'Vui lòng nhập email';
+                }),
+            20.verticalSpace,
+            CommonTextField(
+              onChanged: (p0) {},
+              controller: _addressController,
+              labelText: AppString.address,
+            ),
+            20.verticalSpace,
+            _buttonEditProfile(),
+          ],
         ),
       ),
     );

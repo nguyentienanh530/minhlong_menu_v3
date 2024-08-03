@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:minhlong_menu_client_v3/core/app_asset.dart';
 import 'package:minhlong_menu_client_v3/core/extensions.dart';
 
 import '../../core/app_const.dart';
@@ -99,6 +101,96 @@ class AppDialog {
                         ),
                       ),
                     ),
+                  ],
+                ),
+              )
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  static Future<dynamic> showSubscriptionDialog(BuildContext context) {
+    return showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(
+              defaultBorderRadius,
+            ),
+          ),
+          title: Column(
+            children: [
+              Icon(
+                Icons.calendar_month,
+                color: context.colorScheme.primaryContainer,
+                size: 80,
+              ),
+              16.verticalSpace,
+              Text(
+                'Hết hạn sử dụng!'.toUpperCase(),
+                style: context.titleStyleLarge!.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              )
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'vui lòng liên hệ với chúng tôi để tiếp tục sử dụng!',
+                style: context.bodySmall!.copyWith(
+                    fontSize: 14,
+                    color: context.bodyMedium!.color!.withOpacity(0.5)),
+                textAlign: TextAlign.center,
+              ),
+              15.verticalSpace,
+              SizedBox(
+                height: 40,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      height: 40,
+                      width: 40,
+                      decoration: BoxDecoration(
+                        color: context.colorScheme.primaryContainer,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Icon(
+                        Icons.phone,
+                        color: Colors.white,
+                      ),
+                    ),
+                    10.horizontalSpace,
+                    Container(
+                      height: 40,
+                      width: 40,
+                      padding: const EdgeInsets.all(defaultPadding / 2),
+                      decoration: BoxDecoration(
+                        color: context.colorScheme.primaryContainer,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child:
+                          SvgPicture.asset(AppAsset.zalo, color: Colors.white),
+                    ),
+                    10.horizontalSpace,
+                    Container(
+                      height: 40,
+                      width: 40,
+                      decoration: BoxDecoration(
+                        color: context.colorScheme.primaryContainer,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Icon(
+                        Icons.facebook,
+                        color: Colors.white,
+                      ),
+                    )
                   ],
                 ),
               )

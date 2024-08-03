@@ -23,6 +23,33 @@ class UserController extends Controller {
     }
   }
 
+  Future<Response> listUsers(Request request) async {
+    var params = request.all();
+    int? page = params['page'] != null ? int.tryParse(params['page']) : 1;
+    int? limit = params['limit'] != null ? int.tryParse(params['limit']) : 10;
+    try {
+      var totalItems = await userRepo.userCount();
+      var totalPages = (totalItems / limit).ceil();
+      var startIndex = (page! - 1) * limit!;
+
+      var users = await userRepo.listUser(limit: limit, startIndex: startIndex);
+      return AppResponse().ok(statusCode: HttpStatus.ok, data: {
+        'pagination': {
+          'page': page,
+          'limit': limit,
+          'total_page': totalPages,
+          'total_item': totalItems
+        },
+        'data': users
+      });
+    } catch (e) {
+      print('connection error: $e');
+      return AppResponse().error(
+          statusCode: HttpStatus.internalServerError,
+          message: 'connection error');
+    }
+  }
+
   Future<Response> update(Request request) async {
     int? userID = request.headers[ConstRes.userID] != null
         ? int.tryParse(request.headers[ConstRes.userID])

@@ -82,6 +82,7 @@ class _EditProfileViewState extends State<EditProfileView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         centerTitle: true,
         title: Text(
@@ -90,7 +91,6 @@ class _EditProfileViewState extends State<EditProfileView> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        automaticallyImplyLeading: true,
       ),
       body: BlocListener<UserBloc, UserState>(
         listener: (context, state) {
@@ -115,11 +115,11 @@ class _EditProfileViewState extends State<EditProfileView> {
             default:
           }
         },
-        child: Column(
+        child: ListView(
           children: [
             20.verticalSpace,
             _imageEditProfileWidget(),
-            Expanded(child: _bodyEditInfoUser())
+            _bodyEditInfoUser()
           ],
         ),
       ),

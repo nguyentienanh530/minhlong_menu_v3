@@ -2,12 +2,10 @@ import 'package:badges/badges.dart' as badges;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:minhlong_menu_client_v3/common/animations/add_to_card_animation_manager.dart';
 import 'package:minhlong_menu_client_v3/common/dialog/app_dialog.dart';
 import 'package:minhlong_menu_client_v3/common/snackbar/app_snackbar.dart';
 import 'package:minhlong_menu_client_v3/common/widget/common_item_food.dart';
@@ -52,24 +50,11 @@ class _HomeViewState extends State<HomeView>
     with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   final TextEditingController _searchText = TextEditingController();
   final _indexPage = ValueNotifier(0);
-  late AddToCardAnimationManager _managerList;
-  final _foodItemSize = ValueNotifier(const Size(0, 0));
-  late AnimationController _animationController;
-  final _cartKey = GlobalKey();
-  var _foodPosition = Offset.zero;
-  var _path = Path();
-  var cartPosition = Offset.zero;
-  var cartBottomRight = Offset.zero;
 
   @override
   void initState() {
     super.initState();
     context.read<HomeBloc>().add(HomeFetched());
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 500),
-    );
-    _managerList = AddToCardAnimationManager(lenght: 10);
   }
 
   @override
@@ -77,16 +62,6 @@ class _HomeViewState extends State<HomeView>
     super.dispose();
     _indexPage.dispose();
     _searchText.dispose();
-    _foodItemSize.dispose();
-    _animationController.dispose();
-    _cartKey.currentState?.dispose();
-  }
-
-  void _resetAnimation() {
-    _foodItemSize.value = const Size(0, 0);
-    _foodPosition = Offset.zero;
-    _path = Path();
-    _cartKey.currentState?.dispose();
   }
 
   @override
@@ -202,55 +177,16 @@ class _HomeViewState extends State<HomeView>
                           child: _bannerHome(state.homeModel.banners)),
                     ),
                     SliverToBoxAdapter(
-                      child: Stack(
+                      child: Column(
                         children: [
-                          Column(
-                            children: [
-                              30.verticalSpace,
-                              categoryListView(state.homeModel.categories),
-                              10.verticalSpace,
-                              _buildListNewFood(state.homeModel.newFoods,
-                                  cartState.order, tableState),
-                              20.verticalSpace,
-                              _popularGridView(state.homeModel.popularFoods,
-                                  cartState.order, tableState),
-                            ],
-                          ),
-                          ListenableBuilder(
-                            listenable: _foodItemSize,
-                            builder: (context, _) {
-                              return SizedBox(
-                                height: _foodItemSize.value.height,
-                                width: _foodItemSize.value.width,
-                                child: Container(
-                                  height: _foodItemSize.value.height,
-                                  width: _foodItemSize.value.width,
-                                  color: context.colorScheme.onPrimary,
-                                )
-                                    .animate(
-                                      autoPlay: false,
-                                      controller: _animationController,
-                                    )
-                                    .scale(
-                                      duration: 2.seconds,
-                                      begin: const Offset(1, 1),
-                                      end: Offset.zero,
-                                    ),
-                              )
-                                  .animate(
-                                    autoPlay: false,
-                                    controller: _animationController,
-                                    onComplete: (controller) {
-                                      _resetAnimation();
-                                      _animationController.reset();
-                                    },
-                                  )
-                                  .followPath(
-                                      path: _path,
-                                      duration: 2.seconds,
-                                      curve: Curves.easeInOutCubic);
-                            },
-                          )
+                          30.verticalSpace,
+                          categoryListView(state.homeModel.categories),
+                          10.verticalSpace,
+                          _buildListNewFood(state.homeModel.newFoods,
+                              cartState.order, tableState),
+                          20.verticalSpace,
+                          _popularGridView(state.homeModel.popularFoods,
+                              cartState.order, tableState),
                         ],
                       ),
                     ),
@@ -294,7 +230,6 @@ class _HomeViewState extends State<HomeView>
 
   Widget _buildFloatingButton(OrderModel orderModel, UserModel user) {
     return FloatingActionButton(
-      key: _cartKey,
       backgroundColor: context.colorScheme.primary,
       onPressed: () => context.push(AppRoute.carts, extra: user),
       child: Padding(
@@ -313,35 +248,6 @@ class _HomeViewState extends State<HomeView>
         ),
       ),
     );
-  }
-
-  void triggerAnimation() {
-    _animationController.reset();
-    _animationController.forward();
-  }
-
-// Example usage of RenderBox and localToGlobal
-  void calculatePathAndAnimate(int index) {
-    _resetAnimation();
-    if (_cartKey.currentContext != null &&
-        _managerList.keys[index].currentContext != null) {
-      var foodContext = _managerList.keys[index].currentContext!;
-
-      _foodPosition = (foodContext.findRenderObject() as RenderBox)
-          .localToGlobal(Offset.zero);
-      // print(_foodPosition);
-      _foodItemSize.value = foodContext.size!;
-      cartBottomRight = (foodContext.findRenderObject() as RenderBox)
-          .localToGlobal(foodContext.size!.bottomRight(Offset.zero));
-      _path = Path()
-        ..moveTo(_foodPosition.dx, _foodPosition.dy)
-        ..relativeLineTo(-20, -20)
-        ..lineTo(cartBottomRight.dx - _foodItemSize.value.width,
-            cartBottomRight.dy - _foodItemSize.value.height);
-
-      // Trigger animation
-      triggerAnimation();
-    }
   }
 
   @override

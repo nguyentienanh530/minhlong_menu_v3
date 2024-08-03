@@ -9,21 +9,19 @@ import 'package:minhlong_menu_client_v3/common/widget/loading.dart';
 import 'package:minhlong_menu_client_v3/core/app_const.dart';
 import 'package:minhlong_menu_client_v3/core/app_theme.dart';
 import 'package:minhlong_menu_client_v3/core/extensions.dart';
+import 'package:minhlong_menu_client_v3/core/utils.dart';
 import 'package:minhlong_menu_client_v3/features/theme/cubit/scheme_cubit.dart';
 import 'package:minhlong_menu_client_v3/features/theme/data/theme_local_datasource.dart';
 import 'package:minhlong_menu_client_v3/features/user/cubit/user_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../../../Routes/app_route.dart';
 import '../../../../common/dialog/app_dialog.dart';
-import '../../../../common/widget/common_back_button.dart';
 import '../../../../core/api_config.dart';
 import '../../../../core/app_asset.dart';
 import '../../../../core/app_string.dart';
 import '../../../auth/bloc/auth_bloc.dart';
 import '../../../theme/cubit/theme_cubit.dart';
 import '../../data/model/user_model.dart';
-
 part '../widget/_profile_widget.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -41,9 +39,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       WidgetStateProperty.resolveWith<Icon?>(
     (Set<WidgetState> states) {
       if (states.contains(WidgetState.selected)) {
-        return const Icon(Icons.check);
+        return const Icon(Icons.dark_mode_outlined);
       }
-      return const Icon(Icons.close);
+      return const Icon(Icons.light_mode);
     },
   );
   @override
@@ -62,8 +60,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void _init() async {
     sf = await SharedPreferences.getInstance();
     _isDarkMode.value = await ThemeLocalDatasource(sf).getDartTheme() ?? false;
-
-    var schemeKey = await ThemeLocalDatasource(sf).getSchemeTheme() ?? '';
+    var schemeKey =
+        await ThemeLocalDatasource(sf).getSchemeTheme() ?? listScheme.first.key;
     _pickColor.value =
         listScheme.firstWhere((element) => element.key == schemeKey).color;
   }
@@ -74,8 +72,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        leading: CommonBackButton(onTap: () => context.pop()),
-        automaticallyImplyLeading: false,
         title: Text(
           AppString.profile,
           style: context.titleStyleLarge!.copyWith(
@@ -119,15 +115,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     children: [
                       Text(
                         user.fullName,
-                        style: context.titleStyleLarge!.copyWith(
+                        style: context.bodyLarge!.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       10.verticalSpace,
                       Text(
-                        '+84 ${user.phoneNumber}',
-                        style: context.bodyLarge!.copyWith(
-                          color: context.bodyLarge!.color!.withOpacity(0.5),
+                        'Còn ${Ultils.subcriptionEndDate(user.subscriptionEndDate)} ngày',
+                        style: context.bodySmall!.copyWith(
+                          color: Ultils.subcriptionEndDate(
+                                      user.subscriptionEndDate) <
+                                  30
+                              ? Colors.red
+                              : context.bodyLarge!.color!.withOpacity(0.5),
                         ),
                       ),
                     ],
@@ -146,6 +146,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   children: [
                     Row(
                       children: [
+                        const Icon(Icons.calendar_month_outlined),
+                        5.horizontalSpace,
+                        Text(
+                          Ultils().formatDateToString(user.subscriptionEndDate),
+                          style: context.bodySmall,
+                        ),
+                      ],
+                    ),
+                    10.verticalSpace,
+                    Row(
+                      children: [
                         const Icon(Icons.phone),
                         5.horizontalSpace,
                         RichText(
@@ -155,7 +166,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   text: '0${user.phoneNumber}',
                                   style: context.bodySmall),
                               TextSpan(
-                                text: user.phoneNumber != 0
+                                text: user.subPhoneNumber != 0
                                     ? ' - 0${user.subPhoneNumber}'
                                     : '',
                                 style: context.bodySmall,
@@ -166,28 +177,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ],
                     ),
                     10.verticalSpace,
-                    Row(
-                      children: [
-                        const Icon(Icons.email_rounded),
-                        5.horizontalSpace,
-                        Text(
-                          user.email,
-                          style: context.bodySmall,
-                        ),
-                      ],
-                    ),
+                    user.email != ''
+                        ? Row(
+                            children: [
+                              const Icon(Icons.email_rounded),
+                              5.horizontalSpace,
+                              Text(
+                                user.email,
+                                style: context.bodySmall,
+                              ),
+                            ],
+                          )
+                        : const SizedBox(),
                     10.verticalSpace,
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        const Icon(Icons.location_on),
-                        5.horizontalSpace,
-                        Text(
-                          user.address,
-                          style: context.bodySmall,
-                        ),
-                      ],
-                    ),
+                    user.address != ''
+                        ? Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              const Icon(Icons.location_on),
+                              5.horizontalSpace,
+                              Text(
+                                user.address,
+                                style: context.bodySmall,
+                              ),
+                            ],
+                          )
+                        : const SizedBox(),
                   ],
                 ),
               ),
