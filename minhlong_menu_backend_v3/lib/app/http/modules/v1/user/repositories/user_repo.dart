@@ -11,7 +11,12 @@ class UserRepo {
     required int startIndex,
     required int limit,
   }) async {
-    return await user.query().offset(startIndex).limit(limit).get();
+    return await user
+        .query()
+        .offset(startIndex)
+        .limit(limit)
+        .where('role', '=', 'user')
+        .get();
   }
 
   Future userCount() async {

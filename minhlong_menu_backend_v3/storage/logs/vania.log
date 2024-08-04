@@ -94,3 +94,4 @@ Tried calling: []("provider")
 [2024-08-03 12:49:45] ERROR: NoSuchMethodError: The method '[]' was called on null.
 Receiver: null
 Tried calling: []("provider")
+[2024-08-04 12:47:21] ERROR: MySQLClientException: Can not prepare stmt: connection closed

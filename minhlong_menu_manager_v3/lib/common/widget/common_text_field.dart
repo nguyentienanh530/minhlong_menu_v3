@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import '../../core/app_colors.dart';
 import '../../core/app_const.dart';
 import '../../core/app_style.dart';
@@ -79,16 +78,13 @@ class CommonTextField extends StatelessWidget {
                 borderRadius: BorderRadius.circular(textFieldBorderRadius).r,
                 borderSide: const BorderSide(color: AppColors.red)),
             enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(textFieldBorderRadius).r,
-                borderSide: const BorderSide(color: AppColors.lavender)),
-            disabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(textFieldBorderRadius).r,
-                borderSide: const BorderSide(color: AppColors.lavender)),
+                borderRadius: BorderRadius.circular(textFieldBorderRadius).r),
+            // disabledBorder: OutlineInputBorder(
+            //     borderRadius: BorderRadius.circular(textFieldBorderRadius).r),
             suffixIcon: suffixIcon,
             prefixIcon: prefixIcon,
             focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(textFieldBorderRadius).r,
-                borderSide: const BorderSide(color: AppColors.lavender)),
+                borderRadius: BorderRadius.circular(textFieldBorderRadius).r),
             errorText: errorText,
             contentPadding:
                 const EdgeInsets.symmetric(horizontal: 16, vertical: 16).r,
@@ -100,7 +96,7 @@ class CommonTextField extends StatelessWidget {
             hintStyle: hintStyle ??
                 kBodyStyle.copyWith(color: AppColors.secondTextColor),
             labelStyle:
-                labelStyle ?? kBodyWhiteStyle.copyWith(color: AppColors.white)),
+                labelStyle ?? kBodyWhiteStyle.copyWith(color: AppColors.black)),
         onChanged: onChanged);
   }
 }

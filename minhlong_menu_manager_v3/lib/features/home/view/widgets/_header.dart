@@ -76,7 +76,7 @@ extension _Header on _HomeViewState {
   _buildButtonAdd() {
     return InkWell(
       onTap: () async {
-        // _showCreateOrUpdateBannerDialog(type: ScreenType.create);
+        _showCreateOrUpdateUserDialog(type: ScreenType.create);
       },
       child: Container(
         height: 35,
@@ -91,6 +91,17 @@ extension _Header on _HomeViewState {
           style: kBodyStyle.copyWith(color: AppColors.white),
         ),
       ),
+    );
+  }
+
+  void _showCreateOrUpdateUserDialog({required ScreenType type}) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return CreateOrUpdateUserDialog(
+          screenType: type,
+        );
+      },
     );
   }
 }
