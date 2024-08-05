@@ -28,7 +28,10 @@ class AuthController extends Controller {
       }
 
       // If you have guard and multi access like user and admin you can pass the guard Auth().guard('admin')
-      Map<String, dynamic> token = await Auth()
+      Map<String, dynamic> token = <String, dynamic>{};
+
+      token = await Auth()
+          // .guard('user')
           .login(user)
           .createToken(withRefreshToken: true, expiresIn: Duration(hours: 24));
 

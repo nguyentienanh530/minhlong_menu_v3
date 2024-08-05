@@ -49,6 +49,12 @@
             "request": "launch",
             "type": "dart",
             "flutterMode": "release"
-        }
+        },
+        {
+            "name": "minhlong_menu_manager_v3",
+            "cwd": "minhlong_menu_manager_v3",
+            "request": "launch",
+            "type": "dart"
+        },
     ]
 }

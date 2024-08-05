@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -206,6 +207,7 @@ class _PhoneNumber extends StatelessWidget {
     return CommonTextField(
         controller: emailcontroller,
         keyboardType: TextInputType.phone,
+        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         labelText: AppString.phoneNumber,
         validator: (value) {
           return AppRes.validatePhoneNumber(value)

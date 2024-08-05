@@ -33,10 +33,10 @@ extension _NewsFoodWidget on _HomeViewState {
             return Padding(
               padding: const EdgeInsets.only(right: defaultPadding / 2),
               child: ItemFoodView(
-                keyItem: _managerList.keys[index],
                 addToCartOnTap: () {
-                  _handleOnTapAddToCart(orderModel, table, foods[index]);
-                  // calculatePathAndAnimate(index);
+                  context
+                      .read<CartCubit>()
+                      .addToCart(table: table, food: foods[index]);
                 },
                 food: foods[index],
                 height: sizeState.height ?? 0.0,

@@ -5,21 +5,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
-
 import 'package:minhlong_menu_client_v3/common/widget/common_text_field.dart';
 import 'package:minhlong_menu_client_v3/common/widget/error_build_image.dart';
 import 'package:minhlong_menu_client_v3/core/app_asset.dart';
 import 'package:minhlong_menu_client_v3/core/extensions.dart';
 import 'package:minhlong_menu_client_v3/features/cart/cubit/cart_cubit.dart';
 import 'package:minhlong_menu_client_v3/features/food/data/model/food_item.dart';
-import 'package:minhlong_menu_client_v3/features/order/data/model/order_detail.dart';
 import 'package:minhlong_menu_client_v3/features/order/data/model/order_model.dart';
 import 'package:minhlong_menu_client_v3/features/table/cubit/table_cubit.dart';
 import 'package:minhlong_menu_client_v3/features/table/data/model/table_model.dart';
 import 'package:readmore/readmore.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../../../../Routes/app_route.dart';
-import '../../../../common/snackbar/app_snackbar.dart';
 import '../../../../common/widget/cart_button.dart';
 import '../../../../common/widget/loading.dart';
 import '../../../../core/api_config.dart';
@@ -42,16 +39,15 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
   final TextEditingController _noteController = TextEditingController();
   late final FoodItem _foodItem;
   final _indexImage = ValueNotifier(0);
-
   final _quantity = ValueNotifier(1);
   final _totalPrice = ValueNotifier<double>(0.0);
+  final _imageHeight = ValueNotifier(0.0);
   double _priceFood = 0;
 
   @override
   void initState() {
     super.initState();
     _foodItem = widget.foodItem;
-
     _priceFood = Ultils.foodPrice(
         isDiscount: _foodItem.isDiscount ?? false,
         foodPrice: _foodItem.price ?? 0,
@@ -66,6 +62,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
     _indexImage.dispose();
     _quantity.dispose();
     _totalPrice.dispose();
+    _imageHeight.dispose();
   }
 
   @override
@@ -85,178 +82,92 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
         actions: [
           CartButton(
             onPressed: () => context.push(AppRoute.carts, extra: user),
-            number: cartState.orderDetail.length.toString(),
+            number: cartState.order.orderDetail.length.toString(),
             colorIcon: context.colorScheme.primary,
           ),
         ],
       ),
-      body: Builder(builder: (context) {
-        // return Column(
-        //   children: [
-        //     Expanded(
-        //       child: CustomScrollView(
-        //         physics: const BouncingScrollPhysics(),
-        //         slivers: [
-        //           SliverAppBar(
-        //             centerTitle: true,
-        //             expandedHeight: 0.5 * context.sizeDevice.height,
-        //             pinned: true,
-        //             stretch: true,
-        //             automaticallyImplyLeading: false,
-        //             actions: [
-        //               CartButton(
-        //                 onPressed: () =>
-        //                     context.push(AppRoute.carts, extra: user),
-        //                 number: cartState.orderDetail.length.toString(),
-        //                 colorIcon: context.colorScheme.primary,
-        //               ),
-        //             ],
-        //             leading: CommonBackButton(onTap: () => context.pop()),
-        //             title: FittedBox(
-        //               fit: BoxFit.scaleDown,
-        //               child: ValueListenableBuilder(
-        //                 valueListenable: _indexImage,
-        //                 builder: (context, value, child) {
-        //                   return _buildIndicator(context, 4);
-        //                 },
-        //               ),
-        //             ),
-        //             flexibleSpace: FlexibleSpaceBar(
-        //               stretchModes: const [
-        //                 StretchMode.zoomBackground,
-        //               ],
-        //               background: _buildFoodImage(_foodItem),
-        //             ),
-        //           ),
-        //           SliverToBoxAdapter(
-        //             child: Padding(
-        //               padding: const EdgeInsets.symmetric(
-        //                   horizontal: defaultPadding),
-        //               child: Column(
-        //                 crossAxisAlignment: CrossAxisAlignment.start,
-        //                 mainAxisAlignment: MainAxisAlignment.start,
-        //                 children: [
-        //                   20.verticalSpace,
-        //                   FittedBox(
-        //                       fit: BoxFit.scaleDown,
-        //                       child: _buildFoodDetailsName(_foodItem)),
-        //                   20.verticalSpace,
-        //                   Row(
-        //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //                     children: [
-        //                       Expanded(
-        //                           child: FittedBox(
-        //                               alignment: Alignment.centerLeft,
-        //                               fit: BoxFit.scaleDown,
-        //                               child:
-        //                                   _buildFoodDetailsPrice(_foodItem))),
-        //                       5.horizontalSpace,
-        //                       Expanded(
-        //                           child: FittedBox(
-        //                               alignment: Alignment.centerRight,
-        //                               fit: BoxFit.scaleDown,
-        //                               child: _buildQuantity())),
-        //                     ],
-        //                   ),
-        //                   10.verticalSpace,
-        //                   _buildNoteWidget(),
-        //                   20.verticalSpace,
-        //                   _foodItem.description.isNotEmpty
-        //                       ? _buildFoodDetailsDescription(_foodItem)
-        //                       : const SizedBox(),
-        //                   20.verticalSpace,
-        //                 ],
-        //               ),
-        //             ),
-        //           ),
-        //         ],
-        //       ),
-        //     ),
-        //     _buildAddToCartButton(cartState, tableState),
-        //   ],
-        // );
-        return SizedBox(
-          height: context.sizeDevice.height,
-          width: context.sizeDevice.width,
-          child: Column(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Stack(
-                    children: [
-                      _buildFoodImage(_foodItem),
-                      Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
+      body: Column(
+        children: [
+          Expanded(
+            child: ListenableBuilder(
+                listenable: _imageHeight,
+                builder: (context, _) {
+                  return SingleChildScrollView(
+                    child: Stack(
+                      children: [
+                        _buildFoodImage(_foodItem),
+                        Positioned(
+                          top: _imageHeight.value - 100,
+                          right: 10,
+                          left: 10,
+                          child: Card(
+                            elevation: 10,
+                            margin: const EdgeInsets.symmetric(
                                 horizontal: defaultPadding),
-                            child: Column(
-                              children: [
-                                SizedBox(
-                                  height:
-                                      (context.sizeDevice.height * 0.6) + 60,
+                            child: FittedBox(
+                              child: Container(
+                                padding: const EdgeInsets.all(defaultPadding),
+                                constraints: BoxConstraints(
+                                    maxWidth: context.sizeDevice.width * 0.8),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    _buildFoodDetailsName(_foodItem),
+                                    10.verticalSpace,
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        _buildCategoryName(_foodItem),
+                                        _buildOrderCount(_foodItem),
+                                      ],
+                                    ),
+                                    10.verticalSpace,
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Flexible(
+                                            child: FittedBox(
+                                          child:
+                                              _buildFoodDetailsPrice(_foodItem),
+                                        )),
+                                        10.horizontalSpace,
+                                        _buildQuantity()
+                                      ],
+                                    ),
+                                    10.verticalSpace,
+                                    _buildNoteWidget(),
+                                  ],
                                 ),
-                                10.verticalSpace,
-                                _buildFoodDetailsDescription(_foodItem),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      Positioned(
-                        top: context.sizeDevice.height * 0.4,
-                        right: 10,
-                        left: 10,
-                        child: Card(
-                          elevation: 10,
-                          margin: const EdgeInsets.symmetric(
-                              horizontal: defaultPadding),
-                          child: FittedBox(
-                            child: Container(
-                              padding: const EdgeInsets.all(defaultPadding),
-                              constraints: BoxConstraints(
-                                  maxWidth: context.sizeDevice.width * 0.8),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  _buildFoodDetailsName(_foodItem),
-                                  10.verticalSpace,
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      _buildCategoryName(_foodItem),
-                                      _buildOrderCount(_foodItem),
-                                    ],
-                                  ),
-                                  10.verticalSpace,
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      _buildFoodDetailsPrice(_foodItem),
-                                      _buildQuantity()
-                                    ],
-                                  ),
-                                  10.verticalSpace,
-                                  _buildNoteWidget(),
-                                ],
                               ),
                             ),
                           ),
                         ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              _buildAddToCartButton(cartState, tableState),
-            ],
+                        Padding(
+                          padding: const EdgeInsets.all(defaultPadding),
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                height: _imageHeight.value + 150,
+                                width: context.sizeDevice.width,
+                              ),
+                              _buildFoodDetailsDescription(_foodItem),
+                            ],
+                          ),
+                        ),
+                        10.verticalSpace
+                      ],
+                    ),
+                  );
+                }),
           ),
-        );
-      }),
+          _buildAddToCartButton(cartState.order, tableState),
+        ],
+      ),
     );
   }
 
@@ -268,19 +179,25 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
           imageUrl:
               images[index]!.isEmpty ? '' : '${ApiConfig.host}${images[index]}',
           placeholder: (context, url) => const Loading(),
-          imageBuilder: (context, imageProvider) => Container(
-            height: context.sizeDevice.height * 0.5,
-            width: context.sizeDevice.width,
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(defaultBorderRadius * 2),
-                  bottomRight: Radius.circular(defaultBorderRadius * 2)),
-              image: DecorationImage(
-                image: imageProvider,
-                fit: BoxFit.cover,
+          imageBuilder: (context, imageProvider) =>
+              LayoutBuilder(builder: (context, constraints) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              _imageHeight.value = constraints.maxHeight;
+            });
+            return Container(
+              height: context.sizeDevice.height * 0.5,
+              width: context.sizeDevice.width,
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(defaultBorderRadius * 2),
+                    bottomRight: Radius.circular(defaultBorderRadius * 2)),
+                image: DecorationImage(
+                  image: imageProvider,
+                  fit: BoxFit.cover,
+                ),
               ),
-            ),
-          ),
+            );
+          }),
           fit: BoxFit.cover,
           errorWidget: errorBuilderForImage,
         );
@@ -344,10 +261,6 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
     return GestureDetector(
         onTap: onTap,
         child: Container(
-            // decoration: BoxDecoration(
-            //     color: colorBg,
-            //     shape: BoxShape.circle,
-            //     border: Border.all(color: context.colorScheme.primary)),
             height: 30,
             width: 30,
             alignment: Alignment.center,
@@ -375,9 +288,14 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
           size: 24,
         ),
         5.horizontalSpace,
-        Text(
-          food.name,
-          style: context.titleStyleLarge!.copyWith(fontWeight: FontWeight.bold),
+        Expanded(
+          child: Text(
+            food.name,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style:
+                context.titleStyleLarge!.copyWith(fontWeight: FontWeight.bold),
+          ),
         ),
       ],
     );
@@ -464,7 +382,8 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
             ),
           ),
           onPressed: () {
-            _handleOnTapAddToCart(order, table);
+            // _handleOnTapAddToCart(order, table);
+            context.read<CartCubit>().addToCart(table: table, food: _foodItem);
           },
           icon: Container(
               margin: const EdgeInsets.symmetric(vertical: defaultPadding / 2),
@@ -484,53 +403,6 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
         ),
       ),
     );
-  }
-
-  void _handleOnTapAddToCart(OrderModel order, TableModel table) async {
-    if (table.name.isEmpty) {
-      AppSnackbar.showSnackBar(context, msg: 'Chưa chọn bàn', isSuccess: false);
-    } else {
-      if (checkExistFood(order)) {
-        AppSnackbar.showSnackBar(context,
-            msg: 'Món ăn đã có trong giỏ hàng.', isSuccess: false);
-      } else {
-        var newFoodOrder = OrderDetail(
-            foodID: _foodItem.id,
-            foodImage: _foodItem.image1 ?? '',
-            foodName: _foodItem.name,
-            quantity: _quantity.value,
-            totalAmount: _totalPrice.value,
-            note: _noteController.text,
-            discount: _foodItem.discount ?? 0,
-            foodPrice: _foodItem.price ?? 0,
-            isDiscount: _foodItem.isDiscount ?? false);
-        var newFoods = [...order.orderDetail, newFoodOrder];
-        double newTotalPrice = newFoods.fold(
-            0, (double total, currentFood) => total + currentFood.totalAmount);
-        order = order.copyWith(
-            // tableName: table.name,
-            // tableID: table.id,
-            orderDetail: newFoods,
-            status: 'new',
-            totalPrice: newTotalPrice);
-        context.read<CartCubit>().setOrderModel(order);
-        AppSnackbar.showSnackBar(context,
-            msg: 'Món ăn đã được thêm.', isSuccess: true);
-        _quantity.value = 1;
-        _noteController.clear();
-      }
-    }
-  }
-
-  bool checkExistFood(OrderModel orderModel) {
-    var isExist = false;
-    for (OrderDetail e in orderModel.orderDetail) {
-      if (e.foodID == _foodItem.id) {
-        isExist = true;
-        break;
-      }
-    }
-    return isExist;
   }
 
   Widget _buildCategoryName(FoodItem foodItem) {

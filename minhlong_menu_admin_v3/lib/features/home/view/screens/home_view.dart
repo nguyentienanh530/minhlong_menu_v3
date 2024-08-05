@@ -38,7 +38,6 @@ class HomeViewState extends State<HomeView>
     with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   final PageController _pageCtrl =
       PageController(initialPage: 0, viewportFraction: 1, keepPage: true);
-
   final SideMenuController _sideMenuCtrl = SideMenuController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final _indexPage = ValueNotifier(0);

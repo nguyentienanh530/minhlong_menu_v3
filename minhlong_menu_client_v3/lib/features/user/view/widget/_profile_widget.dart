@@ -2,59 +2,44 @@ part of '../screen/profile_screen.dart';
 
 extension _ProfileWidget on _ProfileScreenState {
   Widget _bodyInfoUser({required UserModel userModel}) {
-    return Card(
-      elevation: 4,
-      margin: EdgeInsets.zero,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(defaultBorderRadius * 2),
-          topRight: Radius.circular(defaultBorderRadius * 2),
-        ),
-      ),
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(
-            horizontal: defaultPadding, vertical: defaultPadding * 2),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _ItemProfile(
-                onTap: () =>
-                    context.push(AppRoute.editProfile, extra: userModel),
-                svgPath: AppAsset.user,
-                title: AppString.editProfile),
-            5.verticalSpace,
-            _ItemProfile(
-                svgPath: AppAsset.lock,
-                title: AppString.changePassword,
-                onTap: () => context.push(AppRoute.changePassword)),
-            _buildThemeWidget(context),
-            5.verticalSpace,
-            ListenableBuilder(
-              listenable: _pickColor,
-              builder: (context, child) {
-                return _ItemProfile(
-                    svgPath: AppAsset.logout,
-                    title: AppString.pickColor,
-                    leftIcon: Icon(Icons.color_lens_outlined,
-                        color: context.colorScheme.primary),
-                    rightIcon: Container(
-                      margin: const EdgeInsets.only(right: defaultPadding / 2),
-                      height: 30,
-                      width: 30,
-                      decoration: BoxDecoration(
-                          color: _pickColor.value, shape: BoxShape.circle),
-                    ),
-                    onTap: () async => _showDialogPickThemes());
-              },
-            ),
-            _ItemProfile(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _ItemProfile(
+            onTap: () => context.push(AppRoute.editProfile, extra: userModel),
+            svgPath: AppAsset.user,
+            title: AppString.editProfile),
+        5.verticalSpace,
+        _ItemProfile(
+            svgPath: AppAsset.lock,
+            title: AppString.changePassword,
+            onTap: () => context.push(AppRoute.changePassword)),
+        _buildThemeWidget(context),
+        5.verticalSpace,
+        ListenableBuilder(
+          listenable: _pickColor,
+          builder: (context, child) {
+            return _ItemProfile(
                 svgPath: AppAsset.logout,
-                title: AppString.logout,
-                onTap: () => _showDialogLogout()),
-          ],
+                title: AppString.pickColor,
+                leftIcon: Icon(Icons.color_lens_outlined,
+                    color: context.colorScheme.primary),
+                rightIcon: Container(
+                  margin: const EdgeInsets.only(right: defaultPadding / 2),
+                  height: 30,
+                  width: 30,
+                  decoration: BoxDecoration(
+                      color: _pickColor.value, shape: BoxShape.circle),
+                ),
+                onTap: () async => _showDialogPickThemes());
+          },
         ),
-      ),
+        _ItemProfile(
+            svgPath: AppAsset.logout,
+            title: AppString.logout,
+            colorIcon: Colors.red,
+            onTap: () => _showDialogLogout()),
+      ],
     );
   }
 
@@ -155,59 +140,38 @@ extension _ProfileWidget on _ProfileScreenState {
 
   Widget _buildThemeWidget(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: isDarkMode,
+      valueListenable: _isDarkMode,
       builder: (context, value, child) {
-        return Card(
-            elevation: 2,
-            shadowColor: context.colorScheme.onPrimary,
-            child: SizedBox(
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                  Expanded(
-                    child: FittedBox(
-                      alignment: Alignment.centerLeft,
-                      fit: BoxFit.scaleDown,
-                      child: Row(children: [
-                        Padding(
-                            padding: const EdgeInsets.all(defaultPadding),
-                            child: Icon(
-                              isDarkMode.value
-                                  ? Icons.dark_mode_outlined
-                                  : Icons.light_mode_outlined,
-                              color: context.colorScheme.primary,
-                            )),
-                        Text(
-                          isDarkMode.value
-                              ? AppString.darkMode
-                              : AppString.lightMode,
-                          style: context.bodyMedium!,
-                        )
-                      ]),
-                    ),
-                  ),
-                  Expanded(
-                    child: FittedBox(
-                      alignment: Alignment.centerRight,
-                      fit: BoxFit.scaleDown,
-                      child: Transform.scale(
-                        scale: 0.8,
-                        child: Switch(
-                          activeTrackColor: context.colorScheme.primary,
-                          inactiveTrackColor:
-                              context.colorScheme.primary.withOpacity(0.5),
-                          inactiveThumbColor: Colors.white,
-                          value: isDarkMode.value,
-                          onChanged: (value) async {
-                            isDarkMode.value = !isDarkMode.value;
-                            context.read<ThemeCubit>().changeTheme(value);
-                            await ThemeLocalDatasource(sf).setDarkTheme(value);
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
-                ])));
+        return SizedBox(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Padding(
+                      padding: const EdgeInsets.all(defaultPadding),
+                      child: Icon(
+                        Icons.dark_mode_outlined,
+                        color: context.colorScheme.primary,
+                      )),
+                  Text(
+                    AppString.darkMode,
+                    style: context.bodyMedium!,
+                  )
+                ],
+              ),
+              Switch(
+                thumbIcon: thumbIcon,
+                value: _isDarkMode.value,
+                onChanged: (value) async {
+                  _isDarkMode.value = !_isDarkMode.value;
+                  context.read<ThemeCubit>().changeTheme(value);
+                  await ThemeLocalDatasource(sf).setDarkTheme(value);
+                },
+              ),
+            ],
+          ),
+        );
       },
     );
   }
@@ -234,49 +198,45 @@ class _ItemProfile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-        elevation: 2,
-        shadowColor: context.colorScheme.onPrimary,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(defaultPadding),
-          onTap: onTap,
-          child: SizedBox(
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                Expanded(
-                  child: FittedBox(
-                    alignment: Alignment.centerLeft,
-                    fit: BoxFit.scaleDown,
-                    child: Row(children: [
-                      Padding(
-                          padding: const EdgeInsets.all(defaultPadding),
-                          child: leftIcon ??
-                              SvgPicture.asset(svgPath,
-                                  colorFilter: ColorFilter.mode(
-                                      context.colorScheme.primary,
-                                      BlendMode.srcIn))),
-                      Text(
-                        title,
-                        style: titleStyle ?? context.bodyMedium!,
-                      )
-                    ]),
-                  ),
-                ),
-                Expanded(
-                  child: FittedBox(
-                    alignment: Alignment.centerRight,
-                    fit: BoxFit.scaleDown,
-                    child: rightIcon ??
-                        const Padding(
-                            padding: EdgeInsets.all(defaultPadding),
-                            child: Icon(
-                              Icons.arrow_forward_ios_rounded,
-                              size: 15,
-                            )),
-                  ),
-                )
-              ])),
-        ));
+    return InkWell(
+      borderRadius: BorderRadius.circular(defaultPadding),
+      onTap: onTap,
+      child: SizedBox(
+          child:
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        Expanded(
+          child: FittedBox(
+            alignment: Alignment.centerLeft,
+            fit: BoxFit.scaleDown,
+            child: Row(children: [
+              Padding(
+                  padding: const EdgeInsets.all(defaultPadding),
+                  child: leftIcon ??
+                      SvgPicture.asset(svgPath,
+                          colorFilter: ColorFilter.mode(
+                              colorIcon ?? context.colorScheme.primary,
+                              BlendMode.srcIn))),
+              Text(
+                title,
+                style: titleStyle ?? context.bodyMedium!,
+              )
+            ]),
+          ),
+        ),
+        Expanded(
+          child: FittedBox(
+            alignment: Alignment.centerRight,
+            fit: BoxFit.scaleDown,
+            child: rightIcon ??
+                const Padding(
+                    padding: EdgeInsets.all(defaultPadding),
+                    child: Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      size: 15,
+                    )),
+          ),
+        )
+      ])),
+    );
   }
 }

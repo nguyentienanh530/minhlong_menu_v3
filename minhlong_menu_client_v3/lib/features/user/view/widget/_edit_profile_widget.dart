@@ -81,45 +81,72 @@ extension _EditProfileWidget on _EditProfileViewState {
   }
 
   Widget _bodyEditInfoUser() {
-    return Card(
-      elevation: 4,
-      margin: EdgeInsets.zero,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(defaultBorderRadius * 2),
-          topRight: Radius.circular(defaultBorderRadius * 2),
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-            horizontal: defaultPadding, vertical: defaultPadding * 2),
-        child: Form(
-          key: AppKeys.updateUserKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextBoxProfile(
-                  controllers: _nameController,
-                  labelText: AppString.fullName,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Vui lòng nhập tên';
-                    }
-                    return null;
-                  }),
-              20.verticalSpace,
-              TextBoxProfile(
-                  controllers: _phoneController,
-                  labelText: '${AppString.phoneNumber} *',
-                  validator: (value) {
-                    return AppRes.validatePhoneNumber(_phoneController.text)
-                        ? null
-                        : 'Vui lòng nhập số điện thoại';
-                  }),
-              20.verticalSpace,
-              _buttonEditProfile(),
-            ],
-          ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+          horizontal: defaultPadding, vertical: defaultPadding * 2),
+      child: Form(
+        key: AppKeys.updateUserKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CommonTextField(
+                controller: _nameController,
+                onChanged: (p0) {},
+                labelText: AppString.fullName,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Vui lòng nhập tên';
+                  }
+                  return null;
+                }),
+            20.verticalSpace,
+            Row(
+              children: [
+                Expanded(
+                  child: CommonTextField(
+                      onChanged: (p0) {},
+                      controller: _phoneController,
+                      labelText: '${AppString.phoneNumber} *',
+                      validator: (value) {
+                        return AppRes.validatePhoneNumber(_phoneController.text)
+                            ? null
+                            : 'Vui lòng nhập số điện thoại';
+                      }),
+                ),
+                10.horizontalSpace,
+                Expanded(
+                  child: CommonTextField(
+                      onChanged: (p0) {},
+                      controller: _subPhoneController,
+                      labelText: AppString.subPhoneNumber,
+                      validator: (value) {
+                        return AppRes.validatePhoneNumber(
+                                _subPhoneController.text)
+                            ? null
+                            : 'Vui lòng nhập số điện thoại';
+                      }),
+                ),
+              ],
+            ),
+            20.verticalSpace,
+            CommonTextField(
+                onChanged: (p0) {},
+                controller: _emailController,
+                labelText: AppString.email,
+                validator: (value) {
+                  return AppRes.validateEmail(_emailController.text)
+                      ? null
+                      : 'Vui lòng nhập email';
+                }),
+            20.verticalSpace,
+            CommonTextField(
+              onChanged: (p0) {},
+              controller: _addressController,
+              labelText: AppString.address,
+            ),
+            20.verticalSpace,
+            _buttonEditProfile(),
+          ],
         ),
       ),
     );
@@ -144,6 +171,9 @@ extension _EditProfileWidget on _EditProfileViewState {
                 fullName: _nameController.text,
                 phoneNumber: int.parse(_phoneController.text),
                 image: _imageUrl,
+                subPhoneNumber: int.parse(_subPhoneController.text),
+                email: _emailController.text,
+                address: _addressController.text,
               );
               _updateUser(_userModel);
             }
@@ -152,36 +182,6 @@ extension _EditProfileWidget on _EditProfileViewState {
             AppString.edit,
             style: context.bodyMedium!.copyWith(color: Colors.white),
           )),
-    );
-  }
-}
-
-class TextBoxProfile extends StatelessWidget {
-  const TextBoxProfile({
-    super.key,
-    required this.controllers,
-    this.labelText,
-    this.validator,
-  });
-  final TextEditingController controllers;
-  final String? labelText;
-  final String? Function(String?)? validator;
-
-  @override
-  Widget build(BuildContext context) {
-    return CommonTextField(
-      onChanged: (p0) {},
-      labelText: labelText,
-      labelStyle: context.bodyMedium,
-      controller: controllers,
-      style: context.bodyMedium,
-      validator: validator,
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(defaultBorderRadius / 3),
-        borderSide: BorderSide(
-          color: context.colorScheme.primary,
-        ),
-      ),
     );
   }
 }

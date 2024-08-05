@@ -5,12 +5,13 @@ extension _CategoryWidget on _HomeViewState {
     return SizedBox(
       height: 0.2 * context.sizeDevice.height,
       child: ListView(
-          scrollDirection: Axis.horizontal,
-          children: categories
-              .map(
-                (e) => _buildCategoryItem(e),
-              )
-              .toList()),
+        scrollDirection: Axis.horizontal,
+        children: categories
+            .map(
+              (e) => _buildCategoryItem(e),
+            )
+            .toList(),
+      ),
     );
   }
 
@@ -41,7 +42,8 @@ extension _CategoryWidget on _HomeViewState {
                   ),
                   child: categoryModel.image.isEmpty
                       ? Container(
-                          margin: const EdgeInsets.all(defaultMargin),
+                          height: context.sizeDevice.height,
+                          alignment: Alignment.center,
                           child: Icon(
                             Icons.wallpaper,
                             color: Colors.black.withOpacity(0.3),

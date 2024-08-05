@@ -23,7 +23,7 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 import '../../../../Routes/app_route.dart';
 import '../../../../common/widget/no_product.dart';
 import '../../../../core/api_config.dart';
-import '../../../../core/app_res.dart';
+
 import '../../../../core/app_string.dart';
 import '../../../../core/utils.dart';
 import '../../../order/bloc/order_bloc.dart';
@@ -130,7 +130,7 @@ class _CartViewState extends State<CartView> {
                     Text(
                       '${Ultils.currencyFormat(
                         double.parse(
-                          cartState.totalPrice.toString(),
+                          cartState.order.totalPrice.toString(),
                         ),
                       )} ₫',
                       style: context.bodyMedium!.copyWith(
@@ -140,12 +140,12 @@ class _CartViewState extends State<CartView> {
                   ],
                 ),
               ),
-              _buildPayButton(cartState, tableState),
+              _buildPayButton(cartState.order, tableState),
             ],
           ),
         ),
       ),
-      body: cartState.orderDetail.isEmpty
+      body: cartState.order.orderDetail.isEmpty
           ? const NoProduct()
           : BlocListener<OrderBloc, OrderState>(
               listener: (context, state) {
@@ -169,7 +169,9 @@ class _CartViewState extends State<CartView> {
                         haveCancelButton: true,
                         title: state.error,
                         confirmText: 'Thử lại', onPressedComfirm: () {
-                      context.read<OrderBloc>().add(OrderCreated(cartState));
+                      context
+                          .read<OrderBloc>()
+                          .add(OrderCreated(cartState.order));
                     });
 
                     break;
@@ -178,11 +180,12 @@ class _CartViewState extends State<CartView> {
                 }
               },
               child: ListView.builder(
-                  itemCount: cartState.orderDetail.length,
+                  itemCount: cartState.order.orderDetail.length,
                   padding: const EdgeInsets.all(defaultPadding),
                   physics: const BouncingScrollPhysics(),
                   itemBuilder: (context, index) {
-                    return _itemCart(cartState, cartState.orderDetail[index]);
+                    return _itemCart(
+                        cartState.order, cartState.order.orderDetail[index]);
                   }),
             ),
     );

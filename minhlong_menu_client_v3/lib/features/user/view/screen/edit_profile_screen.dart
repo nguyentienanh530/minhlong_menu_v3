@@ -1,17 +1,13 @@
 import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_client_v3/common/dialog/app_dialog.dart';
 import 'package:minhlong_menu_client_v3/common/snackbar/app_snackbar.dart';
-import 'package:minhlong_menu_client_v3/common/widget/common_back_button.dart';
 import 'package:minhlong_menu_client_v3/core/extensions.dart';
 import 'package:minhlong_menu_client_v3/features/user/cubit/user_cubit.dart';
 import 'package:minhlong_menu_client_v3/features/user/data/repositories/user_repository.dart';
-
 import '../../../../common/widget/common_text_field.dart';
 import '../../../../common/widget/error_build_image.dart';
 import '../../../../common/widget/loading.dart';
@@ -23,7 +19,6 @@ import '../../../../core/app_string.dart';
 import '../../../../core/utils.dart';
 import '../../bloc/user_bloc.dart';
 import '../../data/model/user_model.dart';
-
 part '../widget/_edit_profile_widget.dart';
 
 class EditProfileScreen extends StatelessWidget {
@@ -52,10 +47,12 @@ class _EditProfileViewState extends State<EditProfileView> {
   late UserModel _userModel;
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _subPhoneController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
   final _imageFile = ValueNotifier(File(''));
   var _imageUrl = '';
   final _loading = ValueNotifier(0.0);
-  var _isUpdated = false;
 
   @override
   void dispose() {
@@ -64,6 +61,9 @@ class _EditProfileViewState extends State<EditProfileView> {
     _imageFile.dispose();
     _phoneController.dispose();
     _loading.dispose();
+    _subPhoneController.dispose();
+    _emailController.dispose();
+    _addressController.dispose();
   }
 
   @override
@@ -72,15 +72,18 @@ class _EditProfileViewState extends State<EditProfileView> {
     _userModel = widget.userModel;
     _nameController.text = _userModel.fullName;
     _phoneController.text = '0${_userModel.phoneNumber}';
+    _subPhoneController.text =
+        _userModel.subPhoneNumber == 0 ? '' : '0${_userModel.subPhoneNumber}';
     _imageUrl = _userModel.image;
+    _emailController.text = _userModel.email;
+    _addressController.text = _userModel.address;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        leading: CommonBackButton(onTap: () => context.pop(_isUpdated)),
         centerTitle: true,
         title: Text(
           AppString.editProfile,
@@ -88,7 +91,6 @@ class _EditProfileViewState extends State<EditProfileView> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        automaticallyImplyLeading: false,
       ),
       body: BlocListener<UserBloc, UserState>(
         listener: (context, state) {
@@ -99,24 +101,25 @@ class _EditProfileViewState extends State<EditProfileView> {
             case UserUpdateSuccess():
               pop(context, 1);
               AppSnackbar.showSnackBar(context,
-                  msg: 'Cập nhật thành công', isSuccess: true);
+                  msg: 'Cập nhật thành công',
+                  type: AppSnackbarType.success);
               context.read<UserCubit>().userChanged(_userModel);
-              _isUpdated = true;
+
               break;
             case UserUpdateFailure():
               pop(context, 1);
               AppSnackbar.showSnackBar(context,
-                  msg: state.errorMessage, isSuccess: false);
-              _isUpdated = false;
+                  msg: state.errorMessage, type: AppSnackbarType.error);
+
               break;
             default:
           }
         },
-        child: Column(
+        child: ListView(
           children: [
             20.verticalSpace,
             _imageEditProfileWidget(),
-            Expanded(child: _bodyEditInfoUser())
+            _bodyEditInfoUser()
           ],
         ),
       ),

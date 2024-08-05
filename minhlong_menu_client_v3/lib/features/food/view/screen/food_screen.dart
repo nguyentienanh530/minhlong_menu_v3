@@ -7,22 +7,15 @@ import 'package:minhlong_menu_client_v3/core/extensions.dart';
 import 'package:minhlong_menu_client_v3/features/cart/cubit/cart_cubit.dart';
 import 'package:minhlong_menu_client_v3/features/food/data/repositories/food_repository.dart';
 import 'package:minhlong_menu_client_v3/features/user/cubit/user_cubit.dart';
-
 import '../../../../Routes/app_route.dart';
-import '../../../../common/snackbar/app_snackbar.dart';
 import '../../../../common/widget/cart_button.dart';
 import '../../../../common/widget/common_back_button.dart';
 import '../../../../common/widget/common_item_food.dart';
 import '../../../../common/widget/empty_widget.dart';
 import '../../../../common/widget/error_widget.dart';
 import '../../../../core/app_const.dart';
-import '../../../../core/utils.dart';
-import '../../../order/data/model/order_detail.dart';
-import '../../../order/data/model/order_model.dart';
 import '../../../table/cubit/table_cubit.dart';
-import '../../../table/data/model/table_model.dart';
 import '../../bloc/food_bloc.dart';
-import '../../data/model/food_item.dart';
 
 class FoodScreen extends StatelessWidget {
   const FoodScreen({super.key, required this.property});
@@ -115,7 +108,7 @@ class _FoodViewState extends State<FoodView> {
           actions: [
             CartButton(
               onPressed: () => context.push(AppRoute.carts, extra: user),
-              number: cartState.orderDetail.length.toString(),
+              number: cartState.order.orderDetail.length.toString(),
               colorIcon: context.colorScheme.primary,
             ),
             10.horizontalSpace
@@ -123,7 +116,6 @@ class _FoodViewState extends State<FoodView> {
         ),
         body: BlocBuilder<FoodBloc, FoodState>(
           builder: (context, state) {
-            var cart = context.watch<CartCubit>().state;
             var table = context.watch<TableCubit>().state;
             if (state is FoodFetchInProgress) {
               return const Loading();
@@ -150,8 +142,13 @@ class _FoodViewState extends State<FoodView> {
                       physics: const NeverScrollableScrollPhysics(),
                       padding: const EdgeInsets.all(defaultPadding),
                       itemBuilder: (context, index) => CommonItemFood(
-                        addToCartOnTap: () => _handleOnTapAddToCart(
-                            cart, table, state.food.foodItems[index]),
+                        // addToCartOnTap: () => _handleOnTapAddToCart(
+                        //     cart, table, state.food.foodItems[index]),
+                        addToCartOnTap: () =>
+                            context.read<CartCubit>().addToCart(
+                                  food: state.food.foodItems[index],
+                                  table: table,
+                                ),
                         food: state.food.foodItems[index],
                       ),
                       itemCount: state.food.foodItems.length,
@@ -181,50 +178,5 @@ class _FoodViewState extends State<FoodView> {
             }
           },
         ));
-  }
-
-  bool checkExistFood(OrderModel orderModel, int foodID) {
-    var isExist = false;
-    for (OrderDetail e in orderModel.orderDetail) {
-      if (e.foodID == foodID) {
-        isExist = true;
-        break;
-      }
-    }
-    return isExist;
-  }
-
-  void _handleOnTapAddToCart(
-      OrderModel order, TableModel table, FoodItem food) async {
-    if (table.name.isEmpty) {
-      AppSnackbar.showSnackBar(context, msg: 'Chưa chọn bàn', isSuccess: false);
-    } else {
-      if (checkExistFood(order, food.id)) {
-        AppSnackbar.showSnackBar(context,
-            msg: 'Món ăn đã có trong giỏ hàng.', isSuccess: false);
-      } else {
-        var newFoodOrder = OrderDetail(
-            foodID: food.id,
-            foodImage: food.image1 ?? '',
-            foodName: food.name,
-            quantity: 1,
-            totalAmount: Ultils.foodPrice(
-                isDiscount: food.isDiscount ?? false,
-                foodPrice: food.price ?? 0,
-                discount: food.discount ?? 0),
-            note: '',
-            discount: food.discount ?? 0,
-            foodPrice: food.price ?? 0,
-            isDiscount: food.isDiscount ?? false);
-        var newFoods = [...order.orderDetail, newFoodOrder];
-        double newTotalPrice = newFoods.fold(
-            0, (double total, currentFood) => total + currentFood.totalAmount);
-        order =
-            order.copyWith(orderDetail: newFoods, totalPrice: newTotalPrice);
-        context.read<CartCubit>().setOrderModel(order);
-        AppSnackbar.showSnackBar(context,
-            msg: 'Món ăn đã được thêm.', isSuccess: true);
-      }
-    }
   }
 }

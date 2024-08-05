@@ -115,7 +115,10 @@ extension _ItemCartWidget on _CartViewState {
           onTap: () {
             if (quantity.value > 1) {
               quantity.value--;
-              _handleUpdateFood(orderModel, quantity.value, foodOrder);
+              // _handleUpdateFood(orderModel, quantity.value, foodOrder);
+              context
+                  .read<CartCubit>()
+                  .handleUpdateFood(orderModel, quantity.value, foodOrder);
             }
           },
           child: Container(
@@ -146,7 +149,10 @@ extension _ItemCartWidget on _CartViewState {
         InkWell(
           onTap: () {
             quantity.value++;
-            _handleUpdateFood(orderModel, quantity.value, foodOrder);
+            // _handleUpdateFood(orderModel, quantity.value, foodOrder);
+            context
+                .read<CartCubit>()
+                .handleUpdateFood(orderModel, quantity.value, foodOrder);
           },
           child: Container(
             height: 20,
@@ -161,30 +167,30 @@ extension _ItemCartWidget on _CartViewState {
     );
   }
 
-  void _handleUpdateFood(
-      OrderModel orderModel, int quantity, OrderDetail foodOrder) {
-    int index = orderModel.orderDetail
-        .indexWhere((element) => element.foodID == foodOrder.foodID);
+  // void _handleUpdateFood(
+  //     OrderModel orderModel, int quantity, OrderDetail foodOrder) {
+  //   int index = orderModel.orderDetail
+  //       .indexWhere((element) => element.foodID == foodOrder.foodID);
 
-    if (index != -1) {
-      var existingFoodOrder = orderModel.orderDetail[index];
-      var updatedFoodOrder = existingFoodOrder.copyWith(
-          quantity: quantity,
-          totalAmount: quantity *
-              AppRes.foodPrice(
-                  isDiscount: existingFoodOrder.isDiscount,
-                  foodPrice: existingFoodOrder.foodPrice,
-                  discount: int.parse(existingFoodOrder.discount.toString())));
+  //   if (index != -1) {
+  //     var existingFoodOrder = orderModel.orderDetail[index];
+  //     var updatedFoodOrder = existingFoodOrder.copyWith(
+  //         quantity: quantity,
+  //         totalAmount: quantity *
+  //             AppRes.foodPrice(
+  //                 isDiscount: existingFoodOrder.isDiscount,
+  //                 foodPrice: existingFoodOrder.foodPrice,
+  //                 discount: int.parse(existingFoodOrder.discount.toString())));
 
-      List<OrderDetail> updatedFoods = List.from(orderModel.orderDetail);
-      updatedFoods[index] = updatedFoodOrder;
-      double newTotalPrice = updatedFoods.fold(
-          0, (double total, currentFood) => total + currentFood.totalAmount);
-      orderModel = orderModel.copyWith(
-          orderDetail: updatedFoods, totalPrice: newTotalPrice);
-      context.read<CartCubit>().setOrderModel(orderModel);
-    } else {
-      return;
-    }
-  }
+  //     List<OrderDetail> updatedFoods = List.from(orderModel.orderDetail);
+  //     updatedFoods[index] = updatedFoodOrder;
+  //     double newTotalPrice = updatedFoods.fold(
+  //         0, (double total, currentFood) => total + currentFood.totalAmount);
+  //     orderModel = orderModel.copyWith(
+  //         orderDetail: updatedFoods, totalPrice: newTotalPrice);
+  //     context.read<CartCubit>().setOrderModel(orderModel);
+  //   } else {
+  //     return;
+  //   }
+  // }
 }

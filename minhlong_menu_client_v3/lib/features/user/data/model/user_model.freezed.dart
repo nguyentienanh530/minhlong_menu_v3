@@ -24,10 +24,18 @@ mixin _$UserModel {
   int get id => throw _privateConstructorUsedError;
   @JsonKey(name: 'phone_number')
   int get phoneNumber => throw _privateConstructorUsedError;
+  @JsonKey(name: 'sub_phone_number')
+  int get subPhoneNumber => throw _privateConstructorUsedError;
   @JsonKey(name: 'full_name')
   String get fullName => throw _privateConstructorUsedError;
+  @JsonKey(name: 'email')
+  String get email => throw _privateConstructorUsedError;
+  @JsonKey(name: 'address')
+  String get address => throw _privateConstructorUsedError;
   @JsonKey(name: 'image')
   String get image => throw _privateConstructorUsedError;
+  @JsonKey(name: 'subscription_end_date')
+  String get subscriptionEndDate => throw _privateConstructorUsedError;
   @JsonKey(name: 'created_at')
   String get createdAt => throw _privateConstructorUsedError;
   @JsonKey(name: 'updated_at')
@@ -47,8 +55,12 @@ abstract class $UserModelCopyWith<$Res> {
   $Res call(
       {@JsonKey(name: 'id') int id,
       @JsonKey(name: 'phone_number') int phoneNumber,
+      @JsonKey(name: 'sub_phone_number') int subPhoneNumber,
       @JsonKey(name: 'full_name') String fullName,
+      @JsonKey(name: 'email') String email,
+      @JsonKey(name: 'address') String address,
       @JsonKey(name: 'image') String image,
+      @JsonKey(name: 'subscription_end_date') String subscriptionEndDate,
       @JsonKey(name: 'created_at') String createdAt,
       @JsonKey(name: 'updated_at') String updatedAt});
 }
@@ -68,8 +80,12 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
   $Res call({
     Object? id = null,
     Object? phoneNumber = null,
+    Object? subPhoneNumber = null,
     Object? fullName = null,
+    Object? email = null,
+    Object? address = null,
     Object? image = null,
+    Object? subscriptionEndDate = null,
     Object? createdAt = null,
     Object? updatedAt = null,
   }) {
@@ -82,13 +98,29 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
           ? _value.phoneNumber
           : phoneNumber // ignore: cast_nullable_to_non_nullable
               as int,
+      subPhoneNumber: null == subPhoneNumber
+          ? _value.subPhoneNumber
+          : subPhoneNumber // ignore: cast_nullable_to_non_nullable
+              as int,
       fullName: null == fullName
           ? _value.fullName
           : fullName // ignore: cast_nullable_to_non_nullable
               as String,
+      email: null == email
+          ? _value.email
+          : email // ignore: cast_nullable_to_non_nullable
+              as String,
+      address: null == address
+          ? _value.address
+          : address // ignore: cast_nullable_to_non_nullable
+              as String,
       image: null == image
           ? _value.image
           : image // ignore: cast_nullable_to_non_nullable
+              as String,
+      subscriptionEndDate: null == subscriptionEndDate
+          ? _value.subscriptionEndDate
+          : subscriptionEndDate // ignore: cast_nullable_to_non_nullable
               as String,
       createdAt: null == createdAt
           ? _value.createdAt
@@ -113,8 +145,12 @@ abstract class _$$UserModelImplCopyWith<$Res>
   $Res call(
       {@JsonKey(name: 'id') int id,
       @JsonKey(name: 'phone_number') int phoneNumber,
+      @JsonKey(name: 'sub_phone_number') int subPhoneNumber,
       @JsonKey(name: 'full_name') String fullName,
+      @JsonKey(name: 'email') String email,
+      @JsonKey(name: 'address') String address,
       @JsonKey(name: 'image') String image,
+      @JsonKey(name: 'subscription_end_date') String subscriptionEndDate,
       @JsonKey(name: 'created_at') String createdAt,
       @JsonKey(name: 'updated_at') String updatedAt});
 }
@@ -132,8 +168,12 @@ class __$$UserModelImplCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? phoneNumber = null,
+    Object? subPhoneNumber = null,
     Object? fullName = null,
+    Object? email = null,
+    Object? address = null,
     Object? image = null,
+    Object? subscriptionEndDate = null,
     Object? createdAt = null,
     Object? updatedAt = null,
   }) {
@@ -146,13 +186,29 @@ class __$$UserModelImplCopyWithImpl<$Res>
           ? _value.phoneNumber
           : phoneNumber // ignore: cast_nullable_to_non_nullable
               as int,
+      subPhoneNumber: null == subPhoneNumber
+          ? _value.subPhoneNumber
+          : subPhoneNumber // ignore: cast_nullable_to_non_nullable
+              as int,
       fullName: null == fullName
           ? _value.fullName
           : fullName // ignore: cast_nullable_to_non_nullable
               as String,
+      email: null == email
+          ? _value.email
+          : email // ignore: cast_nullable_to_non_nullable
+              as String,
+      address: null == address
+          ? _value.address
+          : address // ignore: cast_nullable_to_non_nullable
+              as String,
       image: null == image
           ? _value.image
           : image // ignore: cast_nullable_to_non_nullable
+              as String,
+      subscriptionEndDate: null == subscriptionEndDate
+          ? _value.subscriptionEndDate
+          : subscriptionEndDate // ignore: cast_nullable_to_non_nullable
               as String,
       createdAt: null == createdAt
           ? _value.createdAt
@@ -172,8 +228,12 @@ class _$UserModelImpl implements _UserModel {
   _$UserModelImpl(
       {@JsonKey(name: 'id') this.id = 0,
       @JsonKey(name: 'phone_number') this.phoneNumber = 0,
+      @JsonKey(name: 'sub_phone_number') this.subPhoneNumber = 0,
       @JsonKey(name: 'full_name') this.fullName = '',
+      @JsonKey(name: 'email') this.email = '',
+      @JsonKey(name: 'address') this.address = '',
       @JsonKey(name: 'image') this.image = '',
+      @JsonKey(name: 'subscription_end_date') this.subscriptionEndDate = '',
       @JsonKey(name: 'created_at') this.createdAt = '',
       @JsonKey(name: 'updated_at') this.updatedAt = ''});
 
@@ -187,11 +247,23 @@ class _$UserModelImpl implements _UserModel {
   @JsonKey(name: 'phone_number')
   final int phoneNumber;
   @override
+  @JsonKey(name: 'sub_phone_number')
+  final int subPhoneNumber;
+  @override
   @JsonKey(name: 'full_name')
   final String fullName;
   @override
+  @JsonKey(name: 'email')
+  final String email;
+  @override
+  @JsonKey(name: 'address')
+  final String address;
+  @override
   @JsonKey(name: 'image')
   final String image;
+  @override
+  @JsonKey(name: 'subscription_end_date')
+  final String subscriptionEndDate;
   @override
   @JsonKey(name: 'created_at')
   final String createdAt;
@@ -201,7 +273,7 @@ class _$UserModelImpl implements _UserModel {
 
   @override
   String toString() {
-    return 'UserModel(id: $id, phoneNumber: $phoneNumber, fullName: $fullName, image: $image, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'UserModel(id: $id, phoneNumber: $phoneNumber, subPhoneNumber: $subPhoneNumber, fullName: $fullName, email: $email, address: $address, image: $image, subscriptionEndDate: $subscriptionEndDate, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -212,9 +284,15 @@ class _$UserModelImpl implements _UserModel {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.phoneNumber, phoneNumber) ||
                 other.phoneNumber == phoneNumber) &&
+            (identical(other.subPhoneNumber, subPhoneNumber) ||
+                other.subPhoneNumber == subPhoneNumber) &&
             (identical(other.fullName, fullName) ||
                 other.fullName == fullName) &&
+            (identical(other.email, email) || other.email == email) &&
+            (identical(other.address, address) || other.address == address) &&
             (identical(other.image, image) || other.image == image) &&
+            (identical(other.subscriptionEndDate, subscriptionEndDate) ||
+                other.subscriptionEndDate == subscriptionEndDate) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
@@ -224,7 +302,17 @@ class _$UserModelImpl implements _UserModel {
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
-      runtimeType, id, phoneNumber, fullName, image, createdAt, updatedAt);
+      runtimeType,
+      id,
+      phoneNumber,
+      subPhoneNumber,
+      fullName,
+      email,
+      address,
+      image,
+      subscriptionEndDate,
+      createdAt,
+      updatedAt);
 
   @JsonKey(ignore: true)
   @override
@@ -244,8 +332,12 @@ abstract class _UserModel implements UserModel {
   factory _UserModel(
       {@JsonKey(name: 'id') final int id,
       @JsonKey(name: 'phone_number') final int phoneNumber,
+      @JsonKey(name: 'sub_phone_number') final int subPhoneNumber,
       @JsonKey(name: 'full_name') final String fullName,
+      @JsonKey(name: 'email') final String email,
+      @JsonKey(name: 'address') final String address,
       @JsonKey(name: 'image') final String image,
+      @JsonKey(name: 'subscription_end_date') final String subscriptionEndDate,
       @JsonKey(name: 'created_at') final String createdAt,
       @JsonKey(name: 'updated_at') final String updatedAt}) = _$UserModelImpl;
 
@@ -259,11 +351,23 @@ abstract class _UserModel implements UserModel {
   @JsonKey(name: 'phone_number')
   int get phoneNumber;
   @override
+  @JsonKey(name: 'sub_phone_number')
+  int get subPhoneNumber;
+  @override
   @JsonKey(name: 'full_name')
   String get fullName;
   @override
+  @JsonKey(name: 'email')
+  String get email;
+  @override
+  @JsonKey(name: 'address')
+  String get address;
+  @override
   @JsonKey(name: 'image')
   String get image;
+  @override
+  @JsonKey(name: 'subscription_end_date')
+  String get subscriptionEndDate;
   @override
   @JsonKey(name: 'created_at')
   String get createdAt;
