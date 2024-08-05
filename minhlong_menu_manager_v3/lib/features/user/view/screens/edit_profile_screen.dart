@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:minhlong_menu_manager_v3/features/user/data/model/user_model.dart';
 import 'package:minhlong_menu_manager_v3/features/user/data/repositories/user_repository.dart';
 
-import '../../bloc/user_bloc.dart';
+import '../../bloc/user_bloc/user_bloc.dart';
 import '../widgets/edit_profile_widget.dart';
 
 class EditProfileScreen extends StatelessWidget {

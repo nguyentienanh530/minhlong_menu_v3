@@ -53,13 +53,10 @@ void main() async {
   var scheme =
       await ThemeLocalDatasource(sf).getSchemeTheme() ?? listScheme.first.key;
   runApp(
-    DevicePreview(
-      enabled: true,
-      builder: (context) => MainApp(
-        sf: sf,
-        theme: theme,
-        scheme: scheme,
-      ),
+    MainApp(
+      sf: sf,
+      theme: theme,
+      scheme: scheme,
     ),
   );
 }
@@ -224,20 +221,6 @@ class _AppContentState extends State<AppContent> {
             theme: themeState
                 ? AppTheme(scheme: schemeState).darkTheme
                 : AppTheme(scheme: schemeState).lightTheme,
-            // theme: ThemeData(
-            //   fontFamily: GoogleFonts.rubik().fontFamily,
-            //   scaffoldBackgroundColor: AppColors.background,
-            //   textTheme: const TextTheme(
-            //       displaySmall: TextStyle(color: AppColors.white),
-            //       displayLarge: TextStyle(color: AppColors.white),
-            //       displayMedium: TextStyle(color: AppColors.white)),
-            //   colorScheme: ColorScheme.fromSwatch(
-            //     primarySwatch: MaterialColor(
-            //       context.colorScheme.primary.value,
-            //       getSwatch(context.colorScheme.primary),
-            //     ),
-            //   ),
-            // ),
           );
         },
       ),

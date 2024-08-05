@@ -12,9 +12,7 @@ class UserModel with _$UserModel {
       @Default('') @JsonKey(name: 'email') String email,
       @Default('') @JsonKey(name: 'address') String address,
       @Default('') @JsonKey(name: 'image') String image,
-      @Default('')
-      @JsonKey(name: 'subscription_end_date')
-      String subscriptionEndDate,
+      @Default('') @JsonKey(name: 'expired_at') String expiredAt,
       @Default('') @JsonKey(name: 'created_at') String createdAt,
       @Default('') @JsonKey(name: 'updated_at') String updatedAt}) = _UserModel;
 

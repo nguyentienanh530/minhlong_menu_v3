@@ -57,13 +57,12 @@ class OverlaySnackbar {
                                 type == OverlaySnackbarType.error
                                     ? 'Lỗi!'
                                     : 'Thành công!',
-                                style: kSubHeadingStyle.copyWith(
+                                style: kSubHeadingWhiteStyle.copyWith(
                                     fontWeight: FontWeight.w700),
                               ),
                               Text(
                                 message,
-                                style: kBodyStyle.copyWith(
-                                    color: AppColors.black.withOpacity(0.5)),
+                                style: kBodyWhiteStyle,
                               ),
                             ],
                           ),

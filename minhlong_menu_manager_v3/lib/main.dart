@@ -17,7 +17,8 @@ import 'bloc_observer.dart';
 import 'common/network/dio_client.dart';
 import 'common/network/dio_interceptor.dart';
 import 'features/auth/data/model/access_token.dart';
-import 'features/user/bloc/user_bloc.dart';
+import 'features/user/bloc/search_user_bloc/search_user_bloc.dart';
+import 'features/user/bloc/user_bloc/user_bloc.dart';
 import 'features/user/data/provider/user_api.dart';
 import 'features/user/data/repositories/user_repository.dart';
 
@@ -69,6 +70,9 @@ class MainApp extends StatelessWidget {
           ),
           BlocProvider(
             create: (context) => UserCubit(),
+          ),
+          BlocProvider(
+            create: (context) => SearchUserBloc(context.read<UserRepo>()),
           ),
         ],
         child: AppContent(sf: sf),

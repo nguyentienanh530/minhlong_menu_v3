@@ -42,4 +42,33 @@ class UserApi {
         .get(ApiConfig.users, queryParameters: {'page': page, 'limit': limit});
     return User.fromJson(response.data['data']);
   }
+
+  Future<bool> deleteUser({required int id}) async {
+    final response = await _dio.delete('${ApiConfig.users}/$id');
+    return response.data['data'];
+  }
+
+  Future<bool> createUser({required UserModel userModel}) async {
+    final response =
+        await _dio.post(ApiConfig.createUser, data: userModel.toJson());
+    return response.data['data'];
+  }
+
+  Future<bool> extenedUser({
+    required int userID,
+    required String extended,
+    required String expired,
+  }) async {
+    final response = await _dio.patch('${ApiConfig.extenedUser}/$userID',
+        queryParameters: {'extended_at': extended, 'expired_at': expired});
+    return response.data['data'];
+  }
+
+  Future<List<UserModel>> searchUser({required dynamic query}) async {
+    final response =
+        await _dio.get(ApiConfig.searchUser, queryParameters: {'query': query});
+    return (List<UserModel>.from(
+      response.data['data'].map((x) => UserModel.fromJson(x)),
+    ));
+  }
 }

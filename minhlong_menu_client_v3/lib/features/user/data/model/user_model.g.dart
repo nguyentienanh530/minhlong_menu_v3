@@ -15,7 +15,7 @@ _$UserModelImpl _$$UserModelImplFromJson(Map<String, dynamic> json) =>
       email: json['email'] as String? ?? '',
       address: json['address'] as String? ?? '',
       image: json['image'] as String? ?? '',
-      subscriptionEndDate: json['subscription_end_date'] as String? ?? '',
+      expiredAt: json['expired_at'] as String? ?? '',
       createdAt: json['created_at'] as String? ?? '',
       updatedAt: json['updated_at'] as String? ?? '',
     );
@@ -29,7 +29,7 @@ Map<String, dynamic> _$$UserModelImplToJson(_$UserModelImpl instance) =>
       'email': instance.email,
       'address': instance.address,
       'image': instance.image,
-      'subscription_end_date': instance.subscriptionEndDate,
+      'expired_at': instance.expiredAt,
       'created_at': instance.createdAt,
       'updated_at': instance.updatedAt,
     };

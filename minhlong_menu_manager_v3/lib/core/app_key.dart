@@ -4,8 +4,8 @@ class AppKeys {
   static GlobalKey<FormState> createOrUpdateKey =
       GlobalKey<FormState>(debugLabel: 'createOrUpdateKey');
 
-  // static GlobalKey<FormState> searchKey =
-  //     GlobalKey<FormState>(debugLabel: 'searchKey');
+  static GlobalKey<FormState> searchKey =
+      GlobalKey<FormState>(debugLabel: 'searchKey');
 
   // static GlobalKey<FormState> searchFoodsKey =
   //     GlobalKey<FormState>(debugLabel: 'searchFoodsKey');

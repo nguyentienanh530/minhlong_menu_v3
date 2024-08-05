@@ -19,7 +19,6 @@ class Version1 implements Route {
     //======= Auth route =======
     Router.group(() {
       Router.post('login', authCtrl.login);
-      Router.post('sign-up', authCtrl.signUp);
       Router.post('refresh-token', authCtrl.refreshToken);
       Router.post('logout', authCtrl.logout);
       Router.post('forgot-password', authCtrl.forgotPassword);
@@ -126,6 +125,10 @@ class Version1 implements Route {
     Router.group(
       () {
         Router.get('users', userCtrl.listUsers);
+        Router.delete("users/{id}", userCtrl.destroy);
+        Router.post('users/create', authCtrl.createUser);
+        Router.patch('users/extend/{id}', userCtrl.extendedUser);
+        Router.get('users/search', userCtrl.searchUser);
       },
       prefix: '/manager',
     );

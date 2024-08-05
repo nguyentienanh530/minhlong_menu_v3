@@ -54,11 +54,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   FutureOr<void> _onLogoutStarted(AuthLogoutStarted event, Emit emit) async {
     final result = await authRepository.logout();
-    result.when(
+    await result.when(
       failure: (String failure) {
         emit(AuthLogoutFailure(failure));
       },
-      success: (_) {
+      success: (_) async {
         emit(AuthLogoutSuccess());
       },
     );

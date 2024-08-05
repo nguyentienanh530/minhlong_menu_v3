@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_manager_v3/common/widget/common_text_field.dart';
-import 'package:minhlong_menu_manager_v3/core/app_enum.dart';
+
 import 'package:minhlong_menu_manager_v3/core/app_key.dart';
 import 'package:minhlong_menu_manager_v3/core/app_res.dart';
 import 'package:minhlong_menu_manager_v3/core/app_style.dart';
+import 'package:minhlong_menu_manager_v3/features/user/data/model/user_model.dart';
+import '../../../../common/dialog/app_dialog.dart';
+import '../../../../common/snackbar/overlay_snackbar.dart';
 import '../../../../core/app_colors.dart';
 import '../../../../core/app_const.dart';
 import '../../../../core/utils.dart';
+import '../../../user/bloc/users_bloc/users_bloc.dart';
 
 class CreateOrUpdateUserDialog extends StatefulWidget {
-  final ScreenType screenType;
-  const CreateOrUpdateUserDialog({super.key, required this.screenType});
+  const CreateOrUpdateUserDialog({super.key});
 
   @override
   State<CreateOrUpdateUserDialog> createState() =>
@@ -22,11 +27,10 @@ class CreateOrUpdateUserDialog extends StatefulWidget {
 class _CreateOrUpdateUserDialogState extends State<CreateOrUpdateUserDialog> {
   final TextEditingController _nameCtrl = TextEditingController();
   final TextEditingController _phoneCtrl = TextEditingController();
-  final TextEditingController _passwordCtrl = TextEditingController();
   final _isShowPassword = ValueNotifier(false);
-  late ScreenType _screenType;
-  final _startDatePicker = ValueNotifier(DateTime.now());
-  final _endDatePicker = ValueNotifier(DateTime.now());
+  final _expiredDatePicker = ValueNotifier(DateTime.now());
+  final _extendedDatePicker = ValueNotifier(DateTime.now());
+  var _isUpdateOrCreate = false;
 
   // final _listDate = [
   //   DateDto(name: '14 ngày', value: 14),
@@ -35,44 +39,66 @@ class _CreateOrUpdateUserDialogState extends State<CreateOrUpdateUserDialog> {
   // late final _dropdownValue = ValueNotifier(_listDate.first);
 
   @override
-  void initState() {
-    super.initState();
-    _screenType = widget.screenType;
-  }
-
-  @override
   void dispose() {
     super.dispose();
     _isShowPassword.dispose();
+    _expiredDatePicker.dispose();
+    _extendedDatePicker.dispose();
+    _nameCtrl.dispose();
+    _phoneCtrl.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(_screenType == ScreenType.create
-          ? 'Tạo tài khoản'.toUpperCase()
-          : 'Sửa tài khoản'.toUpperCase()),
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text('Tạo tài khoản'.toUpperCase()),
+          IconButton(
+              onPressed: () => context.pop(_isUpdateOrCreate),
+              icon: const Icon(Icons.close))
+        ],
+      ),
       titleTextStyle: kSubHeadingStyle.copyWith(fontWeight: FontWeight.bold),
       scrollable: true,
-      content: Container(
-        constraints: const BoxConstraints(
-          maxWidth: 800,
-        ),
-        child: Form(
-          key: AppKeys.createOrUpdateKey,
-          child: Column(
-            children: [
-              10.verticalSpace,
-              _buildNameTextField(),
-              10.verticalSpace,
-              _buildPhoneTextField(),
-              10.verticalSpace,
-              _buildPasswordTextField(),
-              10.verticalSpace,
-              _buildDatePicker(),
-              10.verticalSpace,
-              _buildCreateOrUpdateButton()
-            ],
+      content: BlocListener<UsersBloc, UsersState>(
+        listener: (context, state) {
+          if (state is UsersCreateSuccess) {
+            _isUpdateOrCreate = true;
+            context.pop();
+            _reset();
+
+            OverlaySnackbar.show(context, 'THÀNH CÔNG!');
+          }
+          if (state is UsersCreateInProgress) {
+            AppDialog.showLoadingDialog(context);
+          }
+          if (state is UsersCreateFailure) {
+            _isUpdateOrCreate = false;
+            context.pop();
+            OverlaySnackbar.show(context, state.errorMessage,
+                type: OverlaySnackbarType.error);
+          }
+        },
+        child: Container(
+          constraints: const BoxConstraints(
+            maxWidth: 800,
+          ),
+          child: Form(
+            key: AppKeys.createOrUpdateKey,
+            child: Column(
+              children: [
+                10.verticalSpace,
+                _buildNameTextField(),
+                10.verticalSpace,
+                _buildPhoneTextField(),
+                10.verticalSpace,
+                _buildDatePicker(),
+                10.verticalSpace,
+                _buildCreateOrUpdateButton()
+              ],
+            ),
           ),
         ),
       ),
@@ -92,35 +118,11 @@ class _CreateOrUpdateUserDialogState extends State<CreateOrUpdateUserDialog> {
     return CommonTextField(
       labelText: 'Nhập SĐT',
       controller: _phoneCtrl,
+      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
       prefixIcon: const Icon(Icons.phone),
-      validator: (value) =>
-          AppRes.validatePassword(value) ? null : 'Số điện thoại không hợp lệ',
-    );
-  }
-
-  Widget _buildPasswordTextField() {
-    return ListenableBuilder(
-      listenable: _isShowPassword,
-      builder: (context, _) {
-        return CommonTextField(
-          labelText: 'Nhập Mật khẩu',
-          controller: _passwordCtrl,
-          maxLines: 1,
-          obscureText: !_isShowPassword.value,
-          keyboardType: TextInputType.phone,
-          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-          prefixIcon: const Icon(Icons.password),
-          suffixIcon: GestureDetector(
-            onTap: () => _isShowPassword.value = !_isShowPassword.value,
-            child: Icon(
-              _isShowPassword.value ? Icons.visibility : Icons.visibility_off,
-            ),
-          ),
-          validator: (value) => AppRes.validatePhoneNumber(value)
-              ? null
-              : 'Mật khẩu không hợp lệ',
-        );
-      },
+      validator: (value) => AppRes.validatePhoneNumber(value)
+          ? null
+          : 'Số điện thoại không hợp lệ',
     );
   }
 
@@ -129,15 +131,22 @@ class _CreateOrUpdateUserDialogState extends State<CreateOrUpdateUserDialog> {
       style: const ButtonStyle(
           backgroundColor: WidgetStatePropertyAll(Colors.lightBlueAccent)),
       onPressed: () => _handleCreateOrUpdate(),
-      child: Text(
-        _screenType == ScreenType.create ? 'Tạo' : 'Sửa',
+      child: const Text(
+        'Tạo',
         style: kButtonWhiteStyle,
       ),
     );
   }
 
   void _handleCreateOrUpdate() {
-    if (AppKeys.createOrUpdateKey.currentState!.validate()) {}
+    if (AppKeys.createOrUpdateKey.currentState!.validate()) {
+      var user = UserModel(
+        fullName: _nameCtrl.text,
+        phoneNumber: int.parse(_phoneCtrl.text),
+        expiredAt: _expiredDatePicker.value.toString(),
+      );
+      _createUser(user);
+    }
   }
 
   Widget _buildDatePicker() {
@@ -150,7 +159,7 @@ class _CreateOrUpdateUserDialogState extends State<CreateOrUpdateUserDialog> {
               const Text('Bắt đầu', style: kBodyStyle),
               5.verticalSpace,
               ListenableBuilder(
-                  listenable: _startDatePicker,
+                  listenable: _extendedDatePicker,
                   builder: (context, _) {
                     return Container(
                         height: 45,
@@ -169,12 +178,12 @@ class _CreateOrUpdateUserDialogState extends State<CreateOrUpdateUserDialog> {
                                   locale: const Locale('vi'),
                                   initialEntryMode:
                                       DatePickerEntryMode.calendar,
-                                  initialDate: _startDatePicker.value,
+                                  initialDate: _extendedDatePicker.value,
                                   firstDate: DateTime(2015, 8),
                                   lastDate: DateTime(2101));
                               if (picked != null &&
-                                  picked != _startDatePicker.value) {
-                                _startDatePicker.value = picked;
+                                  picked != _extendedDatePicker.value) {
+                                _extendedDatePicker.value = picked;
                                 // _curentPage.value = 1;
                                 // _fetchData(
                                 //     status: _listStatus[_tabController.index],
@@ -184,7 +193,7 @@ class _CreateOrUpdateUserDialogState extends State<CreateOrUpdateUserDialog> {
                               }
                             },
                             child: Text(Ultils.formatDateToString(
-                                _startDatePicker.value.toString(),
+                                _extendedDatePicker.value.toString(),
                                 isShort: true))));
                   }),
             ],
@@ -198,7 +207,7 @@ class _CreateOrUpdateUserDialogState extends State<CreateOrUpdateUserDialog> {
               const Text('Kết thúc', style: kBodyStyle),
               5.verticalSpace,
               ListenableBuilder(
-                  listenable: _startDatePicker,
+                  listenable: _expiredDatePicker,
                   builder: (context, _) {
                     return Container(
                         height: 45,
@@ -217,12 +226,12 @@ class _CreateOrUpdateUserDialogState extends State<CreateOrUpdateUserDialog> {
                                   locale: const Locale('vi'),
                                   initialEntryMode:
                                       DatePickerEntryMode.calendar,
-                                  initialDate: _startDatePicker.value,
+                                  initialDate: _expiredDatePicker.value,
                                   firstDate: DateTime(2015, 8),
                                   lastDate: DateTime(2101));
                               if (picked != null &&
-                                  picked != _startDatePicker.value) {
-                                _startDatePicker.value = picked;
+                                  picked != _expiredDatePicker.value) {
+                                _expiredDatePicker.value = picked;
                                 // _curentPage.value = 1;
                                 // _fetchData(
                                 //     status: _listStatus[_tabController.index],
@@ -232,7 +241,7 @@ class _CreateOrUpdateUserDialogState extends State<CreateOrUpdateUserDialog> {
                               }
                             },
                             child: Text(Ultils.formatDateToString(
-                                _startDatePicker.value.toString(),
+                                _expiredDatePicker.value.toString(),
                                 isShort: true))));
                   }),
             ],
@@ -240,6 +249,19 @@ class _CreateOrUpdateUserDialogState extends State<CreateOrUpdateUserDialog> {
         )
       ],
     );
+  }
+
+  void _createUser(UserModel user) {
+    context.read<UsersBloc>().add(UsersCreated(userModel: user));
+  }
+
+  void _reset() {
+    _nameCtrl.clear();
+    _phoneCtrl.clear();
+
+    _expiredDatePicker.value = DateTime.now();
+    _extendedDatePicker.value = DateTime.now();
+    _isShowPassword.value = false;
   }
 
   // Widget _buildDropdownDate() {

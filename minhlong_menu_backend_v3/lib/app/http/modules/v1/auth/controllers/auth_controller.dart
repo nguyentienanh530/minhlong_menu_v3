@@ -1,10 +1,15 @@
 import 'dart:io';
 import 'dart:math';
 import 'package:minhlong_menu_backend_v3/app/http/common/app_response.dart';
+import 'package:minhlong_menu_backend_v3/app/http/modules/v1/user/repositories/user_repo.dart';
 import 'package:vania/vania.dart';
 import '../../user/models/user.dart';
 
 class AuthController extends Controller {
+  final UserRepo userRepo;
+
+  AuthController(this.userRepo);
+
   /// Login
   Future<Response> login(Request request) async {
     request
@@ -45,40 +50,40 @@ class AuthController extends Controller {
   }
 
   /// Creating new user
-  Future<Response> signUp(Request request) async {
+  Future<Response> createUser(Request request) async {
+    print('create user: ${request.all()}');
     request.validate(
       {
         'phone_number': 'required|numeric',
-        'password': 'required',
         'full_name': 'required|string',
+        'expired_at': 'required|string',
       },
-      // {
-      //   'phone_number.required': 'The phone number is required',
-      //   'phone_number.numeric': 'The phone number is not valid',
-      //   'password.required': 'The password is required',
-      // }
     );
 
     /// Checking if the user already exists
     try {
-      Map<String, dynamic>? user = await Users()
-          .query()
-          .where('phone_number', '=', request.input('phone_number'))
-          .first();
+      Map<String, dynamic>? user = await userRepo.findUserByPhoneNumber(
+          phoneNumber: request.input('phone_number'));
+
       if (user != null) {
         return AppResponse()
             .error(statusCode: HttpStatus.conflict, message: 'user exists');
       }
 
-      await Users().query().insert({
+      await userRepo.createUser(data: {
         'phone_number': request.input('phone_number'),
         'full_name': request.input('full_name'),
-        'password': Hash().make(request.input('password').toString()),
-        'created_at': DateTime.now(),
-        'updated_at': DateTime.now(),
+        'role': 'user',
+        'password': Hash().make('Minhlong@123'),
+        'extended_at': DateTime.now(),
+        'expired_at': request.input('expired_at') ?? DateTime.now(),
       });
 
-      return Response.json({'message': 'User created successfully'});
+      return AppResponse().ok(
+        statusCode: HttpStatus.created,
+        message: 'User created successfully',
+        data: true,
+      );
     } catch (e) {
       print('create user error: $e');
       return AppResponse().error(
@@ -188,4 +193,4 @@ class AuthController extends Controller {
   }
 }
 
-final AuthController authCtrl = AuthController();
+final AuthController authCtrl = AuthController(UserRepo(Users()));

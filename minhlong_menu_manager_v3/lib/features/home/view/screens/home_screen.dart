@@ -4,16 +4,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_manager_v3/Routes/app_route.dart';
+import 'package:minhlong_menu_manager_v3/common/snackbar/overlay_snackbar.dart';
 import 'package:minhlong_menu_manager_v3/core/extensions.dart';
 import 'package:minhlong_menu_manager_v3/core/utils.dart';
 import 'package:minhlong_menu_manager_v3/features/auth/bloc/auth_bloc.dart';
-import 'package:minhlong_menu_manager_v3/features/home/view/dialogs/create_or_update_user.dart';
-import 'package:minhlong_menu_manager_v3/features/user/bloc/user_bloc.dart';
+import 'package:minhlong_menu_manager_v3/features/home/view/dialogs/create_user.dart';
+import 'package:minhlong_menu_manager_v3/features/user/bloc/search_user_bloc/search_user_bloc.dart';
+import 'package:minhlong_menu_manager_v3/features/user/bloc/user_bloc/user_bloc.dart';
 import 'package:minhlong_menu_manager_v3/features/user/data/model/user.dart';
 import 'package:minhlong_menu_manager_v3/features/user/data/model/user_model.dart';
 import 'package:minhlong_menu_manager_v3/features/user/data/repositories/user_repository.dart';
 import '../../../../common/dialog/app_dialog.dart';
 import '../../../../common/widget/common_icon_button.dart';
+import '../../../../common/widget/common_text_field.dart';
 import '../../../../common/widget/error_build_image.dart';
 import '../../../../common/widget/error_widget.dart';
 import '../../../../common/widget/loading.dart';
@@ -21,11 +24,12 @@ import '../../../../common/widget/number_pagination.dart';
 import '../../../../core/api_config.dart';
 import '../../../../core/app_colors.dart';
 import '../../../../core/app_const.dart';
-import '../../../../core/app_enum.dart';
+import '../../../../core/app_key.dart';
 import '../../../../core/app_style.dart';
-import '../../../user/bloc/users_bloc.dart';
+import '../../../user/bloc/users_bloc/users_bloc.dart';
 
 import '../../../user/cubit/pagination_cubit.dart';
+import '../dialogs/extened_user.dart';
 part '../widgets/_header.dart';
 part '../widgets/_body.dart';
 
@@ -69,21 +73,27 @@ class _HomeViewState extends State<HomeView> {
     'Hành động'
   ];
   final _user = ValueNotifier(User());
+  late TextEditingController _searchController;
+  final _focusSearch = FocusNode();
+  OverlayEntry? overlayEntry;
+  final _layerLink = LayerLink();
+  var _overlayShown = false;
 
   @override
   void initState() {
     super.initState();
-
+    _searchController = TextEditingController();
     _fechData(page: _curentPage.value, limit: _limit.value);
   }
 
   @override
   void dispose() {
     super.dispose();
-
     _limit.dispose();
     _curentPage.dispose();
     _user.dispose();
+    _searchController.dispose();
+    _focusSearch.dispose();
   }
 
   void _fechData({required int page, required int limit}) {
@@ -92,45 +102,72 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: MultiBlocListener(
-        listeners: [
-          BlocListener<UserBloc, UserState>(
-            listener: (context, state) {
-              if (state is UserFecthFailure) {
-                context.read<AuthBloc>().add(AuthLogoutStarted());
-              }
-              if (state is UserFecthSuccess) {
-                if (state.user.role != 'admin') {
-                  AppDialog.showErrorDialog(context,
-                      description:
-                          'Bạn không có quyền truy cập trang này',
-                      confirmText: 'Xác nhận', onPressedComfirm: () {
-                    context.read<AuthBloc>().add(AuthLogoutStarted());
-                  });
+    return GestureDetector(
+      onTap: () {
+        FocusManager.instance.primaryFocus?.unfocus();
+        if (_overlayShown) {
+          _overlayShown = false;
+          _hideOverlaySearch();
+          overlayEntry?.remove();
+        }
+      },
+      child: Scaffold(
+        body: MultiBlocListener(
+          listeners: [
+            BlocListener<UserBloc, UserState>(
+              listener: (context, state) {
+                if (state is UserFecthFailure) {
+                  context.read<AuthBloc>().add(AuthLogoutStarted());
                 }
-              }
-            },
-          ),
-          BlocListener<AuthBloc, AuthState>(
-            listener: (context, state) {
-              if (state is AuthLogoutSuccess) {
-                context.read<AuthBloc>().add(AuthAuthenticateStarted());
-                context.go(AppRoute.login);
-              }
-            },
-          ),
-        ],
-        child: Column(
-          children: [
-            10.verticalSpace,
-            _buildHeader(),
-            Expanded(
-                child: Padding(
-              padding: const EdgeInsets.all(20).r,
-              child: _buildBody(),
-            ))
+                if (state is UserFecthSuccess) {
+                  if (state.user.role != 'admin') {
+                    AppDialog.showErrorDialog(context,
+                        description:
+                            'Bạn không có quyền truy cập trang này',
+                        confirmText: 'Xác nhận', onPressedComfirm: () {
+                      context.read<AuthBloc>().add(AuthLogoutStarted());
+                    });
+                  }
+                }
+              },
+            ),
+            BlocListener<AuthBloc, AuthState>(
+              listener: (context, state) {
+                if (state is AuthLogoutSuccess) {
+                  context.read<AuthBloc>().add(AuthAuthenticateStarted());
+                  context.go(AppRoute.login);
+                }
+              },
+            ),
+            BlocListener<UsersBloc, UsersState>(
+              listener: (context, state) {
+                if (state is UsersDeleteInProgress) {
+                  AppDialog.showLoadingDialog(context);
+                }
+                if (state is UsersDeleteFailure) {
+                  pop(context, 1);
+                  OverlaySnackbar.show(context, state.errorMessage,
+                      type: OverlaySnackbarType.error);
+                }
+                if (state is UsersDeleteSuccess) {
+                  pop(context, 1);
+                  OverlaySnackbar.show(context, 'Thao tác thành công',
+                      type: OverlaySnackbarType.success);
+                }
+              },
+            ),
           ],
+          child: Column(
+            children: [
+              10.verticalSpace,
+              _buildHeader(),
+              Expanded(
+                  child: Padding(
+                padding: const EdgeInsets.all(20).r,
+                child: _buildBody(),
+              ))
+            ],
+          ),
         ),
       ),
     );

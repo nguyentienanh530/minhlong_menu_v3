@@ -9,7 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_manager_v3/core/app_key.dart';
 import 'package:minhlong_menu_manager_v3/core/extensions.dart';
 import 'package:minhlong_menu_manager_v3/core/utils.dart';
-import 'package:minhlong_menu_manager_v3/features/user/bloc/user_bloc.dart';
+import 'package:minhlong_menu_manager_v3/features/user/bloc/user_bloc/user_bloc.dart';
 
 import '../../../../common/dialog/app_dialog.dart';
 import '../../../../common/snackbar/overlay_snackbar.dart';

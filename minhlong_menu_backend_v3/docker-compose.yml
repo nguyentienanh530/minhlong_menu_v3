@@ -13,5 +13,19 @@ services:
     ports:
       - "8000:8000"
 
+  mysql:
+    image: mysql:9.0.1
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: Minhlong@123
+      MYSQL_DATABASE: menu_db
+      MYSQL_USER: nguyentienanh
+      MYSQL_PASSWORD: Minhlong@123
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
 volumes:
   app:
+  mysql_data:

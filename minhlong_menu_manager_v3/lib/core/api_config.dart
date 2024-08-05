@@ -10,6 +10,9 @@ class ApiConfig {
 
   //===== User =====
   static const String users = '/manager/users';
+  static const String createUser = '$users/create';
+  static const String extenedUser = '$users/extend';
+  static const String searchUser = '$users/search';
   static const String user = '/user';
   static const String updateUser = '/$user/update';
   static const String uploadAvatar = '/$user/upload-avatar';
