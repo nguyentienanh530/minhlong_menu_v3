@@ -41,11 +41,11 @@ class AuthController extends Controller {
           .createToken(withRefreshToken: true, expiresIn: Duration(hours: 24));
 
       return AppResponse().ok(data: token, statusCode: HttpStatus.ok);
-    } catch (e) {
+    } on HttpResponseException catch (e) {
       print('login error: $e');
       return AppResponse().error(
           statusCode: HttpStatus.internalServerError,
-          message: 'connection error');
+          message: 'connection error ${e.toString()}');
     }
   }
 

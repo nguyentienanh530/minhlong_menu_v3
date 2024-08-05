@@ -14,6 +14,33 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
+-- Dumping structure for table menu_db.users
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `role` enum('user','admin') COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'user',
+  `full_name` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `phone_number` int NOT NULL,
+  `sub_phone_number` int DEFAULT NULL,
+  `email` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `address` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `password` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `image` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `expired_at` timestamp NULL DEFAULT NULL,
+  `extended_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Dumping data for table menu_db.users: ~3 rows (approximately)
+INSERT INTO `users` (`id`, `role`, `full_name`, `phone_number`, `sub_phone_number`, `email`, `address`, `password`, `image`, `expired_at`, `extended_at`, `created_at`, `updated_at`) VALUES
+	(1, 'admin', 'Nguyen Tien Anh', 328023993, 123456789, 'nguyentienanh530@gmail.com', '06 Đa Hoa - Tu Tra - Đơn Dương - Lâm Đồng', 'Io6x4kQrdfsifmhAWqoHDNAmCB0z71LMdlps/wA00AQeeG4mFfs8Ye5ZiN7wQk/3Nu2EAEAUFGTn8LUWZm2Pyz5JRg==', '/users/1/1721380675493.webp', '2024-08-02 07:21:57', '2024-08-05 06:03:18', '2024-06-14 07:21:57', '2024-08-05 06:03:19'),
+	(4, 'user', 'Nguyen Tien Anh', 123456789, 123456789, 'nguyentienanh530@gmail.com', '', 'ia7Fz32aaA1In1854FO6TM3+CPTsXQ7Qa9R7fegCeBsTnHPghxf32DV59QUBUrpN9JCofwB6OTBia1pWThesusbcxw==', '/users/4/1722852942413.webp', '2024-08-06 17:00:00', '2024-08-05 06:03:19', '2024-07-17 06:08:41', '2024-08-05 10:15:42'),
+	(6, 'user', 'abasdasd', 11223344, NULL, NULL, NULL, 'C4JpuQHMei4OWO3SOjpLnrqR6kBLHYxpGuf4td+Wx3mouhNPH2R4rVtPOds/zNRchQrjPHcM9Sx8exR9Zmm2Ff+ThQ==', NULL, '2024-08-30 17:00:00', '2024-08-05 05:32:38', '2024-08-05 05:32:38', NULL),
+	(7, 'user', 'abasdasdasd', 11223345, NULL, NULL, NULL, 'P5NyOmgsSCHJuiF0DkxodPGjSyUF9hXIEOqjGDg6Zb68IoVHLtLZ9NH6XHb6BqrEHcqy7h8e7eTEfbYZ3WTLDar6Yg==', NULL, '2024-08-05 17:00:00', '2024-08-05 05:35:00', '2024-08-05 05:35:00', '2024-08-05 07:37:49'),
+	(8, 'user', 'Nguyen A', 123456781, NULL, NULL, NULL, '48HMSzkiFqZeBjstDMxf+gTIjLcjGmRgY6itob40IuriHO7fxTNi5W5K4Vbt/hasW8moF3YUnLtp3+ciHl9Qqsl9DQ==', NULL, '2025-01-10 17:00:00', '2024-08-05 05:42:55', '2024-08-05 05:42:55', '2024-08-05 07:29:11');
+
+
 -- Dumping structure for table menu_db.banners
 CREATE TABLE IF NOT EXISTS `banners` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
@@ -457,31 +484,6 @@ INSERT INTO `tables` (`id`, `name`, `seats`, `is_use`, `user_id`, `created_at`, 
 	(6, 'B2', 2, 1, 1, '2024-07-17 04:23:49', '2024-07-27 04:34:25'),
 	(7, 'B3', 3, 1, 1, '2024-07-17 04:23:56', '2024-07-27 04:34:13');
 
--- Dumping structure for table menu_db.users
-CREATE TABLE IF NOT EXISTS `users` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `role` enum('user','admin') COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'user',
-  `full_name` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `phone_number` int NOT NULL,
-  `sub_phone_number` int DEFAULT NULL,
-  `email` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `address` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `password` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `image` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `expired_at` timestamp NULL DEFAULT NULL,
-  `extended_at` timestamp NULL DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- Dumping data for table menu_db.users: ~3 rows (approximately)
-INSERT INTO `users` (`id`, `role`, `full_name`, `phone_number`, `sub_phone_number`, `email`, `address`, `password`, `image`, `expired_at`, `extended_at`, `created_at`, `updated_at`) VALUES
-	(1, 'admin', 'Nguyen Tien Anh', 328023993, 123456789, 'nguyentienanh530@gmail.com', '06 Đa Hoa - Tu Tra - Đơn Dương - Lâm Đồng', 'Io6x4kQrdfsifmhAWqoHDNAmCB0z71LMdlps/wA00AQeeG4mFfs8Ye5ZiN7wQk/3Nu2EAEAUFGTn8LUWZm2Pyz5JRg==', '/users/1/1721380675493.webp', '2024-08-02 07:21:57', '2024-08-05 06:03:18', '2024-06-14 07:21:57', '2024-08-05 06:03:19'),
-	(4, 'user', 'Nguyen Tien Anh', 123456789, 123456789, 'nguyentienanh530@gmail.com', '', 'ia7Fz32aaA1In1854FO6TM3+CPTsXQ7Qa9R7fegCeBsTnHPghxf32DV59QUBUrpN9JCofwB6OTBia1pWThesusbcxw==', '/users/4/1722852942413.webp', '2024-08-06 17:00:00', '2024-08-05 06:03:19', '2024-07-17 06:08:41', '2024-08-05 10:15:42'),
-	(6, 'user', 'abasdasd', 11223344, NULL, NULL, NULL, 'C4JpuQHMei4OWO3SOjpLnrqR6kBLHYxpGuf4td+Wx3mouhNPH2R4rVtPOds/zNRchQrjPHcM9Sx8exR9Zmm2Ff+ThQ==', NULL, '2024-08-30 17:00:00', '2024-08-05 05:32:38', '2024-08-05 05:32:38', NULL),
-	(7, 'user', 'abasdasdasd', 11223345, NULL, NULL, NULL, 'P5NyOmgsSCHJuiF0DkxodPGjSyUF9hXIEOqjGDg6Zb68IoVHLtLZ9NH6XHb6BqrEHcqy7h8e7eTEfbYZ3WTLDar6Yg==', NULL, '2024-08-05 17:00:00', '2024-08-05 05:35:00', '2024-08-05 05:35:00', '2024-08-05 07:37:49'),
-	(8, 'user', 'Nguyen A', 123456781, NULL, NULL, NULL, '48HMSzkiFqZeBjstDMxf+gTIjLcjGmRgY6itob40IuriHO7fxTNi5W5K4Vbt/hasW8moF3YUnLtp3+ciHl9Qqsl9DQ==', NULL, '2025-01-10 17:00:00', '2024-08-05 05:42:55', '2024-08-05 05:42:55', '2024-08-05 07:29:11');
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

@@ -20,7 +20,7 @@ COPY . .
 RUN dart pub get --offline
 
 # Comment the following line if you don't want to create tables.
-# RUN vania migrate
+RUN vania migrate
 
 RUN vania build
 
