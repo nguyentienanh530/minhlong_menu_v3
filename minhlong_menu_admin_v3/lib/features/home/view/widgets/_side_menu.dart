@@ -15,7 +15,7 @@ extension _BuildSideMenuWidget on HomeViewState {
             fontWeight: FontWeight.w700,
           ),
           unselectedTitleTextStyle: context.bodyMedium!
-              .copyWith(color: context.bodyMedium!.color!.withOpacity(0.5)),
+              .copyWith(color: context.bodyMedium!.color!.withOpacity(0.8)),
           selectedIconColor: Colors.white,
           unselectedIconColor: context.bodyMedium!.color!.withOpacity(0.5),
         ),
@@ -71,7 +71,10 @@ extension _BuildSideMenuWidget on HomeViewState {
             title: 'Đăng xuất',
             builder: (context, displayMode) {
               return ListTile(
-                enabled: true,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(defaultPadding / 2).r,
+                ),
+                splashColor: context.colorScheme.primary.withOpacity(0.3),
                 hoverColor: context.colorScheme.primary.withOpacity(0.3),
                 leading: const Icon(
                   Icons.exit_to_app,

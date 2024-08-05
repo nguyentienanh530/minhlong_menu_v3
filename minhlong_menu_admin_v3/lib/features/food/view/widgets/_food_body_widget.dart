@@ -293,7 +293,7 @@ extension _FoodBodyWidget on _FoodViewState {
                       mode: ScreenType.update, foodItem: foodItem);
                 },
                 icon: Icons.edit,
-                color: context.colorScheme.primary,
+                color: Colors.yellow.shade700,
                 tooltip: 'Chỉnh sửa',
               ),
             ),

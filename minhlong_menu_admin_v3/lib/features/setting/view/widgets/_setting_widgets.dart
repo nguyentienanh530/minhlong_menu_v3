@@ -13,8 +13,8 @@ extension _SettingWidgets on _SettingScreenState {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             border: Border.all(
-                color: context.colorScheme.onPrimaryContainer.withOpacity(0.3),
-                width: 6),
+                color: context.colorScheme.onSurface.withOpacity(0.7),
+                width: 5),
           ),
           child: Container(
             clipBehavior: Clip.antiAlias,
@@ -59,7 +59,7 @@ extension _SettingWidgets on _SettingScreenState {
       svgPath: AppAsset.user,
       title: AppString.editProfile,
       titleStyle: context.bodyMedium!
-          .copyWith(color: context.bodyMedium!.color!.withOpacity(0.5)),
+          .copyWith(color: context.bodyMedium!.color!.withOpacity(0.7)),
     );
   }
 
@@ -70,7 +70,7 @@ extension _SettingWidgets on _SettingScreenState {
       svgPath: AppAsset.lock,
       title: AppString.changePassword,
       titleStyle: context.bodyMedium!
-          .copyWith(color: context.bodyMedium!.color!.withOpacity(0.5)),
+          .copyWith(color: context.bodyMedium!.color!.withOpacity(0.7)),
     );
   }
 
@@ -82,7 +82,7 @@ extension _SettingWidgets on _SettingScreenState {
           svgPath: AppAsset.logout,
           title: AppString.pickColor,
           titleStyle: context.bodyMedium!.copyWith(
-            color: context.bodyMedium!.color!.withOpacity(0.5),
+            color: context.bodyMedium!.color!.withOpacity(0.7),
           ),
           leftIcon: Icon(Icons.color_lens_outlined,
               color: context.colorScheme.primary),
@@ -165,7 +165,11 @@ extension _SettingWidgets on _SettingScreenState {
                   shape: BoxShape.circle,
                   color: isDarkMode.value ? e.colorDark : e.colorLight,
                   border: e.key == context.read<SchemeCubit>().state
-                      ? Border.all(color: context.colorScheme.primary, width: 2)
+                      ? isDarkMode.value
+                          ? Border.all(
+                              color: context.colorScheme.onSurface, width: 2)
+                          : Border.all(
+                              color: context.colorScheme.onSurface, width: 2)
                       : Border.all(color: Colors.transparent))),
           e.key == context.read<SchemeCubit>().state
               ? const Icon(Icons.check, color: Colors.white)
@@ -203,7 +207,7 @@ extension _SettingWidgets on _SettingScreenState {
                             AppString.darkMode,
                             style: context.bodyMedium!.copyWith(
                                 color: context.bodyMedium!.color!
-                                    .withOpacity(0.5)),
+                                    .withOpacity(0.7)),
                           )
                         ]),
                       ),

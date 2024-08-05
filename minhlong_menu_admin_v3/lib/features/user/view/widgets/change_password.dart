@@ -61,7 +61,8 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Đổi mật khẩu', style: context.titleStyleMedium),
+        backgroundColor: Colors.transparent,
+        title: Text('Đổi mật khẩu', style: context.titleStyleLarge),
         centerTitle: true,
       ),
       body: context.isMobile

@@ -27,10 +27,12 @@ class AppDialog {
           ),
           title: Column(
             children: [
-              Icon(
-                Icons.warning_rounded,
-                color: context.colorScheme.error,
-                size: 80,
+              Lottie.asset(
+                AppAsset.warningAnimation,
+                decoder: LottieComposition.decodeGZip,
+                width: 150,
+                height: 150,
+                fit: BoxFit.fill,
               ),
               const SizedBox(height: defaultPadding),
               Text(
@@ -70,7 +72,8 @@ class AppDialog {
                                 fit: BoxFit.scaleDown,
                                 child: Text(
                                   cancelText ?? "Huỷ",
-                                  style: context.bodyMedium,
+                                  style: context.bodyMedium!.copyWith(
+                                      color: context.colorScheme.primary),
                                 ),
                               ),
                             ),
@@ -133,9 +136,8 @@ class AppDialog {
               const SizedBox(height: defaultPadding),
               Text(
                 title ?? 'Cảnh báo!',
-                style: context.titleStyleLarge!.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: context.titleStyleLarge!
+                    .copyWith(fontWeight: FontWeight.bold),
               )
             ],
           ),
@@ -161,16 +163,16 @@ class AppDialog {
                         ? Expanded(
                             child: OutlinedButton(
                               style: OutlinedButton.styleFrom(
-                                side: const BorderSide(
-                                    // color: AppColors.red,
-                                    ),
+                                side: BorderSide(
+                                    color: context.colorScheme.primary),
                               ),
                               onPressed: () => Navigator.pop(context),
                               child: FittedBox(
                                 fit: BoxFit.scaleDown,
                                 child: Text(
                                   cancelText ?? "Huỷ",
-                                  style: context.bodyMedium,
+                                  style: context.bodyMedium!.copyWith(
+                                      color: context.colorScheme.primary),
                                 ),
                               ),
                             ),
@@ -180,9 +182,8 @@ class AppDialog {
                     Expanded(
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: context.colorScheme.primary,
-                          foregroundColor: Colors.white,
-                        ),
+                            backgroundColor: context.colorScheme.primary,
+                            foregroundColor: Colors.white),
                         onPressed: onPressedComfirm,
                         child: FittedBox(
                           fit: BoxFit.scaleDown,
@@ -222,10 +223,12 @@ class AppDialog {
           ),
           title: Column(
             children: [
-              const Icon(
-                Icons.check_circle,
-                color: Colors.green,
-                size: 80,
+              Lottie.asset(
+                AppAsset.successAnimation,
+                decoder: LottieComposition.decodeGZip,
+                width: 150,
+                height: 150,
+                fit: BoxFit.fill,
               ),
               const SizedBox(height: defaultPadding),
               Text(

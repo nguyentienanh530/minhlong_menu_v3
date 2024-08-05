@@ -42,6 +42,7 @@ class OverlaySnackbar {
                       flex: 2,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           type == OverlaySnackbarType.error
                               ? const Icon(Icons.error,
@@ -49,23 +50,26 @@ class OverlaySnackbar {
                               : const Icon(Icons.check_circle,
                                   color: Colors.green, size: 20),
                           const SizedBox(width: 10),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                type == OverlaySnackbarType.error
-                                    ? 'Lỗi!'
-                                    : 'Thành công!',
-                                style: context.titleStyleLarge!
-                                    .copyWith(fontWeight: FontWeight.w700),
-                              ),
-                              Text(
-                                message,
-                                style: context.bodyMedium!.copyWith(
-                                    color: context.bodyMedium!.color!
-                                        .withOpacity(0.5)),
-                              ),
-                            ],
+                          FittedBox(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  type == OverlaySnackbarType.error
+                                      ? 'Lỗi!'
+                                      : 'Thành công!',
+                                  style: context.titleStyleMedium!.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  message,
+                                  style: context.bodySmall!.copyWith(
+                                      color: context.bodyMedium!.color!
+                                          .withOpacity(0.5)),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),

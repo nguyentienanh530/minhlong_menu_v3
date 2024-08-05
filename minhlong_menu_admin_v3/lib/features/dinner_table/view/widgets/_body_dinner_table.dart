@@ -180,7 +180,7 @@ extension _FoodBodyWidget on _DinnerTableViewState {
                 textAlign: TextAlign.center,
                 style: context.bodyMedium!.copyWith(
                     fontWeight: FontWeight.w600,
-                    color: context.bodyMedium!.color!.withOpacity(0.5)),
+                    color: context.bodyMedium!.color!.withOpacity(0.8)),
               ))
           .toList(),
     );
@@ -242,7 +242,7 @@ extension _FoodBodyWidget on _DinnerTableViewState {
                       mode: ScreenType.update, tableItem: tableItem);
                 },
                 icon: Icons.edit,
-                color: context.colorScheme.primary,
+                color: Colors.yellow.shade700,
                 tooltip: 'Chỉnh sửa',
               ),
             ),

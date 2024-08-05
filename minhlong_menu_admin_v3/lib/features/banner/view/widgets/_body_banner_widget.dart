@@ -259,7 +259,7 @@ extension _BodyBannerWidget on _BannerViewState {
                       type: ScreenType.update, bannerItem: bannerItem);
                 },
                 icon: Icons.edit,
-                color: context.colorScheme.primary,
+                color: Colors.yellow.shade700,
                 tooltip: 'Chỉnh sửa',
               ),
             ),

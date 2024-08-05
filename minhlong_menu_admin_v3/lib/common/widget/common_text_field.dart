@@ -79,7 +79,8 @@ class CommonTextField extends StatelessWidget {
                 borderSide: const BorderSide(color: Colors.red)),
             enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(textFieldBorderRadius).r,
-                borderSide: const BorderSide(color: Colors.white54)),
+                borderSide: BorderSide(
+                    color: context.colorScheme.onSurface.withOpacity(0.2))),
             disabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(textFieldBorderRadius).r,
                 borderSide: const BorderSide(color: Colors.white54)),
@@ -87,7 +88,8 @@ class CommonTextField extends StatelessWidget {
             prefixIcon: prefixIcon,
             focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(textFieldBorderRadius).r,
-                borderSide: const BorderSide(color: Colors.white54)),
+                borderSide: BorderSide(
+                    color: context.colorScheme.primary.withOpacity(0.5))),
             errorText: errorText,
             contentPadding:
                 const EdgeInsets.symmetric(horizontal: 16, vertical: 16).r,

@@ -190,17 +190,13 @@ class _OrderViewState extends State<OrderView>
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _orderHeaderWidget(
-                tableIndexSelectedState,
-                ordersList,
-              ),
+              _orderHeaderWidget(tableIndexSelectedState, ordersList),
               16.verticalSpace,
               _buildTablesWidget(index: tableIndexSelectedState),
               16.verticalSpace,
               Expanded(
-                child: SingleChildScrollView(
-                    child: _buildOrdersOnTable(tableIndexSelectedState)),
-              ),
+                  child: SingleChildScrollView(
+                      child: _buildOrdersOnTable(tableIndexSelectedState))),
             ],
           ),
         ),

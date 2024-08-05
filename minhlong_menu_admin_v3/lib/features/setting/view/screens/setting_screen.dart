@@ -65,46 +65,48 @@ class _SettingScreenState extends State<SettingScreen> {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(defaultPadding),
-        child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(defaultPadding),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(defaultBorderRadius).r,
-          ),
-          child: context.isMobile
-              ? Container(
-                  constraints: const BoxConstraints(maxWidth: 600),
-                  child: Column(
+        child: SingleChildScrollView(
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(defaultPadding),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(defaultBorderRadius).r,
+            ),
+            child: context.isMobile
+                ? Container(
+                    constraints: const BoxConstraints(maxWidth: 600),
+                    child: Column(
+                      children: [
+                        _buildInfoProfile(user),
+                        _editInfoUser(user),
+                        _buildTitleChangePassword(),
+                        _buildColorThemeWidget(),
+                        _buildThemeWidget(context),
+                      ],
+                    ),
+                  )
+                : Row(
                     children: [
-                      _buildInfoProfile(user),
-                      _editInfoUser(user),
-                      _buildTitleChangePassword(),
-                      _buildColorThemeWidget(),
-                      _buildThemeWidget(context),
-                    ],
-                  ),
-                )
-              : Row(
-                  children: [
-                    const Spacer(),
-                    Expanded(
-                      flex: 2,
-                      child: Container(
-                        constraints: const BoxConstraints(maxWidth: 600),
-                        child: Column(
-                          children: [
-                            _buildInfoProfile(user),
-                            _editInfoUser(user),
-                            _buildTitleChangePassword(),
-                            _buildColorThemeWidget(),
-                            _buildThemeWidget(context),
-                          ],
+                      const Spacer(),
+                      Expanded(
+                        flex: 2,
+                        child: Container(
+                          constraints: const BoxConstraints(maxWidth: 600),
+                          child: Column(
+                            children: [
+                              _buildInfoProfile(user),
+                              _editInfoUser(user),
+                              _buildTitleChangePassword(),
+                              _buildColorThemeWidget(),
+                              _buildThemeWidget(context),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    const Spacer(),
-                  ],
-                ),
+                      const Spacer(),
+                    ],
+                  ),
+          ),
         ),
       ),
     );

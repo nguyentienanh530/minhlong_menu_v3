@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_admin_v3/core/api_config.dart';
+import 'package:minhlong_menu_admin_v3/core/app_const.dart';
+import 'package:minhlong_menu_admin_v3/core/app_string.dart';
 import 'package:minhlong_menu_admin_v3/core/extensions.dart';
 import 'package:minhlong_menu_admin_v3/features/banner/view/screens/banner_screen.dart';
 import 'package:minhlong_menu_admin_v3/features/category/view/screens/category_screen.dart';
@@ -261,7 +263,7 @@ class HomeViewState extends State<HomeView>
               builder: (context, value, child) {
                 return Text(value,
                     style: context.titleStyleLarge!
-                        .copyWith(fontWeight: FontWeight.w900));
+                        .copyWith(fontWeight: FontWeight.bold));
               }),
           const SizedBox(
             height: 40,
@@ -328,7 +330,7 @@ class HomeViewState extends State<HomeView>
               builder: (context, _) {
                 return Text(
                   _title.value,
-                  style: context.bodyMedium!.copyWith(
+                  style: context.titleStyleLarge!.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                 );

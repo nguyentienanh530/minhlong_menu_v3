@@ -123,23 +123,17 @@ extension _OrdersOnTableWidget on _OrderViewState {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Text('x${order.foodOrders.length} món',
+                style: context.bodyMedium!.copyWith(
+                    fontWeight: FontWeight.w400,
+                    color: context.titleStyleMedium!.color!.withOpacity(0.5))),
             Text(
-              'x${order.foodOrders.length} món',
-              style: context.bodyMedium!.copyWith(
-                  fontWeight: FontWeight.w400,
-                  color: context.titleStyleMedium!.color!.withOpacity(0.5)),
-            ),
-            Text(
-              '${Ultils.currencyFormat(double.parse(order.totalPrice.toString()))} đ',
-              style: context.bodyMedium!.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
-            ),
+                '${Ultils.currencyFormat(double.parse(order.totalPrice.toString()))} đ',
+                style:
+                    context.bodyMedium!.copyWith(fontWeight: FontWeight.w700))
           ],
         ),
-        const SizedBox(
-          width: defaultPadding / 2,
-        ),
+        8.verticalSpace,
         order.status == 'new'
             ? Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -202,7 +196,7 @@ extension _OrdersOnTableWidget on _OrderViewState {
                       );
                     },
                     icon: Icons.edit,
-                    color: context.colorScheme.primary,
+                    color: Colors.yellow.shade700,
                   ),
                   10.horizontalSpace,
                   CommonIconButton(
@@ -217,7 +211,7 @@ extension _OrdersOnTableWidget on _OrderViewState {
                         });
                       },
                       icon: Icons.delete,
-                      color: context.colorScheme.primary),
+                      color: Colors.red),
                 ],
               ),
       ],
@@ -252,7 +246,7 @@ extension _OrdersOnTableWidget on _OrderViewState {
         Container(
           padding: const EdgeInsets.all(5).r,
           decoration: BoxDecoration(
-            color: _handleColor(order.status).withOpacity(0.2),
+            color: _handleColor(order.status).withOpacity(0.1),
             borderRadius: BorderRadius.circular(5),
           ),
           child: Text(
@@ -336,7 +330,7 @@ extension _OrdersOnTableWidget on _OrderViewState {
                   const SizedBox(height: 10),
                   Divider(
                       height: 1,
-                      color: context.titleStyleMedium!.color!.withOpacity(0.5)),
+                      color: context.titleStyleMedium!.color!.withOpacity(0.4)),
                 ],
               ),
             ),

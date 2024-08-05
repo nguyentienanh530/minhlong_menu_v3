@@ -235,7 +235,7 @@ extension _FoodBodyWidget on _CategoryViewState {
                       type: ScreenType.update, categoryItem: categoryItem);
                 },
                 icon: Icons.edit,
-                color: context.colorScheme.primary,
+                color: Colors.yellow.shade700,
                 tooltip: 'Chỉnh sửa',
               ),
             ),

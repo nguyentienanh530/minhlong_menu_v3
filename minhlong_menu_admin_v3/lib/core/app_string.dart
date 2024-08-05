@@ -67,6 +67,7 @@ class AppString {
   static String editProfile = 'Thay đổi thông tin';
   static String fullName = 'Tên đầy đủ *';
   static String email = 'Email';
+  static String subPhoneNumber = 'Số điện thoại phụ';
   static String edit = 'Sửa';
   static String usePrinter = 'Sử dụng máy in';
   static String settingPrinter = 'Cấu hình máy in';
@@ -80,4 +81,5 @@ class AppString {
   static String darkMode = 'Chế độ tối';
   static String lightMode = 'Chế độ sáng';
   static String pickColor = 'Chọn màu ';
+  static String adress = 'Địa chỉ ';
 }

@@ -393,14 +393,14 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
                             Icon(
                               Icons.add_photo_alternate_outlined,
                               color:
-                                  context.bodyMedium!.color!.withOpacity(0.5),
+                                  context.bodyMedium!.color!.withOpacity(0.8),
                               size: 20,
                             ),
                             Text(
                               '500 x 500',
                               style: context.bodyMedium!.copyWith(
                                 color:
-                                    context.bodyMedium!.color!.withOpacity(0.5),
+                                    context.bodyMedium!.color!.withOpacity(0.8),
                               ),
                             ),
                           ],

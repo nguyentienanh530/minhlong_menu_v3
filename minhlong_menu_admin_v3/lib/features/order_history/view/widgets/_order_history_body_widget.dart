@@ -287,7 +287,7 @@ extension _OrderBodyWidget on _OrderViewState {
               );
             },
             icon: Icons.edit,
-            color: context.colorScheme.primary,
+            color: Colors.yellow.shade700,
             tooltip: 'Sửa đơn hàng',
           ),
         ),
