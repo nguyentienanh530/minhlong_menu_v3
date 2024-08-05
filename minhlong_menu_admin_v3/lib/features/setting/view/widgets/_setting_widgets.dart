@@ -86,13 +86,20 @@ extension _SettingWidgets on _SettingScreenState {
           ),
           leftIcon: Icon(Icons.color_lens_outlined,
               color: context.colorScheme.primary),
-          rightIcon: Container(
-            margin: const EdgeInsets.only(right: defaultPadding / 2),
-            height: 30,
-            width: 30,
-            decoration:
-                BoxDecoration(color: _pickColor.value, shape: BoxShape.circle),
-          ),
+          rightIcon: ListenableBuilder(
+              listenable: isDarkMode,
+              builder: (context, _) {
+                return Container(
+                  margin: const EdgeInsets.only(right: defaultPadding / 2),
+                  height: 30,
+                  width: 30,
+                  decoration: BoxDecoration(
+                      color: isDarkMode.value
+                          ? _pickColor.value.colorDark
+                          : _pickColor.value.colorLight,
+                      shape: BoxShape.circle),
+                );
+              }),
           onTap: () async => _showDialogPickThemes(),
         );
       },
@@ -134,7 +141,7 @@ extension _SettingWidgets on _SettingScreenState {
           );
         }).then(
       (value) {
-        if (value is Color) {
+        if (value is ThemeDTO) {
           _pickColor.value = value;
         }
       },
@@ -145,7 +152,7 @@ extension _SettingWidgets on _SettingScreenState {
     return InkWell(
       borderRadius: BorderRadius.circular(defaultBorderRadius),
       onTap: () async {
-        context.pop(isDarkMode.value ? e.colorDark : e.colorLight);
+        context.pop(e);
         await ThemeLocalDatasource(sf).setSchemeTheme(e.key);
         if (!mounted) return;
         context.read<SchemeCubit>().changeScheme(e.key);
@@ -154,13 +161,12 @@ extension _SettingWidgets on _SettingScreenState {
         alignment: Alignment.center,
         children: [
           Container(
-            decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: isDarkMode.value ? e.colorDark : e.colorLight,
-                border: e.key == context.read<SchemeCubit>().state
-                    ? Border.all(color: context.colorScheme.primary, width: 2)
-                    : Border.all(color: Colors.transparent)),
-          ),
+              decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: isDarkMode.value ? e.colorDark : e.colorLight,
+                  border: e.key == context.read<SchemeCubit>().state
+                      ? Border.all(color: context.colorScheme.primary, width: 2)
+                      : Border.all(color: Colors.transparent))),
           e.key == context.read<SchemeCubit>().state
               ? const Icon(Icons.check, color: Colors.white)
               : const SizedBox()
@@ -221,7 +227,6 @@ extension _SettingWidgets on _SettingScreenState {
                             value: isDarkMode.value,
                             onChanged: (value) async {
                               isDarkMode.value = !isDarkMode.value;
-
                               context.read<ThemeCubit>().changeTheme(value);
                               await ThemeLocalDatasource(sf)
                                   .setDarkTheme(value);

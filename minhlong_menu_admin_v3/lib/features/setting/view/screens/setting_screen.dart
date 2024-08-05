@@ -35,7 +35,7 @@ class _SettingScreenState extends State<SettingScreen> {
   final _isUsePrinter = ValueNotifier(false);
   final _selectedIndex = ValueNotifier(0);
   final isDarkMode = ValueNotifier(false);
-  final _pickColor = ValueNotifier(listScheme.first.colorDark);
+  final _pickColor = ValueNotifier(listScheme.first);
 
   @override
   void initState() {
@@ -47,11 +47,8 @@ class _SettingScreenState extends State<SettingScreen> {
     sf = await SharedPreferences.getInstance();
     isDarkMode.value = await ThemeLocalDatasource(sf).getDartTheme() ?? false;
     var schemeKey = await ThemeLocalDatasource(sf).getSchemeTheme() ?? '';
-    _pickColor.value = isDarkMode.value
-        ? listScheme.firstWhere((element) => element.key == schemeKey).colorDark
-        : listScheme
-            .firstWhere((element) => element.key == schemeKey)
-            .colorLight;
+    _pickColor.value =
+        listScheme.firstWhere((element) => element.key == schemeKey);
   }
 
   @override
