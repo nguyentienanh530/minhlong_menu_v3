@@ -27,80 +27,74 @@ class OverlaySnackbar {
           color: Colors.transparent,
           child: Container(
             height: 80,
-            width: 300,
+            width: 350,
             decoration: BoxDecoration(
                 color: type == OverlaySnackbarType.error
-                    ? Colors.red.withOpacity(0.3)
-                    : Colors.green.withOpacity(0.3),
-                borderRadius: BorderRadius.circular(10)),
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-            child: Stack(
+                    ? Colors.red[200]
+                    : Colors.green[200],
+                borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(10),
+                    topRight: Radius.circular(10))),
+            // padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
+            child: Column(
               children: [
-                Column(
-                  children: [
-                    Expanded(
-                      flex: 2,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          type == OverlaySnackbarType.error
-                              ? const Icon(Icons.error,
-                                  color: Colors.red, size: 20)
-                              : const Icon(Icons.check_circle,
-                                  color: Colors.green, size: 20),
-                          const SizedBox(width: 10),
-                          FittedBox(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  type == OverlaySnackbarType.error
-                                      ? 'Lỗi!'
-                                      : 'Thành công!',
-                                  style: context.titleStyleMedium!.copyWith(
+                Expanded(
+                  flex: 2,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        type == OverlaySnackbarType.error
+                            ? const Icon(Icons.error,
+                                color: Colors.red, size: 40)
+                            : const Icon(Icons.check_circle,
+                                color: Colors.green, size: 40),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                type == OverlaySnackbarType.error
+                                    ? 'Lỗi!'
+                                    : 'Thành công!',
+                                style: context.titleStyleMedium!.copyWith(
                                     fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Text(
-                                  message,
-                                  style: context.bodySmall!.copyWith(
-                                      color: context.bodyMedium!.color!
-                                          .withOpacity(0.5)),
-                                ),
-                              ],
-                            ),
+                                    color: Colors.black),
+                              ),
+                              Text(
+                                message,
+                                style: context.bodySmall!.copyWith(
+                                    color: Colors.black.withOpacity(0.8)),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                        InkWell(
+                          child: const Icon(Icons.close,
+                              color: Colors.black, size: 20),
+                          onTap: () {
+                            overlayEntry.remove();
+                          },
+                        ),
+                      ],
                     ),
-                    10.verticalSpace,
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 3),
-                      child: LinearTimer(
-                        color: type == OverlaySnackbarType.error
-                            ? Colors.red
-                            : Colors.green,
-                        duration: const Duration(seconds: 3),
-                        onTimerEnd: () {
-                          overlayEntry.remove();
-                        },
-                        forward: false,
-                      ),
-                    )
-                  ],
-                ),
-                Positioned(
-                  top: 0,
-                  right: 0,
-                  child: InkWell(
-                    child:
-                        const Icon(Icons.close, color: Colors.white, size: 20),
-                    onTap: () {
-                      overlayEntry.remove();
-                    },
                   ),
                 ),
+                10.verticalSpace,
+                LinearTimer(
+                  color: type == OverlaySnackbarType.error
+                      ? Colors.red
+                      : Colors.green,
+                  duration: const Duration(seconds: 3),
+                  onTimerEnd: () {
+                    overlayEntry.remove();
+                  },
+                  forward: false,
+                )
               ],
             ),
           ),

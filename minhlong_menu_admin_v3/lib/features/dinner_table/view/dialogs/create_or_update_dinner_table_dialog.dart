@@ -67,11 +67,11 @@ class _CreateOrUpdateDinnerTableDialogState
 
           if (state is DinnerTableCreateSuccess) {
             pop(context, 2);
-            OverlaySnackbar.show(context, 'THÊM BÀN THÀNH CÔNG');
+            OverlaySnackbar.show(context, 'Thêm bàn thành công!');
           }
           if (state is DinnerTableUpdateSuccess) {
             pop(context, 2);
-            OverlaySnackbar.show(context, 'SỬA BÀN THÀNH CÔNG');
+            OverlaySnackbar.show(context, 'Sửa bàn thành công!');
           }
 
           if (state is DinnerTableCreateFailure ||
@@ -202,23 +202,22 @@ class _CreateOrUpdateDinnerTableDialogState
   }
 
   _buildButtonCreateOrUpdateDinnerTable() {
-    return InkWell(
-      onTap: () {
+    return ElevatedButton(
+      onPressed: () {
         _handleCreateOrUpdateDinnerTable();
       },
-      child: Container(
-        height: 45,
-        width: 200,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(defaultBorderRadius),
-            color: context.colorScheme.primary),
-        child: Text(
-          _mode == ScreenType.create ? 'Thêm mới' : 'Sửa',
-          style: context.bodyMedium!.copyWith(
-            color: Colors.white,
-            fontWeight: FontWeight.w700,
-          ),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: context.colorScheme.primary,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(defaultBorderRadius),
+        ),
+        minimumSize: const Size(200, 45),
+      ),
+      child: Text(
+        _mode == ScreenType.create ? 'Thêm mới' : 'Sửa',
+        style: context.bodyMedium!.copyWith(
+          color: Colors.white,
+          fontWeight: FontWeight.w700,
         ),
       ),
     );

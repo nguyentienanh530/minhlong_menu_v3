@@ -137,6 +137,7 @@ extension _FoodBodyWidget on _FoodViewState {
                       },
                       fontSize: 14,
                       threshold: 5,
+                      buttonElevation: 1,
                       buttonRadius: textFieldBorderRadius,
                       pageTotal: pagination.totalPage,
                       pageInit: _curentPage.value,
@@ -258,19 +259,6 @@ extension _FoodBodyWidget on _FoodViewState {
             valueListenable: isShowFood,
             builder: (context, value, child) {
               return Switch(
-                  activeColor: context.colorScheme.primary,
-                  inactiveThumbColor:
-                      context.colorScheme.onPrimaryContainer.withOpacity(0.8),
-                  inactiveTrackColor:
-                      context.colorScheme.onPrimaryContainer.withOpacity(0.1),
-                  activeTrackColor:
-                      context.colorScheme.primary.withOpacity(0.3),
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  dragStartBehavior: DragStartBehavior.start,
-                  hoverColor: Colors.white54,
-                  trackOutlineWidth: const WidgetStatePropertyAll(0),
-                  trackOutlineColor:
-                      const WidgetStatePropertyAll(Colors.transparent),
                   value: isShowFood.value ?? false,
                   onChanged: (value) {
                     isShowFood.value = value;
@@ -293,7 +281,7 @@ extension _FoodBodyWidget on _FoodViewState {
                       mode: ScreenType.update, foodItem: foodItem);
                 },
                 icon: Icons.edit,
-                color: Colors.yellow.shade700,
+                color: Colors.orange,
                 tooltip: 'Chỉnh sửa',
               ),
             ),

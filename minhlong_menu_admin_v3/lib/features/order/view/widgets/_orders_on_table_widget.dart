@@ -3,79 +3,73 @@ part of '../screens/order_screen.dart';
 extension _OrdersOnTableWidget on _OrderViewState {
   Widget _buildOrdersOnTable(int tableIndexSelectedState) {
     return StreamBuilder(
-        stream: _orderChannel.stream,
-        builder: (context, snapshot) {
-          var tableIndexState = context.watch<TableIndexSelectedCubit>().state;
-          switch (snapshot.connectionState) {
-            case ConnectionState.waiting:
-              return const Loading();
-            default:
-              if (snapshot.hasError) {
-                return const ErrWidget(error: 'Error');
+      stream: _orderChannel.stream,
+      builder: (context, snapshot) {
+        var tableIndexState = context.watch<TableIndexSelectedCubit>().state;
+        switch (snapshot.connectionState) {
+          case ConnectionState.waiting:
+            return const Loading();
+          default:
+            if (snapshot.hasError) {
+              return const ErrWidget(error: 'Error');
+            } else {
+              if (!snapshot.hasData) {
+                return const EmptyWidget();
               } else {
-                if (!snapshot.hasData) {
-                  return const EmptyWidget();
-                } else {
-                  ordersList.clear();
-                  List<OrderItem> orders = <OrderItem>[];
+                ordersList.clear();
+                List<OrderItem> orders = <OrderItem>[];
 
-                  var res = jsonDecode(snapshot.data);
+                var res = jsonDecode(snapshot.data);
 
-                  String event = res['event'].toString();
-                  if (event.contains('orders-ws')) {
-                    var data = jsonDecode(res['payload']);
+                String event = res['event'].toString();
+                if (event.contains('orders-ws')) {
+                  var data = jsonDecode(res['payload']);
 
-                    orders = List<OrderItem>.from(
-                      data.map(
-                        (x) => OrderItem.fromJson(x),
-                      ),
-                    );
+                  orders = List<OrderItem>.from(
+                    data.map(
+                      (x) => OrderItem.fromJson(x),
+                    ),
+                  );
 
-                    log('orders $orders');
-                    if (tableIndexState != 0) {
-                      for (var order in orders) {
-                        if (order.tableId == tableIndexState) {
-                          ordersList.add(order);
-                        }
+                  log('orders $orders');
+                  if (tableIndexState != 0) {
+                    for (var order in orders) {
+                      if (order.tableId == tableIndexState) {
+                        ordersList.add(order);
                       }
-                    } else {
-                      ordersList = orders;
                     }
-
-                    // return ListenableBuilder(
-                    //   listenable: _orderList,
-                    //   builder: (context, child) {
-
-                    //   },
-                    // );
-
-                    return ordersList.isEmpty
-                        ? SizedBox(
-                            height: 500,
-                            width: double.infinity,
-                            child: Center(
-                              child: Text(
-                                'không có đơn nào!',
-                                style: context.bodyMedium!.copyWith(
-                                    color: context.titleStyleMedium!.color!
-                                        .withOpacity(0.5)),
-                              ),
-                            ),
-                          )
-                        : StaggeredGrid.count(
-                            crossAxisCount: _gridCount(),
-                            children: ordersList
-                                .map((e) =>
-                                    _buildItem(e, tableIndexSelectedState))
-                                .toList(),
-                          );
                   } else {
-                    return const SizedBox();
+                    ordersList = orders;
                   }
+
+                  return ordersList.isEmpty
+                      ? SizedBox(
+                          height: 500,
+                          width: double.infinity,
+                          child: Center(
+                            child: Text(
+                              'không có đơn nào!',
+                              style: context.bodyMedium!.copyWith(
+                                  color: context.titleStyleMedium!.color!
+                                      .withOpacity(0.5)),
+                            ),
+                          ),
+                        )
+                      : StaggeredGrid.count(
+                          crossAxisCount: _gridCount(),
+                          children: ordersList
+                              .map(
+                                  (e) => _buildItem(e, tableIndexSelectedState))
+                              .toList(),
+                        );
+                } else {
+                  return const SizedBox();
                 }
               }
-          }
-        });
+            }
+        }
+      },
+    );
   }
 
   int _gridCount() {
@@ -89,27 +83,23 @@ extension _OrdersOnTableWidget on _OrderViewState {
   }
 
   Widget _buildItem(OrderItem order, int tableIndexSelectedState) {
-    return FittedBox(
-      child: Card(
-        elevation: 4,
-        shadowColor: context.colorScheme.onSurface.withOpacity(0.5),
-        child: Container(
-          width: 270,
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 10),
-              _buildHeader(context, order),
-              const SizedBox(height: 10),
-              _buildBody(context, order),
-              const SizedBox(height: 10),
-              _buildFooter(context, order, tableIndexSelectedState),
-            ],
-          ),
+    return Card(
+      surfaceTintColor: context.colorScheme.surfaceTint,
+      elevation: 1,
+      child: Container(
+        width: 270,
+        padding: const EdgeInsets.all(10),
+        margin: const EdgeInsets.all(10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 10),
+            _buildHeader(context, order),
+            const SizedBox(height: 10),
+            _buildBody(context, order),
+            const SizedBox(height: 10),
+            _buildFooter(context, order, tableIndexSelectedState),
+          ],
         ),
       ),
     );
@@ -196,7 +186,7 @@ extension _OrdersOnTableWidget on _OrderViewState {
                       );
                     },
                     icon: Icons.edit,
-                    color: Colors.yellow.shade700,
+                    color: Colors.orange,
                   ),
                   10.horizontalSpace,
                   CommonIconButton(

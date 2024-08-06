@@ -184,63 +184,56 @@ extension _SettingWidgets on _SettingScreenState {
       valueListenable: isDarkMode,
       builder: (context, value, child) {
         return Card(
-            elevation: 2,
-            shadowColor: context.colorScheme.onPrimaryContainer,
-            child: InkWell(
-              borderRadius: BorderRadius.circular(defaultPadding),
-              child: SizedBox(
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                    Expanded(
-                      child: FittedBox(
-                        alignment: Alignment.centerLeft,
-                        fit: BoxFit.scaleDown,
-                        child: Row(children: [
-                          Padding(
-                              padding: const EdgeInsets.all(defaultPadding - 3),
-                              child: Icon(
-                                Icons.dark_mode_outlined,
-                                color: context.colorScheme.primary,
-                              )),
-                          Text(
-                            AppString.darkMode,
-                            style: context.bodyMedium!.copyWith(
-                                color: context.bodyMedium!.color!
-                                    .withOpacity(0.7)),
-                          )
-                        ]),
-                      ),
+          elevation: 1,
+          surfaceTintColor: context.colorScheme.surfaceTint,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(defaultPadding),
+            child: SizedBox(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: FittedBox(
+                      alignment: Alignment.centerLeft,
+                      fit: BoxFit.scaleDown,
+                      child: Row(children: [
+                        Padding(
+                            padding: const EdgeInsets.all(defaultPadding - 3),
+                            child: Icon(
+                              Icons.dark_mode_outlined,
+                              color: context.colorScheme.primary,
+                            )),
+                        Text(
+                          AppString.darkMode,
+                          style: context.bodyMedium!.copyWith(
+                              color:
+                                  context.bodyMedium!.color!.withOpacity(0.7)),
+                        )
+                      ]),
                     ),
-                    Expanded(
-                      child: FittedBox(
-                        alignment: Alignment.centerRight,
-                        fit: BoxFit.scaleDown,
-                        child: Transform.scale(
-                          scale: 0.8,
-                          child: Switch(
-                            trackOutlineWidth: const WidgetStatePropertyAll(0),
-                            trackOutlineColor: const WidgetStatePropertyAll(
-                                Colors.transparent),
-                            activeTrackColor:
-                                context.colorScheme.primary.withOpacity(0.3),
-                            inactiveTrackColor:
-                                context.colorScheme.primary.withOpacity(0.2),
-                            inactiveThumbColor: context.colorScheme.primary,
-                            activeColor: context.colorScheme.primary,
-                            value: isDarkMode.value,
-                            onChanged: (value) async {
-                              isDarkMode.value = !isDarkMode.value;
-                              context.read<ThemeCubit>().changeTheme(value);
-                              await ThemeLocalDatasource(sf)
-                                  .setDarkTheme(value);
-                            },
-                          ),
+                  ),
+                  Expanded(
+                    child: FittedBox(
+                      alignment: Alignment.centerRight,
+                      fit: BoxFit.scaleDown,
+                      child: Transform.scale(
+                        scale: 0.8,
+                        child: Switch(
+                          value: isDarkMode.value,
+                          onChanged: (value) async {
+                            isDarkMode.value = !isDarkMode.value;
+                            context.read<ThemeCubit>().changeTheme(value);
+                            await ThemeLocalDatasource(sf).setDarkTheme(value);
+                          },
                         ),
                       ),
                     ),
-                  ])),
-            ));
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
       },
     );
   }
@@ -268,48 +261,52 @@ class _ItemProfile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-        elevation: 2,
-        shadowColor: Colors.white,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(defaultPadding),
-          onTap: onTap,
-          child: SizedBox(
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                Expanded(
-                  child: FittedBox(
-                    alignment: Alignment.centerLeft,
-                    fit: BoxFit.scaleDown,
-                    child: Row(children: [
-                      Padding(
-                          padding: const EdgeInsets.all(defaultPadding),
-                          child: leftIcon ??
-                              SvgPicture.asset(svgPath,
-                                  colorFilter: ColorFilter.mode(
-                                      context.colorScheme.primary,
-                                      BlendMode.srcIn))),
-                      Text(
-                        title,
-                        style: titleStyle ?? context.bodyMedium,
-                      )
-                    ]),
-                  ),
+      elevation: 1,
+      surfaceTintColor: context.colorScheme.surfaceTint,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(defaultPadding),
+        onTap: onTap,
+        child: SizedBox(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: FittedBox(
+                  alignment: Alignment.centerLeft,
+                  fit: BoxFit.scaleDown,
+                  child: Row(children: [
+                    Padding(
+                        padding: const EdgeInsets.all(defaultPadding),
+                        child: leftIcon ??
+                            SvgPicture.asset(svgPath,
+                                colorFilter: ColorFilter.mode(
+                                    context.colorScheme.primary,
+                                    BlendMode.srcIn))),
+                    Text(
+                      title,
+                      style: titleStyle ?? context.bodyMedium,
+                    )
+                  ]),
                 ),
-                Expanded(
-                  child: FittedBox(
-                    alignment: Alignment.centerRight,
-                    fit: BoxFit.scaleDown,
-                    child: rightIcon ??
-                        const Padding(
-                            padding: EdgeInsets.all(defaultPadding),
-                            child: Icon(
-                              Icons.arrow_forward_ios_rounded,
-                              size: 15,
-                            )),
-                  ),
-                )
-              ])),
-        ));
+              ),
+              Expanded(
+                child: FittedBox(
+                  alignment: Alignment.centerRight,
+                  fit: BoxFit.scaleDown,
+                  child: rightIcon ??
+                      const Padding(
+                        padding: EdgeInsets.all(defaultPadding),
+                        child: Icon(
+                          Icons.arrow_forward_ios_rounded,
+                          size: 15,
+                        ),
+                      ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

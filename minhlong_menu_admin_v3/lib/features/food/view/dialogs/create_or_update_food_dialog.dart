@@ -156,6 +156,7 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
                                         .withOpacity(0.5),
                                     fontWeight: FontWeight.bold,
                                     fontSize: 40)),
+                            20.verticalSpace,
                             _buildBodyCreateOrUpdateFoodDialog(
                                 categoryState.categoryModel.categoryItems),
                             20.verticalSpace,
@@ -382,8 +383,9 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(defaultBorderRadius).r,
                 border: Border.all(
-                    color: context.colorScheme.onPrimaryContainer
-                        .withOpacity(0.5)),
+                  color:
+                      context.colorScheme.onPrimaryContainer.withOpacity(0.5),
+                ),
               ),
               child: imageFile.value.path.isEmpty
                   ? image.isEmpty
@@ -409,10 +411,14 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
                           imageUrl: '${ApiConfig.host}$image',
                           fit: BoxFit.cover,
                           errorWidget: errorBuilderForImage,
+                          height: 100.h,
+                          width: 100.h,
                         )
                   : Image.file(
                       imageFile.value,
                       fit: BoxFit.cover,
+                      height: 100.h,
+                      width: 100.h,
                     ),
             ),
           ),
@@ -444,22 +450,20 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
   }
 
   _buildButtonCreateOrUpdateFood() {
-    return InkWell(
-      onTap: () {
+    return ElevatedButton(
+      onPressed: () {
         _handleCrteteOrUpdateFood();
       },
-      child: Container(
-        alignment: Alignment.center,
-        height: 50,
-        width: 200,
-        decoration: BoxDecoration(
-          color: context.colorScheme.primary,
-          borderRadius: BorderRadius.circular(10.r),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: context.colorScheme.primary,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(defaultBorderRadius),
         ),
-        child: Text(
-          _mode == ScreenType.create ? 'Tạo món' : 'Sửa',
-          style: context.bodyMedium!.copyWith(color: Colors.white),
-        ),
+        minimumSize: const Size(200, 45),
+      ),
+      child: Text(
+        _mode == ScreenType.create ? 'Tạo món' : 'Sửa',
+        style: context.bodyMedium!.copyWith(color: Colors.white),
       ),
     );
   }

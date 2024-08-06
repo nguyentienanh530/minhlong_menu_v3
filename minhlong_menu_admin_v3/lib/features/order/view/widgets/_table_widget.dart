@@ -68,29 +68,28 @@ extension _TableWidget on _OrderViewState {
                     ),
                   ),
                 ),
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(textFieldBorderRadius),
-                  hoverColor: Colors.transparent,
-                  onTap: () {
-                    context.read<TableIndexSelectedCubit>().changeIndex(e.id);
-                    Ultils.sendSocket(_orderChannel, 'orders',
-                        {'user_id': _user.id, 'table_id': e.id});
-                  },
-                  child: Card(
-                    elevation: 4,
-                    shadowColor: context.colorScheme.onSurface.withOpacity(0.5),
-                    shape: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: index == e.id
-                            ? context.colorScheme.primary
-                            : Colors.white,
-                      ),
-                      borderRadius: BorderRadius.circular(
-                        textFieldBorderRadius,
-                      ),
+                child: Card(
+                  surfaceTintColor: context.colorScheme.surfaceTint,
+                  elevation: 1,
+                  shadowColor: context.colorScheme.onSurface.withOpacity(0.5),
+                  shape: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: index == e.id
+                          ? context.colorScheme.primary
+                          : Colors.transparent,
                     ),
+                    borderRadius: BorderRadius.circular(
+                      textFieldBorderRadius,
+                    ),
+                  ),
+                  child: InkWell(
+                    onTap: () {
+                      context.read<TableIndexSelectedCubit>().changeIndex(e.id);
+                      Ultils.sendSocket(_orderChannel, 'orders',
+                          {'user_id': _user.id, 'table_id': e.id});
+                    },
                     child: Padding(
-                      padding: const EdgeInsets.all(3.5),
+                      padding: const EdgeInsets.all(defaultPadding / 2),
                       child: Text(
                         e.name,
                         style: context.bodyMedium!.copyWith(

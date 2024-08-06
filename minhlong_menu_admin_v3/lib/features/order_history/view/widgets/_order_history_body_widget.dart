@@ -93,14 +93,12 @@ extension _OrderBodyWidget on _OrderViewState {
                           valueListenable: _orderModel,
                           builder: (context, order, child) {
                             return ValueListenableBuilder(
-                                valueListenable: _limit,
-                                builder: (context, limit, child) => Text(
-                                      'Hiển thị 1 đến $limit trong số ${pagination.totalItem} đơn',
-                                      style: context.bodyLarge!.copyWith(
-                                          color: context
-                                              .titleStyleMedium!.color!
-                                              .withOpacity(0.5)),
-                                    ));
+                              valueListenable: _limit,
+                              builder: (context, limit, child) => Text(
+                                'Hiển thị 1 đến $limit trong số ${pagination.totalItem} đơn',
+                                style: context.bodyMedium,
+                              ),
+                            );
                           },
                         ),
                       ),
@@ -122,7 +120,7 @@ extension _OrderBodyWidget on _OrderViewState {
                               limit: _limit.value);
                         },
                         fontSize: 16,
-                        buttonElevation: 10,
+                        buttonElevation: 1,
                         buttonRadius: textFieldBorderRadius,
                         pageTotal: pagination.totalPage,
                         pageInit: _curentPage.value,
@@ -172,13 +170,13 @@ extension _OrderBodyWidget on _OrderViewState {
   TableRow _buildRowTitle() {
     return TableRow(
       children: _listTitleTable
-          .map((e) => Text(
-                e,
-                textAlign: TextAlign.center,
-                style: context.bodyMedium!.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: context.bodyMedium!.color!.withOpacity(0.8)),
-              ))
+          .map(
+            (e) => Text(
+              e,
+              textAlign: TextAlign.center,
+              style: context.bodyMedium!.copyWith(fontWeight: FontWeight.w900),
+            ),
+          )
           .toList(),
     );
   }
@@ -188,7 +186,7 @@ extension _OrderBodyWidget on _OrderViewState {
       decoration: BoxDecoration(
         color: index.isEven
             ? Colors.transparent
-            : context.colorScheme.primary.withOpacity(0.05),
+            : context.colorScheme.inversePrimary.withOpacity(0.2),
       ),
       children: <Widget>[
         Container(
@@ -288,7 +286,7 @@ extension _OrderBodyWidget on _OrderViewState {
               );
             },
             icon: Icons.edit,
-            color: Colors.yellow.shade700,
+            color: Colors.orange,
             tooltip: 'Sửa đơn hàng',
           ),
         ),

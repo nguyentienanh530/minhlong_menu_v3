@@ -73,23 +73,21 @@ class CommonTextField extends StatelessWidget {
             // isDense: true,
             focusedErrorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(textFieldBorderRadius).r,
-                borderSide: const BorderSide(color: Colors.red)),
+                borderSide: BorderSide(color: context.colorScheme.error)),
             errorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(textFieldBorderRadius).r,
-                borderSide: const BorderSide(color: Colors.red)),
+                borderSide: BorderSide(color: context.colorScheme.error)),
             enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(textFieldBorderRadius).r,
-                borderSide: BorderSide(
-                    color: context.colorScheme.onSurface.withOpacity(0.2))),
+                borderSide: const BorderSide()),
             disabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(textFieldBorderRadius).r,
                 borderSide: const BorderSide(color: Colors.white54)),
-            suffixIcon: suffixIcon,
-            prefixIcon: prefixIcon,
             focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(textFieldBorderRadius).r,
-                borderSide: BorderSide(
-                    color: context.colorScheme.primary.withOpacity(0.5))),
+                borderSide: BorderSide(color: context.colorScheme.primary)),
+            suffixIcon: suffixIcon,
+            prefixIcon: prefixIcon,
             errorText: errorText,
             contentPadding:
                 const EdgeInsets.symmetric(horizontal: 16, vertical: 16).r,
@@ -101,8 +99,7 @@ class CommonTextField extends StatelessWidget {
             hintStyle: hintStyle ??
                 context.bodyMedium!.copyWith(
                     color: context.bodyMedium!.color!.withOpacity(0.5)),
-            labelStyle: labelStyle ??
-                context.bodyMedium!.copyWith(color: Colors.white)),
+            labelStyle: labelStyle ?? context.bodyMedium),
         onChanged: onChanged);
   }
 }

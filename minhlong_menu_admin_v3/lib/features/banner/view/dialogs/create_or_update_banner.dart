@@ -96,7 +96,9 @@ class _CreateOrUpdateBannerState extends State<CreateOrUpdateBanner> {
             child: Column(
               children: [
                 Text(
-                  _type == ScreenType.create ? 'Thêm Banner' : 'Sửa Banner',
+                  _type == ScreenType.create
+                      ? 'Thêm Banner'.toUpperCase()
+                      : 'Sửa Banner'.toUpperCase(),
                   style: context.bodyMedium!.copyWith(
                     color: context.bodyMedium!.color!.withOpacity(0.5),
                     fontWeight: FontWeight.w700,
@@ -167,16 +169,15 @@ class _CreateOrUpdateBannerState extends State<CreateOrUpdateBanner> {
   }
 
   _buildCategoryImageWidget() {
-    return InkWell(
-      borderRadius: BorderRadius.circular(defaultBorderRadius).r,
-      onTap: () async => await Ultils.pickImage().then((value) {
-        if (value != null) {
-          _imageFile.value = value;
-        }
-      }),
-      child: Card(
-        elevation: 4,
-        shadowColor: Colors.white54,
+    return Card(
+      elevation: 1,
+      surfaceTintColor: context.colorScheme.surfaceTint,
+      child: InkWell(
+        onTap: () async => await Ultils.pickImage().then((value) {
+          if (value != null) {
+            _imageFile.value = value;
+          }
+        }),
         child: Container(
           clipBehavior: Clip.antiAlias,
           height: 250,
@@ -221,22 +222,20 @@ class _CreateOrUpdateBannerState extends State<CreateOrUpdateBanner> {
   }
 
   _buildButton() {
-    return InkWell(
-      onTap: () {
+    return ElevatedButton(
+      onPressed: () {
         _handleCreateOrUpdateCategory();
       },
-      child: Container(
-        height: 35,
-        width: 200.h,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8).r,
-          color: context.colorScheme.primary,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: context.colorScheme.primary,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(defaultBorderRadius),
         ),
-        child: Text(
-          _type == ScreenType.create ? 'Thêm' : 'Cập nhật',
-          style: context.bodyMedium!.copyWith(color: Colors.white),
-        ),
+        minimumSize: const Size(200, 45),
+      ),
+      child: Text(
+        _type == ScreenType.create ? 'Thêm' : 'Cập nhật',
+        style: context.bodyMedium!.copyWith(color: Colors.white),
       ),
     );
   }

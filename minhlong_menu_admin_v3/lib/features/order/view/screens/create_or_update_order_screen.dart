@@ -14,7 +14,6 @@ import 'package:minhlong_menu_admin_v3/features/dinner_table/data/model/table_it
 import 'package:minhlong_menu_admin_v3/features/order/data/dto/status_dto.dart';
 import 'package:minhlong_menu_admin_v3/features/order/data/model/food_order_model.dart';
 import 'package:minhlong_menu_admin_v3/features/order/data/model/order_item.dart';
-
 import '../../../../common/dialog/app_dialog.dart';
 import '../../../../common/widget/common_text_field.dart';
 import '../../../../common/widget/error_build_image.dart';
@@ -91,23 +90,35 @@ class _CreateOrUpdateOrderViewState extends State<CreateOrUpdateOrderView> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    _searchController.dispose();
+    _overlayShown = false;
+    _overlayShown = false;
+    _order.dispose();
+    _table.dispose();
+    _status.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    print('order: ${widget.order}');
     return Scaffold(
       appBar: AppBar(
         backgroundColor: context.colorScheme.primary,
-        foregroundColor: Colors.white,
         centerTitle: true,
         leading: IconButton(
             onPressed: () => context.pop(_isUpdated),
             icon: const Icon(
               Icons.arrow_back,
+              color: Colors.white,
             )),
         title: Text(
             _typeScreen == ScreenType.create
                 ? 'Tạo đơn'
                 : 'Sửa đơn #${widget.order!.id}',
-            style: context.titleStyleLarge),
+            style: context.titleStyleLarge!.copyWith(
+              color: Colors.white,
+            )),
       ),
       body: GestureDetector(
         onTap: () {
@@ -247,14 +258,14 @@ class _CreateOrUpdateOrderViewState extends State<CreateOrUpdateOrderView> {
                 .read<SearchFoodBloc>()
                 .add(SearchFoodStarted(query: _searchController.text));
           },
-          prefixIcon: Icon(Icons.search, color: Colors.white.withOpacity(0.5)),
+          prefixIcon: const Icon(Icons.search),
           suffixIcon: InkWell(
             onTap: () {
               _searchController.clear();
               context.read<SearchFoodBloc>().add(SearchFoodReset());
             },
-            child: SizedBox(
-              child: Icon(Icons.clear, color: Colors.white.withOpacity(0.5)),
+            child: const SizedBox(
+              child: Icon(Icons.clear),
             ),
           ),
         ),
@@ -280,8 +291,8 @@ class _CreateOrUpdateOrderViewState extends State<CreateOrUpdateOrderView> {
             // adding transparent to apply custom border
             color: Colors.transparent,
             child: Card(
-              elevation: 30,
-              shadowColor: context.bodyMedium!.color!.withOpacity(0.5),
+              elevation: 1,
+              surfaceTintColor: context.colorScheme.surfaceTint,
               child: SizedBox(
                 height: 300,
                 child: Padding(
@@ -654,7 +665,7 @@ class _CreateOrUpdateOrderViewState extends State<CreateOrUpdateOrderView> {
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
                               color: _order.value.foodOrders.isEmpty
-                                  ? context.colorScheme.shadow
+                                  ? context.colorScheme.inversePrimary
                                   : context.colorScheme.primary,
                               borderRadius: const BorderRadius.all(
                                 Radius.circular(textFieldBorderRadius),

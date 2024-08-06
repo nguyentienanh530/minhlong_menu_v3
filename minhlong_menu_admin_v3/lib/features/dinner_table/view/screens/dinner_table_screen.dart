@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_admin_v3/core/extensions.dart';
 import 'package:minhlong_menu_admin_v3/features/dinner_table/data/model/table_model.dart';
 import 'package:minhlong_menu_admin_v3/features/dinner_table/view/dialogs/create_or_update_dinner_table_dialog.dart';
-
 import '../../../../common/dialog/app_dialog.dart';
 import '../../../../common/snackbar/overlay_snackbar.dart';
 import '../../../../common/widget/common_icon_button.dart';
@@ -18,7 +17,6 @@ import '../../../order/cubit/pagination_cubit.dart';
 import '../../bloc/dinner_table_bloc.dart';
 import '../../data/model/table_item.dart';
 import '../../data/repositories/table_repository.dart';
-
 part '../widgets/_body_dinner_table.dart';
 part '../widgets/_header_dinner_table.dart';
 

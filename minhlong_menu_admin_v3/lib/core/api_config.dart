@@ -1,7 +1,7 @@
 class ApiConfig {
   ApiConfig._();
 
-  static const String host = "http://192.168.1.96:8080";
+  static const String host = "http://192.168.1.96:8000";
   static const String baseUrl = "$host/api/v1";
 
   // static const String  = "http://192.168.1.196:80";
@@ -9,7 +9,7 @@ class ApiConfig {
   static const Duration connectionTimeout = Duration(milliseconds: 15000);
 
   //===== Socket =====
-  static const String socketbaseUrl = 'ws://192.168.1.96:8080';
+  static const String socketbaseUrl = 'ws://192.168.1.96:8000';
   static const String tablesSocketUrl = '$socketbaseUrl/tables';
   static const String ordersSocketUrl = '$socketbaseUrl/orders';
 

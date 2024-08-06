@@ -152,11 +152,10 @@ extension _FoodHeaderWidget on _FoodViewState {
           offset: Offset(0, size.height + 8),
           link: _layerLink,
           child: Material(
-            // adding transparent to apply custom border
             color: Colors.transparent,
             child: Card(
-              elevation: 30,
-              shadowColor: Colors.white54,
+              elevation: 1,
+              surfaceTintColor: context.colorScheme.surfaceTint,
               child: SizedBox(
                 height: 300,
                 child: Padding(

@@ -42,7 +42,6 @@ services:
   minhlong-menu:
     build: .
     image: minhlong-menu/app:latest
-    # image: vania/app:latest
     container_name: minhlong-menu
     restart: always
     volumes:

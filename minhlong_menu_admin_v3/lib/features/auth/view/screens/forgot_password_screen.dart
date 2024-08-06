@@ -88,8 +88,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(defaultBorderRadius)),
                 margin: const EdgeInsets.all(20),
-                color: context.colorScheme.surface.withOpacity(0.4),
-                elevation: 30,
+                surfaceTintColor: context.colorScheme.surfaceTint,
+                elevation: 1,
                 child: FittedBox(
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 14),
@@ -100,18 +100,16 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         children: [
                           const SizedBox(height: 66),
                           SizedBox(
-                              height: 96,
-                              child: Column(
-                                children: [
-                                  _buildForgotPasswordWidget(),
-                                  Text(
-                                      'Nhập số điện thoại của bạn để đổi mật khẩu',
-                                      style: context.bodyMedium!.copyWith(
-                                          fontSize: 10,
-                                          color: context.bodyMedium!.color!
-                                              .withOpacity(0.5)))
-                                ],
-                              )),
+                            height: 96,
+                            child: Column(
+                              children: [
+                                _buildForgotPasswordWidget(),
+                                Text(
+                                    'Nhập số điện thoại của bạn để đổi mật khẩu',
+                                    style: context.bodySmall)
+                              ],
+                            ),
+                          ),
                           30.verticalSpace,
                           _buildPhoneField(),
                           36.verticalSpace,
@@ -180,7 +178,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         width: 360,
         child: CommonTextField(
           controller: _phoneController,
-          style: context.bodyMedium!,
+          // style: context.bodyMedium!,
           onChanged: (p0) {},
           keyboardType: TextInputType.phone,
           maxLines: 1,
@@ -288,8 +286,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   Widget _buildForgotPasswordWidget() {
     return Text(AppString.forgotPassword.removeLast().toUpperCase(),
-        style: context.bodyMedium!.copyWith(
-            color: Colors.white, fontSize: 36, fontWeight: FontWeight.w700));
+        style: context.bodyMedium!
+            .copyWith(fontSize: 36, fontWeight: FontWeight.w700));
   }
 
   Widget _buildHaveAccount() {

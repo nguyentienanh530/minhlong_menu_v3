@@ -46,8 +46,11 @@ extension _FoodBodyWidget on _DinnerTableViewState {
               }
               if (state is DinnerTableFailure) {
                 Navigator.pop(context);
-                OverlaySnackbar.show(context, state.message,
-                    type: OverlaySnackbarType.error);
+                OverlaySnackbar.show(
+                  context,
+                  state.message,
+                  type: OverlaySnackbarType.error,
+                );
               }
             },
             child: Builder(builder: (context) {
@@ -111,10 +114,7 @@ extension _FoodBodyWidget on _DinnerTableViewState {
                               valueListenable: _limit,
                               builder: (context, limit, child) => Text(
                                 'Hiển thị 1 đến $limit trong số ${pagination.totalItem} món',
-                                style: context.bodyMedium!.copyWith(
-                                  color: context.bodyMedium!.color!
-                                      .withOpacity(0.5),
-                                ),
+                                style: context.bodyMedium,
                               ),
                             );
                           },
@@ -135,7 +135,7 @@ extension _FoodBodyWidget on _DinnerTableViewState {
                               limit: _limit.value, page: pageNumber);
                         },
                         fontSize: 16,
-                        buttonElevation: 10,
+                        buttonElevation: 1,
                         buttonRadius: textFieldBorderRadius,
                         pageTotal: pagination.totalPage,
                         pageInit: _curentPage.value,
@@ -242,7 +242,7 @@ extension _FoodBodyWidget on _DinnerTableViewState {
                       mode: ScreenType.update, tableItem: tableItem);
                 },
                 icon: Icons.edit,
-                color: Colors.yellow.shade700,
+                color: Colors.orange,
                 tooltip: 'Chỉnh sửa',
               ),
             ),

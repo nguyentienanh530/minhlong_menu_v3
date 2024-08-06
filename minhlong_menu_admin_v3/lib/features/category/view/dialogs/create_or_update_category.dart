@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,7 +9,6 @@ import 'package:minhlong_menu_admin_v3/core/api_config.dart';
 import 'package:minhlong_menu_admin_v3/core/app_key.dart';
 import 'package:minhlong_menu_admin_v3/core/utils.dart';
 import 'package:minhlong_menu_admin_v3/features/category/data/model/category_item.dart';
-
 import '../../../../common/dialog/app_dialog.dart';
 import '../../../../common/snackbar/overlay_snackbar.dart';
 import '../../../../core/app_const.dart';
@@ -100,7 +98,9 @@ class _CreateOrUpdateCategoryState extends State<CreateOrUpdateCategory> {
             child: Column(
               children: [
                 Text(
-                  _type == ScreenType.create ? 'Thêm danh mục' : 'Sửa danh mục',
+                  _type == ScreenType.create
+                      ? 'Thêm danh mục'.toUpperCase()
+                      : 'Sửa danh mục'.toUpperCase(),
                   style: context.bodyMedium!.copyWith(
                     color: context.bodyMedium!.color!.withOpacity(0.5),
                     fontWeight: FontWeight.w700,
@@ -124,28 +124,28 @@ class _CreateOrUpdateCategoryState extends State<CreateOrUpdateCategory> {
   }
 
   _buildCategoryImageWidget() {
-    return InkWell(
-      borderRadius: BorderRadius.circular(defaultBorderRadius).r,
-      onTap: () async => await Ultils.pickImage().then((value) {
-        if (value != null) {
-          _imageFile.value = value;
-        }
-      }),
-      child: Card(
-        elevation: 4,
-        shadowColor: Colors.white54,
-        child: Container(
-          clipBehavior: Clip.antiAlias,
-          height: 150,
-          width: 150,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(defaultBorderRadius).r,
-          ),
+    return Card(
+      elevation: 1,
+      surfaceTintColor: context.colorScheme.surfaceTint,
+      child: InkWell(
+        onTap: () async => await Ultils.pickImage().then((value) {
+          if (value != null) {
+            _imageFile.value = value;
+          }
+        }),
+        child: SizedBox(
+          height: 150.h,
+          width: 150.h,
           child: ValueListenableBuilder(
             valueListenable: _imageFile,
             builder: (context, value, child) {
               return value.path.isNotEmpty
-                  ? Image.file(value, fit: BoxFit.cover)
+                  ? Image.file(
+                      value,
+                      fit: BoxFit.cover,
+                      height: 150.h,
+                      width: 150.h,
+                    )
                   : _image.isEmpty
                       ? Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -169,6 +169,8 @@ class _CreateOrUpdateCategoryState extends State<CreateOrUpdateCategory> {
                           imageUrl: '${ApiConfig.host}$_image',
                           errorWidget: errorBuilderForImage,
                           fit: BoxFit.cover,
+                          height: 150.h,
+                          width: 150.h,
                         );
             },
           ),
@@ -218,22 +220,20 @@ class _CreateOrUpdateCategoryState extends State<CreateOrUpdateCategory> {
   }
 
   _buildButton() {
-    return InkWell(
-      onTap: () {
+    return ElevatedButton(
+      onPressed: () {
         _handleCreateOrUpdateCategory();
       },
-      child: Container(
-        height: 35,
-        width: 200.h,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8).r,
-          color: context.colorScheme.primary,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: context.colorScheme.primary,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(defaultBorderRadius),
         ),
-        child: Text(
-          _type == ScreenType.create ? 'Thêm' : 'Cập nhật',
-          style: context.bodyMedium!.copyWith(color: Colors.white),
-        ),
+        minimumSize: const Size(200, 45),
+      ),
+      child: Text(
+        _type == ScreenType.create ? 'Thêm' : 'Cập nhật',
+        style: context.bodyMedium!.copyWith(color: Colors.white),
       ),
     );
   }

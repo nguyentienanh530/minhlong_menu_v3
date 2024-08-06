@@ -18,7 +18,6 @@ import 'package:minhlong_menu_admin_v3/features/order/data/repositories/order_re
 import 'package:minhlong_menu_admin_v3/features/user/cubit/user_cubit.dart';
 import 'package:minhlong_menu_admin_v3/features/user/data/model/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../../../core/app_const.dart';
 import '../../../../core/utils.dart';
 import '../../../auth/bloc/auth_bloc.dart';
@@ -207,7 +206,7 @@ class _DashboardViewState extends State<DashboardView>
   Widget _barChartRevenueWidget() {
     return Card(
       elevation: 1,
-      shadowColor: context.colorScheme.onPrimary.withOpacity(0.5),
+      surfaceTintColor: context.colorScheme.surfaceTint,
       child: Builder(builder: (context) {
         var dataChartState = context.watch<DataChartBloc>().state;
         return (switch (dataChartState) {
@@ -305,7 +304,7 @@ class _DashboardViewState extends State<DashboardView>
           ErrWidget(error: bestSellingFoodState.message),
         BestSellingFoodFetchSuccess() => Card(
             elevation: 1,
-            shadowColor: context.colorScheme.onPrimary.withOpacity(0.5),
+            surfaceTintColor: context.colorScheme.surfaceTint,
             child: Container(
               padding: const EdgeInsets.all(defaultPadding),
               child: Column(
@@ -341,7 +340,7 @@ class _DashboardViewState extends State<DashboardView>
           ErrWidget(error: dailyRevenueState.message),
         DailyRevenueFetchSuccess() => Card(
             elevation: 1,
-            shadowColor: context.colorScheme.onPrimary.withOpacity(0.5),
+            surfaceTintColor: context.colorScheme.surfaceTint,
             child: Container(
               padding: const EdgeInsets.all(defaultPadding),
               child: Column(

@@ -33,8 +33,8 @@ extension _LoginBody on _LoginScreenState {
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(defaultBorderRadius)),
       margin: const EdgeInsets.all(20),
-      color: context.colorScheme.surface.withOpacity(0.4),
-      elevation: 30,
+      surfaceTintColor: context.colorScheme.surfaceTint,
+      elevation: 1,
       child: FittedBox(
         child: Container(
           constraints: const BoxConstraints(maxWidth: 360),
