@@ -25,7 +25,7 @@ class AppSnackbar {
             ],
           ),
           backgroundColor: type == AppSnackbarType.success
-              ? context.colorScheme.primary
+              ? Colors.green
               : context.colorScheme.error,
           duration: const Duration(seconds: 3),
         ),

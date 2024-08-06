@@ -1,11 +1,9 @@
 import 'dart:io';
-
 import 'package:minhlong_menu_backend_v3/app/http/modules/v1/banner/models/banners.dart';
 import 'package:minhlong_menu_backend_v3/app/http/modules/v1/banner/repositories/banner_repo.dart';
 import 'package:minhlong_menu_backend_v3/app/http/modules/v1/category/models/categories.dart';
 import 'package:minhlong_menu_backend_v3/app/http/modules/v1/food/repositories/food_repo.dart';
 import 'package:vania/vania.dart';
-
 import '../../../../common/app_response.dart';
 import '../../../../common/const_res.dart';
 import '../../category/repositories/category_repo.dart';
@@ -47,6 +45,7 @@ class HomeClientController extends Controller {
         );
       }
     } catch (e) {
+      print('get home data error: $e');
       return AppResponse().error(
         statusCode: HttpStatus.internalServerError,
         message: 'connection error',

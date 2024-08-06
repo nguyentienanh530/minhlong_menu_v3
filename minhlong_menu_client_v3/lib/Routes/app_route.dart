@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_client_v3/common/widget/no_product.dart';
 import 'package:minhlong_menu_client_v3/common/widget/success_screen.dart';
-
 import 'package:minhlong_menu_client_v3/features/auth/view/screens/forgot_password_screen.dart';
 import 'package:minhlong_menu_client_v3/features/auth/view/screens/login_screen.dart';
 import 'package:minhlong_menu_client_v3/features/cart/view/screen/cart_screen.dart';
@@ -17,7 +16,6 @@ import 'package:minhlong_menu_client_v3/features/user/view/screen/change_passwor
 import 'package:minhlong_menu_client_v3/features/user/view/screen/edit_profile_screen.dart';
 import 'package:minhlong_menu_client_v3/features/user/view/screen/profile_screen.dart';
 import 'package:minhlong_menu_client_v3/features/table/view/screen/table_screen.dart';
-
 import '../features/auth/bloc/auth_bloc.dart';
 import '../features/food/view/screen/food_detail_screen.dart';
 import '../features/user/data/model/user_model.dart';

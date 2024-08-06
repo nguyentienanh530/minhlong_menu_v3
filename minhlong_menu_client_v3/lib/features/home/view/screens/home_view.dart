@@ -64,6 +64,10 @@ class _HomeViewState extends State<HomeView>
     _searchText.dispose();
   }
 
+  void _onRefresh() {
+    context.read<HomeBloc>().add(HomeFetched());
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -81,8 +85,8 @@ class _HomeViewState extends State<HomeView>
           }
           if (state is AddToCartFailure) {
             AppDialog.showErrorDialog(context,
-                description: state.errorMessage,
-                title: 'Thêm món thất bại',
+                description: "Ấn 'Chọn bàn' để đi đến chọn bàn",
+                title: 'Chưa chọn bàn'.toUpperCase(),
                 haveCancelButton: true,
                 cancelText: 'Thoát',
                 confirmText: 'Chọn bàn', onPressedComfirm: () {
@@ -96,101 +100,105 @@ class _HomeViewState extends State<HomeView>
             return (switch (state) {
               HomeFetchInProgress() => const Loading(),
               HomeFetchFailure() => ErrorScreen(errorMessage: state.message),
-              HomeFetchSuccess() => CustomScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  slivers: [
-                    SliverAppBar(
-                      stretch: true,
-                      pinned: true,
-                      titleSpacing: 10,
-                      toolbarHeight: 80.h,
-                      leadingWidth: 0,
-                      title: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          children: [
-                            Card(
-                              elevation: 4,
-                              shape: const CircleBorder(),
-                              child: Container(
-                                width: 40,
-                                height: 40,
-                                clipBehavior: Clip.antiAlias,
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                ),
-                                child: ClipRRect(
-                                  child: CachedNetworkImage(
-                                      imageUrl:
-                                          '${ApiConfig.host}${user.image}',
-                                      placeholder: (context, url) =>
-                                          const Loading(),
-                                      errorWidget: errorBuilderForImage,
-                                      fit: BoxFit.cover),
+              HomeFetchSuccess() => RefreshIndicator(
+                  onRefresh: () async => _onRefresh(),
+                  child: CustomScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    slivers: [
+                      SliverAppBar(
+                        stretch: true,
+                        pinned: true,
+                        titleSpacing: 10,
+                        toolbarHeight: 80.h,
+                        leadingWidth: 0,
+                        title: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              Card(
+                                elevation: 4,
+                                shape: const CircleBorder(),
+                                child: Container(
+                                  width: 40,
+                                  height: 40,
+                                  clipBehavior: Clip.antiAlias,
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: ClipRRect(
+                                    child: CachedNetworkImage(
+                                        imageUrl:
+                                            '${ApiConfig.host}${user.image}',
+                                        placeholder: (context, url) =>
+                                            const Loading(),
+                                        errorWidget: errorBuilderForImage,
+                                        fit: BoxFit.cover),
+                                  ),
                                 ),
                               ),
-                            ),
-                            10.horizontalSpace,
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Xin chào!',
-                                  style: context.bodySmall!.copyWith(
-                                      color: context.bodySmall!.color!
-                                          .withOpacity(0.5)),
-                                ),
-                                Text(user.fullName,
-                                    style: context.bodyLarge!
-                                        .copyWith(fontWeight: FontWeight.w900)),
-                              ],
-                            ),
+                              10.horizontalSpace,
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Xin chào!',
+                                    style: context.bodySmall!.copyWith(
+                                        color: context.bodySmall!.color!
+                                            .withOpacity(0.5)),
+                                  ),
+                                  Text(user.fullName,
+                                      style: context.bodyLarge!.copyWith(
+                                          fontWeight: FontWeight.w900)),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        bottom: PreferredSize(
+                            preferredSize: const Size(double.infinity, 40),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: defaultPadding / 2),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  5.horizontalSpace,
+                                  Expanded(child: _buildSearchWidget()),
+                                  10.horizontalSpace,
+                                  _buildIconTableWidget(tableState),
+                                  5.horizontalSpace
+                                ],
+                              ),
+                            )),
+                        actions: [
+                          _iconActionButtonAppBar(
+                              icon: Icons.tune,
+                              onPressed: () => context.push(AppRoute.profile)),
+                          5.horizontalSpace
+                        ],
+                      ),
+                      SliverToBoxAdapter(
+                        child: AspectRatio(
+                            aspectRatio: 16 / 9,
+                            child: _bannerHome(state.homeModel.banners)),
+                      ),
+                      SliverToBoxAdapter(
+                        child: Column(
+                          children: [
+                            30.verticalSpace,
+                            categoryListView(state.homeModel.categories),
+                            10.verticalSpace,
+                            _buildListNewFood(state.homeModel.newFoods,
+                                cartState.order, tableState),
+                            20.verticalSpace,
+                            _popularGridView(state.homeModel.popularFoods,
+                                cartState.order, tableState),
                           ],
                         ),
                       ),
-                      bottom: PreferredSize(
-                          preferredSize: const Size(double.infinity, 40),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: defaultPadding / 2),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                5.horizontalSpace,
-                                Expanded(child: _buildSearchWidget()),
-                                10.horizontalSpace,
-                                _buildIconTableWidget(tableState),
-                                5.horizontalSpace
-                              ],
-                            ),
-                          )),
-                      actions: [
-                        _iconActionButtonAppBar(
-                            icon: Icons.tune,
-                            onPressed: () => context.push(AppRoute.profile)),
-                        5.horizontalSpace
-                      ],
-                    ),
-                    SliverToBoxAdapter(
-                      child: AspectRatio(
-                          aspectRatio: 16 / 9,
-                          child: _bannerHome(state.homeModel.banners)),
-                    ),
-                    SliverToBoxAdapter(
-                      child: Column(
-                        children: [
-                          30.verticalSpace,
-                          categoryListView(state.homeModel.categories),
-                          10.verticalSpace,
-                          _buildListNewFood(state.homeModel.newFoods,
-                              cartState.order, tableState),
-                          20.verticalSpace,
-                          _popularGridView(state.homeModel.popularFoods,
-                              cartState.order, tableState),
-                        ],
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               _ => Container(),
             });

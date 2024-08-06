@@ -162,7 +162,6 @@ class _AppContentState extends State<AppContent> {
     context.read<AuthBloc>().add(AuthAuthenticateStarted());
     context.read<ThemeCubit>().changeTheme(widget.theme!);
     context.read<SchemeCubit>().changeScheme(widget.scheme!);
-
     super.initState();
   }
 
@@ -190,14 +189,16 @@ class _AppContentState extends State<AppContent> {
   @override
   Widget build(BuildContext context) {
     final state = context.watch<AuthBloc>().state;
-    var themeState = context.watch<ThemeCubit>().state;
-    var schemeState = context.watch<SchemeCubit>().state;
+
     if (state is AuthInitial) {
       return Container();
     }
     if (state is AuthAuthenticateSuccess) {
       _handleGetUser(state.accessToken);
     }
+
+    var themeState = context.watch<ThemeCubit>().state;
+    var schemeState = context.watch<SchemeCubit>().state;
 
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) async {

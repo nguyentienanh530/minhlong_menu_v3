@@ -34,9 +34,9 @@ class AppDialog {
           ),
           title: Column(
             children: [
-              Icon(
+              const Icon(
                 Icons.warning_rounded,
-                color: context.colorScheme.error,
+                color: Colors.red,
                 size: 80,
               ),
               16.verticalSpace,
