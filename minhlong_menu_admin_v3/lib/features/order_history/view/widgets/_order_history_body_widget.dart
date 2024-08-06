@@ -4,6 +4,7 @@ extension _OrderBodyWidget on _OrderViewState {
   Widget _orderBodyWidget() {
     return Container(
       padding: const EdgeInsets.all(5).r,
+      clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(defaultBorderRadius).r,
       ),
@@ -186,8 +187,8 @@ extension _OrderBodyWidget on _OrderViewState {
     return TableRow(
       decoration: BoxDecoration(
         color: index.isEven
-            ? context.colorScheme.surface
-            : context.colorScheme.onSecondaryContainer.withOpacity(0.1),
+            ? Colors.transparent
+            : context.colorScheme.primary.withOpacity(0.05),
       ),
       children: <Widget>[
         Container(

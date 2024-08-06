@@ -29,7 +29,7 @@ class AppAsset {
   static const String food = 'assets/svg/food.svg';
   static const String category = 'assets/svg/category.svg';
   static const String banner = 'assets/svg/banner.svg';
-  static const String logo = 'assets/image/logo.png';
+  static const String logo = 'assets/image/logo.svg';
   static const String user = 'assets/svg/user.svg';
   static const String warningAnimation = 'assets/animations/warning.json';
   static const String successAnimation = 'assets/animations/success.json';

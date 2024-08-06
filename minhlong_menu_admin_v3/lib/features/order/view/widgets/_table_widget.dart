@@ -69,6 +69,7 @@ extension _TableWidget on _OrderViewState {
                   ),
                 ),
                 child: InkWell(
+                  borderRadius: BorderRadius.circular(textFieldBorderRadius),
                   hoverColor: Colors.transparent,
                   onTap: () {
                     context.read<TableIndexSelectedCubit>().changeIndex(e.id);

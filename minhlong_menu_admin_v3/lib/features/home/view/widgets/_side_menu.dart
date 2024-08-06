@@ -26,9 +26,11 @@ extension _BuildSideMenuWidget on HomeViewState {
                 maxHeight: 100.h,
                 maxWidth: 100.h,
               ),
-              child: Image.asset(
+              child: SvgPicture.asset(
                 AppAsset.logo,
                 fit: BoxFit.cover,
+                colorFilter: ColorFilter.mode(
+                    context.colorScheme.primary, BlendMode.srcIn),
               ),
             ),
             Divider(

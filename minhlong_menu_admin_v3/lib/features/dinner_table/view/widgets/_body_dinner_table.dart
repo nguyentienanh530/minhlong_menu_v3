@@ -190,8 +190,8 @@ extension _FoodBodyWidget on _DinnerTableViewState {
     return TableRow(
       decoration: BoxDecoration(
         color: index.isEven
-            ? context.colorScheme.surface
-            : context.colorScheme.onSecondaryContainer.withOpacity(0.1),
+            ? Colors.transparent
+            : context.colorScheme.primary.withOpacity(0.05),
       ),
       children: <Widget>[
         Container(

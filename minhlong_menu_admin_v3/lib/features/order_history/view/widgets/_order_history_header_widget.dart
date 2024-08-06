@@ -95,8 +95,12 @@ extension _OrderHeaderWidget on _OrderViewState {
         builder: (context, _) {
           return Row(
             children: [
-              const IconButton(
-                  onPressed: null, icon: Icon(Icons.calendar_month)),
+              IconButton(
+                  onPressed: null,
+                  icon: Icon(
+                    Icons.calendar_month,
+                    color: context.colorScheme.primary,
+                  )),
               Container(
                   height: 35,
                   padding:
