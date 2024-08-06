@@ -1,10 +1,59 @@
-version: '3.9'
+# version: '3.1'
 
 services:
-  vania:
+  #   mysql9-container:
+  #     image: mysql:9.0.1
+  #     container_name: mysql9-container
+  #     restart: always
+  #     environment:
+  #       MYSQL_ROOT_PASSWORD: Minhlong@123
+  #       MYSQL_DATABASE: menu_db
+  #       MYSQL_USER: nguyentienanh
+  #       MYSQL_PASSWORD: Minhlong@123
+  #     ports:
+  #       - "3336:3306"
+  #     volumes:
+  #       - mysql_data:/var/lib/mysql
+  #     networks:
+  #       - minhlong_menu_network
+  mysql:
+    image: mysql:9.0.1
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: Minhlong@123
+      MYSQL_DATABASE: menu_db
+      MYSQL_USER: nguyentienanh
+      MYSQL_PASSWORD: Minhlong@123
+    ports:
+      - "3336:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - minhlong_menu_network
+
+  phpmyadmin-container:
+    image: phpmyadmin:5.2
+    container_name: phpmyadmin-container
+    restart: always
+    ports:
+      - 8080:80
+    depends_on:
+      # - mysql9-container
+      - mysql
+    environment:
+      # PMA_HOST: mysql9-container
+      PMA_HOST: mysql
+      # PMA_PORT: 3306
+      # PMA_USER: root
+      # PMA_PASSWORD: Minhlong@123
+    networks:
+      - minhlong_menu_network
+
+  minhlong-menu-container:
     build: .
     image: vania/app:latest
-    container_name: vania
+    container_name: minhlong-menu-container
     restart: always
     volumes:
       - app:/app
@@ -15,3 +64,16 @@ services:
 
 volumes:
   app:
+  mysql_data:
+
+
+networks:
+  minhlong_menu_network:
+    name: minhlong_menu_network
+    driver: bridge
+    external: true
+    # ipam:
+    #   config:
+    #     - subnet: 244.178.44.111/24
+    #       gateway: 244.178.44.111
+

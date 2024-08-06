@@ -192,7 +192,8 @@ class AppDialog {
                           fit: BoxFit.scaleDown,
                           child: Text(
                             confirmText ?? 'Xác nhận',
-                            style: context.bodyMedium,
+                            style: context.bodyMedium!
+                                .copyWith(color: Colors.white),
                           ),
                         ),
                       ),

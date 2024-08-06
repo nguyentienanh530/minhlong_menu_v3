@@ -121,11 +121,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       10.verticalSpace,
                       Text(
-                        'Còn ${Ultils.subcriptionEndDate(user.subscriptionEndDate)} ngày',
+                        'Còn ${Ultils.subcriptionEndDate(user.expiredAt)} ngày',
                         style: context.bodySmall!.copyWith(
-                          color: Ultils.subcriptionEndDate(
-                                      user.subscriptionEndDate) <
-                                  30
+                          color: Ultils.subcriptionEndDate(user.expiredAt) < 30
                               ? Colors.red
                               : context.bodyLarge!.color!.withOpacity(0.5),
                         ),
@@ -149,7 +147,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         const Icon(Icons.calendar_month_outlined),
                         5.horizontalSpace,
                         Text(
-                          Ultils().formatDateToString(user.subscriptionEndDate),
+                          Ultils().formatDateToString(user.expiredAt),
                           style: context.bodySmall,
                         ),
                       ],

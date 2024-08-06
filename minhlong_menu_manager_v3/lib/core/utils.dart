@@ -160,6 +160,6 @@ class Ultils {
     DateTime targetDate = DateTime.parse(dateTime);
     DateTime now = DateTime.now();
     int daysRemaining = targetDate.difference(now).inDays;
-    return daysRemaining;
+    return daysRemaining + 1;
   }
 }

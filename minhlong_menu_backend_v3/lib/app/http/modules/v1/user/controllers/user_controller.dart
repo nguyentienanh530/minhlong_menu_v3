@@ -33,6 +33,7 @@ class UserController extends Controller {
       var startIndex = (page! - 1) * limit!;
 
       var users = await userRepo.listUser(limit: limit, startIndex: startIndex);
+      print('users: $users');
       return AppResponse().ok(statusCode: HttpStatus.ok, data: {
         'pagination': {
           'page': page,
@@ -57,7 +58,7 @@ class UserController extends Controller {
     request.validate({
       'full_name': 'required|string',
       'phone_number': 'required|numeric',
-      'image': 'required|string',
+      // 'image': 'required|string',
     });
 
     String? fullName = request.input('full_name');
@@ -66,14 +67,19 @@ class UserController extends Controller {
     int? subPhoneNumber = request.input('sub_phone_number');
     String? email = request.input('email');
     String? address = request.input('address');
-    String? subscriptionEndDate = request.input('subscription_end_date');
+    String? expiredAt = request.input('expired_at');
 
     try {
       if (userID == null || userID == -1) {
         return AppResponse().error(
             statusCode: HttpStatus.unauthorized, message: 'unauthorized');
       }
-
+      var existUser =
+          await userRepo.findUserByPhoneNumber(phoneNumber: phoneNumber!);
+      if (existUser != null && existUser['id'] != userID) {
+        return AppResponse().error(
+            statusCode: HttpStatus.conflict, message: 'phone number exist');
+      }
       var user = await userRepo.findUser(id: userID);
 
       if (user == null) {
@@ -83,13 +89,12 @@ class UserController extends Controller {
 
       var userUpdateData = {
         'full_name': fullName ?? user['full_name'],
-        'phone_number': phoneNumber ?? user['phone_number'],
+        'phone_number': phoneNumber,
         'image': image ?? user['image'],
         'sub_phone_number': subPhoneNumber ?? user['sub_phone_number'],
         'email': email ?? user['email'],
         'address': address ?? user['address'],
-        'subscription_end_date':
-            subscriptionEndDate ?? user['subscription_end_date']
+        'expired_at': expiredAt ?? user['expired_at']
       };
       await userRepo.updateUser(userID: userID, data: userUpdateData);
 
@@ -135,7 +140,60 @@ class UserController extends Controller {
   }
 
   Future<Response> destroy(int id) async {
-    return Response.json({});
+    try {
+      var user = await userRepo.findUser(id: id);
+      if (user == null) {
+        return AppResponse()
+            .error(statusCode: HttpStatus.notFound, message: 'user not found');
+      }
+
+      await userRepo.deleteUser(id: id);
+      return AppResponse().ok(data: true, statusCode: HttpStatus.ok);
+    } catch (e) {
+      print('delete user error: $e');
+      return AppResponse().error(
+          statusCode: HttpStatus.internalServerError,
+          message: 'connection error');
+    }
+  }
+
+  Future<Response> extendedUser(Request request, int id) async {
+    var params = request.all();
+    try {
+      var user = await userRepo.findUser(id: id);
+      if (user == null) {
+        return AppResponse()
+            .error(statusCode: HttpStatus.notFound, message: 'user not found');
+      }
+      var data = {
+        'extended_at': params['extended_at'] ?? user['extended_at'],
+        'expired_at': params['expired_at'] ?? user['expired_at'],
+      };
+
+      await userRepo.updateUser(userID: id, data: data);
+      return AppResponse().ok(statusCode: HttpStatus.ok, data: true);
+    } catch (e) {
+      print('update password error: $e');
+      return AppResponse().error(
+          statusCode: HttpStatus.internalServerError,
+          message: 'connection error');
+    }
+  }
+
+  Future<Response> searchUser(Request request) async {
+    var params = request.all();
+    try {
+      dynamic users;
+
+      users = await userRepo.searchUser(query: params['query']);
+      print('users: $users');
+      return AppResponse().ok(statusCode: HttpStatus.ok, data: users);
+    } catch (e) {
+      print('search user error: $e');
+      return AppResponse().error(
+          statusCode: HttpStatus.internalServerError,
+          message: 'connection error');
+    }
   }
 }
 

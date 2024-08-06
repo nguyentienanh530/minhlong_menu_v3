@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:minhlong_menu_client_v3/core/app_asset.dart';
 import 'package:minhlong_menu_client_v3/core/extensions.dart';
+import 'package:minhlong_menu_client_v3/features/auth/bloc/auth_bloc.dart';
 
 import '../../core/app_const.dart';
 import '../../core/app_string.dart';
@@ -117,6 +119,7 @@ class AppDialog {
       context: context,
       builder: (context) {
         return AlertDialog(
+          actionsAlignment: MainAxisAlignment.center,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(
               defaultBorderRadius,
@@ -196,6 +199,20 @@ class AppDialog {
               )
             ],
           ),
+          actions: [
+            FilledButton(
+              onPressed: () =>
+                  context.read<AuthBloc>().add(AuthLogoutStarted()),
+              style: const ButtonStyle(
+                  backgroundColor: WidgetStatePropertyAll(Colors.red)),
+              child: Text(
+                'Đăng xuất',
+                style: context.bodyMedium!.copyWith(
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ],
         );
       },
     );

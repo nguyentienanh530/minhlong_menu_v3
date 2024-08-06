@@ -12,7 +12,7 @@ import '../../../../core/app_key.dart';
 import '../../../../core/app_res.dart';
 import '../../../../core/app_string.dart';
 import '../../../../core/app_style.dart';
-import '../../bloc/user_bloc.dart';
+import '../../bloc/user_bloc/user_bloc.dart';
 import '../../data/repositories/user_repository.dart';
 
 class ChangePassword extends StatelessWidget {

@@ -14,7 +14,8 @@ extension _BannerWidget on _HomeViewState {
                   height: double.infinity,
                   width: double.infinity,
                   child: CachedNetworkImage(
-                    imageUrl: '${ApiConfig.host}${banners[index].image}',
+                    imageUrl:
+                        '${ApiConfig.host}${banners.isEmpty ? '' : banners[index].image}',
                     errorWidget: errorBuilderForImage,
                     fit: BoxFit.cover,
                     placeholder: (context, url) => const Loading(),

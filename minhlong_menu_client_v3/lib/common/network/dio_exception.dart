@@ -44,6 +44,8 @@ class DioExceptions implements Exception {
         return error;
       case 404:
         return AppString.notFound;
+      case 409:
+        return error;
       case 422:
         return AppString.duplicateEmail;
       case 500:

@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../auth/data/model/access_token.dart';
-import '../data/model/user_model.dart';
-import '../data/repositories/user_repository.dart';
+import '../../../auth/data/model/access_token.dart';
+import '../../data/model/user_model.dart';
+import '../../data/repositories/user_repository.dart';
 import 'package:meta/meta.dart';
 part 'user_event.dart';
 part 'user_state.dart';

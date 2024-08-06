@@ -64,4 +64,53 @@ class UserRepo {
       return Result.failure(errorMessage);
     }
   }
+
+  Future<Result<bool>> deleteUser({required int id}) async {
+    try {
+      return Result.success(await _userApi.deleteUser(id: id));
+    } on DioException catch (e) {
+      Logger().e('delete user error: $e');
+      final errorMessage = DioExceptions.fromDioError(e).toString();
+      return Result.failure(errorMessage);
+    }
+  }
+
+  Future<Result<bool>> createUser({required UserModel userModel}) async {
+    try {
+      return Result.success(await _userApi.createUser(userModel: userModel));
+    } on DioException catch (e) {
+      Logger().e('create user error: $e');
+      final errorMessage = DioExceptions.fromDioError(e).toString();
+      return Result.failure(errorMessage);
+    }
+  }
+
+  Future<Result<bool>> extendedUser({
+    required int userID,
+    required String extended,
+    required String expired,
+  }) async {
+    try {
+      return Result.success(await _userApi.extenedUser(
+        userID: userID,
+        extended: extended,
+        expired: expired,
+      ));
+    } on DioException catch (e) {
+      Logger().e('extended user error: $e');
+      final errorMessage = DioExceptions.fromDioError(e).toString();
+      return Result.failure(errorMessage);
+    }
+  }
+
+  Future<Result<List<UserModel>>> searchUser({required dynamic query}) async {
+    try {
+      var users = await _userApi.searchUser(query: query);
+      return Result.success(users);
+    } on DioException catch (e) {
+      Logger().e('search user error: $e');
+      final errorMessage = DioExceptions.fromDioError(e).toString();
+      return Result.failure(errorMessage);
+    }
+  }
 }

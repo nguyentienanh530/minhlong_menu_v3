@@ -187,14 +187,14 @@ extension _Body on _HomeViewState {
           height: 70.h,
           alignment: Alignment.center,
           child: Text(
-            user.subscriptionEndDate.isEmpty
+            user.expiredAt.isEmpty
                 ? ''
-                : Ultils.subcriptionEndDate(user.subscriptionEndDate) <= 0
+                : Ultils.subcriptionEndDate(user.expiredAt) <= 0
                     ? 'Hết hạn'
-                    : 'Còn ${Ultils.subcriptionEndDate(user.subscriptionEndDate)} ngày',
+                    : 'Còn ${Ultils.subcriptionEndDate(user.expiredAt)} ngày',
             style: kBodyStyle.copyWith(
-                color: user.subscriptionEndDate.isNotEmpty &&
-                        Ultils.subcriptionEndDate(user.subscriptionEndDate) > 0
+                color: user.expiredAt.isNotEmpty &&
+                        Ultils.subcriptionEndDate(user.expiredAt) > 0
                     ? AppColors.secondTextColor
                     : AppColors.red),
           ),
@@ -203,10 +203,9 @@ extension _Body on _HomeViewState {
           height: 70.h,
           alignment: Alignment.center,
           child: Text(
-            user.subscriptionEndDate.isEmpty
+            user.expiredAt.isEmpty
                 ? ''
-                : Ultils.formatDateToString(user.subscriptionEndDate,
-                    isShort: true),
+                : Ultils.formatDateToString(user.expiredAt, isShort: true),
             style: kBodyStyle.copyWith(color: AppColors.secondTextColor),
           ),
         ),
@@ -218,12 +217,11 @@ extension _Body on _HomeViewState {
               alignment: Alignment.center,
               child: CommonIconButton(
                 onTap: () {
-                  // _showCreateOrUpdateBannerDialog(
-                  //     type: ScreenType.update, bannerItem: bannerItem);
+                  _showExtenedUserDialog(user);
                 },
-                icon: Icons.edit,
+                icon: Icons.timelapse,
                 color: AppColors.sun,
-                tooltip: 'Chỉnh sửa',
+                tooltip: 'Gia hạn',
               ),
             ),
             10.horizontalSpace,
@@ -239,20 +237,9 @@ extension _Body on _HomeViewState {
                     confirmText: 'Xác nhận',
                     haveCancelButton: true,
                     onPressedComfirm: () {
-                      // _handleDeleteBanner(tableID: bannerItem.id);
+                      _handleDeleteBanner(userID: user.id);
                     },
                   );
-                  // showDialog(
-                  //   context: context,
-                  //   builder: (context) => AppDialog(
-                  //     title: 'Xóa Banner',
-                  //     description: 'Xóa ${bannerItem.image}?',
-                  //     confirmText: 'Xác nhận',
-                  //     onTap: () {
-                  //       _handleDeleteBanner(tableID: bannerItem.id);
-                  //     },
-                  //   ),
-                  // );
                 },
                 icon: Icons.delete_outline,
                 color: AppColors.red,
@@ -325,5 +312,27 @@ extension _Body on _HomeViewState {
         );
       },
     );
+  }
+
+  void _handleDeleteBanner({required int userID}) {
+    context.pop();
+    context.read<UsersBloc>().add(UsersDeleted(id: userID));
+  }
+
+  void _showExtenedUserDialog(UserModel user) async {
+    bool? result = await showDialog(
+      context: context,
+      builder: (context) => BlocProvider(
+        create: (context) => UsersBloc(context.read<UserRepo>()),
+        child: ExtenedUserDialog(user: user),
+      ),
+    );
+    if (result != null && result) {
+      _overlayShown = false;
+      _fechData(page: _curentPage.value, limit: _limit.value);
+    }
+    {
+      _overlayShown = false;
+    }
   }
 }
