@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:minhlong_menu_admin_v3/core/extensions.dart';
 
-import '../../core/app_colors.dart';
 import '../../core/app_const.dart';
 import '../../core/app_style.dart';
 
@@ -38,8 +37,9 @@ class RetryDialog extends StatelessWidget {
         children: [
           Text(
             title,
-            style: kSubHeadingStyle.copyWith(
-                fontSize: 14, color: AppColors.black.withOpacity(0.5)),
+            style: context.titleStyleMedium!.copyWith(
+                fontSize: 14,
+                color: context.titleStyleMedium!.color!.withOpacity(0.5)),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 15),
@@ -57,7 +57,7 @@ class RetryDialog extends StatelessWidget {
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                     backgroundColor: context.colorScheme.primary,
-                    foregroundColor: AppColors.white),
+                    foregroundColor: Colors.white),
                 onPressed: onRetryPressed,
                 child: Text(onRetryText ?? "Thử lại", style: kButtonWhiteStyle),
               ),

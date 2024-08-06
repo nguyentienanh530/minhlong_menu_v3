@@ -18,9 +18,8 @@ import 'package:minhlong_menu_admin_v3/features/order/data/repositories/order_re
 import 'package:minhlong_menu_admin_v3/features/user/cubit/user_cubit.dart';
 import 'package:minhlong_menu_admin_v3/features/user/data/model/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../../../core/app_colors.dart';
+
 import '../../../../core/app_const.dart';
-import '../../../../core/app_style.dart';
 import '../../../../core/utils.dart';
 import '../../../auth/bloc/auth_bloc.dart';
 import '../../../auth/data/auth_local_datasource/auth_local_datasource.dart';
@@ -32,6 +31,7 @@ import '../widgets/_bar_chart_revenue.dart';
 import '../widgets/indicator.dart';
 import '../widgets/line_chart_revenue.dart';
 import '../widgets/pie_chart_top4_best_selling.dart';
+
 part '../widgets/_info_widget.dart';
 
 class DashboardScreen extends StatelessWidget {
@@ -206,6 +206,8 @@ class _DashboardViewState extends State<DashboardView>
 
   Widget _barChartRevenueWidget() {
     return Card(
+      elevation: 1,
+      shadowColor: context.colorScheme.onPrimary.withOpacity(0.5),
       child: Builder(builder: (context) {
         var dataChartState = context.watch<DataChartBloc>().state;
         return (switch (dataChartState) {
@@ -232,8 +234,8 @@ class _DashboardViewState extends State<DashboardView>
               children: [
                 Text(
                   'Doanh thu',
-                  style: kSubHeadingStyle.copyWith(
-                    fontWeight: FontWeight.w700,
+                  style: context.titleStyleMedium!.copyWith(
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
                 ListenableBuilder(
@@ -270,9 +272,7 @@ class _DashboardViewState extends State<DashboardView>
                       underline: Container(),
                       value: _valueDropdown.value,
                       icon: const Icon(Icons.keyboard_arrow_down_rounded),
-                      dropdownColor: AppColors.white,
-                      style: kBodyStyle,
-                      focusColor: AppColors.white,
+                      style: context.bodyMedium,
                       borderRadius: BorderRadius.circular(5),
                       menuMaxHeight: 300,
                       alignment: Alignment.center,
@@ -304,6 +304,8 @@ class _DashboardViewState extends State<DashboardView>
         BestSellingFoodFetchFailure() =>
           ErrWidget(error: bestSellingFoodState.message),
         BestSellingFoodFetchSuccess() => Card(
+            elevation: 1,
+            shadowColor: context.colorScheme.onPrimary.withOpacity(0.5),
             child: Container(
               padding: const EdgeInsets.all(defaultPadding),
               child: Column(
@@ -311,8 +313,8 @@ class _DashboardViewState extends State<DashboardView>
                 children: [
                   Text(
                     'Top 4 bán chạy',
-                    style:
-                        kSubHeadingStyle.copyWith(fontWeight: FontWeight.bold),
+                    style: context.titleStyleMedium!
+                        .copyWith(fontWeight: FontWeight.bold),
                   ),
                   Expanded(
                     child: PieChartTop4BestSellingFood(
@@ -338,6 +340,8 @@ class _DashboardViewState extends State<DashboardView>
         DailyRevenueFetchFailure() =>
           ErrWidget(error: dailyRevenueState.message),
         DailyRevenueFetchSuccess() => Card(
+            elevation: 1,
+            shadowColor: context.colorScheme.onPrimary.withOpacity(0.5),
             child: Container(
               padding: const EdgeInsets.all(defaultPadding),
               child: Column(
@@ -350,19 +354,19 @@ class _DashboardViewState extends State<DashboardView>
                           children: [
                             Text(
                               'Thống kê (30 ngày)',
-                              style: kSubHeadingStyle.copyWith(
-                                  fontWeight: FontWeight.bold),
+                              style: context.titleStyleMedium!
+                                  .copyWith(fontWeight: FontWeight.bold),
                             ),
                             10.verticalSpace,
                             Row(children: [
                               const Indicator(
-                                color: AppColors.red,
+                                color: Colors.red,
                                 text: 'Tổng doanh thu',
                                 isSquare: true,
                               ),
                               20.horizontalSpace,
                               const Indicator(
-                                color: AppColors.islamicGreen,
+                                color: Colors.green,
                                 text: 'Tổng đơn',
                                 isSquare: true,
                               ),
@@ -374,18 +378,18 @@ class _DashboardViewState extends State<DashboardView>
                           children: [
                             Text(
                               'Thống kê (30 ngày)',
-                              style: kSubHeadingStyle.copyWith(
-                                  fontWeight: FontWeight.bold),
+                              style: context.bodyMedium!
+                                  .copyWith(fontWeight: FontWeight.bold),
                             ),
                             Row(children: [
                               const Indicator(
-                                color: AppColors.red,
+                                color: Colors.red,
                                 text: 'Tổng doanh thu',
                                 isSquare: true,
                               ),
                               20.horizontalSpace,
                               const Indicator(
-                                color: AppColors.islamicGreen,
+                                color: Colors.green,
                                 text: 'Tổng đơn',
                                 isSquare: true,
                               ),

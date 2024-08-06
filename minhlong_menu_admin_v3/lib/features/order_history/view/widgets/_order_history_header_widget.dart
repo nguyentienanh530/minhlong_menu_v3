@@ -29,19 +29,19 @@ extension _OrderHeaderWidget on _OrderViewState {
       height: 35,
       width: 300,
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(textFieldBorderRadius).r,
-          color: AppColors.white),
+        borderRadius: BorderRadius.circular(textFieldBorderRadius).r,
+      ),
       child: TabBar(
         controller: _tabController,
         splashFactory: InkSplash.splashFactory,
-        labelStyle: kBodyStyle.copyWith(
-            color: AppColors.white, fontWeight: FontWeight.w900),
+        labelStyle: context.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
         indicatorSize: TabBarIndicatorSize.tab,
+        labelColor: Colors.white,
         indicator: BoxDecoration(
             borderRadius: BorderRadius.circular(textFieldBorderRadius),
             color: context.colorScheme.primary),
-        unselectedLabelStyle:
-            kBodyStyle.copyWith(color: AppColors.secondTextColor),
+        unselectedLabelStyle: context.bodyMedium!
+            .copyWith(color: context.bodyMedium!.color!.withOpacity(0.5)),
         splashBorderRadius: BorderRadius.circular(textFieldBorderRadius),
         onTap: (value) {
           _fetchData(
@@ -63,10 +63,7 @@ extension _OrderHeaderWidget on _OrderViewState {
         width: 100,
         padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
         alignment: Alignment.center,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8).r,
-          color: AppColors.white,
-        ),
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(8).r),
         child: ValueListenableBuilder(
           valueListenable: _limit,
           builder: (context, limit, child) {
@@ -76,8 +73,7 @@ extension _OrderHeaderWidget on _OrderViewState {
               icon: const Icon(Icons.arrow_drop_down),
               borderRadius: BorderRadius.circular(defaultBorderRadius).r,
               underline: const SizedBox(),
-              style: const TextStyle(color: AppColors.secondTextColor),
-              dropdownColor: AppColors.white,
+              style: context.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
               items: itemsDropdown,
               onChanged: (value) {
                 _limit.value = int.parse(value.toString());
@@ -99,17 +95,21 @@ extension _OrderHeaderWidget on _OrderViewState {
         builder: (context, _) {
           return Row(
             children: [
-              const IconButton(
-                  onPressed: null, icon: Icon(Icons.calendar_month)),
+              IconButton(
+                  onPressed: null,
+                  icon: Icon(
+                    Icons.calendar_month,
+                    color: context.colorScheme.primary,
+                  )),
               Container(
                   height: 35,
                   padding:
                       const EdgeInsets.symmetric(horizontal: defaultPadding),
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                      borderRadius:
-                          BorderRadius.circular(textFieldBorderRadius).r,
-                      color: AppColors.white),
+                    borderRadius:
+                        BorderRadius.circular(textFieldBorderRadius).r,
+                  ),
                   child: InkWell(
                       onTap: () async {
                         final DateTime? picked = await showDatePicker(

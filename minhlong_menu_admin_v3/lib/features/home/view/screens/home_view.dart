@@ -3,8 +3,10 @@ import 'package:easy_sidemenu/easy_sidemenu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_admin_v3/core/api_config.dart';
+import 'package:minhlong_menu_admin_v3/core/app_const.dart';
 import 'package:minhlong_menu_admin_v3/core/extensions.dart';
 import 'package:minhlong_menu_admin_v3/features/banner/view/screens/banner_screen.dart';
 import 'package:minhlong_menu_admin_v3/features/category/view/screens/category_screen.dart';
@@ -15,16 +17,16 @@ import 'package:minhlong_menu_admin_v3/features/order/view/screens/order_screen.
 import 'package:minhlong_menu_admin_v3/features/setting/view/screens/setting_screen.dart';
 import 'package:minhlong_menu_admin_v3/features/user/cubit/user_cubit.dart';
 import 'package:minhlong_menu_admin_v3/features/user/data/model/user_model.dart';
+
 import '../../../../Routes/app_route.dart';
 import '../../../../common/dialog/app_dialog.dart';
 import '../../../../common/widget/error_build_image.dart';
 import '../../../../common/widget/error_dialog.dart';
 import '../../../../common/widget/loading.dart';
 import '../../../../core/app_asset.dart';
-import '../../../../core/app_colors.dart';
-import '../../../../core/app_style.dart';
 import '../../../auth/bloc/auth_bloc.dart';
 import '../../../order_history/view/screens/order_history_screen.dart';
+
 part '../widgets/_side_menu.dart';
 
 class HomeView extends StatefulWidget {
@@ -241,7 +243,7 @@ class HomeViewState extends State<HomeView>
   _buildAppBar() {
     return AppBar(
       automaticallyImplyLeading: false,
-      backgroundColor: AppColors.background,
+      backgroundColor: Colors.transparent,
       toolbarHeight: context.isMobile ? null : 115.h,
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -260,7 +262,8 @@ class HomeViewState extends State<HomeView>
               valueListenable: _title,
               builder: (context, value, child) {
                 return Text(value,
-                    style: kHeadingStyle.copyWith(fontWeight: FontWeight.w900));
+                    style: context.titleStyleLarge!
+                        .copyWith(fontWeight: FontWeight.bold));
               }),
           const SizedBox(
             height: 40,
@@ -308,7 +311,7 @@ class HomeViewState extends State<HomeView>
           'Xin chào! ${user.fullName}',
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: kBodyStyle.copyWith(fontWeight: FontWeight.w700),
+          style: context.bodyMedium!.copyWith(fontWeight: FontWeight.w700),
         ),
         10.horizontalSpace,
         _buildAvatar('${ApiConfig.host}${user.image}'),
@@ -327,8 +330,8 @@ class HomeViewState extends State<HomeView>
               builder: (context, _) {
                 return Text(
                   _title.value,
-                  style: kHeadingStyle.copyWith(
-                    fontWeight: FontWeight.w900,
+                  style: context.titleStyleLarge!.copyWith(
+                    fontWeight: FontWeight.bold,
                   ),
                 );
               }),

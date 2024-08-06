@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:minhlong_menu_admin_v3/core/app_style.dart';
 import 'package:minhlong_menu_admin_v3/core/extensions.dart';
 
 class LoadingWidget extends StatelessWidget {
@@ -24,7 +23,7 @@ class LoadingWidget extends StatelessWidget {
         const SizedBox(height: 15),
         Text(
           title,
-          style: kBodyStyle,
+          style: context.titleStyleMedium,
         ),
       ],
     );

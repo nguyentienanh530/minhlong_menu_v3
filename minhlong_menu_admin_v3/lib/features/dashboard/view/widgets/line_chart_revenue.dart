@@ -1,9 +1,8 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:minhlong_menu_admin_v3/core/extensions.dart';
 import 'package:minhlong_menu_admin_v3/core/utils.dart';
 
-import '../../../../core/app_colors.dart';
-import '../../../../core/app_style.dart';
 import '../../data/model/daily_revenue.dart';
 
 class LineChartRevenue extends StatelessWidget {
@@ -24,16 +23,16 @@ class LineChartRevenue extends StatelessWidget {
     }
     dailyRevenues.sort((a, b) => a.date.compareTo(b.date));
     return LineChart(
-      lineChart(maxTotalPrice),
+      lineChart(context, maxTotalPrice),
       duration: const Duration(milliseconds: 250),
     );
   }
 
-  LineChartData lineChart(double max) => LineChartData(
-        lineTouchData: lineTouch,
+  LineChartData lineChart(BuildContext context, double max) => LineChartData(
+        lineTouchData: lineTouch(context),
         gridData: gridData,
-        titlesData: titles,
-        borderData: borderData,
+        titlesData: titles(context),
+        borderData: borderData(context),
         lineBarsData: lineBars(),
         minX: 0,
         maxX: dailyRevenues.length.toDouble() - 1,
@@ -41,23 +40,23 @@ class LineChartRevenue extends StatelessWidget {
         minY: 0,
       );
 
-  LineTouchData get lineTouch => LineTouchData(
+  LineTouchData lineTouch(BuildContext context) => LineTouchData(
         handleBuiltInTouches: true,
         touchTooltipData: LineTouchTooltipData(
-          getTooltipColor: (touchedSpot) => AppColors.white.withOpacity(0.8),
+          getTooltipColor: (touchedSpot) => Colors.white.withOpacity(0.8),
           getTooltipItems: (touchedSpots) {
             return touchedSpots.map((spot) {
               return spot.barIndex == 0
                   ? LineTooltipItem(
                       'Đơn: ${Ultils.currencyFormat(spot.y / 100000)}\n',
-                      kBodyStyle.copyWith(
+                      context.bodyMedium!.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: AppColors.islamicGreen,
+                        color: Colors.green,
                       ))
                   : LineTooltipItem(
                       '${Ultils.currencyFormat(spot.y)}\n',
-                      kBodyStyle.copyWith(
-                        color: AppColors.red,
+                      context.bodyMedium!.copyWith(
+                        color: Colors.red,
                         fontWeight: FontWeight.bold,
                       ));
             }).toList();
@@ -65,9 +64,9 @@ class LineChartRevenue extends StatelessWidget {
         ),
       );
 
-  FlTitlesData get titles => FlTitlesData(
+  FlTitlesData titles(BuildContext context) => FlTitlesData(
         bottomTitles: AxisTitles(
-          sideTitles: bottomTitles,
+          sideTitles: bottomTitles(context),
         ),
         rightTitles: const AxisTitles(
           sideTitles: SideTitles(showTitles: false),
@@ -76,7 +75,7 @@ class LineChartRevenue extends StatelessWidget {
           sideTitles: SideTitles(showTitles: false),
         ),
         leftTitles: AxisTitles(
-          sideTitles: leftTitles(),
+          sideTitles: leftTitles(context),
         ),
       );
 
@@ -85,7 +84,7 @@ class LineChartRevenue extends StatelessWidget {
         lineChartBar_2,
       ];
 
-  Widget leftTitleWidgets(double value, TitleMeta meta) {
+  Widget leftTitleWidgets(BuildContext context, double value, TitleMeta meta) {
     String text;
     switch (value.toInt()) {
       case 0:
@@ -130,44 +129,47 @@ class LineChartRevenue extends StatelessWidget {
         return Container();
     }
 
-    return Text(text, style: kBodyStyle, textAlign: TextAlign.center);
+    return Text(text, style: context.bodyMedium, textAlign: TextAlign.center);
   }
 
-  SideTitles leftTitles() => SideTitles(
-        getTitlesWidget: leftTitleWidgets,
+  SideTitles leftTitles(BuildContext context) => SideTitles(
+        getTitlesWidget: (value, meta) =>
+            leftTitleWidgets(context, value, meta),
         showTitles: false,
         interval: 1,
         reservedSize: 40,
       );
 
-  Widget bottomTitleWidgets(double value, TitleMeta meta) {
+  Widget bottomTitleWidgets(
+      BuildContext context, double value, TitleMeta meta) {
     return SideTitleWidget(
       axisSide: meta.axisSide,
       child: Text(
         Ultils.formatDateToString(dailyRevenues[value.toInt()].date,
             onlyDayAndMonth: true),
-        style: kCaptionStyle,
+        style: context.bodyMedium,
       ),
     );
   }
 
-  SideTitles get bottomTitles => SideTitles(
+  SideTitles bottomTitles(BuildContext context) => SideTitles(
         showTitles: true,
         reservedSize: 40,
         interval: 1,
-        getTitlesWidget: bottomTitleWidgets,
+        getTitlesWidget: (value, meta) =>
+            bottomTitleWidgets(context, value, meta),
       );
 
   FlGridData get gridData =>
       const FlGridData(show: true, drawVerticalLine: false);
 
-  FlBorderData get borderData => FlBorderData(
+  FlBorderData borderData(BuildContext context) => FlBorderData(
         show: true,
         border: Border(
           bottom: BorderSide(
-              color: AppColors.secondTextColor.withOpacity(0.2), width: 1),
+              color: context.bodyMedium!.color!.withOpacity(0.2), width: 1),
           left: BorderSide(
-              color: AppColors.secondTextColor.withOpacity(0.2), width: 1),
+              color: context.bodyMedium!.color!.withOpacity(0.2), width: 1),
           right: const BorderSide(color: Colors.transparent),
           top: const BorderSide(color: Colors.transparent),
         ),
@@ -175,7 +177,7 @@ class LineChartRevenue extends StatelessWidget {
 
   LineChartBarData lineChartBarOrderCount() => LineChartBarData(
         isCurved: true,
-        color: AppColors.islamicGreen,
+        color: Colors.green,
         barWidth: 2,
         isStrokeCapRound: true,
         dotData: const FlDotData(show: false),

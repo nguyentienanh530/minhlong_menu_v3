@@ -8,6 +8,7 @@ import 'package:minhlong_menu_admin_v3/features/category/bloc/category_bloc.dart
 import 'package:minhlong_menu_admin_v3/features/category/data/model/category_item.dart';
 import 'package:minhlong_menu_admin_v3/features/category/data/model/category_model.dart';
 import 'package:minhlong_menu_admin_v3/features/category/data/repositories/category_repository.dart';
+
 import '../../../../common/dialog/app_dialog.dart';
 import '../../../../common/snackbar/overlay_snackbar.dart';
 import '../../../../common/widget/common_icon_button.dart';
@@ -16,15 +17,13 @@ import '../../../../common/widget/error_widget.dart';
 import '../../../../common/widget/loading.dart';
 import '../../../../common/widget/number_pagination.dart';
 import '../../../../core/api_config.dart';
-import '../../../../core/app_colors.dart';
 import '../../../../core/app_const.dart';
 import '../../../../core/app_enum.dart';
-import '../../../../core/app_style.dart';
 import '../../../order/cubit/pagination_cubit.dart';
 import '../dialogs/create_or_update_category.dart';
 
-part '../widgets/_header_category_widget.dart';
 part '../widgets/_body_category_widget.dart';
+part '../widgets/_header_category_widget.dart';
 
 class CategoryScreen extends StatelessWidget {
   const CategoryScreen({super.key});

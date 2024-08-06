@@ -4,8 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:minhlong_menu_admin_v3/common/dialog/app_dialog.dart';
-import 'package:minhlong_menu_admin_v3/core/app_colors.dart';
 import 'package:minhlong_menu_admin_v3/core/app_const.dart';
 import 'package:minhlong_menu_admin_v3/core/app_theme.dart';
 import 'package:minhlong_menu_admin_v3/core/extensions.dart';
@@ -19,7 +17,6 @@ import '../../../../common/widget/loading.dart';
 import '../../../../core/api_config.dart';
 import '../../../../core/app_asset.dart';
 import '../../../../core/app_string.dart';
-import '../../../../core/app_style.dart';
 import '../../../theme/cubit/scheme_cubit.dart';
 import '../../../theme/cubit/theme_cubit.dart';
 import '../../../theme/data/theme_local_datasource.dart';
@@ -38,7 +35,7 @@ class _SettingScreenState extends State<SettingScreen> {
   final _isUsePrinter = ValueNotifier(false);
   final _selectedIndex = ValueNotifier(0);
   final isDarkMode = ValueNotifier(false);
-  final _pickColor = ValueNotifier(listScheme.first.color);
+  final _pickColor = ValueNotifier(listScheme.first);
 
   @override
   void initState() {
@@ -51,7 +48,7 @@ class _SettingScreenState extends State<SettingScreen> {
     isDarkMode.value = await ThemeLocalDatasource(sf).getDartTheme() ?? false;
     var schemeKey = await ThemeLocalDatasource(sf).getSchemeTheme() ?? '';
     _pickColor.value =
-        listScheme.firstWhere((element) => element.key == schemeKey).color;
+        listScheme.firstWhere((element) => element.key == schemeKey);
   }
 
   @override
@@ -68,49 +65,48 @@ class _SettingScreenState extends State<SettingScreen> {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(defaultPadding),
-        child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(defaultPadding),
-          decoration: BoxDecoration(
-            color: AppColors.white,
-            borderRadius: BorderRadius.circular(defaultBorderRadius).r,
-          ),
-          child: context.isMobile
-              ? Container(
-                  constraints: const BoxConstraints(maxWidth: 600),
-                  child: Column(
+        child: SingleChildScrollView(
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(defaultPadding),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(defaultBorderRadius).r,
+            ),
+            child: context.isMobile
+                ? Container(
+                    constraints: const BoxConstraints(maxWidth: 600),
+                    child: Column(
+                      children: [
+                        _buildInfoProfile(user),
+                        _editInfoUser(user),
+                        _buildTitleChangePassword(),
+                        _buildColorThemeWidget(),
+                        _buildThemeWidget(context),
+                      ],
+                    ),
+                  )
+                : Row(
                     children: [
-                      _buildInfoProfile(user),
-                      _editInfoUser(user),
-                      _buildTitleChangePassword(),
-                      _buildThemeWidget(context),
-                      _buildColorThemeWidget(),
-                      _buildTitleChangePassword2()
-                    ],
-                  ),
-                )
-              : Row(
-                  children: [
-                    const Spacer(),
-                    Expanded(
-                      flex: 2,
-                      child: Container(
-                        constraints: const BoxConstraints(maxWidth: 600),
-                        child: Column(
-                          children: [
-                            _buildInfoProfile(user),
-                            _editInfoUser(user),
-                            _buildTitleChangePassword(),
-                            _buildThemeWidget(context),
-                            _buildColorThemeWidget(),
-                            _buildTitleChangePassword2()
-                          ],
+                      const Spacer(),
+                      Expanded(
+                        flex: 2,
+                        child: Container(
+                          constraints: const BoxConstraints(maxWidth: 600),
+                          child: Column(
+                            children: [
+                              _buildInfoProfile(user),
+                              _editInfoUser(user),
+                              _buildTitleChangePassword(),
+                              _buildColorThemeWidget(),
+                              _buildThemeWidget(context),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    const Spacer(),
-                  ],
-                ),
+                      const Spacer(),
+                    ],
+                  ),
+          ),
         ),
       ),
     );

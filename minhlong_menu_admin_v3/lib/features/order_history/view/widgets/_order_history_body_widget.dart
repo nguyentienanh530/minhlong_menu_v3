@@ -4,8 +4,8 @@ extension _OrderBodyWidget on _OrderViewState {
   Widget _orderBodyWidget() {
     return Container(
       padding: const EdgeInsets.all(5).r,
+      clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        color: AppColors.white,
         borderRadius: BorderRadius.circular(defaultBorderRadius).r,
       ),
       child: _tableWidget(),
@@ -55,8 +55,9 @@ extension _OrderBodyWidget on _OrderViewState {
                 return Center(
                   child: Text(
                     'Không có dữ liệu',
-                    style:
-                        kBodyStyle.copyWith(color: AppColors.secondTextColor),
+                    style: context.bodyMedium!.copyWith(
+                        color:
+                            context.titleStyleMedium!.color!.withOpacity(0.5)),
                   ),
                 );
 
@@ -95,8 +96,10 @@ extension _OrderBodyWidget on _OrderViewState {
                                 valueListenable: _limit,
                                 builder: (context, limit, child) => Text(
                                       'Hiển thị 1 đến $limit trong số ${pagination.totalItem} đơn',
-                                      style: kBodyStyle.copyWith(
-                                          color: AppColors.secondTextColor),
+                                      style: context.bodyLarge!.copyWith(
+                                          color: context
+                                              .titleStyleMedium!.color!
+                                              .withOpacity(0.5)),
                                     ));
                           },
                         ),
@@ -124,6 +127,7 @@ extension _OrderBodyWidget on _OrderViewState {
                         pageTotal: pagination.totalPage,
                         pageInit: _curentPage.value,
                         colorPrimary: context.colorScheme.primary,
+                        colorSub: context.colorScheme.surface,
                       ),
                     );
                   },
@@ -171,9 +175,9 @@ extension _OrderBodyWidget on _OrderViewState {
           .map((e) => Text(
                 e,
                 textAlign: TextAlign.center,
-                style: kBodyStyle.copyWith(
+                style: context.bodyMedium!.copyWith(
                     fontWeight: FontWeight.w600,
-                    color: AppColors.secondTextColor),
+                    color: context.bodyMedium!.color!.withOpacity(0.8)),
               ))
           .toList(),
     );
@@ -182,8 +186,9 @@ extension _OrderBodyWidget on _OrderViewState {
   TableRow _buildRowTable(int index, OrderItem orderItem) {
     return TableRow(
       decoration: BoxDecoration(
-        color:
-            index.isEven ? AppColors.black.withOpacity(0.1) : AppColors.white,
+        color: index.isEven
+            ? Colors.transparent
+            : context.colorScheme.primary.withOpacity(0.05),
       ),
       children: <Widget>[
         Container(
@@ -191,7 +196,8 @@ extension _OrderBodyWidget on _OrderViewState {
           alignment: Alignment.center,
           child: Text(
             '${orderItem.id}',
-            style: kBodyStyle.copyWith(color: AppColors.secondTextColor),
+            style: context.bodyMedium!
+                .copyWith(color: context.bodyMedium!.color!.withOpacity(0.5)),
           ),
         ),
         Container(
@@ -203,7 +209,8 @@ extension _OrderBodyWidget on _OrderViewState {
                     ? orderItem.updatedAt!
                     : orderItem.payedAt!,
                 isShort: true),
-            style: kBodyStyle.copyWith(color: AppColors.secondTextColor),
+            style: context.bodyMedium!
+                .copyWith(color: context.bodyMedium!.color!.withOpacity(0.5)),
           ),
         ),
         Container(
@@ -211,7 +218,8 @@ extension _OrderBodyWidget on _OrderViewState {
           alignment: Alignment.center,
           child: Text(
             orderItem.foodOrders.length.toString(),
-            style: kBodyStyle.copyWith(color: AppColors.secondTextColor),
+            style: context.bodyMedium!
+                .copyWith(color: context.bodyMedium!.color!.withOpacity(0.5)),
           ),
         ),
         Container(
@@ -219,7 +227,8 @@ extension _OrderBodyWidget on _OrderViewState {
           alignment: Alignment.center,
           child: Text(
             Ultils.currencyFormat(orderItem.totalPrice),
-            style: kBodyStyle.copyWith(color: AppColors.secondTextColor),
+            style: context.bodyMedium!
+                .copyWith(color: context.bodyMedium!.color!.withOpacity(0.5)),
           ),
         ),
         Container(
@@ -233,7 +242,8 @@ extension _OrderBodyWidget on _OrderViewState {
             ),
             child: Text(
               _handleStatus(orderItem.status),
-              style: kBodyStyle.copyWith(color: _handleColor(orderItem.status)),
+              style: context.bodyMedium!
+                  .copyWith(color: _handleColor(orderItem.status)),
             ),
           ),
         ),
@@ -254,7 +264,7 @@ extension _OrderBodyWidget on _OrderViewState {
               _showDetailDialog(orderItem);
             },
             icon: Icons.remove_red_eye,
-            color: AppColors.islamicGreen,
+            color: Colors.green,
             tooltip: 'Xem đơn hàng',
           ),
         ),
@@ -278,7 +288,7 @@ extension _OrderBodyWidget on _OrderViewState {
               );
             },
             icon: Icons.edit,
-            color: AppColors.sun,
+            color: Colors.yellow.shade700,
             tooltip: 'Sửa đơn hàng',
           ),
         ),
@@ -296,7 +306,7 @@ extension _OrderBodyWidget on _OrderViewState {
               });
             },
             icon: Icons.delete_outline,
-            color: AppColors.red,
+            color: Colors.red,
             tooltip: 'Xóa đơn',
           ),
         ),

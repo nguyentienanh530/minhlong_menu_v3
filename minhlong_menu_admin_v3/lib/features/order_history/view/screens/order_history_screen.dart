@@ -8,22 +8,22 @@ import 'package:minhlong_menu_admin_v3/common/snackbar/overlay_snackbar.dart';
 import 'package:minhlong_menu_admin_v3/common/widget/common_icon_button.dart';
 import 'package:minhlong_menu_admin_v3/common/widget/error_widget.dart';
 import 'package:minhlong_menu_admin_v3/common/widget/loading.dart';
-import 'package:minhlong_menu_admin_v3/core/app_colors.dart';
 import 'package:minhlong_menu_admin_v3/core/app_const.dart';
-import 'package:minhlong_menu_admin_v3/core/app_style.dart';
 import 'package:minhlong_menu_admin_v3/core/extensions.dart';
 import 'package:minhlong_menu_admin_v3/core/utils.dart';
 import 'package:minhlong_menu_admin_v3/features/order/cubit/pagination_cubit.dart';
 import 'package:minhlong_menu_admin_v3/features/order/data/model/food_order_model.dart';
+
 import '../../../../common/widget/number_pagination.dart';
 import '../../../../core/app_enum.dart';
 import '../../../order/bloc/order_bloc.dart';
 import '../../../order/data/model/order_item.dart';
 import '../../../order/data/model/order_model.dart';
 import '../../../order/data/repositories/order_repository.dart';
-part '../widgets/_order_history_header_widget.dart';
-part '../widgets/_order_history_body_widget.dart';
+
 part '../dialogs/_order_history_detail_dialog.dart';
+part '../widgets/_order_history_body_widget.dart';
+part '../widgets/_order_history_header_widget.dart';
 
 class OrderHistoryScreen extends StatelessWidget {
   const OrderHistoryScreen({super.key});
@@ -183,16 +183,16 @@ class _OrderViewState extends State<OrderView>
   Color _handleColor(String status) {
     switch (status) {
       case 'new':
-        return AppColors.pumpkin;
+        return Colors.orange;
       case 'processing':
-        return AppColors.fountainBlue;
+        return Colors.blue;
       case 'completed':
-        return AppColors.islamicGreen;
+        return Colors.green;
       case 'cancel':
-        return AppColors.red;
+        return Colors.red;
 
       default:
-        return AppColors.black;
+        return Colors.black;
     }
   }
 

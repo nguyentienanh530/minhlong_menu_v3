@@ -5,7 +5,6 @@ extension _FoodBodyWidget on _CategoryViewState {
     return Container(
       padding: const EdgeInsets.all(5).r,
       decoration: BoxDecoration(
-        color: AppColors.white,
         borderRadius: BorderRadius.circular(defaultBorderRadius).r,
       ),
       child: _tableWidget(),
@@ -68,8 +67,8 @@ extension _FoodBodyWidget on _CategoryViewState {
                   return Center(
                     child: Text(
                       'Không có dữ liệu',
-                      style:
-                          kBodyStyle.copyWith(color: AppColors.secondTextColor),
+                      style: context.bodyMedium!
+                          .copyWith(color: context.bodyMedium!.color),
                     ),
                   );
 
@@ -110,8 +109,8 @@ extension _FoodBodyWidget on _CategoryViewState {
                               valueListenable: _limit,
                               builder: (context, limit, child) => Text(
                                 'Hiển thị 1 đến $limit trong số ${pagination.totalItem} món',
-                                style: kBodyStyle.copyWith(
-                                  color: AppColors.secondTextColor,
+                                style: context.bodyMedium!.copyWith(
+                                  color: context.bodyMedium!.color,
                                 ),
                               ),
                             );
@@ -137,6 +136,7 @@ extension _FoodBodyWidget on _CategoryViewState {
                         pageTotal: pagination.totalPage,
                         pageInit: _curentPage.value,
                         colorPrimary: context.colorScheme.primary,
+                        colorSub: context.colorScheme.surface,
                       ),
                     );
                   },
@@ -173,9 +173,9 @@ extension _FoodBodyWidget on _CategoryViewState {
           .map((e) => Text(
                 e,
                 textAlign: TextAlign.center,
-                style: kBodyStyle.copyWith(
+                style: context.bodyMedium!.copyWith(
                     fontWeight: FontWeight.w600,
-                    color: AppColors.secondTextColor),
+                    color: context.bodyMedium!.color!.withOpacity(0.8)),
               ))
           .toList(),
     );
@@ -184,8 +184,9 @@ extension _FoodBodyWidget on _CategoryViewState {
   TableRow _buildRowTable(int index, CategoryItem categoryItem) {
     return TableRow(
       decoration: BoxDecoration(
-        color:
-            index.isEven ? AppColors.black.withOpacity(0.1) : AppColors.white,
+        color: index.isEven
+            ? Colors.transparent
+            : context.colorScheme.primary.withOpacity(0.05),
       ),
       children: <Widget>[
         Container(
@@ -209,7 +210,8 @@ extension _FoodBodyWidget on _CategoryViewState {
           alignment: Alignment.center,
           child: Text(
             categoryItem.name,
-            style: kBodyStyle.copyWith(color: AppColors.secondTextColor),
+            style: context.bodyMedium!
+                .copyWith(color: context.bodyMedium!.color!.withOpacity(0.5)),
           ),
         ),
         Container(
@@ -217,7 +219,8 @@ extension _FoodBodyWidget on _CategoryViewState {
           alignment: Alignment.center,
           child: Text(
             categoryItem.serial.toString(),
-            style: kBodyStyle.copyWith(color: AppColors.secondTextColor),
+            style: context.bodyMedium!
+                .copyWith(color: context.bodyMedium!.color!.withOpacity(0.5)),
           ),
         ),
         Row(
@@ -232,7 +235,7 @@ extension _FoodBodyWidget on _CategoryViewState {
                       type: ScreenType.update, categoryItem: categoryItem);
                 },
                 icon: Icons.edit,
-                color: AppColors.sun,
+                color: Colors.yellow.shade700,
                 tooltip: 'Chỉnh sửa',
               ),
             ),
@@ -261,7 +264,7 @@ extension _FoodBodyWidget on _CategoryViewState {
                   // );
                 },
                 icon: Icons.delete_outline,
-                color: AppColors.red,
+                color: Colors.red,
                 tooltip: 'Xóa Danh mục',
               ),
             ),
@@ -279,7 +282,6 @@ extension _FoodBodyWidget on _CategoryViewState {
               create: (context) => CategoryBloc(
                   categoryRepository: context.read<CategoryRepository>()),
               child: Dialog(
-                backgroundColor: AppColors.background,
                 child: CreateOrUpdateCategory(
                   type: type,
                   categoryItem: categoryItem,

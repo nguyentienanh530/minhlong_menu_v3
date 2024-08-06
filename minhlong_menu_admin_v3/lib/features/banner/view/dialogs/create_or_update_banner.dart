@@ -13,10 +13,8 @@ import 'package:minhlong_menu_admin_v3/features/banner/data/model/banner_item.da
 
 import '../../../../common/dialog/app_dialog.dart';
 import '../../../../common/snackbar/overlay_snackbar.dart';
-import '../../../../core/app_colors.dart';
 import '../../../../core/app_const.dart';
 import '../../../../core/app_enum.dart';
-import '../../../../core/app_style.dart';
 import '../../../../core/extensions.dart';
 
 class CreateOrUpdateBanner extends StatefulWidget {
@@ -99,8 +97,8 @@ class _CreateOrUpdateBannerState extends State<CreateOrUpdateBanner> {
               children: [
                 Text(
                   _type == ScreenType.create ? 'Thêm Banner' : 'Sửa Banner',
-                  style: kBodyStyle.copyWith(
-                    color: AppColors.secondTextColor,
+                  style: context.bodyMedium!.copyWith(
+                    color: context.bodyMedium!.color!.withOpacity(0.5),
                     fontWeight: FontWeight.w700,
                     fontSize: 40.sp,
                   ),
@@ -128,12 +126,14 @@ class _CreateOrUpdateBannerState extends State<CreateOrUpdateBanner> {
           children: [
             Text(
               'Trạng thái',
-              style: kCaptionStyle.copyWith(color: AppColors.secondTextColor),
+              style: context.bodyMedium!
+                  .copyWith(color: context.bodyMedium!.color!.withOpacity(0.5)),
             ),
             Row(children: [
               Radio<bool>(
                 value: true,
-                fillColor: WidgetStateProperty.all(AppColors.secondTextColor),
+                fillColor: WidgetStateProperty.all(
+                    context.bodyMedium!.color!.withOpacity(0.5)),
                 groupValue: _isShowBanner.value,
                 onChanged: (value) {
                   _isShowBanner.value = value!;
@@ -141,11 +141,13 @@ class _CreateOrUpdateBannerState extends State<CreateOrUpdateBanner> {
               ),
               Text(
                 'Hiển thị',
-                style: kCaptionStyle.copyWith(color: AppColors.secondTextColor),
+                style: context.bodyMedium!.copyWith(
+                    color: context.bodyMedium!.color!.withOpacity(0.5)),
               ),
               20.horizontalSpace,
               Radio<bool>(
-                fillColor: WidgetStateProperty.all(AppColors.secondTextColor),
+                fillColor: WidgetStateProperty.all(
+                    context.bodyMedium!.color!.withOpacity(0.5)),
                 value: false,
                 groupValue: _isShowBanner.value,
                 onChanged: (value) {
@@ -154,7 +156,8 @@ class _CreateOrUpdateBannerState extends State<CreateOrUpdateBanner> {
               ),
               Text(
                 'Ẩn',
-                style: kBodyStyle.copyWith(color: AppColors.secondTextColor),
+                style: context.bodyMedium!.copyWith(
+                    color: context.bodyMedium!.color!.withOpacity(0.5)),
               ),
             ])
           ],
@@ -165,6 +168,7 @@ class _CreateOrUpdateBannerState extends State<CreateOrUpdateBanner> {
 
   _buildCategoryImageWidget() {
     return InkWell(
+      borderRadius: BorderRadius.circular(defaultBorderRadius).r,
       onTap: () async => await Ultils.pickImage().then((value) {
         if (value != null) {
           _imageFile.value = value;
@@ -172,7 +176,7 @@ class _CreateOrUpdateBannerState extends State<CreateOrUpdateBanner> {
       }),
       child: Card(
         elevation: 4,
-        shadowColor: AppColors.lavender,
+        shadowColor: Colors.white54,
         child: Container(
           clipBehavior: Clip.antiAlias,
           height: 250,
@@ -189,15 +193,17 @@ class _CreateOrUpdateBannerState extends State<CreateOrUpdateBanner> {
                       ? Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Icon(
+                            Icon(
                               Icons.add_photo_alternate_outlined,
-                              color: AppColors.secondTextColor,
+                              color:
+                                  context.bodyMedium!.color!.withOpacity(0.5),
                               size: 20,
                             ),
                             Text(
                               '900 x 500',
-                              style: kCaptionStyle.copyWith(
-                                color: AppColors.secondTextColor,
+                              style: context.bodyMedium!.copyWith(
+                                color:
+                                    context.bodyMedium!.color!.withOpacity(0.5),
                               ),
                             ),
                           ],
@@ -229,7 +235,7 @@ class _CreateOrUpdateBannerState extends State<CreateOrUpdateBanner> {
         ),
         child: Text(
           _type == ScreenType.create ? 'Thêm' : 'Cập nhật',
-          style: kBodyStyle.copyWith(color: AppColors.white),
+          style: context.bodyMedium!.copyWith(color: Colors.white),
         ),
       ),
     );

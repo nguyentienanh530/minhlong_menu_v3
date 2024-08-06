@@ -41,12 +41,11 @@ extension _HeaderCategoryWidget on _CategoryViewState {
   Widget _buildDropdown() {
     return Container(
         height: 35,
-        width: 100.h,
+        width: 100,
         padding: const EdgeInsets.symmetric(horizontal: defaultPadding / 2),
         alignment: Alignment.center,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
-          color: AppColors.white,
         ),
         child: ValueListenableBuilder(
           valueListenable: _limit,
@@ -58,8 +57,8 @@ extension _HeaderCategoryWidget on _CategoryViewState {
               icon: const Icon(Icons.arrow_drop_down),
               borderRadius: BorderRadius.circular(defaultBorderRadius).r,
               underline: const SizedBox(),
-              style: kBodyStyle.copyWith(color: AppColors.secondTextColor),
-              dropdownColor: AppColors.white,
+              style: context.bodyMedium!
+                  .copyWith(color: context.bodyMedium!.color),
               items: itemsDropdown,
               onChanged: (value) {
                 _limit.value = int.parse(value.toString());
@@ -86,7 +85,7 @@ extension _HeaderCategoryWidget on _CategoryViewState {
         ),
         child: Text(
           'Thêm',
-          style: kBodyStyle.copyWith(color: AppColors.white),
+          style: context.bodyMedium!.copyWith(color: Colors.white),
         ),
       ),
     );

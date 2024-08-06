@@ -56,9 +56,9 @@ extension _OrdersOnTableWidget on _OrderViewState {
                             child: Center(
                               child: Text(
                                 'không có đơn nào!',
-                                style: kBodyStyle.copyWith(
-                                  color: AppColors.secondTextColor,
-                                ),
+                                style: context.bodyMedium!.copyWith(
+                                    color: context.titleStyleMedium!.color!
+                                        .withOpacity(0.5)),
                               ),
                             ),
                           )
@@ -91,14 +91,13 @@ extension _OrdersOnTableWidget on _OrderViewState {
   Widget _buildItem(OrderItem order, int tableIndexSelectedState) {
     return FittedBox(
       child: Card(
-        elevation: 10,
-        shadowColor: AppColors.lavender,
+        elevation: 4,
+        shadowColor: context.colorScheme.onSurface.withOpacity(0.5),
         child: Container(
           width: 270,
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
-            color: Colors.white,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -124,24 +123,17 @@ extension _OrdersOnTableWidget on _OrderViewState {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Text('x${order.foodOrders.length} món',
+                style: context.bodyMedium!.copyWith(
+                    fontWeight: FontWeight.w400,
+                    color: context.titleStyleMedium!.color!.withOpacity(0.5))),
             Text(
-              'x${order.foodOrders.length} món',
-              style: kCaptionStyle.copyWith(
-                fontWeight: FontWeight.w400,
-                color: AppColors.secondTextColor,
-              ),
-            ),
-            Text(
-              '${Ultils.currencyFormat(double.parse(order.totalPrice.toString()))} đ',
-              style: kBodyStyle.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
-            ),
+                '${Ultils.currencyFormat(double.parse(order.totalPrice.toString()))} đ',
+                style:
+                    context.bodyMedium!.copyWith(fontWeight: FontWeight.w700))
           ],
         ),
-        const SizedBox(
-          width: defaultPadding / 2,
-        ),
+        8.verticalSpace,
         order.status == 'new'
             ? Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -177,7 +169,7 @@ extension _OrdersOnTableWidget on _OrderViewState {
                       });
                     },
                     icon: Icons.check,
-                    color: AppColors.islamicGreen,
+                    color: Colors.green,
                   ),
                 ],
               )
@@ -204,23 +196,22 @@ extension _OrdersOnTableWidget on _OrderViewState {
                       );
                     },
                     icon: Icons.edit,
-                    color: AppColors.sun,
+                    color: Colors.yellow.shade700,
                   ),
                   10.horizontalSpace,
                   CommonIconButton(
-                    tooltip: 'Xóa đơn',
-                    onTap: () async {
-                      AppDialog.showWarningDialog(context,
-                          title: 'Xác nhận xóa!',
-                          description:
-                              'Kiểm tra kĩ trước khi xóa đơn #${order.id}!',
-                          onPressedComfirm: () {
-                        _handleDeleteOrder(orderID: order.id);
-                      });
-                    },
-                    icon: Icons.delete,
-                    color: AppColors.red,
-                  ),
+                      tooltip: 'Xóa đơn',
+                      onTap: () async {
+                        AppDialog.showWarningDialog(context,
+                            title: 'Xác nhận xóa!',
+                            description:
+                                'Kiểm tra kĩ trước khi xóa đơn #${order.id}!',
+                            onPressedComfirm: () {
+                          _handleDeleteOrder(orderID: order.id);
+                        });
+                      },
+                      icon: Icons.delete,
+                      color: Colors.red),
                 ],
               ),
       ],
@@ -238,29 +229,30 @@ extension _OrdersOnTableWidget on _OrderViewState {
       children: [
         Text(
           'Đơn hàng #${order.id}',
-          style: kSubHeadingStyle.copyWith(
-            fontWeight: FontWeight.w700,
+          style: context.titleStyleMedium!.copyWith(
+            fontWeight: FontWeight.bold,
           ),
         ),
         Text(
           Ultils.formatDateToString(
               order.createdAt ?? DateTime.now().toString()),
-          style: kCaptionStyle.copyWith(
+          style: context.bodyMedium!.copyWith(
             fontSize: 10,
-            color: AppColors.secondTextColor,
-            fontWeight: FontWeight.w400,
+            color: context.titleStyleMedium!.color!.withOpacity(0.5),
+            fontWeight: FontWeight.bold,
           ),
         ),
         10.verticalSpace,
         Container(
           padding: const EdgeInsets.all(5).r,
           decoration: BoxDecoration(
-            color: _handleColor(order.status).withOpacity(0.2),
+            color: _handleColor(order.status).withOpacity(0.1),
             borderRadius: BorderRadius.circular(5),
           ),
           child: Text(
             _handleStatus(order.status),
-            style: kBodyStyle.copyWith(color: _handleColor(order.status)),
+            style:
+                context.bodyLarge!.copyWith(color: _handleColor(order.status)),
           ),
         ),
         10.verticalSpace,
@@ -299,7 +291,7 @@ extension _OrdersOnTableWidget on _OrderViewState {
                           children: [
                             Text(
                               e.name,
-                              style: kBodyStyle.copyWith(
+                              style: context.bodyLarge!.copyWith(
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
@@ -309,14 +301,14 @@ extension _OrdersOnTableWidget on _OrderViewState {
                               children: [
                                 Text(
                                   Ultils.currencyFormat(e.totalAmount),
-                                  style: kBodyStyle.copyWith(
-                                    color: AppColors.secondTextColor,
-                                  ),
+                                  style: context.bodyLarge!.copyWith(
+                                      color: context.titleStyleMedium!.color!
+                                          .withOpacity(0.5)),
                                 ),
                                 Text(
                                   'x${e.quantity}',
-                                  style: kBodyStyle.copyWith(
-                                    fontWeight: FontWeight.w700,
+                                  style: context.bodyMedium!.copyWith(
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               ],
@@ -324,7 +316,7 @@ extension _OrdersOnTableWidget on _OrderViewState {
                             e.note.isNotEmpty
                                 ? Divider(
                                     height: 1,
-                                    color: AppColors.secondTextColor
+                                    color: context.titleStyleMedium!.color!
                                         .withOpacity(0.5),
                                   )
                                 : const SizedBox(),
@@ -337,9 +329,8 @@ extension _OrdersOnTableWidget on _OrderViewState {
                   _buildNote(e.note),
                   const SizedBox(height: 10),
                   Divider(
-                    height: 1,
-                    color: AppColors.secondTextColor.withOpacity(0.5),
-                  ),
+                      height: 1,
+                      color: context.titleStyleMedium!.color!.withOpacity(0.4)),
                 ],
               ),
             ),
@@ -354,15 +345,15 @@ extension _OrdersOnTableWidget on _OrderViewState {
             children: [
               Text(
                 '*Ghi chú',
-                style: kBodyStyle.copyWith(
+                style: context.bodyMedium!.copyWith(
                   fontWeight: FontWeight.w700,
                 ),
               ),
               Text(
                 note,
-                style: kCaptionStyle.copyWith(
+                style: context.bodyMedium!.copyWith(
                   fontSize: 10,
-                  color: AppColors.secondTextColor,
+                  color: context.titleStyleMedium!.color!.withOpacity(0.5),
                   fontWeight: FontWeight.w400,
                 ),
               ),

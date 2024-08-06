@@ -7,7 +7,7 @@ extension _OrderDetailDialog on _OrderViewState {
           borderRadius: BorderRadius.all(Radius.circular(32.0))),
       contentPadding: const EdgeInsets.only(top: 10.0),
       title: _buildHeaderDialog(orderItem),
-      backgroundColor: AppColors.background,
+      // backgroundColor: Colors.background,
       actionsAlignment: MainAxisAlignment.center,
       content: SizedBox(
         height: 890.h,
@@ -26,11 +26,13 @@ extension _OrderDetailDialog on _OrderViewState {
                   children: [
                     Text(
                       'Tổng tiền: ',
-                      style: kBodyStyle.copyWith(fontWeight: FontWeight.w700),
+                      style: context.bodyMedium!
+                          .copyWith(fontWeight: FontWeight.w700),
                     ),
                     Text(
                       '${Ultils.currencyFormat(orderItem.totalPrice)} đ',
-                      style: kBodyStyle.copyWith(fontWeight: FontWeight.w700),
+                      style: context.bodyMedium!
+                          .copyWith(fontWeight: FontWeight.w700),
                     ),
                   ],
                 ),
@@ -44,7 +46,7 @@ extension _OrderDetailDialog on _OrderViewState {
             title: 'In đơn',
             icon: const Icon(
               Icons.print,
-              color: AppColors.white,
+              color: Colors.white,
             ),
             onTap: () {
               context.push(AppRoute.printScreen, extra: orderItem);
@@ -64,7 +66,7 @@ extension _OrderDetailDialog on _OrderViewState {
             fit: BoxFit.scaleDown,
             child: Text(
               "Chi tiết đơn hàng #${orderItem.id}",
-              style: kSubHeadingStyle.copyWith(
+              style: context.titleStyleMedium!.copyWith(
                 fontWeight: FontWeight.w700,
                 fontSize: 20,
               ),
@@ -111,7 +113,8 @@ extension _OrderDetailDialog on _OrderViewState {
             10.horizontalSpace,
             Text(
               title,
-              style: kBodyWhiteStyle.copyWith(fontWeight: FontWeight.w700),
+              style: context.bodyMedium!
+                  .copyWith(fontWeight: FontWeight.w700, color: Colors.white),
             ),
           ],
         ),
@@ -123,12 +126,15 @@ extension _OrderDetailDialog on _OrderViewState {
     return Column(
       children: [
         Container(
-          color: AppColors.white,
+          color: context.colorScheme.onPrimaryContainer.withOpacity(0.4),
           child: Table(
-              border: const TableBorder(
-                top: BorderSide(color: AppColors.secondTextColor),
-                left: BorderSide(color: AppColors.secondTextColor),
-                right: BorderSide(color: AppColors.secondTextColor),
+              border: TableBorder(
+                top: BorderSide(
+                    color: context.bodyMedium!.color!.withOpacity(0.5)),
+                left: BorderSide(
+                    color: context.bodyMedium!.color!.withOpacity(0.5)),
+                right: BorderSide(
+                    color: context.bodyMedium!.color!.withOpacity(0.5)),
               ),
               columnWidths: const <int, TableColumnWidth>{
                 0: FlexColumnWidth(),
@@ -146,7 +152,7 @@ extension _OrderDetailDialog on _OrderViewState {
         ),
         Table(
             border: TableBorder.all(
-              color: AppColors.secondTextColor,
+              color: context.bodyMedium!.color!.withOpacity(0.5),
             ),
             columnWidths: const <int, TableColumnWidth>{
               0: FlexColumnWidth(),
@@ -170,7 +176,7 @@ extension _OrderDetailDialog on _OrderViewState {
       height: 40,
       child: Text(
         title,
-        style: kBodyStyle.copyWith(fontWeight: FontWeight.w500),
+        style: context.bodyMedium!.copyWith(fontWeight: FontWeight.w500),
       ),
     );
   }
@@ -183,7 +189,8 @@ extension _OrderDetailDialog on _OrderViewState {
           alignment: Alignment.center,
           child: Text(
             foodOrder.name,
-            style: kBodyStyle.copyWith(color: AppColors.secondTextColor),
+            style: context.bodyMedium!
+                .copyWith(color: context.bodyMedium!.color!.withOpacity(0.5)),
           ),
         ),
         Container(
@@ -191,7 +198,8 @@ extension _OrderDetailDialog on _OrderViewState {
           alignment: Alignment.center,
           child: Text(
             foodOrder.quantity.toString(),
-            style: kBodyStyle.copyWith(color: AppColors.secondTextColor),
+            style: context.bodyMedium!
+                .copyWith(color: context.bodyMedium!.color!.withOpacity(0.5)),
           ),
         ),
         Container(
@@ -199,7 +207,8 @@ extension _OrderDetailDialog on _OrderViewState {
           alignment: Alignment.center,
           child: Text(
             Ultils.currencyFormat(foodOrder.totalAmount),
-            style: kBodyStyle.copyWith(color: AppColors.secondTextColor),
+            style: context.bodyMedium!
+                .copyWith(color: context.bodyMedium!.color!.withOpacity(0.5)),
           ),
         ),
       ],
@@ -237,15 +246,14 @@ extension _OrderDetailDialog on _OrderViewState {
         children: [
           Text(
             title ?? '',
-            style: kBodyStyle.copyWith(
+            style: context.bodyMedium!.copyWith(
               fontWeight: FontWeight.w700,
             ),
           ),
           Text(
             value!,
-            style: kBodyStyle.copyWith(
-              color: AppColors.secondTextColor,
-            ),
+            style: context.bodyMedium!
+                .copyWith(color: context.bodyMedium!.color!.withOpacity(0.5)),
           ),
         ],
       ),

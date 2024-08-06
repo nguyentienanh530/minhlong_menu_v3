@@ -1,9 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:minhlong_menu_admin_v3/core/app_const.dart';
-
-import '../../core/app_colors.dart';
-import '../../core/app_style.dart';
+import 'package:minhlong_menu_admin_v3/core/extensions.dart';
 
 class ErrWidget extends StatelessWidget {
   const ErrWidget({
@@ -18,7 +16,7 @@ class ErrWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 4,
-      shadowColor: AppColors.lavender,
+      shadowColor: Colors.white54,
       child: FittedBox(
         child: SizedBox(
           width: 300,
@@ -30,16 +28,17 @@ class ErrWidget extends StatelessWidget {
                 const SizedBox(height: 10),
                 Text(
                   error ?? "Có lỗi xảy ra",
-                  style: kBodyStyle.copyWith(color: AppColors.secondTextColor),
+                  style: context.bodyLarge!.copyWith(
+                      color: context.bodyMedium!.color!.withOpacity(0.5)),
                 ),
                 const SizedBox(height: 10),
                 FilledButton.icon(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.red,
+                      backgroundColor: Colors.red,
                     ),
                     icon: const Icon(Icons.refresh, size: 15),
                     onPressed: onRetryPressed,
-                    label: const Text('Thử lại', style: kButtonWhiteStyle))
+                    label: Text('Thử lại', style: context.bodyMedium))
               ],
             ),
           ),

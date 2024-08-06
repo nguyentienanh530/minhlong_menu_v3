@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_admin_v3/common/dialog/app_dialog.dart';
 import 'package:minhlong_menu_admin_v3/core/extensions.dart';
+import 'package:minhlong_menu_admin_v3/features/theme/cubit/theme_cubit.dart';
 
 import '../../../../Routes/app_route.dart';
 import '../../../../common/widget/common_text_field.dart';
 import '../../../../core/app_asset.dart';
-import '../../../../core/app_colors.dart';
 import '../../../../core/app_const.dart';
 import '../../../../core/app_res.dart';
 import '../../../../core/app_string.dart';
-import '../../../../core/app_style.dart';
 import '../../bloc/auth_bloc.dart';
 import '../../data/dto/login_dto.dart';
 
@@ -47,6 +47,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var isDarkMode = context.watch<ThemeCubit>().state;
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthForgotPasswordInProgress) {
@@ -78,7 +79,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           children: [
             SizedBox.expand(
               child: Image.asset(
-                AppAsset.backgroundLogin,
+                isDarkMode ? AppAsset.backgroundDark : AppAsset.backgroundLight,
                 fit: BoxFit.cover,
               ),
             ),
@@ -87,7 +88,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(defaultBorderRadius)),
                 margin: const EdgeInsets.all(20),
-                color: AppColors.white.withOpacity(0.2),
+                color: context.colorScheme.surface.withOpacity(0.4),
                 elevation: 30,
                 child: FittedBox(
                   child: Container(
@@ -105,30 +106,30 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                   _buildForgotPasswordWidget(),
                                   Text(
                                       'Nhập số điện thoại của bạn để đổi mật khẩu',
-                                      style: kBodyStyle.copyWith(
+                                      style: context.bodyMedium!.copyWith(
                                           fontSize: 10,
-                                          color:
-                                              AppColors.white.withOpacity(0.5)))
+                                          color: context.bodyMedium!.color!
+                                              .withOpacity(0.5)))
                                 ],
                               )),
-                          const SizedBox(height: 30),
+                          30.verticalSpace,
                           _buildPhoneField(),
-                          const SizedBox(height: 36),
+                          36.verticalSpace,
                           _buildPasswordField(),
-                          const SizedBox(height: 36),
+                          36.verticalSpace,
                           _buildComfirmPasswordField(),
-                          const SizedBox(height: 8),
+                          10.verticalSpace,
                           SizedBox(
                             width: 360,
                             child: Text(
                               '*Mật khẩu ít nhất 8 ký tự, bao gồm(ký tự hoa, ký tự thường, ký tự số, ký tự đặc biệt)',
-                              style: kCaptionWhiteStyle.copyWith(
+                              style: context.bodySmall!.copyWith(
                                 fontStyle: FontStyle.italic,
-                                color: AppColors.white.withOpacity(0.5),
+                                color: Colors.white.withOpacity(0.5),
                               ),
                             ),
                           ),
-                          const SizedBox(height: 36),
+                          36.verticalSpace,
                           SizedBox(
                               width: 360,
                               height: 40,
@@ -139,18 +140,19 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                             textFieldBorderRadius)),
                                     side: BorderSide(
                                         color: context.colorScheme.primary),
-                                    foregroundColor: AppColors.white,
+                                    foregroundColor: Colors.white,
                                     elevation: 0,
                                     shadowColor: Colors.transparent,
                                     backgroundColor:
                                         context.colorScheme.primary),
                                 onPressed: () => _handleForgotPassword(),
-                                child: const Text('Đặt lại mật khẩu',
-                                    style: kButtonWhiteStyle),
+                                child: Text('Đặt lại mật khẩu',
+                                    style: context.bodyMedium!
+                                        .copyWith(color: Colors.white)),
                               )),
-                          const SizedBox(height: defaultPadding),
+                          16.verticalSpace,
                           _buildHaveAccount(),
-                          const SizedBox(height: 66),
+                          66.verticalSpace,
                         ]
                             .animate(interval: 50.ms)
                             .slideX(
@@ -178,7 +180,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         width: 360,
         child: CommonTextField(
           controller: _phoneController,
-          style: kBodyWhiteStyle,
+          style: context.bodyMedium!,
           onChanged: (p0) {},
           keyboardType: TextInputType.phone,
           maxLines: 1,
@@ -190,7 +192,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           labelText: 'Số điện thoại',
           prefixIcon: Icon(
             Icons.phone_android_outlined,
-            color: AppColors.white.withOpacity(0.5),
+            color: context.bodyMedium!.color!.withOpacity(0.5),
           ),
         ),
       );
@@ -200,7 +202,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       builder: (context, value, child) => SizedBox(
             width: 360,
             child: CommonTextField(
-              style: kBodyWhiteStyle,
+              style: context.bodyMedium,
               controller: _passwordController,
               onChanged: (p0) {},
               keyboardType: TextInputType.visiblePassword,
@@ -213,7 +215,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               labelText: 'Mật khẩu mới',
               prefixIcon: Icon(
                 Icons.lock_outline,
-                color: AppColors.white.withOpacity(0.5),
+                color: context.bodyMedium!.color!.withOpacity(0.5),
               ),
               obscureText: !value,
               suffixIcon: GestureDetector(
@@ -224,7 +226,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   value
                       ? Icons.remove_red_eye_outlined
                       : Icons.visibility_off_outlined,
-                  color: AppColors.white.withOpacity(0.5),
+                  color: context.bodyMedium!.color!.withOpacity(0.5),
                 ),
               ),
             ),
@@ -235,7 +237,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         builder: (context, value, child) => SizedBox(
           width: 360,
           child: CommonTextField(
-            style: kBodyWhiteStyle,
+            style: context.bodyMedium,
             controller: _confirmPasswordController,
             onChanged: (p0) {},
             keyboardType: TextInputType.visiblePassword,
@@ -252,7 +254,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             obscureText: !value,
             prefixIcon: Icon(
               Icons.lock_outline,
-              color: AppColors.white.withOpacity(0.5),
+              color: context.bodyMedium!.color!.withOpacity(0.5),
             ),
             suffixIcon: GestureDetector(
               onTap: () {
@@ -262,7 +264,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 value
                     ? Icons.remove_red_eye_outlined
                     : Icons.visibility_off_outlined,
-                color: AppColors.white.withOpacity(0.5),
+                color: context.bodyMedium!.color!.withOpacity(0.5),
               ),
             ),
           ),
@@ -286,19 +288,24 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   Widget _buildForgotPasswordWidget() {
     return Text(AppString.forgotPassword.removeLast().toUpperCase(),
-        style: kHeadingWhiteStyle.copyWith(
-            fontSize: 36, fontWeight: FontWeight.w700));
+        style: context.bodyMedium!.copyWith(
+            color: Colors.white, fontSize: 36, fontWeight: FontWeight.w700));
   }
 
   Widget _buildHaveAccount() {
     return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-      const Text('Đã có tài khoản,', style: kButtonWhiteStyle),
+      Text(
+        'Đã có tài khoản,',
+        style:
+            context.bodyMedium!.copyWith(color: Colors.white.withOpacity(0.5)),
+      ),
       const SizedBox(width: defaultPadding / 2),
       GestureDetector(
           onTap: () => context.go(AppRoute.login),
           child: Text('Quay lại đăng nhập',
-              style: kBodyWhiteStyle.copyWith(
-                  color: AppColors.sun, fontWeight: FontWeight.bold)))
+              style: context.bodyMedium!.copyWith(
+                  color: context.colorScheme.primary,
+                  fontWeight: FontWeight.bold)))
     ]);
   }
 }

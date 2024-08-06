@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:minhlong_menu_admin_v3/core/extensions.dart';
 
-import '../../core/app_colors.dart';
 import '../../core/app_const.dart';
 
 class UploadImageWidget extends StatelessWidget {
@@ -13,7 +12,7 @@ class UploadImageWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 4,
-      shadowColor: AppColors.lavender,
+      shadowColor: Colors.white,
       child: Padding(
         padding: const EdgeInsets.all(defaultPadding),
         child: Column(
@@ -43,7 +42,7 @@ class UploadImageWidget extends StatelessWidget {
                       value: progress,
                       borderRadius: BorderRadius.circular(defaultPadding),
                       color: context.colorScheme.primary,
-                      backgroundColor: AppColors.smokeWhite,
+                      backgroundColor: Colors.white38,
 
                       // value: _userController.uploadProgress.value,
                     ),
@@ -52,7 +51,7 @@ class UploadImageWidget extends StatelessWidget {
                       child: Center(
                     child: Text(
                       '${(progress! * 100).toStringAsFixed(0)}%',
-                      style: const TextStyle(fontSize: 12),
+                      style: context.bodyMedium,
                     ),
                   ))
                 ],

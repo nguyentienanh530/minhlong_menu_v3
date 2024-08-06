@@ -6,12 +6,10 @@ import 'package:minhlong_menu_admin_v3/core/extensions.dart';
 import '../../../../common/dialog/app_dialog.dart';
 import '../../../../common/snackbar/overlay_snackbar.dart';
 import '../../../../common/widget/common_text_field.dart';
-import '../../../../core/app_colors.dart';
 import '../../../../core/app_const.dart';
 import '../../../../core/app_key.dart';
 import '../../../../core/app_res.dart';
 import '../../../../core/app_string.dart';
-import '../../../../core/app_style.dart';
 import '../../bloc/user_bloc.dart';
 import '../../data/repositories/user_repository.dart';
 
@@ -63,7 +61,8 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Đổi mật khẩu', style: kHeadingStyle),
+        backgroundColor: Colors.transparent,
+        title: Text('Đổi mật khẩu', style: context.titleStyleLarge),
         centerTitle: true,
       ),
       body: context.isMobile
@@ -116,8 +115,8 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
               20.verticalSpace,
               Text(
                   'Mật khẩu bao gồm (1 ký tự Hoa, 1 ký tự Thường, 1 ký tự số, 1 ký tự đặc biệt và tối thiểu 8 ký tự)',
-                  style:
-                      kCaptionStyle.copyWith(color: AppColors.secondTextColor)),
+                  style: context.bodyMedium!.copyWith(
+                      color: context.bodyMedium!.color!.withOpacity(0.5))),
               40.verticalSpace,
               _buttonChangePassword(),
             ],
@@ -140,9 +139,9 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                   ));
             }
           },
-          child: const Text(
+          child: Text(
             'Thay đổi mật khẩu',
-            style: kBodyWhiteStyle,
+            style: context.bodyMedium!.copyWith(color: Colors.white),
           )),
     );
   }
@@ -153,27 +152,27 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
       builder: (context, value, child) {
         return CommonTextField(
             maxLines: 1,
-            style: kBodyStyle,
+            style: context.bodyMedium,
             controller: _oldPasswordController,
             onFieldSubmitted: (p0) {},
             labelText: '${AppString.oldPassword} *',
             validator: (password) => AppRes.validatePassword(password)
                 ? null
                 : 'Mật khẩu không hợp lệ',
-            labelStyle:
-                kSubHeadingStyle.copyWith(color: AppColors.secondTextColor),
+            labelStyle: context.titleStyleMedium!.copyWith(
+                color: context.titleStyleMedium!.color!.withOpacity(0.5)),
             onChanged: (value) {},
             obscureText: !value,
             prefixIcon: Icon(
               Icons.lock_outline,
-              color: AppColors.secondTextColor.withOpacity(0.5),
+              color: context.titleStyleMedium!.color!.withOpacity(0.5),
             ),
             suffixIcon: GestureDetector(
                 onTap: () =>
                     _isShowOldPassword.value = !_isShowOldPassword.value,
                 child: Icon(
                     !value ? Icons.visibility_off : Icons.remove_red_eye,
-                    color: AppColors.secondTextColor.withOpacity(0.5))));
+                    color: context.titleStyleMedium!.color!.withOpacity(0.5))));
       },
     );
   }
@@ -184,12 +183,12 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
       builder: (context, value, child) {
         return CommonTextField(
             maxLines: 1,
-            style: kBodyStyle,
+            style: context.bodyMedium,
             controller: _newPasswordController,
             onFieldSubmitted: (p0) {},
             labelText: '${AppString.newPassword} *',
-            labelStyle:
-                kSubHeadingStyle.copyWith(color: AppColors.secondTextColor),
+            labelStyle: context.titleStyleMedium!.copyWith(
+                color: context.titleStyleMedium!.color!.withOpacity(0.5)),
             validator: (password) => AppRes.validatePassword(password)
                 ? null
                 : 'Mật khẩu không hợp lệ',
@@ -197,14 +196,14 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
             obscureText: !value,
             prefixIcon: Icon(
               Icons.lock_outline,
-              color: AppColors.secondTextColor.withOpacity(0.5),
+              color: context.titleStyleMedium!.color!.withOpacity(0.5),
             ),
             suffixIcon: GestureDetector(
                 onTap: () =>
                     _isShowNewPassword.value = !_isShowNewPassword.value,
                 child: Icon(
                     !value ? Icons.visibility_off : Icons.remove_red_eye,
-                    color: AppColors.secondTextColor.withOpacity(0.5))));
+                    color: context.titleStyleMedium!.color!.withOpacity(0.5))));
       },
     );
   }
@@ -215,12 +214,12 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
       builder: (context, value, child) {
         return CommonTextField(
             maxLines: 1,
-            style: kBodyStyle,
+            style: context.bodyMedium,
             controller: _confirmPasswordController,
             onFieldSubmitted: (p0) {},
             labelText: '${AppString.reNewPassword} *',
-            labelStyle:
-                kSubHeadingStyle.copyWith(color: AppColors.secondTextColor),
+            labelStyle: context.titleStyleMedium!.copyWith(
+                color: context.titleStyleMedium!.color!.withOpacity(0.5)),
             validator: (value) {
               if (_newPasswordController.text !=
                   _confirmPasswordController.text) {
@@ -234,14 +233,14 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
             obscureText: !value,
             prefixIcon: Icon(
               Icons.lock_outline,
-              color: AppColors.secondTextColor.withOpacity(0.5),
+              color: context.titleStyleMedium!.color!.withOpacity(0.5),
             ),
             suffixIcon: GestureDetector(
                 onTap: () => _isShowConfirmPassword.value =
                     !_isShowConfirmPassword.value,
                 child: Icon(
                     !value ? Icons.visibility_off : Icons.remove_red_eye,
-                    color: AppColors.secondTextColor.withOpacity(0.5))));
+                    color: context.titleStyleMedium!.color!.withOpacity(0.5))));
       },
     );
   }

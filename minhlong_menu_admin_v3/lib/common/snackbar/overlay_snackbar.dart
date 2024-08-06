@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:linear_timer/linear_timer.dart';
-import 'package:minhlong_menu_admin_v3/core/app_colors.dart';
-import 'package:minhlong_menu_admin_v3/core/app_style.dart';
+import 'package:minhlong_menu_admin_v3/core/extensions.dart';
 
 enum OverlaySnackbarType { success, error }
 
@@ -31,8 +30,8 @@ class OverlaySnackbar {
             width: 300,
             decoration: BoxDecoration(
                 color: type == OverlaySnackbarType.error
-                    ? AppColors.red.withOpacity(0.3)
-                    : AppColors.islamicGreen.withOpacity(0.3),
+                    ? Colors.red.withOpacity(0.3)
+                    : Colors.green.withOpacity(0.3),
                 borderRadius: BorderRadius.circular(10)),
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
             child: Stack(
@@ -43,29 +42,34 @@ class OverlaySnackbar {
                       flex: 2,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           type == OverlaySnackbarType.error
                               ? const Icon(Icons.error,
-                                  color: AppColors.red, size: 20)
+                                  color: Colors.red, size: 20)
                               : const Icon(Icons.check_circle,
-                                  color: AppColors.islamicGreen, size: 20),
+                                  color: Colors.green, size: 20),
                           const SizedBox(width: 10),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                type == OverlaySnackbarType.error
-                                    ? 'Lỗi!'
-                                    : 'Thành công!',
-                                style: kSubHeadingStyle.copyWith(
-                                    fontWeight: FontWeight.w700),
-                              ),
-                              Text(
-                                message,
-                                style: kBodyStyle.copyWith(
-                                    color: AppColors.black.withOpacity(0.5)),
-                              ),
-                            ],
+                          FittedBox(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  type == OverlaySnackbarType.error
+                                      ? 'Lỗi!'
+                                      : 'Thành công!',
+                                  style: context.titleStyleMedium!.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  message,
+                                  style: context.bodySmall!.copyWith(
+                                      color: context.bodyMedium!.color!
+                                          .withOpacity(0.5)),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
@@ -75,8 +79,8 @@ class OverlaySnackbar {
                       padding: const EdgeInsets.symmetric(vertical: 3),
                       child: LinearTimer(
                         color: type == OverlaySnackbarType.error
-                            ? AppColors.red
-                            : AppColors.islamicGreen,
+                            ? Colors.red
+                            : Colors.green,
                         duration: const Duration(seconds: 3),
                         onTimerEnd: () {
                           overlayEntry.remove();
@@ -90,8 +94,8 @@ class OverlaySnackbar {
                   top: 0,
                   right: 0,
                   child: InkWell(
-                    child: const Icon(Icons.close,
-                        color: AppColors.white, size: 20),
+                    child:
+                        const Icon(Icons.close, color: Colors.white, size: 20),
                     onTap: () {
                       overlayEntry.remove();
                     },

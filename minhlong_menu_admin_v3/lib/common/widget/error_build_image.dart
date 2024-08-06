@@ -1,7 +1,5 @@
-import 'package:flutter/widgets.dart';
-
-import '../../core/app_colors.dart';
-import '../../core/app_style.dart';
+import 'package:flutter/material.dart';
+import 'package:minhlong_menu_admin_v3/core/extensions.dart';
 
 Widget errorBuilderForImage(context, error, stackTrace) {
   return const ImageNotFound();
@@ -20,13 +18,13 @@ class ImageNotFound extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: color ?? AppColors.smokeWhite,
+      color: color ?? Colors.white54.withOpacity(0.3),
       child: Center(
         child: FittedBox(
           child: Text(
             '(>_<)',
-            style: kSubHeadingStyle.copyWith(
-              color: tintcolor ?? AppColors.smokeWhite1,
+            style: context.titleStyleMedium!.copyWith(
+              color: tintcolor ?? Colors.white54,
               fontSize: 15,
             ),
           ),

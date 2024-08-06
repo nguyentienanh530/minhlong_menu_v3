@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'package:minhlong_menu_admin_v3/core/app_style.dart';
+import 'package:minhlong_menu_admin_v3/core/extensions.dart';
 
 class Indicator extends StatelessWidget {
   const Indicator({
@@ -37,7 +36,7 @@ class Indicator extends StatelessWidget {
           text,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: kBodyStyle.copyWith(
+          style: context.bodyMedium!.copyWith(
             fontWeight: FontWeight.w900,
           ),
         ),

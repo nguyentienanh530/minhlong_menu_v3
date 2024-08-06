@@ -5,7 +5,6 @@ extension _FoodBodyWidget on _FoodViewState {
     return Container(
       padding: const EdgeInsets.all(5).r,
       decoration: BoxDecoration(
-        color: AppColors.white,
         borderRadius: BorderRadius.circular(defaultBorderRadius).r,
       ),
       child: _tableWidget(),
@@ -75,8 +74,8 @@ extension _FoodBodyWidget on _FoodViewState {
                   return Center(
                     child: Text(
                       'Không có dữ liệu',
-                      style:
-                          kBodyStyle.copyWith(color: AppColors.secondTextColor),
+                      style: context.bodyMedium!.copyWith(
+                          color: context.bodyMedium!.color!.withOpacity(0.5)),
                     ),
                   );
 
@@ -117,8 +116,9 @@ extension _FoodBodyWidget on _FoodViewState {
                             valueListenable: _limit,
                             builder: (context, limit, child) => Text(
                               'Hiển thị 1 đến $limit trong số ${pagination.totalItem} món',
-                              style: kCaptionStyle.copyWith(
-                                color: AppColors.secondTextColor,
+                              style: context.bodyMedium!.copyWith(
+                                color:
+                                    context.bodyMedium!.color!.withOpacity(0.5),
                               ),
                             ),
                           );
@@ -141,6 +141,7 @@ extension _FoodBodyWidget on _FoodViewState {
                       pageTotal: pagination.totalPage,
                       pageInit: _curentPage.value,
                       colorPrimary: context.colorScheme.primary,
+                      colorSub: context.colorScheme.surface,
                     );
                   },
                 ),
@@ -154,6 +155,7 @@ extension _FoodBodyWidget on _FoodViewState {
 
   Widget _buildWidgetSuccess(FoodModel food) {
     return Table(
+
         // border: TableBorder.all(),
         columnWidths: const <int, TableColumnWidth>{
           0: FixedColumnWidth(100),
@@ -179,9 +181,9 @@ extension _FoodBodyWidget on _FoodViewState {
           .map((e) => Text(
                 e,
                 textAlign: TextAlign.center,
-                style: kBodyStyle.copyWith(
+                style: context.bodyMedium!.copyWith(
                     fontWeight: FontWeight.w600,
-                    color: AppColors.secondTextColor),
+                    color: context.bodyMedium!.color!.withOpacity(0.8)),
               ))
           .toList(),
     );
@@ -191,8 +193,9 @@ extension _FoodBodyWidget on _FoodViewState {
     final isShowFood = ValueNotifier(foodItem.isShow);
     return TableRow(
       decoration: BoxDecoration(
-        color:
-            index.isEven ? AppColors.black.withOpacity(0.1) : AppColors.white,
+        color: index.isEven
+            ? Colors.transparent
+            : context.colorScheme.primary.withOpacity(0.05),
       ),
       children: <Widget>[
         Container(
@@ -217,7 +220,8 @@ extension _FoodBodyWidget on _FoodViewState {
           alignment: Alignment.center,
           child: Text(
             foodItem.name,
-            style: kBodyStyle.copyWith(color: AppColors.secondTextColor),
+            style: context.bodyMedium!
+                .copyWith(color: context.bodyMedium!.color!.withOpacity(0.5)),
           ),
         ),
         Container(
@@ -225,7 +229,8 @@ extension _FoodBodyWidget on _FoodViewState {
           alignment: Alignment.center,
           child: Text(
             foodItem.categoryName,
-            style: kBodyStyle.copyWith(color: AppColors.secondTextColor),
+            style: context.bodyMedium!
+                .copyWith(color: context.bodyMedium!.color!.withOpacity(0.5)),
           ),
         ),
         Container(
@@ -233,7 +238,8 @@ extension _FoodBodyWidget on _FoodViewState {
           alignment: Alignment.center,
           child: Text(
             Ultils.currencyFormat(foodItem.price ?? 0.0),
-            style: kBodyStyle.copyWith(color: AppColors.secondTextColor),
+            style: context.bodyMedium!
+                .copyWith(color: context.bodyMedium!.color!.withOpacity(0.5)),
           ),
         ),
         Container(
@@ -241,7 +247,8 @@ extension _FoodBodyWidget on _FoodViewState {
           alignment: Alignment.center,
           child: Text(
             '${foodItem.discount ?? 0}%',
-            style: kBodyStyle.copyWith(color: AppColors.secondTextColor),
+            style: context.bodyMedium!
+                .copyWith(color: context.bodyMedium!.color!.withOpacity(0.5)),
           ),
         ),
         Container(
@@ -252,17 +259,18 @@ extension _FoodBodyWidget on _FoodViewState {
             builder: (context, value, child) {
               return Switch(
                   activeColor: context.colorScheme.primary,
-                  inactiveThumbColor: AppColors.black.withOpacity(0.5),
+                  inactiveThumbColor:
+                      context.colorScheme.onPrimaryContainer.withOpacity(0.8),
                   inactiveTrackColor:
-                      AppColors.secondTextColor.withOpacity(0.3),
+                      context.colorScheme.onPrimaryContainer.withOpacity(0.1),
                   activeTrackColor:
                       context.colorScheme.primary.withOpacity(0.3),
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   dragStartBehavior: DragStartBehavior.start,
-                  hoverColor: AppColors.lavender,
+                  hoverColor: Colors.white54,
                   trackOutlineWidth: const WidgetStatePropertyAll(0),
                   trackOutlineColor:
-                      const WidgetStatePropertyAll(AppColors.transparent),
+                      const WidgetStatePropertyAll(Colors.transparent),
                   value: isShowFood.value ?? false,
                   onChanged: (value) {
                     isShowFood.value = value;
@@ -285,7 +293,7 @@ extension _FoodBodyWidget on _FoodViewState {
                       mode: ScreenType.update, foodItem: foodItem);
                 },
                 icon: Icons.edit,
-                color: AppColors.sun,
+                color: Colors.yellow.shade700,
                 tooltip: 'Chỉnh sửa',
               ),
             ),
@@ -314,7 +322,7 @@ extension _FoodBodyWidget on _FoodViewState {
                   // );
                 },
                 icon: Icons.delete_outline,
-                color: AppColors.red,
+                color: Colors.red,
                 tooltip: 'Xóa món',
               ),
             ),
@@ -331,7 +339,6 @@ extension _FoodBodyWidget on _FoodViewState {
         builder: (context) => BlocProvider(
               create: (context) => FoodBloc(context.read<FoodRepository>()),
               child: Dialog(
-                backgroundColor: AppColors.background,
                 child: CreateOrUpdateFoodDialog(
                   mode: mode,
                   foodItem: foodItem,

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:minhlong_menu_admin_v3/core/app_colors.dart';
 import 'package:minhlong_menu_admin_v3/core/extensions.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -13,8 +12,8 @@ class TCBLoadingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Shimmer.fromColors(
-        baseColor: AppColors.smokeWhite1,
-        highlightColor: AppColors.smokeWhite2,
+        baseColor: Colors.white,
+        highlightColor: Colors.white54,
         child: Padding(
           padding: const EdgeInsets.all(30).r,
           child: Column(
@@ -71,7 +70,7 @@ class TCBLoadingScreen extends StatelessWidget {
       height: cHeight,
       width: cWidth,
       decoration: BoxDecoration(
-          color: AppColors.white,
+          color: Colors.white,
           borderRadius: BorderRadius.circular(textFieldBorderRadius).r),
     );
   }

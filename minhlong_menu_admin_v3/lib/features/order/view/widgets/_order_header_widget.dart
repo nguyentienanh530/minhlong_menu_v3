@@ -36,9 +36,10 @@ extension _OrderHeaderWidget on _OrderViewState {
                 WidgetStatePropertyAll(context.colorScheme.primary),
             shape: WidgetStatePropertyAll(RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(textFieldBorderRadius)))),
-        child: const Text(
+        child: Text(
           'Thêm',
-          style: kButtonWhiteStyle,
+          style: context.bodyMedium!
+              .copyWith(color: Colors.white, fontWeight: FontWeight.bold),
         ));
   }
 
@@ -58,9 +59,9 @@ extension _OrderHeaderWidget on _OrderViewState {
                 WidgetStatePropertyAll(context.colorScheme.primary),
             shape: WidgetStatePropertyAll(RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(textFieldBorderRadius)))),
-        child: const Text(
+        child: Text(
           'Thanh toán',
-          style: kButtonWhiteStyle,
+          style: context.bodyMedium!.copyWith(color: Colors.white),
         ));
   }
 }

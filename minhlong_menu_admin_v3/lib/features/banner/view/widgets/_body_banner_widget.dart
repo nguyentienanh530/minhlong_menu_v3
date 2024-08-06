@@ -5,7 +5,6 @@ extension _BodyBannerWidget on _BannerViewState {
     return Container(
       padding: const EdgeInsets.all(5).r,
       decoration: BoxDecoration(
-        color: AppColors.white,
         borderRadius: BorderRadius.circular(defaultBorderRadius).r,
       ),
       child: _bannerWidget(),
@@ -69,8 +68,8 @@ extension _BodyBannerWidget on _BannerViewState {
                   return Center(
                     child: Text(
                       'Không có dữ liệu',
-                      style:
-                          kBodyStyle.copyWith(color: AppColors.secondTextColor),
+                      style: context.bodyMedium!
+                          .copyWith(color: context.bodyMedium!.color),
                     ),
                   );
 
@@ -111,8 +110,8 @@ extension _BodyBannerWidget on _BannerViewState {
                               valueListenable: _limit,
                               builder: (context, limit, child) => Text(
                                 'Hiển thị 1 đến $limit trong số ${pagination.totalItem} banner',
-                                style: kBodyStyle.copyWith(
-                                  color: AppColors.secondTextColor,
+                                style: context.bodyMedium!.copyWith(
+                                  color: context.bodyMedium!.color,
                                 ),
                               ),
                             );
@@ -138,6 +137,7 @@ extension _BodyBannerWidget on _BannerViewState {
                         pageTotal: pagination.totalPage,
                         pageInit: _curentPage.value,
                         colorPrimary: context.colorScheme.primary,
+                        colorSub: context.colorScheme.surface,
                       ),
                     );
                   },
@@ -174,9 +174,9 @@ extension _BodyBannerWidget on _BannerViewState {
           .map((e) => Text(
                 e,
                 textAlign: TextAlign.center,
-                style: kBodyStyle.copyWith(
+                style: context.bodyMedium!.copyWith(
                     fontWeight: FontWeight.w600,
-                    color: AppColors.secondTextColor),
+                    color: context.bodyMedium!.color!.withOpacity(0.8)),
               ))
           .toList(),
     );
@@ -186,8 +186,9 @@ extension _BodyBannerWidget on _BannerViewState {
     final isShowBanner = ValueNotifier(bannerItem.show);
     return TableRow(
       decoration: BoxDecoration(
-        color:
-            index.isEven ? AppColors.black.withOpacity(0.1) : AppColors.white,
+        color: index.isEven
+            ? Colors.transparent
+            : context.colorScheme.primary.withOpacity(0.05),
       ),
       children: <Widget>[
         Container(
@@ -211,7 +212,8 @@ extension _BodyBannerWidget on _BannerViewState {
           alignment: Alignment.center,
           child: Text(
             bannerItem.image.split('/').last,
-            style: kBodyStyle.copyWith(color: AppColors.secondTextColor),
+            style: context.bodyMedium!
+                .copyWith(color: context.bodyMedium!.color!.withOpacity(0.5)),
           ),
         ),
         Container(
@@ -222,17 +224,18 @@ extension _BodyBannerWidget on _BannerViewState {
             builder: (context, value, child) {
               return Switch(
                   activeColor: context.colorScheme.primary,
-                  inactiveThumbColor: AppColors.black.withOpacity(0.5),
+                  inactiveThumbColor:
+                      context.colorScheme.onPrimaryContainer.withOpacity(0.8),
                   inactiveTrackColor:
-                      AppColors.secondTextColor.withOpacity(0.3),
+                      context.colorScheme.onPrimaryContainer.withOpacity(0.1),
                   activeTrackColor:
                       context.colorScheme.primary.withOpacity(0.3),
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   dragStartBehavior: DragStartBehavior.start,
-                  hoverColor: AppColors.lavender,
+                  hoverColor: Colors.white54,
                   trackOutlineWidth: const WidgetStatePropertyAll(0),
                   trackOutlineColor:
-                      const WidgetStatePropertyAll(AppColors.transparent),
+                      const WidgetStatePropertyAll(Colors.transparent),
                   value: isShowBanner.value ?? false,
                   onChanged: (value) {
                     isShowBanner.value = value;
@@ -256,7 +259,7 @@ extension _BodyBannerWidget on _BannerViewState {
                       type: ScreenType.update, bannerItem: bannerItem);
                 },
                 icon: Icons.edit,
-                color: AppColors.sun,
+                color: Colors.yellow.shade700,
                 tooltip: 'Chỉnh sửa',
               ),
             ),
@@ -289,7 +292,7 @@ extension _BodyBannerWidget on _BannerViewState {
                   // );
                 },
                 icon: Icons.delete_outline,
-                color: AppColors.red,
+                color: Colors.red,
                 tooltip: 'Xóa',
               ),
             ),
@@ -307,7 +310,6 @@ extension _BodyBannerWidget on _BannerViewState {
               create: (context) => BannerBloc(
                   bannerRepository: context.read<BannerRepository>()),
               child: Dialog(
-                backgroundColor: AppColors.background,
                 child: CreateOrUpdateBanner(
                   type: type,
                   bannItem: bannerItem,

@@ -44,13 +44,10 @@ extension _FoodHeaderWidget on _FoodViewState {
   Widget _buildDropdown() {
     return Container(
         height: 35,
-        width: 100.h,
+        width: 100,
         padding: const EdgeInsets.symmetric(horizontal: defaultPadding / 2),
         alignment: Alignment.center,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-          color: AppColors.white,
-        ),
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
         child: ValueListenableBuilder(
           valueListenable: _limit,
           builder: (context, limit, child) {
@@ -61,8 +58,8 @@ extension _FoodHeaderWidget on _FoodViewState {
               icon: const Icon(Icons.arrow_drop_down),
               borderRadius: BorderRadius.circular(defaultBorderRadius).r,
               underline: const SizedBox(),
-              style: kBodyStyle.copyWith(color: AppColors.secondTextColor),
-              dropdownColor: AppColors.white,
+              style: context.bodyMedium!
+                  .copyWith(color: context.bodyMedium!.color),
               items: itemsDropdown,
               onChanged: (value) {
                 _limit.value = int.parse(value.toString());
@@ -85,13 +82,13 @@ extension _FoodHeaderWidget on _FoodViewState {
       child: CompositedTransformTarget(
         link: _layerLink,
         child: CommonTextField(
-          filled: true,
           hintText: 'Tìm kiếm',
+          hintStyle: context.bodyMedium,
           controller: _searchController,
           focusNode: _focusSearch,
+          filled: true,
           onChanged: (value) async {
             _searchController.text = value;
-            print('overLay: $_overlayShown');
             if (value.isNotEmpty && !_overlayShown) {
               _showOverlaySearch();
               _overlayShown = true;
@@ -101,15 +98,16 @@ extension _FoodHeaderWidget on _FoodViewState {
                 .read<SearchFoodBloc>()
                 .add(SearchFoodStarted(query: _searchController.text));
           },
-          prefixIcon:
-              const Icon(Icons.search, color: AppColors.secondTextColor),
+          prefixIcon: Icon(Icons.search,
+              color: context.bodyMedium!.color!.withOpacity(0.8)),
           suffixIcon: InkWell(
             onTap: () {
               _searchController.clear();
               context.read<SearchFoodBloc>().add(SearchFoodReset());
             },
-            child: const SizedBox(
-              child: Icon(Icons.clear, color: AppColors.secondTextColor),
+            child: SizedBox(
+              child: Icon(Icons.clear,
+                  color: context.bodyMedium!.color!.withOpacity(0.8)),
             ),
           ),
         ),
@@ -132,7 +130,8 @@ extension _FoodHeaderWidget on _FoodViewState {
         ),
         child: Text(
           'Thêm',
-          style: kBodyStyle.copyWith(color: AppColors.white),
+          style: context.bodyMedium!
+              .copyWith(color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
     );
@@ -157,7 +156,7 @@ extension _FoodHeaderWidget on _FoodViewState {
             color: Colors.transparent,
             child: Card(
               elevation: 30,
-              shadowColor: AppColors.lavender,
+              shadowColor: Colors.white54,
               child: SizedBox(
                 height: 300,
                 child: Padding(
@@ -165,15 +164,15 @@ extension _FoodHeaderWidget on _FoodViewState {
                   child: Builder(
                     builder: (context) {
                       var state = context.watch<SearchFoodBloc>().state;
-                      print('state in search: $state');
                       return (switch (state) {
                         FoodSearchInProgress() => const Loading(),
                         FoodSearchSuccess() => buildListFood(state.foodItems),
                         FoodSearchFailure() => const SizedBox(),
                         FoodSearchEmpty() => Center(
                             child: Text('Không có dữ liệu',
-                                style: kBodyStyle.copyWith(
-                                    color: AppColors.secondTextColor))),
+                                style: context.bodyMedium!.copyWith(
+                                    color: context.bodyMedium!.color!
+                                        .withOpacity(0.5)))),
                         _ => const SizedBox(),
                       });
                     },
@@ -199,7 +198,6 @@ extension _FoodHeaderWidget on _FoodViewState {
   }
 
   buildListFood(List<FoodItem> foodItems) {
-    print('state in search: $foodItems');
     return ListView.builder(
       itemCount: foodItems.length,
       itemBuilder: (context, index) {
@@ -219,7 +217,7 @@ extension _FoodHeaderWidget on _FoodViewState {
       },
       title: Text(
         foodItem.name,
-        style: kBodyStyle,
+        style: context.bodyMedium,
       ),
       leading: SizedBox(
         height: 35,
