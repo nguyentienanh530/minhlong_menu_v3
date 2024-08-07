@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:minhlong_menu_client_v3/common/widget/error_build_image.dart';
+import 'package:minhlong_menu_client_v3/common/widgets/error_build_image.dart';
 import 'package:minhlong_menu_client_v3/core/api_config.dart';
 import 'package:minhlong_menu_client_v3/core/extensions.dart';
 import 'package:minhlong_menu_client_v3/features/food/data/dto/item_food_size_dto.dart';

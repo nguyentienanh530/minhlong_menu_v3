@@ -1,4 +1,3 @@
-import 'package:device_preview/device_preview.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -176,8 +175,6 @@ class _AppContentState extends State<AppContent> {
       builder: (_, child) {
         return MaterialApp.router(
           debugShowCheckedModeBanner: false,
-          locale: DevicePreview.locale(context),
-          builder: DevicePreview.appBuilder,
           routerConfig: AppRoute.routes,
           scrollBehavior: MyCustomScrollBehavior(),
           theme: themeState

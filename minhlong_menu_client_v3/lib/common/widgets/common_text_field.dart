@@ -92,8 +92,8 @@ class CommonTextField extends StatelessWidget {
             filled: filled ?? false,
             hintText: hintText,
             labelText: labelText,
-            errorStyle: context.bodyMedium!
-                .copyWith(color: context.colorScheme.primary),
+            errorStyle:
+                context.bodyMedium!.copyWith(color: context.colorScheme.error),
             hintStyle: hintStyle ?? context.bodyMedium,
             labelStyle: labelStyle ?? context.bodyMedium),
         onChanged: onChanged);

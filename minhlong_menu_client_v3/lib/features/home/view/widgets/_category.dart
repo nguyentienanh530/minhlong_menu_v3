@@ -23,12 +23,13 @@ extension _CategoryWidget on _HomeViewState {
           context.push(AppRoute.categories, extra: categoryModel);
         },
         child: Card(
+          elevation: 1,
           color: context.colorScheme.primary,
+          // surfaceTintColor: context.colorScheme.surfaceTint,
           margin: const EdgeInsets.only(left: 10, bottom: 20),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(100),
           ),
-          elevation: 5,
           child: Column(
             children: [
               Expanded(

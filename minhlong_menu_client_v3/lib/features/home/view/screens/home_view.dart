@@ -1,6 +1,5 @@
 import 'package:badges/badges.dart' as badges;
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -8,7 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_client_v3/common/dialog/app_dialog.dart';
 import 'package:minhlong_menu_client_v3/common/snackbar/app_snackbar.dart';
-import 'package:minhlong_menu_client_v3/common/widget/common_item_food.dart';
+import 'package:minhlong_menu_client_v3/common/widgets/common_item_food.dart';
 import 'package:minhlong_menu_client_v3/core/app_const.dart';
 import 'package:minhlong_menu_client_v3/core/app_string.dart';
 import 'package:minhlong_menu_client_v3/core/extensions.dart';
@@ -21,11 +20,11 @@ import 'package:minhlong_menu_client_v3/features/table/data/model/table_model.da
 import 'package:minhlong_menu_client_v3/features/user/cubit/user_cubit.dart';
 import 'package:minhlong_menu_client_v3/features/user/data/model/user_model.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-
 import '../../../../Routes/app_route.dart';
-import '../../../../common/widget/error_build_image.dart';
-import '../../../../common/widget/error_screen.dart';
-import '../../../../common/widget/loading.dart';
+import '../../../../common/widgets/carousel_slider/carousel_slider.dart';
+import '../../../../common/widgets/error_build_image.dart';
+import '../../../../common/widgets/error_screen.dart';
+import '../../../../common/widgets/loading.dart';
 import '../../../../core/api_config.dart';
 import '../../../../core/app_asset.dart';
 import '../../../banner/data/model/banner_model.dart';
@@ -35,11 +34,11 @@ import '../../../food/data/model/food_item.dart';
 import '../../../table/cubit/table_cubit.dart';
 import '../../bloc/home_bloc.dart';
 
-part '../widgets/_appbar_widget.dart';
-part '../widgets/_banner_widget.dart';
-part '../widgets/_category_widget.dart';
-part '../widgets/_news_food_widget.dart';
-part '../widgets/_popular_widget.dart';
+part '../widgets/_appbar.dart';
+part '../widgets/_banner.dart';
+part '../widgets/_category.dart';
+part '../widgets/_news_food.dart';
+part '../widgets/_popular_food.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -111,79 +110,7 @@ class _HomeViewState extends State<HomeView>
                   child: CustomScrollView(
                     physics: const BouncingScrollPhysics(),
                     slivers: [
-                      SliverAppBar(
-                        stretch: true,
-                        pinned: true,
-                        titleSpacing: 10,
-                        toolbarHeight: 80.h,
-                        leadingWidth: 0,
-                        title: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            children: [
-                              Card(
-                                elevation: 4,
-                                shape: const CircleBorder(),
-                                child: Container(
-                                  width: 40,
-                                  height: 40,
-                                  clipBehavior: Clip.antiAlias,
-                                  decoration: const BoxDecoration(
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: ClipRRect(
-                                    child: CachedNetworkImage(
-                                        imageUrl:
-                                            '${ApiConfig.host}${user.image}',
-                                        placeholder: (context, url) =>
-                                            const Loading(),
-                                        errorWidget: errorBuilderForImage,
-                                        fit: BoxFit.cover),
-                                  ),
-                                ),
-                              ),
-                              10.horizontalSpace,
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Xin chào!',
-                                    style: context.bodySmall!.copyWith(
-                                        color: context.bodySmall!.color!
-                                            .withOpacity(0.5)),
-                                  ),
-                                  Text(user.fullName,
-                                      style: context.bodyLarge!.copyWith(
-                                          fontWeight: FontWeight.w900)),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        bottom: PreferredSize(
-                            preferredSize: const Size(double.infinity, 40),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: defaultPadding / 2),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  5.horizontalSpace,
-                                  Expanded(child: _buildSearchWidget()),
-                                  10.horizontalSpace,
-                                  _buildIconTableWidget(tableState),
-                                  5.horizontalSpace
-                                ],
-                              ),
-                            )),
-                        actions: [
-                          _iconActionButtonAppBar(
-                              icon: Icons.tune,
-                              onPressed: () => context.push(AppRoute.profile)),
-                          5.horizontalSpace
-                        ],
-                      ),
+                      _buildAppBar(user, tableState),
                       SliverToBoxAdapter(
                         child: AspectRatio(
                             aspectRatio: 16 / 9,
@@ -232,10 +159,14 @@ class _HomeViewState extends State<HomeView>
                 alignment: Alignment.center,
                 child: FittedBox(
                   fit: BoxFit.scaleDown,
-                  child: Text(table.name,
-                      textAlign: TextAlign.center,
-                      style: context.bodyMedium!.copyWith(
-                          color: Colors.white, fontWeight: FontWeight.bold)),
+                  child: Text(
+                    table.name,
+                    textAlign: TextAlign.center,
+                    style: context.bodyMedium!.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               ),
             ),

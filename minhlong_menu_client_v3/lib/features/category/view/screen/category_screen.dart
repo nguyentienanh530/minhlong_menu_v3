@@ -4,10 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_client_v3/Routes/app_route.dart';
-import 'package:minhlong_menu_client_v3/common/widget/cart_button.dart';
-import 'package:minhlong_menu_client_v3/common/widget/common_back_button.dart';
-import 'package:minhlong_menu_client_v3/common/widget/error_screen.dart';
-import 'package:minhlong_menu_client_v3/common/widget/loading.dart';
+import 'package:minhlong_menu_client_v3/common/widgets/cart_button.dart';
+import 'package:minhlong_menu_client_v3/common/widgets/common_back_button.dart';
+import 'package:minhlong_menu_client_v3/common/widgets/error_screen.dart';
+import 'package:minhlong_menu_client_v3/common/widgets/loading.dart';
 import 'package:minhlong_menu_client_v3/core/api_config.dart';
 import 'package:minhlong_menu_client_v3/core/app_asset.dart';
 import 'package:minhlong_menu_client_v3/core/app_string.dart';
@@ -15,9 +15,8 @@ import 'package:minhlong_menu_client_v3/core/extensions.dart';
 import 'package:minhlong_menu_client_v3/features/food/data/model/food_model.dart';
 import 'package:minhlong_menu_client_v3/features/food/data/repositories/food_repository.dart';
 import 'package:minhlong_menu_client_v3/features/user/cubit/user_cubit.dart';
-
-import '../../../../common/widget/common_item_food.dart';
-import '../../../../common/widget/error_build_image.dart';
+import '../../../../common/widgets/common_item_food.dart';
+import '../../../../common/widgets/error_build_image.dart';
 import '../../../../core/app_const.dart';
 import '../../../cart/cubit/cart_cubit.dart';
 import '../../../food/bloc/food_bloc.dart';
@@ -143,7 +142,7 @@ class _CategoryViewState extends State<CategoryView> {
                       child: _buildWidgetWhenFetchSuccess(
                           cart.order, table, state.food)),
                   SliverPadding(
-                    padding: const EdgeInsets.only(bottom: defaultPadding),
+                    padding: const EdgeInsets.all(defaultPadding),
                     sliver: SliverToBoxAdapter(
                       child: Padding(
                         padding: const EdgeInsets.only(bottom: defaultPadding),
@@ -230,6 +229,7 @@ class _CategoryViewState extends State<CategoryView> {
     return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
+      padding: const EdgeInsets.symmetric(horizontal: defaultPadding / 2),
       itemCount: food.foodItems.length,
       itemBuilder: (context, index) {
         return CommonItemFood(

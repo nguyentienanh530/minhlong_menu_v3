@@ -51,10 +51,12 @@ class CartCubit extends Cubit<CartState> {
             foodImage: food.image1 ?? '',
             foodName: food.name,
             quantity: quantity ?? 1,
-            totalAmount: Ultils.foodPrice(
-                isDiscount: food.isDiscount ?? false,
-                foodPrice: food.price ?? 0,
-                discount: food.discount ?? 0),
+            totalAmount: ((quantity ?? 1) *
+                    Ultils.foodPrice(
+                        isDiscount: food.isDiscount ?? false,
+                        foodPrice: food.price ?? 0,
+                        discount: food.discount ?? 0))
+                .toDouble(),
             note: '',
             discount: food.discount ?? 0,
             foodPrice: food.price ?? 0,

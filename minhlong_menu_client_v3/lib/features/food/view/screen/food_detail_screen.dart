@@ -1,12 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:minhlong_menu_client_v3/common/widget/common_text_field.dart';
-import 'package:minhlong_menu_client_v3/common/widget/error_build_image.dart';
+import 'package:minhlong_menu_client_v3/common/widgets/common_text_field.dart';
+import 'package:minhlong_menu_client_v3/common/widgets/error_build_image.dart';
 import 'package:minhlong_menu_client_v3/core/app_asset.dart';
 import 'package:minhlong_menu_client_v3/core/extensions.dart';
 import 'package:minhlong_menu_client_v3/features/cart/cubit/cart_cubit.dart';
@@ -16,10 +15,10 @@ import 'package:minhlong_menu_client_v3/features/table/cubit/table_cubit.dart';
 import 'package:minhlong_menu_client_v3/features/table/data/model/table_model.dart';
 import 'package:readmore/readmore.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-
 import '../../../../Routes/app_route.dart';
-import '../../../../common/widget/cart_button.dart';
-import '../../../../common/widget/loading.dart';
+import '../../../../common/widgets/carousel_slider/carousel_slider.dart';
+import '../../../../common/widgets/cart_button.dart';
+import '../../../../common/widgets/loading.dart';
 import '../../../../core/api_config.dart';
 import '../../../../core/app_const.dart';
 import '../../../../core/app_string.dart';
@@ -103,7 +102,8 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                           right: 10,
                           left: 10,
                           child: Card(
-                            elevation: 10,
+                            elevation: 1,
+                            surfaceTintColor: context.colorScheme.surfaceTint,
                             margin: const EdgeInsets.symmetric(
                                 horizontal: defaultPadding),
                             child: FittedBox(
@@ -285,7 +285,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         const Icon(
-          Icons.fastfood_outlined,
+          Icons.check_circle,
           color: Colors.green,
           size: 24,
         ),

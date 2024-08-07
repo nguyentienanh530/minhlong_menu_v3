@@ -8,18 +8,20 @@ import 'package:minhlong_menu_client_v3/core/app_asset.dart';
 import 'package:minhlong_menu_client_v3/core/extensions.dart';
 import 'package:minhlong_menu_client_v3/features/auth/data/respositories/auth_repository.dart';
 
-import '../../../../common/dialog/app_dialog.dart';
-import '../../../../common/snackbar/app_snackbar.dart';
-import '../../../../common/widget/common_back_button.dart';
-import '../../../../common/widget/common_text_field.dart';
-import '../../../../core/app_const.dart';
-import '../../../../core/app_res.dart';
-import '../../../../core/app_string.dart';
-import '../../../theme/cubit/theme_cubit.dart';
-import '../../bloc/auth_bloc.dart';
-import '../../data/dto/login_dto.dart';
+import '../../../../../common/dialog/app_dialog.dart';
+import '../../../../../common/snackbar/app_snackbar.dart';
+import '../../../../../common/widgets/common_back_button.dart';
+import '../../../../../common/widgets/common_text_field.dart';
+import '../../../../../core/app_const.dart';
+import '../../../../../core/app_res.dart';
+import '../../../../../core/app_string.dart';
+import '../../../../theme/cubit/theme_cubit.dart';
+import '../../../bloc/auth_bloc.dart';
+import '../../../data/dto/login_dto.dart';
 
-part '../widgets/_forgot_password_body.dart';
+part '../widgets/_phone_number_text_field.dart';
+part '../widgets/_new_password_text_field.dart';
+part '../widgets/_confirm_password_text_field.dart';
 
 class ForgotPasswordScreen extends StatelessWidget {
   const ForgotPasswordScreen({super.key});
@@ -86,8 +88,8 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
 
   Widget _buildFormForgotPassword() {
     return Card(
-      elevation: 10,
-      color: context.colorScheme.surface.withOpacity(0.9),
+      elevation: 1,
+      surfaceTintColor: context.colorScheme.surfaceTint,
       child: FittedBox(
         child: Padding(
           padding: const EdgeInsets.all(35).r,
@@ -125,11 +127,11 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                             fontSize: 14,
                             color: context.bodySmall!.color!.withOpacity(0.5))),
                     20.verticalSpace,
-                    _buildPhoneField(),
+                    _buildPhoneField,
                     20.verticalSpace,
-                    _buildPasswordField(),
+                    _buildPasswordField,
                     20.verticalSpace,
-                    _buildConfirmPasswordField(),
+                    _buildConfirmPasswordField,
                     10.verticalSpace,
                     SizedBox(
                       width: 360,
@@ -183,95 +185,6 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
       ),
     );
   }
-
-  Widget _buildConfirmPasswordField() {
-    return ListenableBuilder(
-      listenable: _isShowConfirmPassword,
-      builder: (context, _) {
-        return CommonTextField(
-          maxLines: 1,
-          controller: _confirmPasswordController,
-          onFieldSubmitted: (p0) {},
-          labelText: AppString.confirmPassword,
-          validator: (value) {
-            if (_passwordController.text != _confirmPasswordController.text) {
-              return 'Xác nhận mật khẩu không khớp';
-            }
-            return AppRes.validatePassword(value)
-                ? null
-                : 'mật khẩu không hợp lệ';
-          },
-          onChanged: (value) {},
-          obscureText: !_isShowConfirmPassword.value,
-          prefixIcon: Icon(
-            Icons.lock_outline,
-            color: context.colorScheme.primary.withOpacity(0.8),
-          ),
-          suffixIcon: GestureDetector(
-            onTap: () =>
-                _isShowConfirmPassword.value = !_isShowConfirmPassword.value,
-            child: Icon(
-              !_isShowConfirmPassword.value
-                  ? Icons.visibility_off
-                  : Icons.remove_red_eye,
-              color: context.bodyMedium!.color!.withOpacity(0.5),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildPasswordField() {
-    return ListenableBuilder(
-      listenable: _isShowPassword,
-      builder: (context, _) {
-        return CommonTextField(
-          maxLines: 1,
-          controller: _passwordController,
-          onFieldSubmitted: (p0) {},
-          labelText: AppString.newPassword,
-          validator: (password) => AppRes.validatePassword(password)
-              ? null
-              : 'Mật khẩu không hợp lệ',
-          onChanged: (value) {},
-          obscureText: !_isShowPassword.value,
-          prefixIcon: Icon(
-            Icons.lock_outline,
-            color: context.colorScheme.primary.withOpacity(0.8),
-          ),
-          suffixIcon: GestureDetector(
-            onTap: () => _isShowPassword.value = !_isShowPassword.value,
-            child: Icon(
-              !_isShowPassword.value
-                  ? Icons.visibility_off
-                  : Icons.remove_red_eye,
-              color: context.bodyMedium!.color!.withOpacity(0.5),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildPhoneField() => CommonTextField(
-        controller: _phoneController,
-        onChanged: (p0) {},
-        keyboardType: TextInputType.phone,
-        maxLines: 1,
-        validator: (value) {
-          return AppRes.validatePhoneNumber(value)
-              ? null
-              : 'Số điện thoại không hợp lệ';
-        },
-        labelText: 'Số điện thoại',
-        labelStyle: context.bodyMedium,
-        style: context.bodyMedium,
-        prefixIcon: Icon(
-          Icons.phone_android_outlined,
-          color: context.colorScheme.primary.withOpacity(0.9),
-        ),
-      );
 
   _handleForgotPassword() {
     if (_formKey.currentState!.validate()) {

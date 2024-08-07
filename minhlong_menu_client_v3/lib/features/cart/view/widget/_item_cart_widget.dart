@@ -3,7 +3,8 @@ part of '../screen/cart_screen.dart';
 extension _ItemCartWidget on _CartViewState {
   Widget _itemCart(OrderModel orderModel, OrderDetail orderItem) {
     return Card(
-      elevation: 4,
+      elevation: 1,
+      surfaceTintColor: context.colorScheme.surfaceTint,
       child: Container(
         constraints: const BoxConstraints(minHeight: 100),
         padding: const EdgeInsets.all(

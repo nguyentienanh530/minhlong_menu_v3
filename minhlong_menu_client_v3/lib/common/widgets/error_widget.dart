@@ -17,8 +17,8 @@ class ErrWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Card(
-        elevation: 4,
-        shadowColor: context.colorScheme.onSurface.withOpacity(0.5),
+        elevation: 1,
+        surfaceTintColor: context.colorScheme.surfaceTint,
         child: FittedBox(
           child: SizedBox(
             width: 300,
@@ -26,8 +26,7 @@ class ErrWidget extends StatelessWidget {
               padding: const EdgeInsets.all(defaultPadding),
               child: Column(
                 children: [
-                  Icon(Icons.error,
-                      color: context.colorScheme.tertiaryContainer, size: 60),
+                  Icon(Icons.error, color: context.colorScheme.error, size: 60),
                   10.verticalSpace,
                   Text(
                     error ?? "Có lỗi xảy ra",
@@ -37,12 +36,18 @@ class ErrWidget extends StatelessWidget {
                   ),
                   10.verticalSpace,
                   FilledButton.icon(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: context.colorScheme.primary,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: context.colorScheme.error,
+                    ),
+                    icon: const Icon(Icons.refresh, size: 15),
+                    onPressed: onRetryPressed,
+                    label: Text(
+                      'Thử lại',
+                      style: context.bodyMedium!.copyWith(
+                        color: Colors.white,
                       ),
-                      icon: const Icon(Icons.refresh, size: 15),
-                      onPressed: onRetryPressed,
-                      label: Text('Thử lại', style: context.bodyMedium))
+                    ),
+                  ),
                 ],
               ),
             ),

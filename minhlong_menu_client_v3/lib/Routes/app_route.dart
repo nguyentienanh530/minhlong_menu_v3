@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:minhlong_menu_client_v3/common/widget/no_product.dart';
-import 'package:minhlong_menu_client_v3/common/widget/success_screen.dart';
-import 'package:minhlong_menu_client_v3/features/auth/view/screens/forgot_password_screen.dart';
-import 'package:minhlong_menu_client_v3/features/auth/view/screens/login_screen.dart';
+import 'package:minhlong_menu_client_v3/common/widgets/no_product.dart';
+import 'package:minhlong_menu_client_v3/common/widgets/success_screen.dart';
+import 'package:minhlong_menu_client_v3/features/auth/view/forgot_password/screens/forgot_password_screen.dart';
+import 'package:minhlong_menu_client_v3/features/auth/view/login/screens/login_screen.dart';
 import 'package:minhlong_menu_client_v3/features/cart/view/screen/cart_screen.dart';
 import 'package:minhlong_menu_client_v3/features/category/data/model/category_model.dart';
 import 'package:minhlong_menu_client_v3/features/category/view/screen/category_screen.dart';

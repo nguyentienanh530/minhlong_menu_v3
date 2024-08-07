@@ -5,15 +5,15 @@ packages:
     dependency: transitive
     description:
       name: _fe_analyzer_shared
-      sha256: "5aaf60d96c4cd00fe7f21594b5ad6a1b699c80a27420f8a837f4d68473ef09e3"
+      sha256: "45cfa8471b89fb6643fe9bf51bd7931a76b8f5ec2d65de4fb176dba8d4f22c77"
       url: "https://pub.dev"
     source: hosted
-    version: "68.0.0"
+    version: "73.0.0"
   _macros:
     dependency: transitive
     description: dart
     source: sdk
-    version: "0.1.0"
+    version: "0.3.2"
   adaptive_number:
     dependency: transitive
     description:
@@ -26,10 +26,10 @@ packages:
     dependency: transitive
     description:
       name: analyzer
-      sha256: "21f1d3720fd1c70316399d5e2bccaebb415c434592d778cce8acb967b8578808"
+      sha256: "4959fec185fe70cce007c57e9ab6983101dbe593d2bf8bbfb4453aaec0cf470a"
       url: "https://pub.dev"
     source: hosted
-    version: "6.5.0"
+    version: "6.8.0"
   args:
     dependency: transitive
     description:
@@ -98,10 +98,10 @@ packages:
     dependency: transitive
     description:
       name: coverage
-      sha256: "3945034e86ea203af7a056d98e98e42a5518fff200d6e8e6647e1886b07e936e"
+      sha256: "576aaab8b1abdd452e0f656c3e73da9ead9d7880e15bdc494189d9c1a1baf0db"
       url: "https://pub.dev"
     source: hosted
-    version: "1.8.0"
+    version: "1.9.0"
   crypto:
     dependency: transitive
     description:
@@ -114,10 +114,10 @@ packages:
     dependency: transitive
     description:
       name: dargres
-      sha256: a7a6e21c5cebb183bc1b94035e1078dfd5f6bfa2ceb8c12b0e668fa679b755e1
+      sha256: "937e528dbffa9299695c832fe9c2a82c1f751e67374fc6a2460b5a736d052cfd"
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.2"
+    version: "3.1.2"
   dart_jsonwebtoken:
     dependency: transitive
     description:
@@ -242,18 +242,18 @@ packages:
     dependency: transitive
     description:
       name: macros
-      sha256: "12e8a9842b5a7390de7a781ec63d793527582398d16ea26c60fed58833c9ae79"
+      sha256: "0acaed5d6b7eab89f63350bccd82119e6c602df0f391260d0e32b5e23db79536"
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.0-main.0"
+    version: "0.1.2-main.4"
   mailer:
     dependency: transitive
     description:
       name: mailer
-      sha256: "0ba85aba6e1a3021e6d5b1f8035573a2240973b58c2158be26a3978681d1b6c6"
+      sha256: "3b27d204ff92a20aba227c25bc6467e245b0f19f9fbbc83aa357a9b7fa40267f"
       url: "https://pub.dev"
     source: hosted
-    version: "6.1.1"
+    version: "6.1.2"
   matcher:
     dependency: transitive
     description:
@@ -310,6 +310,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.9.0"
+  pg_timezone:
+    dependency: transitive
+    description:
+      name: pg_timezone
+      sha256: "50e23b4e5762972c96085328bfe14fd97a070a98afed6758c6035f64d50fa075"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.1"
   pointycastle:
     dependency: "direct overridden"
     description:
@@ -338,10 +346,10 @@ packages:
     dependency: transitive
     description:
       name: postgres_fork
-      sha256: "22106441d56d298b902b49b041e2ee6bb053f31d5ef0a7a022bc52f371bb8607"
+      sha256: eb6d62e1c8f05984346a0c7831052eb6e793af46178ec4e540aca0124cd3b722
       url: "https://pub.dev"
     source: hosted
-    version: "2.7.0"
+    version: "2.8.4"
   pub_semver:
     dependency: transitive
     description:

@@ -43,7 +43,7 @@ class DioExceptions implements Exception {
       case 403:
         return error;
       case 404:
-        return AppString.notFound;
+        return error;
       case 409:
         return error;
       case 422:

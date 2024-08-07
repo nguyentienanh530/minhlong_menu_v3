@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../common/dialog/app_dialog.dart';
 import '../../../../common/snackbar/app_snackbar.dart';
-import '../../../../common/widget/common_text_field.dart';
+import '../../../../common/widgets/common_text_field.dart';
 import '../../../../core/app_const.dart';
 import '../../../../core/app_key.dart';
 import '../../../../core/app_res.dart';

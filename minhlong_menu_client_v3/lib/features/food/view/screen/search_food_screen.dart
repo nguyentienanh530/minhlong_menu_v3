@@ -3,9 +3,9 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:minhlong_menu_client_v3/common/widget/error_screen.dart';
-import 'package:minhlong_menu_client_v3/common/widget/loading.dart';
-import 'package:minhlong_menu_client_v3/common/widget/no_product.dart';
+import 'package:minhlong_menu_client_v3/common/widgets/error_screen.dart';
+import 'package:minhlong_menu_client_v3/common/widgets/loading.dart';
+import 'package:minhlong_menu_client_v3/common/widgets/no_product.dart';
 import 'package:minhlong_menu_client_v3/core/extensions.dart';
 import 'package:minhlong_menu_client_v3/core/utils.dart';
 import 'package:minhlong_menu_client_v3/features/food/cubit/search_cubit.dart';
@@ -13,8 +13,8 @@ import 'package:minhlong_menu_client_v3/features/food/data/repositories/food_rep
 import 'package:tiengviet/tiengviet.dart';
 
 import '../../../../Routes/app_route.dart';
-import '../../../../common/widget/common_back_button.dart';
-import '../../../../common/widget/common_text_field.dart';
+import '../../../../common/widgets/common_back_button.dart';
+import '../../../../common/widgets/common_text_field.dart';
 import '../../../../core/api_config.dart';
 import '../../../../core/app_const.dart';
 import '../../bloc/food_bloc.dart';
@@ -44,10 +44,10 @@ class SearchFoodView extends StatefulWidget {
   const SearchFoodView({super.key});
 
   @override
-  State<SearchFoodView> createState() => _MyWidgetState();
+  State<SearchFoodView> createState() => _SearchFoodViewState();
 }
 
-class _MyWidgetState extends State<SearchFoodView> {
+class _SearchFoodViewState extends State<SearchFoodView> {
   final TextEditingController _searchController = TextEditingController();
 
   @override
@@ -65,36 +65,19 @@ class _MyWidgetState extends State<SearchFoodView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          // Image.asset(AppAsset.backgroundLight,
-          //     color: context.colorScheme.onPrimary.withOpacity(0.15)),
-          _buildAppbar(),
-          Column(
-            children: [
-              22.verticalSpace,
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 30),
-                  child: const AfterSearchUI()
-                      .animate()
-                      .slideX(
-                          begin: -0.1,
-                          end: 0,
-                          curve: Curves.easeInOutCubic,
-                          duration: 500.ms)
-                      .fadeIn(curve: Curves.easeInOutCubic, duration: 500.ms),
-                ),
-              ),
-            ],
-          ),
-        ],
+      appBar: _buildAppbar(),
+      body: Padding(
+        padding: const EdgeInsets.only(top: 30),
+        child: const AfterSearchUI()
+            .animate()
+            .slideX(
+                begin: -0.1,
+                end: 0,
+                curve: Curves.easeInOutCubic,
+                duration: 500.ms)
+            .fadeIn(curve: Curves.easeInOutCubic, duration: 500.ms),
       ),
     );
-
-    // Scaffold(
-    //     appBar: _buildAppbar(context),
-    //     body: Obx(() => SearchFoodView(textSearch: foodCtrl.textSearch.value)));
   }
 
   _buildAppbar() {
@@ -188,9 +171,8 @@ class _AfterSearchUIState extends State<AfterSearchUI> {
         padding: const EdgeInsets.symmetric(
             horizontal: defaultPadding, vertical: defaultPadding / 5),
         child: Card(
-          shadowColor: context.colorScheme.onSurfaceVariant.withOpacity(0.4),
-          elevation: 4,
-          borderOnForeground: false,
+          elevation: 1,
+          surfaceTintColor: context.colorScheme.surfaceTint,
           child: SizedBox(
             height: 80,
             child: Row(

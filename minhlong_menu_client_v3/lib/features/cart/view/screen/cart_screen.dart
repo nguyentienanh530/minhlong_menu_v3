@@ -5,10 +5,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_client_v3/common/dialog/app_dialog.dart';
-import 'package:minhlong_menu_client_v3/common/widget/common_back_button.dart';
-import 'package:minhlong_menu_client_v3/common/widget/common_icon_button.dart';
-import 'package:minhlong_menu_client_v3/common/widget/error_build_image.dart';
-import 'package:minhlong_menu_client_v3/common/widget/loading.dart';
+import 'package:minhlong_menu_client_v3/common/widgets/common_back_button.dart';
+import 'package:minhlong_menu_client_v3/common/widgets/common_icon_button.dart';
+import 'package:minhlong_menu_client_v3/common/widgets/error_build_image.dart';
+import 'package:minhlong_menu_client_v3/common/widgets/loading.dart';
 import 'package:minhlong_menu_client_v3/core/app_const.dart';
 import 'package:minhlong_menu_client_v3/core/const_res.dart';
 import 'package:minhlong_menu_client_v3/core/extensions.dart';
@@ -21,7 +21,7 @@ import 'package:minhlong_menu_client_v3/features/table/data/model/table_model.da
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import '../../../../Routes/app_route.dart';
-import '../../../../common/widget/no_product.dart';
+import '../../../../common/widgets/no_product.dart';
 import '../../../../core/api_config.dart';
 
 import '../../../../core/app_string.dart';

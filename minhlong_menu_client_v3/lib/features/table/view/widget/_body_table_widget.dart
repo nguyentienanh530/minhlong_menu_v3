@@ -1,6 +1,6 @@
 part of '../screen/table_view.dart';
 
-extension _BodyTableWidget on _TableViewState {
+extension on _TableViewState {
   Widget _tableItem(TableModel table) {
     return Card(
       surfaceTintColor: context.colorScheme.surfaceTint,

@@ -8,7 +8,7 @@ import 'package:minhlong_menu_client_v3/features/auth/bloc/auth_bloc.dart';
 
 import '../../core/app_const.dart';
 import '../../core/app_string.dart';
-import '../widget/loading_widget.dart';
+import '../widgets/loading_widget.dart';
 
 class AppDialog {
   static Future<dynamic> showErrorDialog(

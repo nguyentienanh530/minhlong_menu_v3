@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:minhlong_menu_client_v3/common/widget/common_back_button.dart';
-import 'package:minhlong_menu_client_v3/common/widget/empty_widget.dart';
-import 'package:minhlong_menu_client_v3/common/widget/loading.dart';
+import 'package:minhlong_menu_client_v3/common/widgets/common_back_button.dart';
+import 'package:minhlong_menu_client_v3/common/widgets/empty_widget.dart';
+import 'package:minhlong_menu_client_v3/common/widgets/loading.dart';
 import 'package:minhlong_menu_client_v3/core/extensions.dart';
 import 'package:minhlong_menu_client_v3/features/table/cubit/table_cubit.dart';
 import 'package:minhlong_menu_client_v3/features/table/data/model/table_model.dart';
 
-import '../../../../common/widget/error_widget.dart';
+import '../../../../common/widgets/error_widget.dart';
 import '../../../../core/app_asset.dart';
 import '../../../../core/app_const.dart';
 import '../../../../core/app_string.dart';
