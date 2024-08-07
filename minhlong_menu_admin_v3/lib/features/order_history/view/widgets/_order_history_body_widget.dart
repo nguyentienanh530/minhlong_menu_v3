@@ -120,7 +120,7 @@ extension _OrderBodyWidget on _OrderViewState {
                               limit: _limit.value);
                         },
                         fontSize: 16,
-                        buttonElevation: 1,
+                        buttonElevation: 10,
                         buttonRadius: textFieldBorderRadius,
                         pageTotal: pagination.totalPage,
                         pageInit: _curentPage.value,

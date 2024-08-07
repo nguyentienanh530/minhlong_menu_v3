@@ -135,7 +135,7 @@ extension _FoodBodyWidget on _DinnerTableViewState {
                               limit: _limit.value, page: pageNumber);
                         },
                         fontSize: 16,
-                        buttonElevation: 1,
+                        buttonElevation: 10,
                         buttonRadius: textFieldBorderRadius,
                         pageTotal: pagination.totalPage,
                         pageInit: _curentPage.value,

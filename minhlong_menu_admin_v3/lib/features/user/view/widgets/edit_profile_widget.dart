@@ -181,7 +181,7 @@ class __EditSettingWidgetState extends State<EditProfileWidget> {
 
   Widget _uploadImage() {
     return InkWell(
-      borderRadius: BorderRadius.circular(100),
+      borderRadius: BorderRadius.circular(defaultBorderRadius),
       onTap: () async => Ultils.pickImage().then((value) {
         if (value != null) {
           _imageFile.value = value;
@@ -189,12 +189,13 @@ class __EditSettingWidgetState extends State<EditProfileWidget> {
       }),
       child: Card(
         color: context.colorScheme.primary,
-        shape: const CircleBorder(),
+        shape:
+            const CircleBorder(side: BorderSide(color: Colors.white, width: 2)),
         elevation: 3,
         child: Container(
           padding: const EdgeInsets.all(6),
           child: const Icon(
-            Icons.camera_enhance,
+            Icons.camera_alt,
             size: 16,
             color: Colors.white,
           ),
@@ -308,7 +309,7 @@ class __EditSettingWidgetState extends State<EditProfileWidget> {
       prefixIcon: Icon(Icons.email_outlined,
           color: context.bodyMedium!.color!.withOpacity(0.4)),
       validator: (p0) {
-        return AppRes.validatePassword(_emailController.text)
+        return AppRes.validateEmail(_emailController.text)
             ? null
             : 'Vui lòng nhập địa chỉ Email';
       },

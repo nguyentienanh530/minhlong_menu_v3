@@ -21,6 +21,11 @@ final class AddToCartFailure extends CartState {
   AddToCartFailure(this.errorMessage) : super(order: OrderModel());
 }
 
+final class AddToCartExistFailure extends CartState {
+  final String errorMessage;
+  const AddToCartExistFailure(this.errorMessage, {required super.order});
+}
+
 final class RemoveFromCartSuccess extends CartState {
   const RemoveFromCartSuccess(OrderModel order) : super(order: order);
 }

@@ -16,6 +16,7 @@ import 'package:minhlong_menu_client_v3/features/table/cubit/table_cubit.dart';
 import 'package:minhlong_menu_client_v3/features/table/data/model/table_model.dart';
 import 'package:readmore/readmore.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+
 import '../../../../Routes/app_route.dart';
 import '../../../../common/widget/cart_button.dart';
 import '../../../../common/widget/loading.dart';
@@ -258,7 +259,8 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
 
   Widget _buildCounter(BuildContext context,
       {IconData? icon, Color? colorBg, Color? iconColor, Function()? onTap}) {
-    return GestureDetector(
+    return InkWell(
+        borderRadius: BorderRadius.circular(defaultBorderRadius * 3),
         onTap: onTap,
         child: Container(
             height: 30,
@@ -283,7 +285,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         const Icon(
-          Icons.check_circle,
+          Icons.fastfood_outlined,
           color: Colors.green,
           size: 24,
         ),
@@ -383,7 +385,8 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
           ),
           onPressed: () {
             // _handleOnTapAddToCart(order, table);
-            context.read<CartCubit>().addToCart(table: table, food: _foodItem);
+            context.read<CartCubit>().addToCart(
+                table: table, food: _foodItem, quantity: _quantity.value);
           },
           icon: Container(
               margin: const EdgeInsets.symmetric(vertical: defaultPadding / 2),
@@ -416,7 +419,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
   Widget _buildOrderCount(FoodItem foodItem) {
     return RichText(
         text: TextSpan(children: [
-      TextSpan(text: 'Lượt đặt - ', style: context.bodySmall),
+      TextSpan(text: 'Lượt đặt : ', style: context.bodySmall),
       TextSpan(text: foodItem.orderCount.toString(), style: context.bodyMedium)
     ]));
   }

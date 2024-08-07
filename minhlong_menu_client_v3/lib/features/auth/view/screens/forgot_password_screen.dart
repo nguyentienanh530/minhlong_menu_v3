@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_client_v3/core/app_asset.dart';
 import 'package:minhlong_menu_client_v3/core/extensions.dart';
 import 'package:minhlong_menu_client_v3/features/auth/data/respositories/auth_repository.dart';
+
 import '../../../../common/dialog/app_dialog.dart';
 import '../../../../common/snackbar/app_snackbar.dart';
 import '../../../../common/widget/common_back_button.dart';
@@ -192,9 +193,14 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
           controller: _confirmPasswordController,
           onFieldSubmitted: (p0) {},
           labelText: AppString.confirmPassword,
-          validator: (password) => AppRes.validatePassword(password)
-              ? null
-              : 'Mật khẩu không hợp lệ',
+          validator: (value) {
+            if (_passwordController.text != _confirmPasswordController.text) {
+              return 'Xác nhận mật khẩu không khớp';
+            }
+            return AppRes.validatePassword(value)
+                ? null
+                : 'mật khẩu không hợp lệ';
+          },
           onChanged: (value) {},
           obscureText: !_isShowConfirmPassword.value,
           prefixIcon: Icon(

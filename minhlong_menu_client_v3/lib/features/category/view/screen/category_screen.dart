@@ -15,6 +15,7 @@ import 'package:minhlong_menu_client_v3/core/extensions.dart';
 import 'package:minhlong_menu_client_v3/features/food/data/model/food_model.dart';
 import 'package:minhlong_menu_client_v3/features/food/data/repositories/food_repository.dart';
 import 'package:minhlong_menu_client_v3/features/user/cubit/user_cubit.dart';
+
 import '../../../../common/widget/common_item_food.dart';
 import '../../../../common/widget/error_build_image.dart';
 import '../../../../core/app_const.dart';
@@ -170,7 +171,10 @@ class _CategoryViewState extends State<CategoryView> {
           decoration: const BoxDecoration(),
           width: double.infinity,
           child: category.image.isEmpty
-              ? SvgPicture.asset(AppAsset.noImage)
+              ? SvgPicture.asset(
+                  AppAsset.noImage,
+                  alignment: Alignment.topRight,
+                )
               : CachedNetworkImage(
                   imageUrl: '${ApiConfig.host}${category.image}',
                   errorWidget: errorBuilderForImage,

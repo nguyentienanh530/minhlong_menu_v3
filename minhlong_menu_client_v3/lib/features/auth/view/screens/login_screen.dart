@@ -173,13 +173,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   Icon(Icons.check_circle_rounded,
                       size: 15,
                       color: value
-                          ? context.colorScheme.primaryContainer
+                          ? context.colorScheme.primary.withOpacity(0.7)
                           : context.bodySmall!.color!.withOpacity(0.5)),
                   const SizedBox(width: 8),
                   Text(label,
                       style: context.bodySmall!.copyWith(
                           color: value
-                              ? context.colorScheme.primaryContainer
+                              ? context.colorScheme.primary.withOpacity(0.7)
                               : context.bodySmall!.color!.withOpacity(0.5)))
                 ])));
   }
@@ -215,7 +215,7 @@ class _PhoneNumber extends StatelessWidget {
           borderSide: BorderSide(color: context.colorScheme.primary),
         ),
         validator: (value) {
-          return AppRes.validatePhoneNumber(value)
+          return AppRes.validatePhoneNumber(emailcontroller.text)
               ? null
               : 'Số điện thoại không hợp lệ';
         },

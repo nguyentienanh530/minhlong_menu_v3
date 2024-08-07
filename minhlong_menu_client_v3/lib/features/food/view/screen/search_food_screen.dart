@@ -16,7 +16,6 @@ import '../../../../Routes/app_route.dart';
 import '../../../../common/widget/common_back_button.dart';
 import '../../../../common/widget/common_text_field.dart';
 import '../../../../core/api_config.dart';
-import '../../../../core/app_asset.dart';
 import '../../../../core/app_const.dart';
 import '../../bloc/food_bloc.dart';
 import '../../data/model/food_item.dart';
@@ -68,34 +67,23 @@ class _MyWidgetState extends State<SearchFoodView> {
     return Scaffold(
       body: Stack(
         children: [
-          Image.asset(AppAsset.backgroundLight,
-              color: context.colorScheme.onPrimary.withOpacity(0.15)),
+          // Image.asset(AppAsset.backgroundLight,
+          //     color: context.colorScheme.onPrimary.withOpacity(0.15)),
           _buildAppbar(),
           Column(
             children: [
-              const SizedBox(height: 100),
+              22.verticalSpace,
               Expanded(
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: context.colorScheme.surface,
-                      border: Border.symmetric(
-                          horizontal: BorderSide(
-                              color: context.colorScheme.onSurfaceVariant
-                                  .withOpacity(0.3))),
-                      borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(defaultBorderRadius * 4),
-                          topRight: Radius.circular(defaultBorderRadius * 4))),
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 30),
-                    child: const AfterSearchUI()
-                        .animate()
-                        .slideX(
-                            begin: -0.1,
-                            end: 0,
-                            curve: Curves.easeInOutCubic,
-                            duration: 500.ms)
-                        .fadeIn(curve: Curves.easeInOutCubic, duration: 500.ms),
-                  ),
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 30),
+                  child: const AfterSearchUI()
+                      .animate()
+                      .slideX(
+                          begin: -0.1,
+                          end: 0,
+                          curve: Curves.easeInOutCubic,
+                          duration: 500.ms)
+                      .fadeIn(curve: Curves.easeInOutCubic, duration: 500.ms),
                 ),
               ),
             ],

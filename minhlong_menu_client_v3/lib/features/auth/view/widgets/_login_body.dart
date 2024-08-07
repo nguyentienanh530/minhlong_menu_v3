@@ -30,8 +30,9 @@ extension _LoginBody on _LoginScreenState {
 
   Widget _buildLoginInitWidget() {
     return Card(
-      elevation: 10,
+      elevation: 1,
       color: context.colorScheme.surface.withOpacity(0.9),
+      surfaceTintColor: context.colorScheme.surfaceTint,
       child: FittedBox(
         child: Container(
           width: 360,
