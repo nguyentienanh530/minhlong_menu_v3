@@ -2,53 +2,65 @@ part of '../screens/setting_screen.dart';
 
 extension _SettingWidgets on _SettingScreenState {
   Widget _buildInfoProfile(UserModel user) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Container(
-          padding: const EdgeInsets.all(2),
-          width: 0.25 * context.sizeDevice.height,
-          height: 0.25 * context.sizeDevice.height,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(
-                color: context.colorScheme.onSurface.withOpacity(0.7),
-                width: 5),
-          ),
-          child: Container(
-            clipBehavior: Clip.antiAlias,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
+    return Padding(
+      padding: const EdgeInsets.all(defaultPadding),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            height: context.sizeDevice.height * 0.4,
+            child: Row(
+              children: [
+                Expanded(
+                  child: CachedNetworkImage(
+                    imageUrl: '${ApiConfig.host}${user.image}',
+                    errorWidget: errorBuilderForImage,
+                    placeholder: (context, url) => const Loading(),
+                    fit: BoxFit.cover,
+                    imageBuilder: (context, imageProvider) => Container(
+                      height: context.sizeDevice.height * 0.4,
+                      width: context.sizeDevice.height * 0.4,
+                      decoration: BoxDecoration(
+                        borderRadius:
+                            BorderRadius.circular(defaultBorderRadius),
+                        image: DecorationImage(
+                          image: imageProvider,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-            child: CachedNetworkImage(
-              imageUrl: '${ApiConfig.host}${user.image}',
-              errorWidget: errorBuilderForImage,
-              placeholder: (context, url) => const Loading(),
-              fit: BoxFit.cover,
-            ),
           ),
-        ),
-        10.verticalSpace,
-        _nameAndPhoneWidgets(user),
-        20.verticalSpace
-      ],
+          defaultPadding.verticalSpace,
+          const Divider(),
+          defaultPadding.verticalSpace,
+          _buildExpiryWidget(user),
+          defaultPadding.verticalSpace,
+          _userNameWidget(user),
+          defaultPadding.verticalSpace,
+          _buildPhoneWidget(user),
+          defaultPadding.verticalSpace,
+          _buildEmailWidget(user),
+          defaultPadding.verticalSpace,
+          _buildAddressWidget(user),
+          defaultPadding.verticalSpace,
+          _buildExtendedDateWidget(user),
+          defaultPadding.verticalSpace,
+          _buildExpiryDateWidget(user),
+          defaultPadding.verticalSpace,
+        ],
+      ),
     );
   }
 
-  Widget _nameAndPhoneWidgets(UserModel user) {
-    return Column(
-      children: [
-        Text(
-          user.fullName,
-          style: context.titleStyleLarge!.copyWith(fontWeight: FontWeight.bold),
-        ),
-        Text(
-          '+84 ${user.phoneNumber}',
-          style: context.bodyMedium!.copyWith(
-              color: context.bodyMedium!.color!.withOpacity(0.5), fontSize: 12),
-        ),
-      ],
+  Widget _userNameWidget(UserModel user) {
+    return Text(
+      user.fullName,
+      style: context.titleStyleLarge!.copyWith(fontWeight: FontWeight.bold),
     );
   }
 
@@ -100,50 +112,8 @@ extension _SettingWidgets on _SettingScreenState {
                       shape: BoxShape.circle),
                 );
               }),
-          onTap: () async => _showDialogPickThemes(),
+          onTap: null,
         );
-      },
-    );
-  }
-
-  void _showDialogPickThemes() async {
-    await showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            elevation: 4,
-            actionsAlignment: MainAxisAlignment.center,
-            title: Text(
-              textAlign: TextAlign.center,
-              'Chọn màu chính',
-              style: context.titleStyleLarge!
-                  .copyWith(fontWeight: FontWeight.bold),
-            ),
-            actions: [
-              ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: context.colorScheme.primary,
-                  ),
-                  onPressed: () => context.pop(),
-                  child: Text(AppString.cancel,
-                      style: context.bodyMedium!.copyWith(color: Colors.white)))
-            ],
-            content: SizedBox(
-              width: 300,
-              child: GridView.count(
-                  crossAxisSpacing: defaultPadding / 2,
-                  mainAxisSpacing: defaultPadding / 2,
-                  crossAxisCount: 6,
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  children: listScheme.map((e) => _buildItemColor(e)).toList()),
-            ),
-          );
-        }).then(
-      (value) {
-        if (value is ThemeDTO) {
-          _pickColor.value = value;
-        }
       },
     );
   }
@@ -152,7 +122,8 @@ extension _SettingWidgets on _SettingScreenState {
     return InkWell(
       borderRadius: BorderRadius.circular(defaultBorderRadius),
       onTap: () async {
-        context.pop(e);
+        // context.pop();
+        _pickColor.value = e;
         await ThemeLocalDatasource(sf).setSchemeTheme(e.key);
         if (!mounted) return;
         context.read<SchemeCubit>().changeScheme(e.key);
@@ -183,59 +154,129 @@ extension _SettingWidgets on _SettingScreenState {
     return ValueListenableBuilder(
       valueListenable: isDarkMode,
       builder: (context, value, child) {
-        return Card(
-          elevation: 1,
-          surfaceTintColor: context.colorScheme.surfaceTint,
-          child: InkWell(
-            borderRadius: BorderRadius.circular(defaultPadding),
-            child: SizedBox(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: FittedBox(
-                      alignment: Alignment.centerLeft,
-                      fit: BoxFit.scaleDown,
-                      child: Row(children: [
-                        Padding(
-                            padding: const EdgeInsets.all(defaultPadding - 3),
-                            child: Icon(
-                              Icons.dark_mode_outlined,
-                              color: context.colorScheme.primary,
-                            )),
-                        Text(
-                          AppString.darkMode,
-                          style: context.bodyMedium!.copyWith(
-                              color:
-                                  context.bodyMedium!.color!.withOpacity(0.7)),
-                        )
-                      ]),
-                    ),
-                  ),
-                  Expanded(
-                    child: FittedBox(
-                      alignment: Alignment.centerRight,
-                      fit: BoxFit.scaleDown,
-                      child: Transform.scale(
-                        scale: 0.8,
-                        child: Switch(
-                          value: isDarkMode.value,
-                          onChanged: (value) async {
-                            isDarkMode.value = !isDarkMode.value;
-                            context.read<ThemeCubit>().changeTheme(value);
-                            await ThemeLocalDatasource(sf).setDarkTheme(value);
-                          },
+        return InkWell(
+          borderRadius: BorderRadius.circular(defaultPadding),
+          child: SizedBox(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: FittedBox(
+                    alignment: Alignment.centerLeft,
+                    fit: BoxFit.scaleDown,
+                    child: Row(children: [
+                      Padding(
+                          padding: const EdgeInsets.all(defaultPadding - 3),
+                          child: Icon(
+                            Icons.dark_mode_outlined,
+                            color: context.colorScheme.primary,
+                          )),
+                      Text(
+                        AppString.darkMode,
+                        style: context.bodyMedium!.copyWith(
+                          color: context.bodyMedium!.color!.withOpacity(0.7),
                         ),
+                      )
+                    ]),
+                  ),
+                ),
+                Expanded(
+                  child: FittedBox(
+                    alignment: Alignment.centerRight,
+                    fit: BoxFit.scaleDown,
+                    child: Transform.scale(
+                      scale: 0.8,
+                      child: Switch(
+                        value: isDarkMode.value,
+                        onChanged: (value) async {
+                          isDarkMode.value = !isDarkMode.value;
+                          context.read<ThemeCubit>().changeTheme(value);
+                          await ThemeLocalDatasource(sf).setDarkTheme(value);
+                        },
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         );
       },
     );
+  }
+
+  Widget _buildPhoneWidget(UserModel user) {
+    return _buildItemInfoUserWidget(
+        icon: Icons.phone,
+        value: '0${user.phoneNumber} - 0${user.subPhoneNumber}');
+  }
+
+  _buildEmailWidget(UserModel user) {
+    return _buildItemInfoUserWidget(icon: Icons.email, value: user.email);
+  }
+
+  _buildAddressWidget(UserModel user) {
+    return _buildItemInfoUserWidget(
+        icon: Icons.location_on, value: user.address);
+  }
+
+  Row _buildItemInfoUserWidget(
+      {required IconData icon, required String value}) {
+    return Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
+      Icon(icon),
+      defaultPadding.horizontalSpace,
+      Expanded(
+        child: Text(
+          value,
+          style: context.bodyMedium,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
+    ]);
+  }
+
+  _buildExpiryWidget(UserModel user) {
+    return Text(
+      'Còn ${Ultils.subcriptionEndDate(user.expiredAt)} ngày sử dụng!'
+          .toUpperCase(),
+      style: context.bodyMedium!.copyWith(
+        color: Ultils.subcriptionEndDate(user.expiredAt) <= 10
+            ? Colors.red
+            : Colors.green,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  }
+
+  _buildExtendedDateWidget(UserModel user) {
+    return RichText(
+      text: TextSpan(
+        children: [
+          TextSpan(
+            text: 'Ngày gia hạn: ',
+            style: context.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
+          ),
+          TextSpan(
+            text: Ultils.formatDateToString(user.extendedAt, isShort: true),
+            style: context.bodyMedium,
+          ),
+        ],
+      ),
+    );
+  }
+
+  _buildExpiryDateWidget(UserModel user) {
+    return RichText(
+        text: TextSpan(children: [
+      TextSpan(
+        text: 'Ngày hết hạn: ',
+        style: context.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
+      ),
+      TextSpan(
+          text: Ultils.formatDateToString(user.expiredAt, isShort: true),
+          style: context.bodyMedium),
+    ]));
   }
 }
 
@@ -260,51 +301,47 @@ class _ItemProfile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 1,
-      surfaceTintColor: context.colorScheme.surfaceTint,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(defaultPadding),
-        onTap: onTap,
-        child: SizedBox(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: FittedBox(
-                  alignment: Alignment.centerLeft,
-                  fit: BoxFit.scaleDown,
-                  child: Row(children: [
-                    Padding(
-                        padding: const EdgeInsets.all(defaultPadding),
-                        child: leftIcon ??
-                            SvgPicture.asset(svgPath,
-                                colorFilter: ColorFilter.mode(
-                                    context.colorScheme.primary,
-                                    BlendMode.srcIn))),
-                    Text(
-                      title,
-                      style: titleStyle ?? context.bodyMedium,
-                    )
-                  ]),
-                ),
+    return InkWell(
+      borderRadius: BorderRadius.circular(defaultPadding),
+      onTap: onTap,
+      child: SizedBox(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: FittedBox(
+                alignment: Alignment.centerLeft,
+                fit: BoxFit.scaleDown,
+                child: Row(children: [
+                  Padding(
+                      padding: const EdgeInsets.all(defaultPadding),
+                      child: leftIcon ??
+                          SvgPicture.asset(svgPath,
+                              colorFilter: ColorFilter.mode(
+                                  context.colorScheme.primary,
+                                  BlendMode.srcIn))),
+                  Text(
+                    title,
+                    style: titleStyle ?? context.bodyMedium,
+                  )
+                ]),
               ),
-              Expanded(
-                child: FittedBox(
-                  alignment: Alignment.centerRight,
-                  fit: BoxFit.scaleDown,
-                  child: rightIcon ??
-                      const Padding(
-                        padding: EdgeInsets.all(defaultPadding),
-                        child: Icon(
-                          Icons.arrow_forward_ios_rounded,
-                          size: 15,
-                        ),
+            ),
+            Expanded(
+              child: FittedBox(
+                alignment: Alignment.centerRight,
+                fit: BoxFit.scaleDown,
+                child: rightIcon ??
+                    const Padding(
+                      padding: EdgeInsets.all(defaultPadding),
+                      child: Icon(
+                        Icons.arrow_forward_ios_rounded,
+                        size: 15,
                       ),
-                ),
+                    ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

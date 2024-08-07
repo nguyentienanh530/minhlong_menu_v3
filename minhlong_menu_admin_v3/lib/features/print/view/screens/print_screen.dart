@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:minhlong_menu_admin_v3/core/utils.dart';
 import 'package:minhlong_menu_admin_v3/features/order/data/model/food_order_model.dart';
 import 'package:minhlong_menu_admin_v3/features/order/data/model/order_item.dart';
+import 'package:minhlong_menu_admin_v3/features/user/cubit/user_cubit.dart';
+import 'package:minhlong_menu_admin_v3/features/user/data/model/user_model.dart';
 
 import 'dart:typed_data';
 
@@ -10,24 +13,25 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
 class PrintScreen extends StatelessWidget {
-  const PrintScreen({super.key, required this.order});
-
   final OrderItem order;
+
+  const PrintScreen({super.key, required this.order});
 
   @override
   Widget build(BuildContext context) {
+    var user = context.watch<UserCubit>().state;
     return Scaffold(
       appBar: AppBar(title: const Text('In hóa đơn')),
       body: PdfPreview(
         maxPageWidth: 800,
         initialPageFormat: PdfPageFormat.roll80,
         // useActions: false,
-        build: (format) => _generatePdf(format),
+        build: (format) => _generatePdf(format, user),
       ),
     );
   }
 
-  Future<Uint8List> _generatePdf(PdfPageFormat format) async {
+  Future<Uint8List> _generatePdf(PdfPageFormat format, UserModel user) async {
     final pdf = pw.Document(version: PdfVersion.pdf_1_5, compress: true);
     final font = await PdfGoogleFonts.robotoRegular();
     final fontTitle = await PdfGoogleFonts.robotoBold();
@@ -41,14 +45,27 @@ class PrintScreen extends StatelessWidget {
             crossAxisAlignment: pw.CrossAxisAlignment.center,
             children: [
               pw.Text(
-                "OverCooked",
-                style: pw.TextStyle(fontSize: 25, font: fontTitle),
+                user.fullName,
+                style: pw.TextStyle(fontSize: 23, font: fontTitle),
               ),
               pw.SizedBox(height: 10),
               pw.Text(
-                "To 21 - Finom - Hiep Binh - Ha Noi",
+                user.address,
                 style: bodyStyle,
               ),
+              pw.SizedBox(height: 10),
+              pw.Row(mainAxisAlignment: pw.MainAxisAlignment.center, children: [
+                pw.Text(
+                  '0${user.phoneNumber}',
+                  style: bodyStyle,
+                ),
+                user.subPhoneNumber == 0
+                    ? pw.Container()
+                    : pw.Text(
+                        ' - 0${user.subPhoneNumber}',
+                        style: bodyStyle,
+                      ),
+              ]),
               pw.SizedBox(height: 10),
               pw.Text(
                 'Phiếu Thanh Toán'.toUpperCase(),

@@ -17,8 +17,8 @@ class RouteServiceProvider extends ServiceProvider {
   Future<void> register() async {
     Version1().register();
     WebSocketRoute(
-      orderWebSocketController:
-          OrderWebSocketController(OrderRepo(Orders()), orderCtrl),
+      orderWebSocketController: OrderWebSocketController(
+          OrderRepo(Orders()), orderCtrl, TableRepo(Tables())),
       tableWebSocketController: TableWebSocketController(TableRepo(Tables())),
     ).register();
   }

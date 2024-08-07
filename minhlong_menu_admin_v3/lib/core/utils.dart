@@ -168,4 +168,11 @@ class Ultils {
     };
     channel.sink.add(jsonEncode(data));
   }
+
+  static int subcriptionEndDate(String dateTime) {
+    DateTime targetDate = DateTime.parse(dateTime);
+    DateTime now = DateTime.now();
+    int daysRemaining = targetDate.difference(now).inDays;
+    return daysRemaining + 1;
+  }
 }

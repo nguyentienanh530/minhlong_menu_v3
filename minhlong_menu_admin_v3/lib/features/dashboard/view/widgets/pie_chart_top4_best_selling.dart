@@ -1,7 +1,5 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:minhlong_menu_admin_v3/core/extensions.dart';
-
 import '../../data/model/best_selling_food.dart';
 import 'indicator.dart';
 
@@ -47,9 +45,7 @@ class _PieChartTop4BestSellingFoodState
                     });
                   },
                 ),
-                borderData: FlBorderData(
-                  show: false,
-                ),
+                borderData: FlBorderData(show: false),
                 sectionsSpace: 0,
                 centerSpaceRadius: 40,
                 sections: showingSections(),
@@ -61,22 +57,22 @@ class _PieChartTop4BestSellingFoodState
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Indicator(
-              color: context.colorScheme.primary,
+              color: Colors.red,
               text: _bestSellingFood.first.name,
               isSquare: true,
             ),
             Indicator(
-              color: context.colorScheme.secondary,
+              color: Colors.green,
               text: _bestSellingFood[1].name,
               isSquare: true,
             ),
             Indicator(
-              color: context.colorScheme.primary.withOpacity(0.6),
+              color: Colors.blue,
               text: _bestSellingFood[2].name,
               isSquare: true,
             ),
             Indicator(
-              color: context.colorScheme.secondary.withOpacity(0.6),
+              color: Colors.orange,
               text: _bestSellingFood.last.name,
               isSquare: true,
             ),
@@ -108,7 +104,7 @@ class _PieChartTop4BestSellingFoodState
       switch (i) {
         case 0:
           return PieChartSectionData(
-            color: context.colorScheme.primary,
+            color: Colors.red,
             value: persentFirst,
             title: '${persentFirst.toStringAsFixed(0)}%',
             radius: radius,
@@ -121,7 +117,7 @@ class _PieChartTop4BestSellingFoodState
           );
         case 1:
           return PieChartSectionData(
-            color: context.colorScheme.secondary,
+            color: Colors.green,
             value: persentSecond,
             title: '${persentSecond.toStringAsFixed(0)}%',
             radius: radius,
@@ -134,7 +130,7 @@ class _PieChartTop4BestSellingFoodState
           );
         case 2:
           return PieChartSectionData(
-            color: context.colorScheme.primary.withOpacity(0.6),
+            color: Colors.blue,
             value: persentThird,
             title: '${persentThird.toStringAsFixed(0)}%',
             radius: radius,
@@ -147,7 +143,7 @@ class _PieChartTop4BestSellingFoodState
           );
         case 3:
           return PieChartSectionData(
-            color: context.colorScheme.secondary.withOpacity(0.6),
+            color: Colors.orange,
             value: persentFourth,
             title: '${persentFourth.toStringAsFixed(0)}%',
             radius: radius,

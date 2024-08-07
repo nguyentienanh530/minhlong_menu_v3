@@ -40,6 +40,7 @@ extension _OrdersOnTableWidget on _OrderViewState {
                     }
                   } else {
                     ordersList = orders;
+                    log('ordersList $ordersList');
                   }
 
                   return ordersList.isEmpty

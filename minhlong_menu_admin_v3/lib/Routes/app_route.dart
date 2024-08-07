@@ -15,7 +15,7 @@ import 'package:minhlong_menu_admin_v3/features/order/view/screens/create_or_upd
 // import 'package:minhlong_menu_admin_v3/features/order/view/screens/order_screen.dart';
 import 'package:minhlong_menu_admin_v3/features/print/view/screens/print_screen.dart';
 import 'package:minhlong_menu_admin_v3/features/user/data/model/user_model.dart';
-import 'package:minhlong_menu_admin_v3/features/user/view/widgets/change_password.dart';
+import 'package:minhlong_menu_admin_v3/features/user/view/screens/change_password.dart';
 
 import '../core/app_enum.dart';
 import '../features/user/view/screens/edit_profile_screen.dart';

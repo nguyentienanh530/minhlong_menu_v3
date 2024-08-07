@@ -238,7 +238,7 @@ class _CreateOrUpdateOrderViewState extends State<CreateOrUpdateOrderView> {
   Widget _buildSearchFoods() {
     return Container(
       key: AppKeys.searchFoodsKey,
-      height: 40,
+      // height: 45,
       constraints: const BoxConstraints(maxWidth: 300),
       child: CompositedTransformTarget(
         link: _layerLink,
@@ -266,6 +266,12 @@ class _CreateOrUpdateOrderViewState extends State<CreateOrUpdateOrderView> {
             },
             child: const SizedBox(
               child: Icon(Icons.clear),
+            ),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(textFieldBorderRadius).r,
+            borderSide: const BorderSide(
+              color: Colors.transparent,
             ),
           ),
         ),

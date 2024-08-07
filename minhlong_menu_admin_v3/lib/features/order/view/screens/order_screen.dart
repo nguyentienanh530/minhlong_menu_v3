@@ -256,6 +256,7 @@ class _OrderViewState extends State<OrderView>
     OrderItem mergedOrders = OrderItem(
         createdAt: orderItems[0].createdAt,
         tableId: orderItems[0].tableId,
+        tableName: orderItems[0].tableName,
         foodOrders: []);
 
     List<FoodOrderModel> mergedFoodOrders = [];

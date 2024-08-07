@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -7,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_admin_v3/core/app_const.dart';
 import 'package:minhlong_menu_admin_v3/core/app_theme.dart';
 import 'package:minhlong_menu_admin_v3/core/extensions.dart';
+import 'package:minhlong_menu_admin_v3/core/utils.dart';
 import 'package:minhlong_menu_admin_v3/features/user/cubit/user_cubit.dart';
 import 'package:minhlong_menu_admin_v3/features/user/data/model/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -85,26 +87,83 @@ class _SettingScreenState extends State<SettingScreen> {
                       ],
                     ),
                   )
-                : Row(
-                    children: [
-                      const Spacer(),
-                      Expanded(
-                        flex: 2,
-                        child: Container(
-                          constraints: const BoxConstraints(maxWidth: 600),
+                : SizedBox(
+                    width: context.sizeDevice.width,
+                    height: 800,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          // flex: 2,
+                          child: Card(
+                            elevation: 1,
+                            surfaceTintColor: context.colorScheme.surfaceTint,
+                            child: Container(
+                              constraints: const BoxConstraints(maxWidth: 600),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  _buildInfoProfile(user),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        Expanded(
                           child: Column(
                             children: [
-                              _buildInfoProfile(user),
-                              _editInfoUser(user),
-                              _buildTitleChangePassword(),
-                              _buildColorThemeWidget(),
-                              _buildThemeWidget(context),
+                              Card(
+                                elevation: 1,
+                                surfaceTintColor:
+                                    context.colorScheme.surfaceTint,
+                                child: Column(children: [
+                                  _editInfoUser(user),
+                                  _buildTitleChangePassword(),
+                                  _buildThemeWidget(context),
+                                  _buildColorThemeWidget()
+                                ]),
+                              ),
+                              Expanded(
+                                child: Card(
+                                  elevation: 1,
+                                  surfaceTintColor:
+                                      context.colorScheme.surfaceTint,
+                                  child: Container(
+                                    padding:
+                                        const EdgeInsets.all(defaultPadding),
+                                    width: double.infinity,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Màu giao diện'.toUpperCase(),
+                                          style: context.bodyMedium!.copyWith(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        defaultPadding.verticalSpace,
+                                        GridView.count(
+                                          crossAxisSpacing: defaultPadding,
+                                          mainAxisSpacing: defaultPadding,
+                                          crossAxisCount: 10,
+                                          shrinkWrap: true,
+                                          physics:
+                                              const NeverScrollableScrollPhysics(),
+                                          children: listScheme
+                                              .map((e) => _buildItemColor(e))
+                                              .toList(),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
                         ),
-                      ),
-                      const Spacer(),
-                    ],
+                      ],
+                    ),
                   ),
           ),
         ),

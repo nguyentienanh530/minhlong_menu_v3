@@ -3,13 +3,16 @@ import 'dart:io';
 import 'package:minhlong_menu_backend_v3/app/http/common/app_response.dart';
 import 'package:minhlong_menu_backend_v3/app/http/modules/v1/order/controllers/order_controller.dart';
 import 'package:minhlong_menu_backend_v3/app/http/modules/v1/order/repositories/order_repo.dart';
+import 'package:minhlong_menu_backend_v3/app/http/modules/v1/table/repositories/table_repo.dart';
 import 'package:vania/vania.dart';
 
 class OrderWebSocketController extends Controller {
   final OrderRepo orderRepository;
   final OrderController orderController;
+  final TableRepo tableRepo;
 
-  OrderWebSocketController(this.orderRepository, this.orderController);
+  OrderWebSocketController(
+      this.orderRepository, this.orderController, this.tableRepo);
 
   Future getNewOrders(WebSocketClient client, dynamic payload) async {
     var userID = payload['user_id'];
@@ -22,6 +25,8 @@ class OrderWebSocketController extends Controller {
     try {
       var payloadData = await await orderRepository.getNewOrdersByTable(
           tableID: tableID, userID: userID);
+      var tableData = await tableRepo.find(id: tableID);
+
       List<Map<String, dynamic>> formattedOrders = [];
 
       var groupedOrders = orderController.groupOrdersById(payloadData);
@@ -33,6 +38,7 @@ class OrderWebSocketController extends Controller {
             'id': id,
             'status': ordersList.first['status'],
             'table_id': ordersList.first['table_id'],
+            'table_name': tableData['name'] ?? '',
             'total_price': ordersList.first['total_price'],
             'payed_at': ordersList.first['payed_at'],
             'created_at': ordersList.first['created_at'],

@@ -18,22 +18,18 @@ class WebSocketRoute implements Route {
   void register() {
     Router.websocket('/ws', (WebSocketEvent event) {
       event.on('message', chatController.newMessage);
-      // event.on('orders', _orderWebSocketController.getNewOrders);
-      // event.on('tables', _tableWebSocketController.getTable);
     });
     Router.websocket(
       '/tables',
       (WebSocketEvent event) {
         event.on('tables', _tableWebSocketController.getTable);
       },
-      // middleware: [AuthenticateWebSocketMiddleware()],
     );
     Router.websocket(
       '/orders',
       (WebSocketEvent event) {
         event.on('orders', _orderWebSocketController.getNewOrders);
       },
-      //  middleware: [AuthenticateWebSocketMiddleware()]
     );
   }
 }

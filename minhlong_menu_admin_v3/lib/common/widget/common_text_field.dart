@@ -27,7 +27,8 @@ class CommonTextField extends StatelessWidget {
       this.focusNode,
       this.readOnly,
       this.hintStyle,
-      this.labelStyle});
+      this.labelStyle,
+      this.enabledBorder});
   final TextStyle? hintStyle;
   final String? errorText;
   final TextInputType? keyboardType;
@@ -48,6 +49,7 @@ class CommonTextField extends StatelessWidget {
   final FocusNode? focusNode;
   final bool? readOnly;
   final TextStyle? labelStyle;
+  final InputBorder? enabledBorder;
 
   @override
   Widget build(BuildContext context) {
@@ -77,9 +79,11 @@ class CommonTextField extends StatelessWidget {
             errorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(textFieldBorderRadius).r,
                 borderSide: BorderSide(color: context.colorScheme.error)),
-            enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(textFieldBorderRadius).r,
-                borderSide: const BorderSide()),
+            enabledBorder: enabledBorder ??
+                OutlineInputBorder(
+                    borderRadius:
+                        BorderRadius.circular(textFieldBorderRadius).r,
+                    borderSide: const BorderSide()),
             disabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(textFieldBorderRadius).r,
                 borderSide: const BorderSide(color: Colors.white54)),

@@ -22,6 +22,13 @@ class AppRes {
     return phoneNumberRegex.hasMatch(phoneNumber);
   }
 
+  static bool validateEmail(String? email) {
+    if (email == null || email.isEmpty) return false;
+    var emailRegex = RegExp(
+        r'^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$');
+    return emailRegex.hasMatch(email);
+  }
+
   // static Future<SnackbarController> showSnackBar(
   //     String msg, bool positive) async {
   //   return Get.showSnackbar(
