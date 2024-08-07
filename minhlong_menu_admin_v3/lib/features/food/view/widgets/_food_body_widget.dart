@@ -137,7 +137,7 @@ extension _FoodBodyWidget on _FoodViewState {
                       },
                       fontSize: 14,
                       threshold: 5,
-                      buttonElevation: 1,
+                      buttonElevation: 10,
                       buttonRadius: textFieldBorderRadius,
                       pageTotal: pagination.totalPage,
                       pageInit: _curentPage.value,

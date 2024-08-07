@@ -2,44 +2,50 @@ part of '../screen/profile_screen.dart';
 
 extension _ProfileWidget on _ProfileScreenState {
   Widget _bodyInfoUser({required UserModel userModel}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _ItemProfile(
-            onTap: () => context.push(AppRoute.editProfile, extra: userModel),
-            svgPath: AppAsset.user,
-            title: AppString.editProfile),
-        5.verticalSpace,
-        _ItemProfile(
-            svgPath: AppAsset.lock,
-            title: AppString.changePassword,
-            onTap: () => context.push(AppRoute.changePassword)),
-        _buildThemeWidget(context),
-        5.verticalSpace,
-        ListenableBuilder(
-          listenable: _pickColor,
-          builder: (context, child) {
-            return _ItemProfile(
-                svgPath: AppAsset.logout,
-                title: AppString.pickColor,
-                leftIcon: Icon(Icons.color_lens_outlined,
-                    color: context.colorScheme.primary),
-                rightIcon: Container(
-                  margin: const EdgeInsets.only(right: defaultPadding / 2),
-                  height: 30,
-                  width: 30,
-                  decoration: BoxDecoration(
-                      color: _pickColor.value, shape: BoxShape.circle),
-                ),
-                onTap: () async => _showDialogPickThemes());
-          },
-        ),
-        _ItemProfile(
-            svgPath: AppAsset.logout,
-            title: AppString.logout,
-            colorIcon: Colors.red,
-            onTap: () => _showDialogLogout()),
-      ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _ItemProfile(
+              onTap: () => context.push(AppRoute.editProfile, extra: userModel),
+              svgPath: AppAsset.user,
+              title: AppString.editProfile),
+          5.verticalSpace,
+          _ItemProfile(
+              svgPath: AppAsset.lock,
+              title: AppString.changePassword,
+              onTap: () => context.push(AppRoute.changePassword)),
+          _buildThemeWidget(context),
+          5.verticalSpace,
+          ListenableBuilder(
+            listenable: _pickColor,
+            builder: (context, child) {
+              return _ItemProfile(
+                  svgPath: AppAsset.logout,
+                  title: AppString.pickColor,
+                  leftIcon: Icon(Icons.color_lens_outlined,
+                      color: context.colorScheme.primary),
+                  rightIcon: Container(
+                    margin: const EdgeInsets.only(right: defaultPadding / 2),
+                    height: 30,
+                    width: 30,
+                    decoration: BoxDecoration(
+                        color: isDarkMode.value
+                            ? _pickColor.value.colorDark
+                            : _pickColor.value.colorLight,
+                        shape: BoxShape.circle),
+                  ),
+                  onTap: () async => _showDialogPickThemes());
+            },
+          ),
+          _ItemProfile(
+              svgPath: AppAsset.logout,
+              title: AppString.logout,
+              colorIcon: Colors.red,
+              onTap: () => _showDialogLogout()),
+        ],
+      ),
     );
   }
 
@@ -78,7 +84,7 @@ extension _ProfileWidget on _ProfileScreenState {
           );
         }).then(
       (value) {
-        if (value is Color) {
+        if (value is ThemeDTO) {
           _pickColor.value = value;
         }
       },
@@ -89,7 +95,7 @@ extension _ProfileWidget on _ProfileScreenState {
     return InkWell(
       borderRadius: BorderRadius.circular(defaultBorderRadius),
       onTap: () async {
-        context.pop(e.color);
+        context.pop(e);
         await ThemeLocalDatasource(sf).setSchemeTheme(e.key);
         if (!mounted) return;
         context.read<SchemeCubit>().changeScheme(e.key);
@@ -100,9 +106,13 @@ extension _ProfileWidget on _ProfileScreenState {
           Container(
             decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: e.color,
+                color: isDarkMode.value ? e.colorDark : e.colorLight,
                 border: e.key == context.read<SchemeCubit>().state
-                    ? Border.all(color: context.colorScheme.primary, width: 2)
+                    ? isDarkMode.value
+                        ? Border.all(
+                            color: context.colorScheme.onSurface, width: 2)
+                        : Border.all(
+                            color: context.colorScheme.onSurface, width: 2)
                     : Border.all(color: Colors.transparent)),
           ),
           e.key == context.read<SchemeCubit>().state
@@ -140,7 +150,7 @@ extension _ProfileWidget on _ProfileScreenState {
 
   Widget _buildThemeWidget(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: _isDarkMode,
+      valueListenable: isDarkMode,
       builder: (context, value, child) {
         return SizedBox(
           child: Row(
@@ -162,9 +172,9 @@ extension _ProfileWidget on _ProfileScreenState {
               ),
               Switch(
                 thumbIcon: thumbIcon,
-                value: _isDarkMode.value,
+                value: isDarkMode.value,
                 onChanged: (value) async {
-                  _isDarkMode.value = !_isDarkMode.value;
+                  isDarkMode.value = !isDarkMode.value;
                   context.read<ThemeCubit>().changeTheme(value);
                   await ThemeLocalDatasource(sf).setDarkTheme(value);
                 },
@@ -182,7 +192,7 @@ class _ItemProfile extends StatelessWidget {
     required this.svgPath,
     required this.title,
     required this.onTap,
-    this.titleStyle,
+    // this.titleStyle,
     this.colorIcon,
     this.rightIcon,
     this.leftIcon,
@@ -192,7 +202,7 @@ class _ItemProfile extends StatelessWidget {
   final String svgPath;
   final Icon? leftIcon;
   final String title;
-  final TextStyle? titleStyle;
+  // final TextStyle? titleStyle;
   final Widget? rightIcon;
   final void Function()? onTap;
 
@@ -218,7 +228,7 @@ class _ItemProfile extends StatelessWidget {
                               BlendMode.srcIn))),
               Text(
                 title,
-                style: titleStyle ?? context.bodyMedium!,
+                style: context.bodyMedium!,
               )
             ]),
           ),

@@ -14,6 +14,7 @@ import 'package:minhlong_menu_client_v3/features/theme/cubit/scheme_cubit.dart';
 import 'package:minhlong_menu_client_v3/features/theme/data/theme_local_datasource.dart';
 import 'package:minhlong_menu_client_v3/features/user/cubit/user_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../../../../Routes/app_route.dart';
 import '../../../../common/dialog/app_dialog.dart';
 import '../../../../core/api_config.dart';
@@ -22,6 +23,7 @@ import '../../../../core/app_string.dart';
 import '../../../auth/bloc/auth_bloc.dart';
 import '../../../theme/cubit/theme_cubit.dart';
 import '../../data/model/user_model.dart';
+
 part '../widget/_profile_widget.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -33,22 +35,22 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   late final SharedPreferences sf;
-  final _isDarkMode = ValueNotifier(false);
-  final _pickColor = ValueNotifier(listScheme.first.color);
+  final isDarkMode = ValueNotifier(false);
+  final _pickColor = ValueNotifier(listScheme.first);
   final WidgetStateProperty<Icon?> thumbIcon =
       WidgetStateProperty.resolveWith<Icon?>(
     (Set<WidgetState> states) {
       if (states.contains(WidgetState.selected)) {
         return const Icon(Icons.dark_mode_outlined);
       }
-      return const Icon(Icons.light_mode);
+      return const Icon(Icons.light_mode_outlined);
     },
   );
   @override
   void dispose() {
     super.dispose();
     _pickColor.dispose();
-    _isDarkMode.dispose();
+    isDarkMode.dispose();
   }
 
   @override
@@ -59,11 +61,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   void _init() async {
     sf = await SharedPreferences.getInstance();
-    _isDarkMode.value = await ThemeLocalDatasource(sf).getDartTheme() ?? false;
+    isDarkMode.value = await ThemeLocalDatasource(sf).getDartTheme() ?? false;
     var schemeKey =
         await ThemeLocalDatasource(sf).getSchemeTheme() ?? listScheme.first.key;
     _pickColor.value =
-        listScheme.firstWhere((element) => element.key == schemeKey).color;
+        listScheme.firstWhere((element) => element.key == schemeKey);
   }
 
   @override

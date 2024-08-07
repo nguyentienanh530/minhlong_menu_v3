@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import '../../../../common/dialog/app_dialog.dart';
 import '../../../../common/snackbar/app_snackbar.dart';
 import '../../../../common/widget/common_text_field.dart';
@@ -178,9 +179,15 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                     controller: _confirmPasswordController,
                     onFieldSubmitted: (p0) {},
                     labelText: AppString.confirmPassword,
-                    validator: (password) => AppRes.validatePassword(password)
-                        ? null
-                        : 'Mật khẩu không hợp lệ',
+                    validator: (value) {
+                      if (_newPasswordController.text !=
+                          _confirmPasswordController.text) {
+                        return 'Xác nhận mật khẩu không khớp';
+                      }
+                      return AppRes.validatePassword(value)
+                          ? null
+                          : 'mật khẩu không hợp lệ';
+                    },
                     onChanged: (value) {},
                     obscureText: !_isShowConfirmPassword.value,
                     prefixIcon: Icon(

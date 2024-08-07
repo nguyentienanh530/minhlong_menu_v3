@@ -3,7 +3,8 @@ part of '../screen/table_view.dart';
 extension _BodyTableWidget on _TableViewState {
   Widget _tableItem(TableModel table) {
     return Card(
-      elevation: 3,
+      surfaceTintColor: context.colorScheme.surfaceTint,
+      elevation: 1,
       child: Row(
         children: [
           Expanded(

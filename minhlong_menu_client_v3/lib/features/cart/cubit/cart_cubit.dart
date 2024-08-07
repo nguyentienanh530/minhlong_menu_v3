@@ -7,6 +7,7 @@ import '../../../core/app_res.dart';
 import '../../../core/utils.dart';
 import '../../food/data/model/food_item.dart';
 import '../../table/data/model/table_model.dart';
+
 part 'cart_state.dart';
 // class CartCubit extends Cubit<OrderModel> {
 //   CartCubit() : super(OrderModel());
@@ -36,18 +37,20 @@ part 'cart_state.dart';
 class CartCubit extends Cubit<CartState> {
   CartCubit() : super(CartInitial());
 
-  void addToCart({required TableModel table, required FoodItem food}) {
+  void addToCart(
+      {required TableModel table, required FoodItem food, int? quantity}) {
     if (table.name.isEmpty) {
       emit(AddToCartFailure('Chưa chọn bàn'));
     } else {
       if (_checkExistFood(food.id)) {
-        emit(AddToCartFailure('Món ăn đã có trong giỏ hàng.'));
+        emit(AddToCartExistFailure('Món ăn đã có trong giỏ hàng.',
+            order: state.order));
       } else {
         var newFoodOrder = OrderDetail(
             foodID: food.id,
             foodImage: food.image1 ?? '',
             foodName: food.name,
-            quantity: 1,
+            quantity: quantity ?? 1,
             totalAmount: Ultils.foodPrice(
                 isDiscount: food.isDiscount ?? false,
                 foodPrice: food.price ?? 0,

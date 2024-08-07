@@ -21,6 +21,7 @@ import 'package:minhlong_menu_client_v3/features/table/data/model/table_model.da
 import 'package:minhlong_menu_client_v3/features/user/cubit/user_cubit.dart';
 import 'package:minhlong_menu_client_v3/features/user/data/model/user_model.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+
 import '../../../../Routes/app_route.dart';
 import '../../../../common/widget/error_build_image.dart';
 import '../../../../common/widget/error_screen.dart';
@@ -33,6 +34,7 @@ import '../../../category/data/model/category_model.dart';
 import '../../../food/data/model/food_item.dart';
 import '../../../table/cubit/table_cubit.dart';
 import '../../bloc/home_bloc.dart';
+
 part '../widgets/_appbar_widget.dart';
 part '../widgets/_banner_widget.dart';
 part '../widgets/_category_widget.dart';
@@ -93,6 +95,10 @@ class _HomeViewState extends State<HomeView>
               context.pop();
               context.push(AppRoute.dinnerTables);
             });
+          }
+          if (state is AddToCartExistFailure) {
+            AppSnackbar.showSnackBar(context,
+                msg: state.errorMessage, type: AppSnackbarType.error);
           }
         },
         child: BlocBuilder<HomeBloc, HomeState>(
