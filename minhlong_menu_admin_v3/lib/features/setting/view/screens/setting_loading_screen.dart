@@ -112,17 +112,17 @@ class SettingLoadingScreen extends StatelessWidget {
 }
 
 class _ItemProfile extends StatelessWidget {
+  final Color? colorIcon;
+  final String svgPath;
+  final String title;
+  final void Function()? onTap;
+
   const _ItemProfile({
     required this.svgPath,
     required this.title,
     required this.onTap,
     this.colorIcon,
   });
-  final Color? colorIcon;
-  final String svgPath;
-  final String title;
-
-  final void Function()? onTap;
 
   @override
   Widget build(BuildContext context) {

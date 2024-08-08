@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -12,7 +11,6 @@ import 'package:minhlong_menu_admin_v3/core/utils.dart';
 import 'package:minhlong_menu_admin_v3/features/user/cubit/user_cubit.dart';
 import 'package:minhlong_menu_admin_v3/features/user/data/model/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../../../Routes/app_route.dart';
 import '../../../../common/widget/error_build_image.dart';
 import '../../../../common/widget/loading.dart';
@@ -22,7 +20,6 @@ import '../../../../core/app_string.dart';
 import '../../../theme/cubit/scheme_cubit.dart';
 import '../../../theme/cubit/theme_cubit.dart';
 import '../../../theme/data/theme_local_datasource.dart';
-
 part '../widgets/_setting_widgets.dart';
 
 class SettingScreen extends StatefulWidget {
@@ -64,110 +61,146 @@ class _SettingScreenState extends State<SettingScreen> {
   @override
   Widget build(BuildContext context) {
     final user = context.watch<UserCubit>().state;
+
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(defaultPadding),
-        child: SingleChildScrollView(
-          child: Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(defaultPadding),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(defaultBorderRadius).r,
-            ),
-            child: context.isMobile
-                ? Container(
-                    constraints: const BoxConstraints(maxWidth: 600),
-                    child: Column(
-                      children: [
-                        _buildInfoProfile(user),
+      body: context.isMobile
+          ? SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(defaultPadding),
+                child: Column(
+                  children: [
+                    Card(
+                      elevation: 1,
+                      surfaceTintColor: context.colorScheme.surfaceTint,
+                      child: Container(
+                        constraints: const BoxConstraints(maxWidth: 600),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildInfoProfile(user),
+                          ],
+                        ),
+                      ),
+                    ),
+                    defaultPadding.verticalSpace,
+                    Card(
+                      elevation: 1,
+                      surfaceTintColor: context.colorScheme.surfaceTint,
+                      child: Column(children: [
                         _editInfoUser(user),
                         _buildTitleChangePassword(),
-                        _buildColorThemeWidget(),
                         _buildThemeWidget(context),
-                      ],
+                        _buildColorThemeWidget()
+                      ]),
                     ),
-                  )
-                : SizedBox(
-                    width: context.sizeDevice.width,
-                    height: 800,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          // flex: 2,
-                          child: Card(
-                            elevation: 1,
-                            surfaceTintColor: context.colorScheme.surfaceTint,
-                            child: Container(
-                              constraints: const BoxConstraints(maxWidth: 600),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  _buildInfoProfile(user),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        Expanded(
+                    defaultPadding.verticalSpace,
+                    _buildColorScheme(),
+                    defaultPadding.verticalSpace,
+                  ],
+                ),
+              ),
+            )
+          : Container(
+              width: context.sizeDevice.width,
+              padding: const EdgeInsets.all(defaultPadding),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    // flex: 2,
+                    child: Card(
+                      elevation: 1,
+                      surfaceTintColor: context.colorScheme.surfaceTint,
+                      child: Container(
+                        constraints: const BoxConstraints(maxWidth: 600),
+                        child: SingleChildScrollView(
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Card(
-                                elevation: 1,
-                                surfaceTintColor:
-                                    context.colorScheme.surfaceTint,
-                                child: Column(children: [
-                                  _editInfoUser(user),
-                                  _buildTitleChangePassword(),
-                                  _buildThemeWidget(context),
-                                  _buildColorThemeWidget()
-                                ]),
-                              ),
-                              Expanded(
-                                child: Card(
-                                  elevation: 1,
-                                  surfaceTintColor:
-                                      context.colorScheme.surfaceTint,
-                                  child: Container(
-                                    padding:
-                                        const EdgeInsets.all(defaultPadding),
-                                    width: double.infinity,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Màu giao diện'.toUpperCase(),
-                                          style: context.bodyMedium!.copyWith(
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        defaultPadding.verticalSpace,
-                                        GridView.count(
-                                          crossAxisSpacing: defaultPadding,
-                                          mainAxisSpacing: defaultPadding,
-                                          crossAxisCount: 10,
-                                          shrinkWrap: true,
-                                          physics:
-                                              const NeverScrollableScrollPhysics(),
-                                          children: listScheme
-                                              .map((e) => _buildItemColor(e))
-                                              .toList(),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
+                              _buildInfoProfile(user),
                             ],
                           ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Card(
+                          elevation: 1,
+                          surfaceTintColor: context.colorScheme.surfaceTint,
+                          child: Column(children: [
+                            _editInfoUser(user),
+                            _buildTitleChangePassword(),
+                            _buildThemeWidget(context),
+                            _buildColorThemeWidget()
+                          ]),
+                        ),
+                        Expanded(
+                          child: _buildColorScheme(),
                         ),
                       ],
                     ),
                   ),
-          ),
+                ],
+              ),
+            ),
+    );
+  }
+
+  Card _buildColorScheme() {
+    return Card(
+      elevation: 1,
+      surfaceTintColor: context.colorScheme.surfaceTint,
+      child: Container(
+        padding: const EdgeInsets.all(defaultPadding),
+        width: double.infinity,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Màu giao diện'.toUpperCase(),
+              style: context.bodyMedium!.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            defaultPadding.verticalSpace,
+            context.isMobile
+                ? GridView.count(
+                    crossAxisSpacing: defaultPadding,
+                    mainAxisSpacing: defaultPadding,
+                    crossAxisCount: _countGridView(),
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    children:
+                        listScheme.map((e) => _buildItemColor(e)).toList(),
+                  )
+                : Expanded(
+                    child: GridView.count(
+                      crossAxisSpacing: defaultPadding,
+                      mainAxisSpacing: defaultPadding,
+                      crossAxisCount: _countGridView(),
+                      shrinkWrap: true,
+                      physics: const BouncingScrollPhysics(),
+                      children:
+                          listScheme.map((e) => _buildItemColor(e)).toList(),
+                    ),
+                  ),
+          ],
         ),
       ),
     );
+  }
+
+  int _countGridView() {
+    if (context.is4k || context.isDesktop) {
+      return 10;
+    }
+    if (context.isTablet) {
+      return 6;
+    } else {
+      return 5;
+    }
   }
 }

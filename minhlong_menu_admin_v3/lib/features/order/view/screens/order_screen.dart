@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:developer';
-
 import 'package:badges/badges.dart' as badges;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +22,6 @@ import 'package:minhlong_menu_admin_v3/features/order/data/model/food_order_mode
 import 'package:minhlong_menu_admin_v3/features/user/data/model/user_model.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
-
 import '../../../../common/widget/empty_widget.dart';
 import '../../../../common/widget/error_build_image.dart';
 import '../../../../core/api_config.dart';
@@ -33,7 +31,6 @@ import '../../../home/cubit/table_index_selected_cubit.dart';
 import '../../bloc/order_bloc.dart';
 import '../../data/model/order_item.dart';
 import '../../data/repositories/order_repository.dart';
-
 part '../dialogs/_order_detail_dialog.dart';
 part '../widgets/_order_header_widget.dart';
 part '../widgets/_orders_on_table_widget.dart';
@@ -131,11 +128,10 @@ class _OrderViewState extends State<OrderView>
 
     final tableIndexSelectedState =
         context.watch<TableIndexSelectedCubit>().state;
-
+    print('tableIndexSelectedState: $tableIndexSelectedState');
     if (!_isFirstSendSocket) {
       Ultils.joinRoom(_orderChannel, 'orders-${_user.id}');
       Ultils.joinRoom(_tableChannel, 'tables-${_user.id}');
-
       Ultils.sendSocket(_tableChannel, 'tables', _user.id);
       Ultils.sendSocket(_orderChannel, 'orders',
           {'user_id': _user.id, 'table_id': tableIndexSelectedState});

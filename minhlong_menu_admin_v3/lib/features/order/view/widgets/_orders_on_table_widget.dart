@@ -218,11 +218,23 @@ extension _OrdersOnTableWidget on _OrderViewState {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Đơn hàng #${order.id}',
-          style: context.titleStyleMedium!.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+        Row(
+          children: [
+            Text(
+              'Đơn hàng #${order.id}',
+              style: context.titleStyleMedium!.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Spacer(),
+            Text(
+              'Bàn - ${order.tableName}',
+              style: context.bodySmall!.copyWith(
+                color: context.titleStyleMedium!.color!.withOpacity(0.5),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
         ),
         Text(
           Ultils.formatDateToString(

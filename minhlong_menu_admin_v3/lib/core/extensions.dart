@@ -15,8 +15,7 @@ extension BuildContextExtensions on BuildContext {
   ColorScheme get colorScheme => _theme.colorScheme;
   Size get sizeDevice => MediaQuery.sizeOf(this);
   bool get isMobile => sizeDevice.width < 600;
-  bool get isTablet =>
-      sizeDevice.shortestSide >= 600 && sizeDevice.width < 1100;
+  bool get isTablet => sizeDevice.width >= 600 && sizeDevice.width < 1100;
   bool get isDesktop => sizeDevice.width >= 1100;
   bool get is4k => sizeDevice.width >= 1920;
   bool get isPortrait =>

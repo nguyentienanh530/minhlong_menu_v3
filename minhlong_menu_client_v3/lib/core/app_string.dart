@@ -68,8 +68,8 @@ class AppString {
   static String infoFood = 'Chi tiết món ăn';
   static String category = 'Danh Mục';
   static String chooseTable = 'Chọn bàn';
-  static String check = 'Chọn ';
-  static String unchecked = 'Bỏ chọn ';
+  static String check = 'Chọn';
+  static String checked = 'Đang chọn';
   static String profile = 'Thông tin người dùng';
   static String editProfile = 'Thay đổi thông tin';
   static String fullName = 'Tên đầy đủ *';

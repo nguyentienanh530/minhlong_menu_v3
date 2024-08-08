@@ -8,16 +8,18 @@ import 'package:minhlong_menu_admin_v3/common/dialog/app_dialog.dart';
 import 'package:minhlong_menu_admin_v3/core/extensions.dart';
 import 'package:minhlong_menu_admin_v3/features/theme/cubit/theme_cubit.dart';
 
-import '../../../../Routes/app_route.dart';
-import '../../../../common/widget/common_text_field.dart';
-import '../../../../core/app_asset.dart';
-import '../../../../core/app_const.dart';
-import '../../../../core/app_res.dart';
-import '../../../../core/app_string.dart';
-import '../../bloc/auth_bloc.dart';
-import '../../data/dto/login_dto.dart';
-
+import '../../../../../Routes/app_route.dart';
+import '../../../../../common/widget/common_text_field.dart';
+import '../../../../../core/app_asset.dart';
+import '../../../../../core/app_const.dart';
+import '../../../../../core/app_res.dart';
+import '../../../../../core/app_string.dart';
+import '../../../bloc/auth_bloc.dart';
+import '../../../data/dto/login_dto.dart';
 part '../widgets/_forgot_password_body.dart';
+part '../widgets/_phone_number_text_field.dart';
+part '../widgets/_password_text_field.dart';
+part '../widgets/_confirm_password_text_field.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -111,11 +113,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                             ),
                           ),
                           30.verticalSpace,
-                          _buildPhoneField(),
+                          _buildPhoneNumberTextField,
                           36.verticalSpace,
-                          _buildPasswordField(),
+                          _buildPasswordTextField,
                           36.verticalSpace,
-                          _buildComfirmPasswordField(),
+                          _buildComfirmPasswordField,
                           10.verticalSpace,
                           SizedBox(
                             width: 360,
@@ -123,7 +125,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                               '*Mật khẩu ít nhất 8 ký tự, bao gồm(ký tự hoa, ký tự thường, ký tự số, ký tự đặc biệt)',
                               style: context.bodySmall!.copyWith(
                                 fontStyle: FontStyle.italic,
-                                color: Colors.white.withOpacity(0.5),
                               ),
                             ),
                           ),
@@ -174,101 +175,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     );
   }
 
-  Widget _buildPhoneField() => SizedBox(
-        width: 360,
-        child: CommonTextField(
-          controller: _phoneController,
-          // style: context.bodyMedium!,
-          onChanged: (p0) {},
-          keyboardType: TextInputType.phone,
-          maxLines: 1,
-          validator: (value) {
-            return AppRes.validatePhoneNumber(value)
-                ? null
-                : 'Số điện thoại không hợp lệ';
-          },
-          labelText: 'Số điện thoại',
-          prefixIcon: Icon(
-            Icons.phone_android_outlined,
-            color: context.bodyMedium!.color!.withOpacity(0.5),
-          ),
-        ),
-      );
-
-  Widget _buildPasswordField() => ValueListenableBuilder(
-      valueListenable: _isShowPassword,
-      builder: (context, value, child) => SizedBox(
-            width: 360,
-            child: CommonTextField(
-              style: context.bodyMedium,
-              controller: _passwordController,
-              onChanged: (p0) {},
-              keyboardType: TextInputType.visiblePassword,
-              maxLines: 1,
-              validator: (value) {
-                return AppRes.validatePassword(value)
-                    ? null
-                    : 'mật khẩu không hợp lệ';
-              },
-              labelText: 'Mật khẩu mới',
-              prefixIcon: Icon(
-                Icons.lock_outline,
-                color: context.bodyMedium!.color!.withOpacity(0.5),
-              ),
-              obscureText: !value,
-              suffixIcon: GestureDetector(
-                onTap: () {
-                  _isShowPassword.value = !_isShowPassword.value;
-                },
-                child: Icon(
-                  value
-                      ? Icons.remove_red_eye_outlined
-                      : Icons.visibility_off_outlined,
-                  color: context.bodyMedium!.color!.withOpacity(0.5),
-                ),
-              ),
-            ),
-          ));
-
-  Widget _buildComfirmPasswordField() => ValueListenableBuilder(
-        valueListenable: _isShowConfirmPassword,
-        builder: (context, value, child) => SizedBox(
-          width: 360,
-          child: CommonTextField(
-            style: context.bodyMedium,
-            controller: _confirmPasswordController,
-            onChanged: (p0) {},
-            keyboardType: TextInputType.visiblePassword,
-            maxLines: 1,
-            validator: (value) {
-              if (_passwordController.text != _confirmPasswordController.text) {
-                return 'Xác nhận mật khẩu không khớp';
-              }
-              return AppRes.validatePassword(value)
-                  ? null
-                  : 'mật khẩu không hợp lệ';
-            },
-            labelText: 'Xác nhận mật khẩu',
-            obscureText: !value,
-            prefixIcon: Icon(
-              Icons.lock_outline,
-              color: context.bodyMedium!.color!.withOpacity(0.5),
-            ),
-            suffixIcon: GestureDetector(
-              onTap: () {
-                _isShowConfirmPassword.value = !_isShowConfirmPassword.value;
-              },
-              child: Icon(
-                value
-                    ? Icons.remove_red_eye_outlined
-                    : Icons.visibility_off_outlined,
-                color: context.bodyMedium!.color!.withOpacity(0.5),
-              ),
-            ),
-          ),
-        ),
-      );
-
   _handleForgotPassword() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
@@ -291,19 +197,25 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   }
 
   Widget _buildHaveAccount() {
-    return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-      Text(
-        'Đã có tài khoản,',
-        style:
-            context.bodyMedium!.copyWith(color: Colors.white.withOpacity(0.5)),
-      ),
-      const SizedBox(width: defaultPadding / 2),
-      GestureDetector(
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          'Đã có tài khoản,',
+          style: context.bodyMedium,
+        ),
+        const SizedBox(width: defaultPadding / 2),
+        GestureDetector(
           onTap: () => context.go(AppRoute.login),
-          child: Text('Quay lại đăng nhập',
-              style: context.bodyMedium!.copyWith(
-                  color: context.colorScheme.primary,
-                  fontWeight: FontWeight.bold)))
-    ]);
+          child: Text(
+            'Quay lại đăng nhập',
+            style: context.bodyMedium!.copyWith(
+              color: context.colorScheme.primary,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }

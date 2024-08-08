@@ -23,7 +23,6 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 import '../../../../Routes/app_route.dart';
 import '../../../../common/widgets/no_product.dart';
 import '../../../../core/api_config.dart';
-
 import '../../../../core/app_string.dart';
 import '../../../../core/utils.dart';
 import '../../../order/bloc/order_bloc.dart';
@@ -159,7 +158,7 @@ class _CartViewState extends State<CartView> {
 
                     Ultils.sendSocket(_tableChannel, 'tables', _user.id);
                     Ultils.sendSocket(_orderChannel, 'orders',
-                        {'user_id': _user.id, 'table_id': 0});
+                        {'user_id': _user.id, 'table_id': tableState.id});
                     context.go(AppRoute.createOrderSuccess);
 
                     break;

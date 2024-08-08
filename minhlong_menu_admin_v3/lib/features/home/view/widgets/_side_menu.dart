@@ -1,9 +1,10 @@
 part of '../screens/home_view.dart';
 
-extension _BuildSideMenuWidget on HomeViewState {
+extension on HomeViewState {
   Widget _buildSideMenuWidget({SideMenuDisplayMode? displayMode}) => SideMenu(
         controller: _sideMenuCtrl,
         style: SideMenuStyle(
+          backgroundColor: context.colorScheme.surface,
           openSideMenuWidth: context.isMobile ? null : 300.w,
           showTooltip: true,
           displayMode: displayMode ?? SideMenuDisplayMode.auto,
@@ -30,7 +31,9 @@ extension _BuildSideMenuWidget on HomeViewState {
                 AppAsset.logo,
                 fit: BoxFit.cover,
                 colorFilter: ColorFilter.mode(
-                    context.colorScheme.primary, BlendMode.srcIn),
+                  context.colorScheme.primary,
+                  BlendMode.srcIn,
+                ),
               ),
             ),
             Divider(
@@ -59,40 +62,24 @@ extension _BuildSideMenuWidget on HomeViewState {
               );
             },
           ),
-          // SideMenuItem(
-          //   title: 'Cài đặt',
-          //   onTap: (index, _) {
-          //     _sideMenuCtrl.changePage(index);
-          //   },
-          //   icon: const Icon(
-          //     Icons.settings,
-          //     color: AppColors.secondTextColor,
-          //   ),
-          // ),
           SideMenuItem(
             title: 'Đăng xuất',
-            builder: (context, displayMode) {
-              return ListTile(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(defaultPadding / 2).r,
-                ),
-                splashColor: context.colorScheme.primary.withOpacity(0.3),
-                hoverColor: context.colorScheme.primary.withOpacity(0.3),
-                leading: const Icon(
-                  Icons.exit_to_app,
-                  color: Colors.red,
-                ),
-                title: context.isDesktop
-                    ? Text(
-                        'Đăng xuất',
-                        style: context.bodyMedium!.copyWith(
-                            color: context.bodyMedium!.color!.withOpacity(0.5)),
-                      )
-                    : 1.horizontalSpace,
-                onTap: () => _showDialogLogout(),
-              );
+            onTap: (index, sideMenuController) {
+              _showDialogLogout();
             },
+            iconWidget: Icon(Icons.logout, color: Colors.red),
+            tooltipContent: 'Đăng xuất',
           ),
+          SideMenuItem(
+            title: 'Test notifier',
+            onTap: (index, sideMenuController) {
+              // final player = AudioPlayer();
+              AppLocalNotifier.localNotification.show();
+              // player.play(AssetSource(AppAsset.bell));
+            },
+            iconWidget: Icon(Icons.logout, color: Colors.red),
+            tooltipContent: 'Đăng xuất',
+          )
         ],
         footer: context.sizeDevice.height < 700
             ? const SizedBox()
@@ -152,13 +139,14 @@ extension _BuildSideMenuWidget on HomeViewState {
     required String title,
     required IconData icon,
     required Function(int, SideMenuController)? onTap,
+    Color? color,
   }) {
     return SideMenuItem(
       title: title,
       onTap: onTap,
       icon: Icon(
         icon,
-        color: context.bodyMedium!.color!.withOpacity(0.5),
+        // color: color ?? context.bodyMedium!.color!.withOpacity(0.5),
       ),
       tooltipContent: title,
     );

@@ -5,8 +5,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:local_notifier/local_notifier.dart';
 import 'package:minhlong_menu_admin_v3/Routes/app_route.dart';
 import 'package:minhlong_menu_admin_v3/core/app_theme.dart';
+
 import 'package:minhlong_menu_admin_v3/features/auth/bloc/auth_bloc.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/data/auth_local_datasource/auth_local_datasource.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/data/provider/remote/auth_api.dart';
@@ -41,11 +43,25 @@ import 'features/user/data/repositories/user_repository.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = const AppBlocObserver();
+
+  //local storage
   final sf = await SharedPreferences.getInstance();
+
+  // Dio
   dio.interceptors.add(DioInterceptor(sf));
+
+  // theme
   var theme = await ThemeLocalDatasource(sf).getDartTheme() ?? false;
   var scheme =
       await ThemeLocalDatasource(sf).getSchemeTheme() ?? listScheme.first.key;
+
+  // local notifier
+  await localNotifier.setup(
+    appName: 'minhlong_menu_admin_v3',
+    shortcutPolicy: ShortcutPolicy.requireCreate,
+  );
+
+  // run app
   runApp(DevicePreview(
       enabled: false,
       builder: (context) => MainApp(sf: sf, theme: theme, scheme: scheme)));

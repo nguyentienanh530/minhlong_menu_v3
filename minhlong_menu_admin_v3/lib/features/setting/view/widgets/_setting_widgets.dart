@@ -238,8 +238,10 @@ extension _SettingWidgets on _SettingScreenState {
 
   _buildExpiryWidget(UserModel user) {
     return Text(
-      'Còn ${Ultils.subcriptionEndDate(user.expiredAt)} ngày sử dụng!'
-          .toUpperCase(),
+      Ultils.subcriptionEndDate(user.expiredAt) <= 0
+          ? 'Đã hết hạn'
+          : 'Còn ${Ultils.subcriptionEndDate(user.expiredAt)} ngày sử dụng!'
+              .toUpperCase(),
       style: context.bodyMedium!.copyWith(
         color: Ultils.subcriptionEndDate(user.expiredAt) <= 10
             ? Colors.red
@@ -258,7 +260,7 @@ extension _SettingWidgets on _SettingScreenState {
             style: context.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
           ),
           TextSpan(
-            text: Ultils.formatDateToString(user.extendedAt, isShort: true),
+            text: Ultils.formatDateToString(user.extendedAt),
             style: context.bodyMedium,
           ),
         ],
@@ -268,15 +270,19 @@ extension _SettingWidgets on _SettingScreenState {
 
   _buildExpiryDateWidget(UserModel user) {
     return RichText(
-        text: TextSpan(children: [
-      TextSpan(
-        text: 'Ngày hết hạn: ',
-        style: context.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
+      text: TextSpan(
+        children: [
+          TextSpan(
+            text: 'Ngày hết hạn: ',
+            style: context.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
+          ),
+          TextSpan(
+            text: Ultils.formatDateToString(user.expiredAt),
+            style: context.bodyMedium,
+          ),
+        ],
       ),
-      TextSpan(
-          text: Ultils.formatDateToString(user.expiredAt, isShort: true),
-          style: context.bodyMedium),
-    ]));
+    );
   }
 }
 

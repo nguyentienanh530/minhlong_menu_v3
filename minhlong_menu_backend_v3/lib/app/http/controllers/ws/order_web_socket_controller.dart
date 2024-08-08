@@ -15,25 +15,34 @@ class OrderWebSocketController extends Controller {
       this.orderRepository, this.orderController, this.tableRepo);
 
   Future getNewOrders(WebSocketClient client, dynamic payload) async {
-    var userID = payload['user_id'];
-    var tableID = payload['table_id'];
+    int userID = payload['user_id'] ?? -1;
+    var tableID = payload['table_id'] ?? -1;
+    print('userID: $userID, tableID: $tableID');
+    if (userID == -1) return;
 
-    if (userID == null) return;
-
-    if (tableID == null) return;
+    if (tableID == -1) return;
 
     try {
-      var payloadData = await await orderRepository.getNewOrdersByTable(
-          tableID: tableID, userID: userID);
-      var tableData = await tableRepo.find(id: tableID);
+      dynamic payloadData;
+      dynamic tableData;
+
+      if (tableID != -1 && tableID != 0) {
+        tableData = await tableRepo.find(id: tableID);
+        payloadData = await orderRepository.getNewOrdersByTable(
+            tableID: tableID, userID: userID);
+      } else {
+        var tables = await tableRepo.getAllTables(userID: userID);
+        tableData = tables.first;
+        payloadData = await orderRepository.getNewOrdersByTable(
+            tableID: tableData['id'], userID: userID);
+      }
 
       List<Map<String, dynamic>> formattedOrders = [];
 
       var groupedOrders = orderController.groupOrdersById(payloadData);
-      // print('groupedOrders: $payloadData');
 
       groupedOrders.forEach(
-        (id, ordersList) {
+        (id, ordersList) async {
           Map<String, dynamic> orderMap = {
             'id': id,
             'status': ordersList.first['status'],

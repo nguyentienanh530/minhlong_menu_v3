@@ -5,60 +5,60 @@ extension on _TableViewState {
     return Card(
       surfaceTintColor: context.colorScheme.surfaceTint,
       elevation: 1,
-      child: Row(
-        children: [
-          Expanded(
-              flex: 2,
-              child: Padding(
-                padding: const EdgeInsets.only(left: defaultPadding),
-                child: Image.asset(
-                    table.isUse ? AppAsset.tableEnable : AppAsset.tableDisable),
-              )),
-          Expanded(
-            flex: 3,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                FittedBox(
-                  child: Text(
-                    table.name,
-                    style: context.bodyMedium!
-                        .copyWith(fontWeight: FontWeight.bold),
+      shape: OutlineInputBorder(
+        borderSide: BorderSide(
+          width: 3,
+          color: _currentTable.id == table.id
+              ? context.colorScheme.primary
+              : Colors.transparent,
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(defaultPadding),
+        child: Column(
+          children: [
+            Expanded(
+              child: Image.asset(
+                  table.isUse ? AppAsset.tableEnable : AppAsset.tableDisable),
+            ),
+            20.verticalSpace,
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  FittedBox(
+                    child: Text(
+                      table.name,
+                      style: context.bodyMedium!
+                          .copyWith(fontWeight: FontWeight.bold),
+                    ),
                   ),
-                ),
-                Flexible(
-                  child: Text(
+                  Text(
                     'Ghế : ${table.seats}',
                     style: context.bodyMedium!.copyWith(
                         color: context.bodyMedium!.color!.withOpacity(0.5)),
                   ),
-                ),
-                10.verticalSpace,
-                GestureDetector(
-                  onTap: () {
-                    context.read<TableCubit>().changeTable(table);
-                    context.pop(true);
-                  },
-                  child: Container(
-                    margin: const EdgeInsets.only(bottom: 10),
-                    height: 30,
-                    width: 100,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                        color: context.colorScheme.primary,
-                        borderRadius:
-                            BorderRadius.circular(defaultBorderRadius)),
+                  ElevatedButton(
+                    onPressed: () {
+                      context.read<TableCubit>().changeTable(table);
+                      context.pop(true);
+                    },
+                    style: ButtonStyle(
+                      backgroundColor:
+                          WidgetStatePropertyAll(context.colorScheme.primary),
+                    ),
                     child: Text(
-                      AppString.check,
-                      style: context.bodyMedium!.copyWith(
-                          color: Colors.white, fontWeight: FontWeight.bold),
+                      _currentTable.id == table.id
+                          ? AppString.checked
+                          : AppString.check,
+                      style: context.bodyMedium!.copyWith(color: Colors.white),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

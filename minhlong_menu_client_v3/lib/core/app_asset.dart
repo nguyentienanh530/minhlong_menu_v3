@@ -31,8 +31,8 @@ class AppAsset {
   static const String category = 'assets/svg/category.svg';
   static const String banner = 'assets/svg/banner.svg';
   static const String logo = 'assets/image/logo.png';
-  static const String tableEnable = 'assets/image/tableDisable.png';
-  static const String tableDisable = 'assets/image/tableEnable.png';
+  static const String tableEnable = 'assets/image/tableEnable.png';
+  static const String tableDisable = 'assets/image/tableDisable.png';
   static const String noProductImage = 'assets/image/noproduct.png';
   static const String errorImageScreen = 'assets/image/404error.png';
   static const String successImageScreen = 'assets/image/success_cart.png';

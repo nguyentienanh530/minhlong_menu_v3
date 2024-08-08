@@ -12,15 +12,15 @@ class TableWebSocketController extends Controller {
       return;
     }
 
-    var tableAll = {
-      'id': 0,
-      'name': 'Tất cả',
-      'seats': 0,
-      'is_use': false,
-    };
+    // var tableAll = {
+    //   'id': 0,
+    //   'name': 'Tất cả',
+    //   'seats': 0,
+    //   'is_use': false,
+    // };
 
     var tables = await tableRepo.getAllTables(userID: userID);
-    tables = [tableAll, ...tables];
+    // tables = [tableAll, ...tables];
     var newTables = [];
     for (var table in tables) {
       var orderCount = 0;

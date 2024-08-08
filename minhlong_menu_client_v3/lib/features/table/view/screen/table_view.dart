@@ -25,6 +25,13 @@ class TableView extends StatefulWidget {
 }
 
 class _TableViewState extends State<TableView> {
+  late final _currentTable;
+  @override
+  void initState() {
+    super.initState();
+    _currentTable = context.read<TableCubit>().state;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,7 +57,7 @@ class _TableViewState extends State<TableView> {
                 // shrinkWrap: true,
                 itemCount: tableState.tables.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2, childAspectRatio: 16 / 9),
+                    crossAxisCount: 3, childAspectRatio: 9 / 12),
                 itemBuilder: (context, index) {
                   return _tableItem(tableState.tables[index]);
                 },
