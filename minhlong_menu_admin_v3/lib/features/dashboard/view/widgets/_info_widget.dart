@@ -32,7 +32,7 @@ extension _InfoWidget on _DashboardViewState {
       scrollDirection: Axis.horizontal,
       children: [
         _buildItemInfo(
-            backgroundColor: Colors.white60,
+            backgroundColor: Colors.red[100]!,
             icon: Icons.payment,
             title: 'Doanh thu ngày',
             value: '${Ultils.currencyFormat(infoModel.revenueToday)} đ',

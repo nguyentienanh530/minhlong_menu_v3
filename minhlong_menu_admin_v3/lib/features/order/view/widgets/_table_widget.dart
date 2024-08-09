@@ -3,8 +3,9 @@ part of '../screens/order_screen.dart';
 extension _TableWidget on _OrderViewState {
   Widget _buildTablesWidget({required int index}) {
     return StreamBuilder(
-      stream: _tableChannel.stream,
+      stream: _webSocketManager.getChannel('tables')!.stream,
       builder: (context, snapshot) {
+        print('snapshot: ${snapshot.data}');
         switch (snapshot.connectionState) {
           case ConnectionState.waiting:
             return const Loading();
@@ -16,7 +17,6 @@ extension _TableWidget on _OrderViewState {
               if (!snapshot.hasData) {
                 return const EmptyWidget();
               } else {
-                List<TableItem> dinnerTable = <TableItem>[];
                 var res = jsonDecode(snapshot.data);
                 String event = res['event'].toString();
                 if (event.contains('tables-ws')) {
@@ -86,8 +86,8 @@ extension _TableWidget on _OrderViewState {
                 child: InkWell(
                   onTap: () {
                     context.read<TableIndexSelectedCubit>().changeIndex(e.id);
-                    Ultils.sendSocket(_orderChannel, 'orders',
-                        {'user_id': _user.id, 'table_id': e.id});
+                    // Ultils.sendSocket(_orderChannel, 'orders',
+                    //     {'user_id': _user.id, 'table_id': e.id});
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(defaultPadding / 2),

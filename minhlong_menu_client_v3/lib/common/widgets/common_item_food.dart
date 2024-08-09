@@ -1,18 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_client_v3/common/widgets/error_build_image.dart';
 import 'package:minhlong_menu_client_v3/core/api_config.dart';
 import 'package:minhlong_menu_client_v3/core/extensions.dart';
-import 'package:minhlong_menu_client_v3/features/food/data/dto/item_food_size_dto.dart';
 import 'package:minhlong_menu_client_v3/features/food/data/model/food_item.dart';
-
 import '../../Routes/app_route.dart';
 import '../../core/app_const.dart';
 import '../../core/utils.dart';
-import '../../features/food/cubit/item_size_cubit.dart';
 
 class CommonItemFood extends StatelessWidget {
   const CommonItemFood({super.key, required this.food, this.addToCartOnTap});
@@ -25,77 +21,52 @@ class CommonItemFood extends StatelessWidget {
   }
 
   Widget _buildFoodItem(FoodItem food) {
-    return LayoutBuilder(builder: (context, constraints) {
-      context.read<ItemSizeCubit>().setSize(ItemFoodSizeDTO(
-          height: constraints.maxHeight, width: constraints.maxWidth));
-      return ItemFoodView(
-          addToCartOnTap: addToCartOnTap,
-          food: food,
-          height: constraints.maxHeight,
-          width: constraints.maxWidth);
-    });
-  }
-}
-
-class ItemFoodView extends StatelessWidget {
-  const ItemFoodView(
-      {super.key,
-      required this.food,
-      required this.height,
-      required this.width,
-      this.addToCartOnTap,
-      this.keyItem});
-  final FoodItem food;
-  final double height;
-  final double width;
-  final void Function()? addToCartOnTap;
-  final GlobalKey? keyItem;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      surfaceTintColor: context.colorScheme.surfaceTint,
-      elevation: 1,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(defaultBorderRadius / 2),
-      ),
-      child: GestureDetector(
-        onTap: () => context.push(AppRoute.foodsDetail, extra: food),
-        child: SizedBox(
-          key: keyItem,
-          height: height,
-          width: width,
-          child: Stack(children: [
-            Column(
-              children: [
-                Container(
-                  clipBehavior: Clip.antiAlias,
-                  height: 0.7 * height,
-                  width: width,
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(defaultBorderRadius / 2),
-                        topLeft: Radius.circular(defaultBorderRadius / 2)),
-                  ),
-                  child: CachedNetworkImage(
-                    imageUrl: '${ApiConfig.host}${food.image1}',
-                    fit: BoxFit.cover,
-                    errorWidget: errorBuilderForImage,
-                  ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Card(
+          surfaceTintColor: context.colorScheme.surfaceTint,
+          elevation: 1,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(defaultBorderRadius / 2),
+          ),
+          child: GestureDetector(
+            onTap: () => context.push(AppRoute.foodsDetail, extra: food),
+            child: SizedBox(
+              height: constraints.maxHeight,
+              width: constraints.maxWidth,
+              child: Stack(children: [
+                Column(
+                  children: [
+                    Container(
+                      clipBehavior: Clip.antiAlias,
+                      height: 0.7 * constraints.maxHeight,
+                      width: constraints.maxWidth,
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(defaultBorderRadius / 2),
+                            topLeft: Radius.circular(defaultBorderRadius / 2)),
+                      ),
+                      child: CachedNetworkImage(
+                        imageUrl: '${ApiConfig.host}${food.image1}',
+                        fit: BoxFit.cover,
+                        errorWidget: errorBuilderForImage,
+                      ),
+                    ),
+                    _buildNameFood(context, food),
+                    _buildPrice(context, food),
+                  ],
                 ),
-                _buildNameFood(context, food),
-                _buildPrice(context, food),
-              ],
+                Positioned(top: 5, right: 5, child: _addToCard(context)),
+                if (food.isDiscount!)
+                  Positioned(
+                      right: 5,
+                      top: 0.7 * constraints.maxHeight - 18,
+                      child: _buildDiscountItem(food, context)),
+              ]),
             ),
-            Positioned(top: 5, right: 5, child: _addToCard(context)),
-            if (food.isDiscount!)
-              Positioned(
-                  right: 5,
-                  top: 0.7 * height - 18,
-                  child: _buildDiscountItem(food, context)),
-          ]),
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 

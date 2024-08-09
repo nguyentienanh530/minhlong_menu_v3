@@ -1,4 +1,5 @@
 import 'package:minhlong_menu_backend_v3/app/http/controllers/ws/order_web_socket_controller.dart';
+import 'package:minhlong_menu_backend_v3/app/http/controllers/ws/push_notification_controller.dart';
 import 'package:minhlong_menu_backend_v3/app/http/controllers/ws/table_web_socket_controller.dart';
 import 'package:vania/vania.dart';
 import 'package:minhlong_menu_backend_v3/app/http/controllers/ws/chat_web_socket_controller.dart';
@@ -29,6 +30,12 @@ class WebSocketRoute implements Route {
       '/orders',
       (WebSocketEvent event) {
         event.on('orders', _orderWebSocketController.getNewOrders);
+      },
+    );
+    Router.websocket(
+      '/push-notification',
+      (WebSocketEvent event) {
+        event.on('orders', pushNotificationController.pushNotification);
       },
     );
   }

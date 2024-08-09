@@ -3,7 +3,7 @@ part of '../screens/order_screen.dart';
 extension _OrdersOnTableWidget on _OrderViewState {
   Widget _buildOrdersOnTable(int tableIndexSelectedState) {
     return StreamBuilder(
-      stream: _orderChannel.stream,
+      stream: _webSocketManager.getChannel('orders')!.stream,
       builder: (context, snapshot) {
         var tableIndexState = context.watch<TableIndexSelectedCubit>().state;
         switch (snapshot.connectionState) {
@@ -16,9 +16,8 @@ extension _OrdersOnTableWidget on _OrderViewState {
               if (!snapshot.hasData) {
                 return const EmptyWidget();
               } else {
-                ordersList.clear();
                 List<OrderItem> orders = <OrderItem>[];
-
+                ordersList.clear();
                 var res = jsonDecode(snapshot.data);
 
                 String event = res['event'].toString();
@@ -31,7 +30,6 @@ extension _OrdersOnTableWidget on _OrderViewState {
                     ),
                   );
 
-                  log('orders $orders');
                   if (tableIndexState != 0) {
                     for (var order in orders) {
                       if (order.tableId == tableIndexState) {
@@ -40,9 +38,11 @@ extension _OrdersOnTableWidget on _OrderViewState {
                     }
                   } else {
                     ordersList = orders;
-                    log('ordersList $ordersList');
                   }
-
+// else {
+                  // ordersList = orders;
+//                     log('ordersList $ordersList');
+//                   }
                   return ordersList.isEmpty
                       ? SizedBox(
                           height: 500,
@@ -60,7 +60,11 @@ extension _OrdersOnTableWidget on _OrderViewState {
                           crossAxisCount: _gridCount(),
                           children: ordersList
                               .map(
-                                  (e) => _buildItem(e, tableIndexSelectedState))
+                                (e) => _buildItem(
+                                  e,
+                                  tableIndexSelectedState,
+                                ),
+                              )
                               .toList(),
                         );
                 } else {
@@ -84,6 +88,9 @@ extension _OrdersOnTableWidget on _OrderViewState {
   }
 
   Widget _buildItem(OrderItem order, int tableIndexSelectedState) {
+    final tableName =
+        dinnerTable.firstWhere((element) => element.id == order.tableId).name;
+    order = order.copyWith(tableName: tableName);
     return Card(
       surfaceTintColor: context.colorScheme.surfaceTint,
       elevation: 1,
@@ -176,12 +183,12 @@ extension _OrdersOnTableWidget on _OrderViewState {
                           }).then(
                         (value) {
                           if (value != null && value) {
-                            Ultils.sendSocket(
-                                _tableChannel, 'tables', _user.id);
-                            Ultils.sendSocket(_orderChannel, 'orders', {
-                              'user_id': _user.id,
-                              'table_id': tableIndexSelectedState
-                            });
+                            // Ultils.sendSocket(
+                            //     _tableChannel, 'tables', _user.id);
+                            // Ultils.sendSocket(_orderChannel, 'orders', {
+                            //   'user_id': _user.id,
+                            //   'table_id': tableIndexSelectedState
+                            // });
                           }
                         },
                       );

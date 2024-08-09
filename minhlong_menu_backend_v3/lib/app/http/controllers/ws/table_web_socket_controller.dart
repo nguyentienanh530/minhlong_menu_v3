@@ -8,19 +8,20 @@ class TableWebSocketController extends Controller {
 
   TableWebSocketController(this.tableRepo);
   Future getTable(WebSocketClient client, dynamic userID) async {
+    print('userID: $userID');
     if (userID == null) {
       return;
     }
 
-    // var tableAll = {
-    //   'id': 0,
-    //   'name': 'Tất cả',
-    //   'seats': 0,
-    //   'is_use': false,
-    // };
+    var tableAll = {
+      'id': 0,
+      'name': 'Tất cả',
+      'seats': 0,
+      'is_use': false,
+    };
 
     var tables = await tableRepo.getAllTables(userID: userID);
-    // tables = [tableAll, ...tables];
+    tables = [tableAll, ...tables];
     var newTables = [];
     for (var table in tables) {
       var orderCount = 0;
@@ -36,6 +37,7 @@ class TableWebSocketController extends Controller {
             .query()
             .select()
             .whereRaw('orders.status IN ("new", "processing")')
+            .where('table_id', '=', table['id'])
             .count();
       }
       var newTable = {

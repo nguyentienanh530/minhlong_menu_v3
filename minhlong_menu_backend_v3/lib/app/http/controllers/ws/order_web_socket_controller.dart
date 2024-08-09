@@ -15,31 +15,20 @@ class OrderWebSocketController extends Controller {
       this.orderRepository, this.orderController, this.tableRepo);
 
   Future getNewOrders(WebSocketClient client, dynamic payload) async {
-    int userID = payload['user_id'] ?? -1;
-    var tableID = payload['table_id'] ?? -1;
-    print('userID: $userID, tableID: $tableID');
-    if (userID == -1) return;
+    var userID = payload['user_id'];
+    var tableID = payload['table_id'];
 
-    if (tableID == -1) return;
+    if (userID == null) return;
+
+    if (tableID == null) return;
 
     try {
-      dynamic payloadData;
-      dynamic tableData;
-
-      if (tableID != -1 && tableID != 0) {
-        tableData = await tableRepo.find(id: tableID);
-        payloadData = await orderRepository.getNewOrdersByTable(
-            tableID: tableID, userID: userID);
-      } else {
-        var tables = await tableRepo.getAllTables(userID: userID);
-        tableData = tables.first;
-        payloadData = await orderRepository.getNewOrdersByTable(
-            tableID: tableData['id'], userID: userID);
-      }
-
+      var payloadData = await await orderRepository.getNewOrdersByTable(
+          tableID: tableID, userID: userID);
       List<Map<String, dynamic>> formattedOrders = [];
 
       var groupedOrders = orderController.groupOrdersById(payloadData);
+      print('payload: $payloadData');
 
       groupedOrders.forEach(
         (id, ordersList) async {
@@ -47,7 +36,6 @@ class OrderWebSocketController extends Controller {
             'id': id,
             'status': ordersList.first['status'],
             'table_id': ordersList.first['table_id'],
-            'table_name': tableData['name'] ?? '',
             'total_price': ordersList.first['total_price'],
             'payed_at': ordersList.first['payed_at'],
             'created_at': ordersList.first['created_at'],
@@ -74,7 +62,7 @@ class OrderWebSocketController extends Controller {
           formattedOrders.add(orderMap);
         },
       );
-
+      print('formattedOrders: $formattedOrders');
       client.toRoom('orders-ws', 'orders-$userID', jsonEncode(formattedOrders));
     } catch (e) {
       print('get new orders error: $e');

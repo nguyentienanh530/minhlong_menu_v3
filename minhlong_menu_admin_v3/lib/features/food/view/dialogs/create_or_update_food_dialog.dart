@@ -68,10 +68,13 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
       _nameFoodController.text = _foodItem?.name ?? '';
       _priceFoodController.text = _foodItem?.price.toString() ?? '';
       _descriptionFoodController.text = _foodItem?.description ?? '';
-      _discountFoodController.text = _foodItem?.discount.toString() ?? '';
+
       _applyforDiscount.value = _foodItem!.isDiscount!
           ? FoodDiscountType.apply
           : FoodDiscountType.doNotApply;
+      if (_foodItem!.isDiscount!) {
+        _discountFoodController.text = _foodItem?.discount.toString() ?? '';
+      }
       _image1 = _foodItem?.image1 ?? '';
       _image2 = _foodItem?.image2 ?? '';
       _image3 = _foodItem?.image3 ?? '';
@@ -132,44 +135,56 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
                   type: OverlaySnackbarType.error);
             }
           },
-          child: SingleChildScrollView(
-            child: Form(
-              key: AppKeys.createOrUpdateKey,
-              child: Builder(
-                builder: (context) {
-                  var categoryState = context.watch<CategoryBloc>().state;
-                  return (switch (categoryState) {
-                    CategoryFetchInProgress() => const Loading(),
-                    CategoryFetchFailure(message: final msg) =>
-                      ErrWidget(error: msg),
-                    CategoryFetchSuccess() => Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 52, horizontal: 20),
-                        child: Column(
+          child: AlertDialog(
+            actionsAlignment: MainAxisAlignment.center,
+            scrollable: true,
+            surfaceTintColor: context.colorScheme.surfaceTint,
+            title: Row(
+              children: [
+                Text(
+                  _mode == ScreenType.create
+                      ? 'Thêm món mới'.toUpperCase()
+                      : 'Chỉnh sửa'.toUpperCase(),
+                  style: context.titleStyleLarge!.copyWith(
+                      color: context.titleStyleLarge!.color!.withOpacity(0.5),
+                      fontWeight: FontWeight.bold),
+                ),
+                Spacer(),
+                IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: const Icon(Icons.close),
+                )
+              ],
+            ),
+            content: Container(
+              constraints: BoxConstraints(maxWidth: 500),
+              child: Form(
+                key: AppKeys.createOrUpdateKey,
+                child: Builder(
+                  builder: (context) {
+                    var categoryState = context.watch<CategoryBloc>().state;
+                    return (switch (categoryState) {
+                      CategoryFetchInProgress() => const Loading(),
+                      CategoryFetchFailure(message: final msg) =>
+                        ErrWidget(error: msg),
+                      CategoryFetchSuccess() => Column(
                           children: [
-                            Text(
-                                _mode == ScreenType.create
-                                    ? 'Thêm món mới'.toUpperCase()
-                                    : 'Chỉnh sửa'.toUpperCase(),
-                                style: context.titleStyleLarge!.copyWith(
-                                    color: context.titleStyleLarge!.color!
-                                        .withOpacity(0.5),
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 40)),
-                            20.verticalSpace,
                             _buildBodyCreateOrUpdateFoodDialog(
                                 categoryState.categoryModel.categoryItems),
                             20.verticalSpace,
-                            _buildButtonCreateOrUpdateFood(),
-                            20.verticalSpace,
                           ],
                         ),
-                      ),
-                    _ => const SizedBox.shrink()
-                  });
-                },
+                      _ => const SizedBox.shrink()
+                    });
+                  },
+                ),
               ),
             ),
+            actions: [
+              _buildButtonCreateOrUpdateFood(),
+            ],
           ),
         ),
       ),
@@ -184,39 +199,36 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
           .where((element) => element.id == _foodItem?.categoryID)
           .first;
     }
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
-      child: Column(
-        children: [
-          // 10.verticalSpace,
-          _buildRowImageFoodWidget(),
-          20.verticalSpace,
-          _buildNameFoodTextField(),
-          20.verticalSpace,
-          SizedBox(
-            height: 70,
-            width: double.infinity,
-            child: Row(children: [
-              Expanded(child: _buildPriceFoodTextField()),
-              20.horizontalSpace,
-              Expanded(child: _buildDropDownCategory(categories))
-            ]),
-          ),
-          20.verticalSpace,
-          _buildDescriptionFoodTextField(),
-          20.verticalSpace,
+    return Column(
+      children: [
+        // 10.verticalSpace,
+        _buildRowImageFoodWidget(),
+        30.verticalSpace,
+        _buildNameFoodTextField(),
+        20.verticalSpace,
+        SizedBox(
+          height: 70,
+          width: double.infinity,
+          child: Row(children: [
+            Expanded(child: _buildPriceFoodTextField()),
+            20.horizontalSpace,
+            Expanded(child: _buildDropDownCategory(categories))
+          ]),
+        ),
+        20.verticalSpace,
+        _buildDescriptionFoodTextField(),
+        20.verticalSpace,
 
-          SizedBox(
-            height: 70,
-            width: double.infinity,
-            child: Row(children: [
-              Flexible(child: _buildApplyForDiscountWidget()),
-              20.horizontalSpace,
-              Flexible(child: _buildDiscountTextField())
-            ]),
-          )
-        ],
-      ),
+        SizedBox(
+          height: 70,
+          width: double.infinity,
+          child: Row(children: [
+            Flexible(child: _buildApplyForDiscountWidget()),
+            20.horizontalSpace,
+            Flexible(child: _buildDiscountTextField())
+          ]),
+        )
+      ],
     );
   }
 
@@ -317,8 +329,7 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
   Widget _buildNameFoodTextField() {
     return CommonTextField(
       controller: _nameFoodController,
-      hintText: 'Tên món ăn',
-      filled: true,
+      labelText: 'Tên món ăn',
       validator: (value) {
         if (value == null || value.isEmpty) {
           return 'Tên món không được để trống';
@@ -337,9 +348,7 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
   Widget _buildDescriptionFoodTextField() {
     return CommonTextField(
       controller: _descriptionFoodController,
-      hintText: 'Mô tả món ăn',
-      filled: true,
-      // maxLines: 1,
+      labelText: 'Mô tả món ăn',
       prefixIcon: Icon(
         Icons.description_outlined,
         size: 20,
@@ -370,56 +379,53 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
       valueListenable: imageFile,
       builder: (context, value, child) {
         return Expanded(
-          child: InkWell(
-            borderRadius: BorderRadius.circular(defaultPadding),
-            onTap: () async => await Ultils.pickImage().then((value) {
-              if (value == null) {
-                return;
-              }
-              imageFile.value = value;
-            }),
-            child: Container(
-              clipBehavior: Clip.antiAlias,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(defaultBorderRadius).r,
-                border: Border.all(
-                  color:
-                      context.colorScheme.onPrimaryContainer.withOpacity(0.5),
-                ),
-              ),
-              child: imageFile.value.path.isEmpty
-                  ? image.isEmpty
-                      ? Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.add_photo_alternate_outlined,
-                              color:
-                                  context.bodyMedium!.color!.withOpacity(0.8),
-                              size: 20,
-                            ),
-                            Text(
-                              '500 x 500',
-                              style: context.bodyMedium!.copyWith(
+          child: Card(
+            elevation: 1,
+            surfaceTintColor: context.colorScheme.surfaceTint,
+            child: InkWell(
+              onTap: () async => await Ultils.pickImage().then((value) {
+                if (value == null) {
+                  return;
+                }
+                imageFile.value = value;
+              }),
+              child: Container(
+                clipBehavior: Clip.antiAlias,
+                decoration: BoxDecoration(),
+                child: imageFile.value.path.isEmpty
+                    ? image.isEmpty
+                        ? Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.add_photo_alternate_outlined,
                                 color:
                                     context.bodyMedium!.color!.withOpacity(0.8),
+                                size: 20,
                               ),
-                            ),
-                          ],
-                        )
-                      : CachedNetworkImage(
-                          imageUrl: '${ApiConfig.host}$image',
-                          fit: BoxFit.cover,
-                          errorWidget: errorBuilderForImage,
-                          height: 100.h,
-                          width: 100.h,
-                        )
-                  : Image.file(
-                      imageFile.value,
-                      fit: BoxFit.cover,
-                      height: 100.h,
-                      width: 100.h,
-                    ),
+                              Text(
+                                '500 x 500',
+                                style: context.bodyMedium!.copyWith(
+                                  color: context.bodyMedium!.color!
+                                      .withOpacity(0.8),
+                                ),
+                              ),
+                            ],
+                          )
+                        : CachedNetworkImage(
+                            imageUrl: '${ApiConfig.host}$image',
+                            fit: BoxFit.cover,
+                            errorWidget: errorBuilderForImage,
+                            height: 100.h,
+                            width: 100.h,
+                          )
+                    : Image.file(
+                        imageFile.value,
+                        fit: BoxFit.cover,
+                        height: 100.h,
+                        width: 100.h,
+                      ),
+              ),
             ),
           ),
         );
@@ -432,8 +438,7 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
       controller: _priceFoodController,
       keyboardType: TextInputType.number,
       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-      hintText: 'Giá',
-      filled: true,
+      labelText: 'Giá',
       validator: (value) {
         if (value == null || value.isEmpty) {
           return 'Giá món không được này';
@@ -473,7 +478,7 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
       padding: const EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(textFieldBorderRadius).r,
-        border: Border.all(color: Colors.white54),
+        // border: Border.all(color: Colors.black),
       ),
       child: Row(
         children: [
@@ -496,6 +501,7 @@ class _FoodCreateOrUpdateDialogState extends State<CreateOrUpdateFoodDialog> {
                   value: _categoryValueNotifier.value,
                   icon: const Icon(Icons.arrow_drop_down_rounded),
                   borderRadius: BorderRadius.circular(defaultBorderRadius).r,
+
                   underline: const SizedBox(),
                   style: context.bodyMedium!.copyWith(
                       color: context.bodyMedium!.color!.withOpacity(0.8)),

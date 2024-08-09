@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_admin_v3/common/widget/error_build_image.dart';
 import 'package:minhlong_menu_admin_v3/core/api_config.dart';
 import 'package:minhlong_menu_admin_v3/core/app_key.dart';
@@ -62,9 +63,28 @@ class _CreateOrUpdateBannerState extends State<CreateOrUpdateBanner> {
 
   @override
   Widget build(BuildContext context) {
-    return FittedBox(
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
+    return AlertDialog(
+      scrollable: true,
+      actionsAlignment: MainAxisAlignment.center,
+      title: Row(
+        children: [
+          Text(
+            _type == ScreenType.create
+                ? 'Thêm Banner'.toUpperCase()
+                : 'Sửa Banner'.toUpperCase(),
+            style: context.titleStyleLarge!.copyWith(
+              color: context.bodyMedium!.color!.withOpacity(0.5),
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          Spacer(),
+          IconButton(
+            onPressed: () => context.pop(),
+            icon: Icon(Icons.close),
+          )
+        ],
+      ),
+      content: Container(
         constraints: const BoxConstraints(maxWidth: 500),
         child: BlocListener<BannerBloc, BannerState>(
           listener: (context, state) {
@@ -95,27 +115,15 @@ class _CreateOrUpdateBannerState extends State<CreateOrUpdateBanner> {
             key: AppKeys.createOrUpdateCategoryKey,
             child: Column(
               children: [
-                Text(
-                  _type == ScreenType.create
-                      ? 'Thêm Banner'.toUpperCase()
-                      : 'Sửa Banner'.toUpperCase(),
-                  style: context.bodyMedium!.copyWith(
-                    color: context.bodyMedium!.color!.withOpacity(0.5),
-                    fontWeight: FontWeight.w700,
-                    fontSize: 40.sp,
-                  ),
-                ),
-                20.verticalSpace,
                 _buildCategoryImageWidget(),
                 20.verticalSpace,
                 _buildApplyForDiscountWidget(),
-                20.verticalSpace,
-                _buildButton()
               ],
             ),
           ),
         ),
       ),
+      actions: [_buildButton()],
     );
   }
 

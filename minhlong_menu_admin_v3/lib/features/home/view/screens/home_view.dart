@@ -19,6 +19,7 @@ import 'package:minhlong_menu_admin_v3/features/user/cubit/user_cubit.dart';
 import 'package:minhlong_menu_admin_v3/features/user/data/model/user_model.dart';
 import '../../../../Routes/app_route.dart';
 import '../../../../common/dialog/app_dialog.dart';
+import '../../../../common/network/web_socket_manager.dart';
 import '../../../../common/widget/error_build_image.dart';
 import '../../../../common/widget/error_dialog.dart';
 import '../../../../common/widget/loading.dart';
@@ -43,6 +44,8 @@ class HomeViewState extends State<HomeView>
   final SideMenuController _sideMenuCtrl = SideMenuController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final _indexPage = ValueNotifier(0);
+  var _isFirstSendSocket = false;
+  var _user = UserModel();
   final _listIconMenu = [
     {
       'title': 'Dashboard',
@@ -98,6 +101,23 @@ class HomeViewState extends State<HomeView>
       _indexPage.value = index;
       _title.value = _listIconMenu[index]['title'].toString();
     });
+    _initWebSocket();
+  }
+
+  void _initWebSocket() async {
+    WebSocketManager()
+        .createChannel('notification', ApiConfig.notificationSocketUrl);
+    WebSocketManager().createChannel('tables', ApiConfig.tablesSocketUrl);
+    WebSocketManager().createChannel('orders', ApiConfig.ordersSocketUrl);
+    print('create socket');
+  }
+
+  void _closeWebSocket() {
+    WebSocketManager().leaveRoom('notification', 'notification-${_user.id}');
+    WebSocketManager().leaveRoom('tables', 'tables-${_user.id}');
+    WebSocketManager().leaveRoom('orders', 'orders-${_user.id}');
+    WebSocketManager().closeAllChannels();
+    print('disconnect');
   }
 
   @override
@@ -107,12 +127,31 @@ class HomeViewState extends State<HomeView>
     _sideMenuCtrl.dispose();
     _title.dispose();
     _indexPage.dispose();
+    _closeWebSocket();
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    var user = context.watch<UserCubit>().state;
+    _user = context.watch<UserCubit>().state;
+    if (_user.id != 0) {
+      if (!_isFirstSendSocket) {
+        print('send socket');
+        WebSocketManager().joinRoom('orders', 'orders-${_user.id}');
+        WebSocketManager().joinRoom('tables', 'tables-${_user.id}');
+        WebSocketManager().joinRoom('notification', 'notification-${_user.id}');
+        WebSocketManager().sendSocket('tables', 'tables', _user.id);
+        WebSocketManager().sendSocket(
+            'orders', 'orders', {'user_id': _user.id, 'table_id': 0});
+        _isFirstSendSocket = true;
+      }
+
+      // Ultils.joinRoom(_orderChannel, 'orders-${_user.id}');
+      // Ultils.joinRoom(_tableChannel, 'tables-${_user.id}');
+      // Ultils.sendSocket(_tableChannel, 'tables', _user.id);
+      // Ultils.sendSocket(_orderChannel, 'orders',
+      //     {'user_id': _user.id, 'table_id': tableIndexSelectedState});
+    }
 
     return Scaffold(
       appBar: context.isMobile ? _buildAppBar() : null,
@@ -161,7 +200,7 @@ class HomeViewState extends State<HomeView>
             Expanded(
               child: Column(
                 children: [
-                  context.isMobile ? const SizedBox() : _buildHeader(user),
+                  context.isMobile ? const SizedBox() : _buildHeader(_user),
                   // Expanded(
                   //   child: ValueListenableBuilder(
                   //     valueListenable: _pageIndex,
@@ -207,7 +246,7 @@ class HomeViewState extends State<HomeView>
                           builder: (context, _) {
                             return switch (_indexPage.value) {
                               0 => const DashboardScreen(),
-                              1 => OrderScreen(user: user),
+                              1 => OrderScreen(user: _user),
                               2 => const OrderHistoryScreen(),
                               3 => const FoodScreen(),
                               4 => const DinnerTableScreen(),

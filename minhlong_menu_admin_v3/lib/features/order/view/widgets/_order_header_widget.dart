@@ -26,9 +26,9 @@ extension _OrderHeaderWidget on _OrderViewState {
                 AppRoute.createOrUpdateOrder,
                 extra: {'type': ScreenType.create}).then((value) {
               if (value != null && value) {
-                Ultils.sendSocket(_tableChannel, 'tables', _user.id);
-                Ultils.sendSocket(_orderChannel, 'orders',
-                    {'user_id': _user.id, 'table_id': tableIndexSelectedState});
+                // Ultils.sendSocket(_tableChannel, 'tables', _user.id);
+                // Ultils.sendSocket(_orderChannel, 'orders',
+                //     {'user_id': _user.id, 'table_id': tableIndexSelectedState});
               }
             }),
         style: ButtonStyle(

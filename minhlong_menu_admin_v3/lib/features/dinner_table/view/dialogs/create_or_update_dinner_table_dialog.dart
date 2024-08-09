@@ -57,57 +57,65 @@ class _CreateOrUpdateDinnerTableDialogState
 
   @override
   Widget build(BuildContext context) {
-    return FittedBox(
-      child: BlocListener<DinnerTableBloc, DinnerTableState>(
-        listener: (context, state) {
-          if (state is DinnerTableCreateInProgress ||
-              state is DinnerTableUpdateInProgress) {
-            AppDialog.showLoadingDialog(context);
-          }
+    return BlocListener<DinnerTableBloc, DinnerTableState>(
+      listener: (context, state) {
+        if (state is DinnerTableCreateInProgress ||
+            state is DinnerTableUpdateInProgress) {
+          AppDialog.showLoadingDialog(context);
+        }
 
-          if (state is DinnerTableCreateSuccess) {
-            pop(context, 2);
-            OverlaySnackbar.show(context, 'Thêm bàn thành công!');
-          }
-          if (state is DinnerTableUpdateSuccess) {
-            pop(context, 2);
-            OverlaySnackbar.show(context, 'Sửa bàn thành công!');
-          }
+        if (state is DinnerTableCreateSuccess) {
+          pop(context, 2);
+          OverlaySnackbar.show(context, 'Thêm bàn thành công!');
+        }
+        if (state is DinnerTableUpdateSuccess) {
+          pop(context, 2);
+          OverlaySnackbar.show(context, 'Sửa bàn thành công!');
+        }
 
-          if (state is DinnerTableCreateFailure ||
-              state is DinnerTableUpdateFailure) {
-            Navigator.pop(context);
-            OverlaySnackbar.show(context, 'Có lỗi xảy ra, thử lại sau',
-                type: OverlaySnackbarType.error);
-          }
-        },
-        child: Container(
-            constraints: BoxConstraints(maxWidth: 500.h),
-            child: Padding(
-              padding: const EdgeInsets.all(30),
-              child: Form(
-                key: AppKeys.createOrUpdateDinnerTableKey,
-                child: Column(
-                  children: [
-                    Text(
-                      _mode == ScreenType.create ? 'THÊM BÀN MỚI' : 'SỬA BÀN',
-                      style: context.bodyMedium!.copyWith(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 40.sp,
-                          color: context.bodyMedium!.color!.withOpacity(0.5)),
-                    ),
-                    20.verticalSpace,
-                    _buildDinnerTableNameTextField(),
-                    20.verticalSpace,
-                    _buildDinnerTableSeatTextField(),
-                    20.verticalSpace,
-                    _buildApplyForDiscountWidget(),
-                    20.verticalSpace,
-                    _buildButtonCreateOrUpdateDinnerTable()
-                  ],
-                ),
-              ),
-            )),
+        if (state is DinnerTableCreateFailure ||
+            state is DinnerTableUpdateFailure) {
+          Navigator.pop(context);
+          OverlaySnackbar.show(context, 'Có lỗi xảy ra, thử lại sau',
+              type: OverlaySnackbarType.error);
+        }
+      },
+      child: AlertDialog(
+        scrollable: true,
+        surfaceTintColor: context.colorScheme.surfaceTint,
+        actionsAlignment: MainAxisAlignment.center,
+        title: Row(
+          children: [
+            Text(
+              _mode == ScreenType.create ? 'THÊM BÀN MỚI' : 'SỬA BÀN',
+              style: context.titleStyleLarge!.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: context.bodyMedium!.color!.withOpacity(0.5)),
+            ),
+            Spacer(),
+            IconButton(
+                onPressed: () => Navigator.pop(context),
+                icon: Icon(Icons.close))
+          ],
+        ),
+        content: Container(
+          constraints: BoxConstraints(maxWidth: 500),
+          child: Form(
+            key: AppKeys.createOrUpdateDinnerTableKey,
+            child: Column(
+              children: [
+                20.verticalSpace,
+                _buildDinnerTableNameTextField(),
+                20.verticalSpace,
+                _buildDinnerTableSeatTextField(),
+                20.verticalSpace,
+                _buildApplyForDiscountWidget(),
+                20.verticalSpace,
+              ],
+            ),
+          ),
+        ),
+        actions: [_buildButtonCreateOrUpdateDinnerTable()],
       ),
     );
   }
@@ -115,8 +123,7 @@ class _CreateOrUpdateDinnerTableDialogState
   _buildDinnerTableNameTextField() {
     return CommonTextField(
       controller: _dinnerTableNameCtrl,
-      hintText: 'Tên bàn',
-      filled: true,
+      labelText: 'Tên bàn',
       maxLines: 1,
       prefixIcon: Icon(
         Icons.table_bar_outlined,
@@ -183,8 +190,7 @@ class _CreateOrUpdateDinnerTableDialogState
   _buildDinnerTableSeatTextField() {
     return CommonTextField(
       controller: _dinnertableSeatCtrl,
-      hintText: 'Số ghế',
-      filled: true,
+      labelText: 'Số ghế',
       maxLines: 1,
       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
       prefixIcon: Icon(

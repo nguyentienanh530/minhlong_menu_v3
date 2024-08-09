@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_admin_v3/common/widget/common_text_field.dart';
 import 'package:minhlong_menu_admin_v3/common/widget/error_build_image.dart';
 import 'package:minhlong_menu_admin_v3/core/api_config.dart';
@@ -63,9 +64,29 @@ class _CreateOrUpdateCategoryState extends State<CreateOrUpdateCategory> {
 
   @override
   Widget build(BuildContext context) {
-    return FittedBox(
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
+    return AlertDialog(
+      scrollable: true,
+      actionsAlignment: MainAxisAlignment.center,
+      title: Row(
+        children: [
+          Text(
+            _type == ScreenType.create
+                ? 'Thêm danh mục'.toUpperCase()
+                : 'Sửa danh mục'.toUpperCase(),
+            style: context.titleStyleLarge!.copyWith(
+              color: context.bodyMedium!.color!.withOpacity(0.5),
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const Spacer(),
+          IconButton(
+            onPressed: () => context.pop(),
+            icon: const Icon(Icons.close),
+          ),
+        ],
+      ),
+      surfaceTintColor: context.colorScheme.surfaceTint,
+      content: Container(
         constraints: const BoxConstraints(maxWidth: 500),
         child: BlocListener<CategoryBloc, CategoryState>(
           listener: (context, state) {
@@ -97,29 +118,17 @@ class _CreateOrUpdateCategoryState extends State<CreateOrUpdateCategory> {
             key: AppKeys.createOrUpdateCategoryKey,
             child: Column(
               children: [
-                Text(
-                  _type == ScreenType.create
-                      ? 'Thêm danh mục'.toUpperCase()
-                      : 'Sửa danh mục'.toUpperCase(),
-                  style: context.bodyMedium!.copyWith(
-                    color: context.bodyMedium!.color!.withOpacity(0.5),
-                    fontWeight: FontWeight.w700,
-                    fontSize: 40.sp,
-                  ),
-                ),
-                20.verticalSpace,
                 _buildCategoryImageWidget(),
                 20.verticalSpace,
                 _buildCategoryNameTextField(),
                 20.verticalSpace,
                 _buildCategorySerialTextField(),
-                20.verticalSpace,
-                _buildButton()
               ],
             ),
           ),
         ),
       ),
+      actions: [_buildButton()],
     );
   }
 
@@ -182,8 +191,7 @@ class _CreateOrUpdateCategoryState extends State<CreateOrUpdateCategory> {
   _buildCategoryNameTextField() {
     return CommonTextField(
       controller: _nameCategoryController,
-      hintText: 'Tên danh mục',
-      filled: true,
+      labelText: 'Tên danh mục',
       maxLines: 1,
       prefixIcon: Icon(
         Icons.category_outlined,
@@ -202,8 +210,7 @@ class _CreateOrUpdateCategoryState extends State<CreateOrUpdateCategory> {
   _buildCategorySerialTextField() {
     return CommonTextField(
       controller: _serialCategoryController,
-      hintText: 'Thứ tự hiển thị',
-      filled: true,
+      labelText: 'Thứ tự hiển thị',
       maxLines: 1,
       validator: (value) {
         if (value == null || value.isEmpty) {

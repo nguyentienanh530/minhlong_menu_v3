@@ -309,11 +309,9 @@ extension _BodyBannerWidget on _BannerViewState {
         builder: (context) => BlocProvider(
               create: (context) => BannerBloc(
                   bannerRepository: context.read<BannerRepository>()),
-              child: Dialog(
-                child: CreateOrUpdateBanner(
-                  type: type,
-                  bannItem: bannerItem,
-                ),
+              child: CreateOrUpdateBanner(
+                type: type,
+                bannItem: bannerItem,
               ),
             )).then(
       (value) {

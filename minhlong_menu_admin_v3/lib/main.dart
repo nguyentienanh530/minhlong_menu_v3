@@ -8,7 +8,6 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:local_notifier/local_notifier.dart';
 import 'package:minhlong_menu_admin_v3/Routes/app_route.dart';
 import 'package:minhlong_menu_admin_v3/core/app_theme.dart';
-
 import 'package:minhlong_menu_admin_v3/features/auth/bloc/auth_bloc.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/data/auth_local_datasource/auth_local_datasource.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/data/provider/remote/auth_api.dart';
@@ -174,10 +173,10 @@ class AppContent extends StatefulWidget {
 class _AppContentState extends State<AppContent> {
   @override
   void initState() {
+    super.initState();
     context.read<AuthBloc>().add(AuthAuthenticateStarted());
     context.read<ThemeCubit>().changeTheme(widget.theme!);
     context.read<SchemeCubit>().changeScheme(widget.scheme!);
-    super.initState();
   }
 
   void _handleGetUser(AccessToken accessToken) async {

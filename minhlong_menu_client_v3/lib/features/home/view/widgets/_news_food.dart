@@ -1,6 +1,6 @@
 part of '../screens/home_view.dart';
 
-extension _NewsFoodWidget on _HomeViewState {
+extension on _HomeViewState {
   Widget _buildListNewFood(
       List<FoodItem> foods, OrderModel orderModel, TableModel table) {
     var sizeState = context.watch<ItemSizeCubit>().state;
@@ -22,28 +22,28 @@ extension _NewsFoodWidget on _HomeViewState {
       List<FoodItem> foods, OrderModel orderModel, TableModel table) {
     return SizedBox(
       width: context.sizeDevice.width,
-      height: sizeState.height,
+      height: 250,
       child: ListView.builder(
-          padding: const EdgeInsets.only(
-              left: defaultPadding / 2, bottom: defaultPadding / 2),
-          physics: const BouncingScrollPhysics(),
-          scrollDirection: Axis.horizontal,
-          itemCount: foods.length,
-          itemBuilder: (context, index) {
-            return Padding(
-              padding: const EdgeInsets.only(right: defaultPadding / 2),
-              child: ItemFoodView(
-                addToCartOnTap: () {
-                  context
-                      .read<CartCubit>()
-                      .addToCart(table: table, food: foods[index]);
-                },
-                food: foods[index],
-                height: sizeState.height ?? 0.0,
-                width: sizeState.width ?? 0.0,
-              ),
-            );
-          }),
+        shrinkWrap: true,
+        padding: const EdgeInsets.only(
+            left: defaultPadding / 2, bottom: defaultPadding / 2),
+        physics: const BouncingScrollPhysics(),
+        scrollDirection: Axis.horizontal,
+        itemCount: foods.length,
+        itemBuilder: (context, index) {
+          return AspectRatio(
+            aspectRatio: 9 / 11,
+            child: CommonItemFood(
+              addToCartOnTap: () {
+                context
+                    .read<CartCubit>()
+                    .addToCart(table: table, food: foods[index]);
+              },
+              food: foods[index],
+            ),
+          );
+        },
+      ),
     );
   }
 }

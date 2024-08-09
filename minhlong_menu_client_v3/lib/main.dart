@@ -17,6 +17,7 @@ import 'package:minhlong_menu_client_v3/features/theme/data/theme_local_datasour
 import 'package:minhlong_menu_client_v3/features/user/cubit/user_cubit.dart';
 import 'package:minhlong_menu_client_v3/features/user/data/user_local_datasource/user_local_datasource.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import 'bloc_observer.dart';
 import 'common/network/dio_client.dart';
 import 'common/network/dio_interceptor.dart';
@@ -58,12 +59,16 @@ void main() async {
 }
 
 class MainApp extends StatelessWidget {
-  const MainApp(
-      {super.key, required this.sf, required this.theme, required this.scheme});
-
   final SharedPreferences sf;
   final bool theme;
   final String? scheme;
+
+  const MainApp({
+    super.key,
+    required this.sf,
+    required this.theme,
+    required this.scheme,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -138,11 +143,16 @@ class MainApp extends StatelessWidget {
 }
 
 class AppContent extends StatefulWidget {
-  const AppContent(
-      {super.key, required this.sf, required this.theme, required this.scheme});
   final SharedPreferences sf;
   final bool theme;
   final String? scheme;
+
+  const AppContent({
+    super.key,
+    required this.sf,
+    required this.theme,
+    required this.scheme,
+  });
 
   @override
   State<AppContent> createState() => _AppContentState();
@@ -152,6 +162,7 @@ class _AppContentState extends State<AppContent> {
   @override
   void initState() {
     super.initState();
+
     context.read<AuthBloc>().add(AuthAuthenticateStarted());
     context.read<ThemeCubit>().changeTheme(widget.theme);
     context.read<SchemeCubit>().changeScheme(widget.scheme!);

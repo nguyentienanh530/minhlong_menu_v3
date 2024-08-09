@@ -98,11 +98,9 @@ extension _HeaderDinnderTableWidget on _DinnerTableViewState {
         builder: (context) => BlocProvider(
               create: (context) =>
                   DinnerTableBloc(context.read<DinnerTableRepository>()),
-              child: Dialog(
-                child: CreateOrUpdateDinnerTableDialog(
-                  action: mode,
-                  tableItem: tableItem,
-                ),
+              child: CreateOrUpdateDinnerTableDialog(
+                action: mode,
+                tableItem: tableItem,
               ),
             )).then(
       (value) {

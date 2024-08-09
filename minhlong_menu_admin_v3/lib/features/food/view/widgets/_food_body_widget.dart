@@ -326,11 +326,9 @@ extension _FoodBodyWidget on _FoodViewState {
         context: context,
         builder: (context) => BlocProvider(
               create: (context) => FoodBloc(context.read<FoodRepository>()),
-              child: Dialog(
-                child: CreateOrUpdateFoodDialog(
-                  mode: mode,
-                  foodItem: foodItem,
-                ),
+              child: CreateOrUpdateFoodDialog(
+                mode: mode,
+                foodItem: foodItem,
               ),
             )).then(
       (value) {

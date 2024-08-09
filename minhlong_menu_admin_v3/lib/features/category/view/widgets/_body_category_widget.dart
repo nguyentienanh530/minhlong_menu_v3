@@ -281,11 +281,9 @@ extension _FoodBodyWidget on _CategoryViewState {
         builder: (context) => BlocProvider(
               create: (context) => CategoryBloc(
                   categoryRepository: context.read<CategoryRepository>()),
-              child: Dialog(
-                child: CreateOrUpdateCategory(
-                  type: type,
-                  categoryItem: categoryItem,
-                ),
+              child: CreateOrUpdateCategory(
+                type: type,
+                categoryItem: categoryItem,
               ),
             )).then(
       (value) {

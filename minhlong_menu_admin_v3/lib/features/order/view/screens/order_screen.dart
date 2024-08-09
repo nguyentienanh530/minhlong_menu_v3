@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'package:badges/badges.dart' as badges;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +8,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_admin_v3/Routes/app_route.dart';
 import 'package:minhlong_menu_admin_v3/common/dialog/app_dialog.dart';
+import 'package:minhlong_menu_admin_v3/common/network/web_socket_manager.dart';
 import 'package:minhlong_menu_admin_v3/common/snackbar/overlay_snackbar.dart';
 import 'package:minhlong_menu_admin_v3/common/widget/common_icon_button.dart';
 import 'package:minhlong_menu_admin_v3/common/widget/error_widget.dart';
@@ -20,12 +20,10 @@ import 'package:minhlong_menu_admin_v3/core/utils.dart';
 import 'package:minhlong_menu_admin_v3/features/order/cubit/pagination_cubit.dart';
 import 'package:minhlong_menu_admin_v3/features/order/data/model/food_order_model.dart';
 import 'package:minhlong_menu_admin_v3/features/user/data/model/user_model.dart';
-import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import '../../../../common/widget/empty_widget.dart';
 import '../../../../common/widget/error_build_image.dart';
 import '../../../../core/api_config.dart';
-import '../../../../core/const_res.dart';
 import '../../../dinner_table/data/model/table_item.dart';
 import '../../../home/cubit/table_index_selected_cubit.dart';
 import '../../bloc/order_bloc.dart';
@@ -68,11 +66,10 @@ class OrderView extends StatefulWidget {
 
 class _OrderViewState extends State<OrderView>
     with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
-  late final WebSocketChannel _tableChannel;
-  late final WebSocketChannel _orderChannel;
+  final _webSocketManager = WebSocketManager();
   final _indexSelectedTable = ValueNotifier(0);
   var _isFirstSendSocket = false;
-
+  List<TableItem> dinnerTable = <TableItem>[];
   late UserModel _user;
 
   List<OrderItem> ordersList = <OrderItem>[];
@@ -84,42 +81,20 @@ class _OrderViewState extends State<OrderView>
   void initState() {
     super.initState();
     _user = widget.user;
-    _tabController = TabController(length: 2, vsync: this);
-    _tableChannel = IOWebSocketChannel.connect(
-        Uri.parse(ApiConfig.tablesSocketUrl),
-        headers: {
-          ConstRes.userID: '${_user.id}',
-        })
-      ..ready;
-    _orderChannel = IOWebSocketChannel.connect(
-        Uri.parse(ApiConfig.ordersSocketUrl),
-        headers: {
-          ConstRes.userID: '${_user.id}',
-        })
-      ..ready;
-  }
 
-  void disconnect() {
-    if (_tableChannel.closeCode != null || _tableChannel.closeCode != null) {
-      debugPrint('Not connected');
-      return;
-    }
-    Ultils.leaveRoom(_tableChannel, 'tables-${_user.id}');
-    Ultils.leaveRoom(_orderChannel, 'orders-${_user.id}');
-    _tableChannel.sink.close();
-    _orderChannel.sink.close();
+    _webSocketManager.sendSocket('tables', 'tables', _user.id);
+    _webSocketManager
+        .sendSocket('orders', 'orders', {'user_id': _user.id, 'table_id': 0});
+    _tabController = TabController(length: 2, vsync: this);
   }
 
   @override
   void dispose() {
     super.dispose();
     _tabController.dispose();
-
     _curentPage.dispose();
     _limit.dispose();
     _indexSelectedTable.dispose();
-
-    disconnect();
   }
 
   @override
@@ -130,11 +105,8 @@ class _OrderViewState extends State<OrderView>
         context.watch<TableIndexSelectedCubit>().state;
     print('tableIndexSelectedState: $tableIndexSelectedState');
     if (!_isFirstSendSocket) {
-      Ultils.joinRoom(_orderChannel, 'orders-${_user.id}');
-      Ultils.joinRoom(_tableChannel, 'tables-${_user.id}');
-      Ultils.sendSocket(_tableChannel, 'tables', _user.id);
-      Ultils.sendSocket(_orderChannel, 'orders',
-          {'user_id': _user.id, 'table_id': tableIndexSelectedState});
+      // Ultils.joinRoom(_orderChannel, 'orders-${_user.id}');
+      // Ultils.joinRoom(_tableChannel, 'tables-${_user.id}');
 
       _isFirstSendSocket = true;
     }
@@ -152,16 +124,16 @@ class _OrderViewState extends State<OrderView>
                 state is OrderDeleteSuccess) {
               pop(context, 1);
               OverlaySnackbar.show(context, 'Cập nhật thành công');
-              Ultils.sendSocket(_orderChannel, 'orders',
-                  {'user_id': _user.id, 'table_id': tableIndexSelectedState});
-              Ultils.sendSocket(_tableChannel, 'tables', _user.id);
+              // Ultils.sendSocket(_orderChannel, 'orders',
+              //     {'user_id': _user.id, 'table_id': tableIndexSelectedState});
+              // Ultils.sendSocket(_tableChannel, 'tables', _user.id);
             }
             if (state is OrderPaymentSuccess) {
               pop(context, 2);
               OverlaySnackbar.show(context, 'Cập nhật thành công');
-              Ultils.sendSocket(_orderChannel, 'orders',
-                  {'user_id': _user.id, 'table_id': tableIndexSelectedState});
-              Ultils.sendSocket(_tableChannel, 'tables', _user.id);
+              // Ultils.sendSocket(_orderChannel, 'orders',
+              //     {'user_id': _user.id, 'table_id': tableIndexSelectedState});
+              // Ultils.sendSocket(_tableChannel, 'tables', _user.id);
             }
 
             if (state is OrderUpdateStatusFailure) {
