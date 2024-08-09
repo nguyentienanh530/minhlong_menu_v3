@@ -2,40 +2,45 @@ part of '../screens/order_screen.dart';
 
 extension _TableWidget on _OrderViewState {
   Widget _buildTablesWidget({required int index}) {
-    return StreamBuilder(
-      stream: _webSocketManager.getChannel('tables')!.stream,
-      builder: (context, snapshot) {
-        print('snapshot: ${snapshot.data}');
-        switch (snapshot.connectionState) {
-          case ConnectionState.waiting:
-            return const Loading();
+    // return StreamBuilder(
+    //   stream: _webSocketManager.getStream('tables'),
+    //   builder: (context, snapshot) {
+    //     print('snapshot: ${snapshot.data}');
+    //     switch (snapshot.connectionState) {
+    //       case ConnectionState.waiting:
+    //         return const Loading();
 
-          default:
-            if (snapshot.hasError) {
-              return const ErrWidget(error: '');
-            } else {
-              if (!snapshot.hasData) {
-                return const EmptyWidget();
-              } else {
-                var res = jsonDecode(snapshot.data);
-                String event = res['event'].toString();
-                if (event.contains('tables-ws')) {
-                  var data = jsonDecode(res['payload']);
-                  dinnerTable = List<TableItem>.from(
-                      data.map((x) => TableItem.fromJson(x)));
+    //       default:
+    //         if (snapshot.hasError) {
+    //           return const ErrWidget(error: '');
+    //         } else {
+    //           if (!snapshot.hasData) {
+    //             return const EmptyWidget();
+    //           } else {
+    //             var res = jsonDecode(snapshot.data);
+    //             String event = res['event'].toString();
+    //             if (event.contains('tables-ws')) {
+    //               var data = jsonDecode(res['payload']);
+    //               dinnerTable = List<TableItem>.from(
+    //                   data.map((x) => TableItem.fromJson(x)));
 
-                  return _buildTableWidget(
-                    index: index,
-                    dinnerTable: dinnerTable,
-                  );
-                }
+    //               return _buildTableWidget(
+    //                 index: index,
+    //                 dinnerTable: dinnerTable,
+    //               );
+    //             }
 
-                return const SizedBox();
-              }
-            }
-        }
-      },
-    );
+    //             return const SizedBox();
+    //           }
+    //         }
+    //     }
+    //   },
+    // );
+
+    return Builder(builder: (context) {
+      dinnerTable = context.read<TablesCubit>().state;
+      return _buildTableWidget(index: index, dinnerTable: dinnerTable);
+    });
   }
 
   Widget _buildTableWidget(
@@ -86,6 +91,8 @@ extension _TableWidget on _OrderViewState {
                 child: InkWell(
                   onTap: () {
                     context.read<TableIndexSelectedCubit>().changeIndex(e.id);
+                    _socket.sendSocket(AppKeys.orders, AppKeys.orders,
+                        {'user_id': _user.id, 'table_id': e.id});
                     // Ultils.sendSocket(_orderChannel, 'orders',
                     //     {'user_id': _user.id, 'table_id': e.id});
                   },

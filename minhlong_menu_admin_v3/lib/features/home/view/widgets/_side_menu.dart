@@ -1,7 +1,9 @@
 part of '../screens/home_view.dart';
 
 extension on HomeViewState {
-  Widget _buildSideMenuWidget({SideMenuDisplayMode? displayMode}) => SideMenu(
+  Widget _buildSideMenuWidget(
+          {SideMenuDisplayMode? displayMode, int? newOrderCount}) =>
+      SideMenu(
         controller: _sideMenuCtrl,
         style: SideMenuStyle(
           backgroundColor: context.colorScheme.surface,
@@ -46,11 +48,12 @@ extension on HomeViewState {
         items: [
           ..._listIconMenu.map((item) {
             return _buildSideMenuItem(
-                title: item['title'] as String,
-                icon: item['icon'] as IconData,
+                id: item.id,
+                title: item.title,
+                icon: item.icon,
+                badgeValue: newOrderCount.toString(),
                 onTap: (index, _) {
                   _sideMenuCtrl.changePage(index);
-                  // context.go(item['route'] as String);
                 });
           }),
           SideMenuItem(
@@ -136,18 +139,17 @@ extension on HomeViewState {
       );
 
   SideMenuItem _buildSideMenuItem({
+    required int id,
     required String title,
     required IconData icon,
     required Function(int, SideMenuController)? onTap,
-    Color? color,
+    String? badgeValue,
   }) {
     return SideMenuItem(
       title: title,
       onTap: onTap,
-      icon: Icon(
-        icon,
-        // color: color ?? context.bodyMedium!.color!.withOpacity(0.5),
-      ),
+      badgeContent: id == 2 ? Text(badgeValue!) : null,
+      icon: Icon(icon),
       tooltipContent: title,
     );
   }

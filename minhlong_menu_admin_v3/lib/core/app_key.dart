@@ -20,4 +20,9 @@ class AppKeys {
       GlobalKey<FormState>(debugLabel: 'updateUserKey');
   static GlobalKey<FormState> updatePasswordKey =
       GlobalKey<FormState>(debugLabel: 'updatePasswordKey');
+
+  // ===== Web socket =====
+  static const String orders = 'orders';
+  static const String tables = 'tables';
+  static const String notification = 'notification';
 }

@@ -7,12 +7,16 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minhlong_menu_admin_v3/core/api_config.dart';
+import 'package:minhlong_menu_admin_v3/core/app_key.dart';
 import 'package:minhlong_menu_admin_v3/core/extensions.dart';
 import 'package:minhlong_menu_admin_v3/features/banner/view/screens/banner_screen.dart';
 import 'package:minhlong_menu_admin_v3/features/category/view/screens/category_screen.dart';
 import 'package:minhlong_menu_admin_v3/features/dashboard/view/screens/dashboard_screen.dart';
 import 'package:minhlong_menu_admin_v3/features/dinner_table/view/screens/dinner_table_screen.dart';
 import 'package:minhlong_menu_admin_v3/features/food/view/screens/food_screen.dart';
+import 'package:minhlong_menu_admin_v3/features/home/data/models/side_menu_dto.dart';
+import 'package:minhlong_menu_admin_v3/features/order/cubit/orders_cubit.dart';
+import 'package:minhlong_menu_admin_v3/features/order/cubit/tables_cubit.dart';
 import 'package:minhlong_menu_admin_v3/features/order/view/screens/order_screen.dart';
 import 'package:minhlong_menu_admin_v3/features/setting/view/screens/setting_screen.dart';
 import 'package:minhlong_menu_admin_v3/features/user/cubit/user_cubit.dart';
@@ -46,47 +50,46 @@ class HomeViewState extends State<HomeView>
   final _indexPage = ValueNotifier(0);
   var _isFirstSendSocket = false;
   var _user = UserModel();
+  final _socket = WebSocketManager();
   final _listIconMenu = [
-    {
-      'title': 'Dashboard',
-      'icon': Icons.home_rounded,
-      'route': AppRoute.dashboard,
-    },
-    {
-      'title': 'Đơn hàng',
-      'icon': Icons.format_list_numbered,
-      'route': AppRoute.orders,
-    },
-    {
-      'title': 'Lịch sử Đơn',
-      'icon': Icons.history_rounded,
-      'route': AppRoute.ordersHistory,
-    },
-    {
-      'title': 'Món ăn',
-      'icon': Icons.fastfood_rounded,
-      'route': AppRoute.foods,
-    },
-    {
-      'title': 'Bàn ăn',
-      'icon': Icons.dining_rounded,
-      'route': AppRoute.dinnerTables,
-    },
-    {
-      'title': 'Danh mục',
-      'icon': Icons.category,
-      'route': AppRoute.categories,
-    },
-    {
-      'title': 'Banner',
-      'icon': Icons.image,
-      'route': AppRoute.banners,
-    },
-    {
-      'title': 'Cài đặt',
-      'icon': Icons.settings,
-      'route': AppRoute.settings,
-    },
+    SideMenuDto(id: 1, title: 'Dashboard', icon: Icons.home_rounded),
+    SideMenuDto(id: 2, title: 'Đơn hàng', icon: Icons.format_list_numbered),
+    SideMenuDto(id: 3, title: 'Lịch sử Đơn', icon: Icons.history_rounded),
+    SideMenuDto(id: 4, title: 'Món ăn', icon: Icons.fastfood_rounded),
+    SideMenuDto(id: 5, title: 'Bàn ăn', icon: Icons.dining_rounded),
+    SideMenuDto(id: 6, title: 'Danh mục', icon: Icons.category),
+    SideMenuDto(id: 7, title: 'Banner', icon: Icons.image),
+    SideMenuDto(id: 8, title: 'Cài đặt', icon: Icons.settings),
+    // {
+    //   'title': 'Lịch sử Đơn',
+    //   'icon': Icons.history_rounded,
+    //   'route': AppRoute.ordersHistory,
+    // },
+    // {
+    //   'title': 'Món ăn',
+    //   'icon': Icons.fastfood_rounded,
+    //   'route': AppRoute.foods,
+    // },
+    // {
+    //   'title': 'Bàn ăn',
+    //   'icon': Icons.dining_rounded,
+    //   'route': AppRoute.dinnerTables,
+    // },
+    // {
+    //   'title': 'Danh mục',
+    //   'icon': Icons.category,
+    //   'route': AppRoute.categories,
+    // },
+    // {
+    //   'title': 'Banner',
+    //   'icon': Icons.image,
+    //   'route': AppRoute.banners,
+    // },
+    // {
+    //   'title': 'Cài đặt',
+    //   'icon': Icons.settings,
+    //   'route': AppRoute.settings,
+    // },
   ];
   final _title = ValueNotifier('');
 
@@ -94,30 +97,33 @@ class HomeViewState extends State<HomeView>
   void initState() {
     super.initState();
 
-    _title.value = _listIconMenu[0]['title'].toString();
+    _title.value = _listIconMenu.first.title;
     _sideMenuCtrl.addListener((index) {
       // _pageCtrl.animateToPage(index,
       //     duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
       _indexPage.value = index;
-      _title.value = _listIconMenu[index]['title'].toString();
+      _title.value = _listIconMenu[index].title;
     });
     _initWebSocket();
   }
 
   void _initWebSocket() async {
-    WebSocketManager()
-        .createChannel('notification', ApiConfig.notificationSocketUrl);
-    WebSocketManager().createChannel('tables', ApiConfig.tablesSocketUrl);
-    WebSocketManager().createChannel('orders', ApiConfig.ordersSocketUrl);
-    print('create socket');
+    _socket.createChannel(
+        AppKeys.notification, ApiConfig.notificationSocketUrl);
+    _socket.createChannel(AppKeys.tables, ApiConfig.tablesSocketUrl);
+    _socket.createChannel(AppKeys.orders, ApiConfig.ordersSocketUrl);
+    context.read<TablesCubit>().init();
+    context.read<OrdersCubit>().init();
+
+    debugPrint('create socket');
   }
 
   void _closeWebSocket() {
-    WebSocketManager().leaveRoom('notification', 'notification-${_user.id}');
-    WebSocketManager().leaveRoom('tables', 'tables-${_user.id}');
-    WebSocketManager().leaveRoom('orders', 'orders-${_user.id}');
-    WebSocketManager().closeAllChannels();
-    print('disconnect');
+    _socket.leaveRoom('notification', 'notification-${_user.id}');
+    _socket.leaveRoom('tables', 'tables-${_user.id}');
+    _socket.leaveRoom('orders', 'orders-${_user.id}');
+    _socket.closeAllChannels();
+    debugPrint('disconnect');
   }
 
   @override
@@ -134,30 +140,43 @@ class HomeViewState extends State<HomeView>
   Widget build(BuildContext context) {
     super.build(context);
     _user = context.watch<UserCubit>().state;
+
     if (_user.id != 0) {
       if (!_isFirstSendSocket) {
-        print('send socket');
-        WebSocketManager().joinRoom('orders', 'orders-${_user.id}');
-        WebSocketManager().joinRoom('tables', 'tables-${_user.id}');
-        WebSocketManager().joinRoom('notification', 'notification-${_user.id}');
-        WebSocketManager().sendSocket('tables', 'tables', _user.id);
+        WebSocketManager().joinRoom(
+          AppKeys.orders,
+          'orders-${_user.id}',
+        );
+        WebSocketManager().joinRoom(
+          AppKeys.tables,
+          'tables-${_user.id}',
+        );
+        WebSocketManager().joinRoom(
+          AppKeys.notification,
+          'notification-${_user.id}',
+        );
         WebSocketManager().sendSocket(
-            'orders', 'orders', {'user_id': _user.id, 'table_id': 0});
+          AppKeys.tables,
+          AppKeys.tables,
+          _user.id,
+        );
+        WebSocketManager().sendSocket(AppKeys.orders, AppKeys.orders, {
+          'user_id': _user.id,
+          'table_id': 0,
+        });
+        debugPrint('send socket');
         _isFirstSendSocket = true;
       }
-
-      // Ultils.joinRoom(_orderChannel, 'orders-${_user.id}');
-      // Ultils.joinRoom(_tableChannel, 'tables-${_user.id}');
-      // Ultils.sendSocket(_tableChannel, 'tables', _user.id);
-      // Ultils.sendSocket(_orderChannel, 'orders',
-      //     {'user_id': _user.id, 'table_id': tableIndexSelectedState});
     }
-
+    var tableState = context.watch<TablesCubit>().state;
     return Scaffold(
       appBar: context.isMobile ? _buildAppBar() : null,
       key: _scaffoldKey,
       drawer: context.isMobile
-          ? _buildSideMenuWidget(displayMode: SideMenuDisplayMode.open)
+          ? _buildSideMenuWidget(
+              newOrderCount:
+                  tableState.isEmpty ? 0 : tableState.first.orderCount,
+              displayMode: SideMenuDisplayMode.open)
           : null,
       body: MultiBlocListener(
         listeners: [
@@ -194,6 +213,8 @@ class HomeViewState extends State<HomeView>
             context.isMobile
                 ? const SizedBox()
                 : _buildSideMenuWidget(
+                    newOrderCount:
+                        tableState.isEmpty ? 0 : tableState.first.orderCount,
                     displayMode: context.isTablet
                         ? SideMenuDisplayMode.compact
                         : SideMenuDisplayMode.open),

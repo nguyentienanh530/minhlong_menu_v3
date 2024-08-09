@@ -2,79 +2,113 @@ part of '../screens/order_screen.dart';
 
 extension _OrdersOnTableWidget on _OrderViewState {
   Widget _buildOrdersOnTable(int tableIndexSelectedState) {
-    return StreamBuilder(
-      stream: _webSocketManager.getChannel('orders')!.stream,
-      builder: (context, snapshot) {
-        var tableIndexState = context.watch<TableIndexSelectedCubit>().state;
-        switch (snapshot.connectionState) {
-          case ConnectionState.waiting:
-            return const Loading();
-          default:
-            if (snapshot.hasError) {
-              return const ErrWidget(error: 'Error');
-            } else {
-              if (!snapshot.hasData) {
-                return const EmptyWidget();
-              } else {
-                List<OrderItem> orders = <OrderItem>[];
-                ordersList.clear();
-                var res = jsonDecode(snapshot.data);
+    // return StreamBuilder(
+    //   stream: _socket.getChannel('orders')!.stream,
+    //   builder: (context, snapshot) {
+    //     var tableIndexState = context.watch<TableIndexSelectedCubit>().state;
+    //     switch (snapshot.connectionState) {
+    //       case ConnectionState.waiting:
+    //         return const Loading();
+    //       default:
+    //         if (snapshot.hasError) {
+    //           return const ErrWidget(error: 'Error');
+    //         } else {
+    //           if (!snapshot.hasData) {
+    //             return const EmptyWidget();
+    //           } else {
+    //             List<OrderItem> orders = <OrderItem>[];
+    //             ordersList.clear();
+    //             var res = jsonDecode(snapshot.data);
 
-                String event = res['event'].toString();
-                if (event.contains('orders-ws')) {
-                  var data = jsonDecode(res['payload']);
+    //             String event = res['event'].toString();
+    //             if (event.contains('orders-ws')) {
+    //               var data = jsonDecode(res['payload']);
 
-                  orders = List<OrderItem>.from(
-                    data.map(
-                      (x) => OrderItem.fromJson(x),
-                    ),
-                  );
+    //               orders = List<OrderItem>.from(
+    //                 data.map(
+    //                   (x) => OrderItem.fromJson(x),
+    //                 ),
+    //               );
 
-                  if (tableIndexState != 0) {
-                    for (var order in orders) {
-                      if (order.tableId == tableIndexState) {
-                        ordersList.add(order);
-                      }
-                    }
-                  } else {
-                    ordersList = orders;
-                  }
-// else {
-                  // ordersList = orders;
-//                     log('ordersList $ordersList');
-//                   }
-                  return ordersList.isEmpty
-                      ? SizedBox(
-                          height: 500,
-                          width: double.infinity,
-                          child: Center(
-                            child: Text(
-                              'không có đơn nào!',
-                              style: context.bodyMedium!.copyWith(
-                                  color: context.titleStyleMedium!.color!
-                                      .withOpacity(0.5)),
-                            ),
-                          ),
-                        )
-                      : StaggeredGrid.count(
-                          crossAxisCount: _gridCount(),
-                          children: ordersList
-                              .map(
-                                (e) => _buildItem(
-                                  e,
-                                  tableIndexSelectedState,
-                                ),
-                              )
-                              .toList(),
-                        );
-                } else {
-                  return const SizedBox();
-                }
-              }
-            }
+    //               if (tableIndexState != 0) {
+    //                 for (var order in orders) {
+    //                   if (order.tableId == tableIndexState) {
+    //                     ordersList.add(order);
+    //                   }
+    //                 }
+    //               } else {
+    //                 ordersList = orders;
+    //               }
+
+    //               return ordersList.isEmpty
+    //                   ? SizedBox(
+    //                       height: 500,
+    //                       width: double.infinity,
+    //                       child: Center(
+    //                         child: Text(
+    //                           'không có đơn nào!',
+    //                           style: context.bodyMedium!.copyWith(
+    //                               color: context.titleStyleMedium!.color!
+    //                                   .withOpacity(0.5)),
+    //                         ),
+    //                       ),
+    //                     )
+    //                   : StaggeredGrid.count(
+    //                       crossAxisCount: _gridCount(),
+    //                       children: ordersList
+    //                           .map(
+    //                             (e) => _buildItem(
+    //                               e,
+    //                               tableIndexSelectedState,
+    //                             ),
+    //                           )
+    //                           .toList(),
+    //                     );
+    //             } else {
+    //               return const SizedBox();
+    //             }
+    //           }
+    //         }
+    //     }
+    //   },
+    // );
+
+    return Builder(builder: (context) {
+      ordersList.clear();
+      var orders = context.watch<OrdersCubit>().state;
+      if (tableIndexSelectedState != 0) {
+        for (var order in orders) {
+          if (order.tableId == tableIndexSelectedState) {
+            ordersList.add(order);
+          }
         }
-      },
-    );
+      } else {
+        ordersList = orders;
+      }
+      return ordersList.isEmpty
+          ? SizedBox(
+              height: 500,
+              width: double.infinity,
+              child: Center(
+                child: Text(
+                  'không có đơn nào!',
+                  style: context.bodyMedium!.copyWith(
+                      color: context.titleStyleMedium!.color!.withOpacity(0.5)),
+                ),
+              ),
+            )
+          : StaggeredGrid.count(
+              crossAxisCount: _gridCount(),
+              children: ordersList
+                  .map(
+                    (e) => _buildItem(
+                      e,
+                      tableIndexSelectedState,
+                    ),
+                  )
+                  .toList(),
+            );
+    });
   }
 
   int _gridCount() {

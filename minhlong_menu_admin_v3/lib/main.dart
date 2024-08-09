@@ -7,11 +7,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:local_notifier/local_notifier.dart';
 import 'package:minhlong_menu_admin_v3/Routes/app_route.dart';
+import 'package:minhlong_menu_admin_v3/common/network/web_socket_manager.dart';
 import 'package:minhlong_menu_admin_v3/core/app_theme.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/bloc/auth_bloc.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/data/auth_local_datasource/auth_local_datasource.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/data/provider/remote/auth_api.dart';
 import 'package:minhlong_menu_admin_v3/features/auth/data/repositories/auth_repository.dart';
+import 'package:minhlong_menu_admin_v3/features/order/cubit/orders_cubit.dart';
+import 'package:minhlong_menu_admin_v3/features/order/cubit/tables_cubit.dart';
 import 'package:minhlong_menu_admin_v3/features/theme/cubit/scheme_cubit.dart';
 import 'package:minhlong_menu_admin_v3/features/user/cubit/user_cubit.dart';
 import 'package:minhlong_menu_admin_v3/features/user/data/user_local_datasource/user_local_datasource.dart';
@@ -144,6 +147,12 @@ class MainApp extends StatelessWidget {
           ),
           BlocProvider(
             create: (context) => SchemeCubit(),
+          ),
+          BlocProvider(
+            create: (context) => TablesCubit(WebSocketManager()),
+          ),
+          BlocProvider(
+            create: (context) => OrdersCubit(WebSocketManager()),
           ),
         ],
         child: AppContent(

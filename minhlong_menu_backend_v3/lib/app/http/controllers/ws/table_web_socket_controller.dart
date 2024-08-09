@@ -49,7 +49,7 @@ class TableWebSocketController extends Controller {
       };
       newTables.add(newTable);
     }
-
+    print('newTables: $newTables');
     client.toRoom('tables-ws', 'tables-$userID', jsonEncode(newTables));
   }
 }

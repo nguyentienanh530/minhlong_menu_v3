@@ -22,16 +22,16 @@ class WebSocketManager {
     if (!_channels.containsKey(key)) {
       final channel = WebSocketChannel.connect(Uri.parse(url));
 
-      if (!_channels.containsKey(key)) {
-        _channels[key] = channel;
-      }
+      _channels[key] = channel;
+
       // final controller = StreamController<dynamic>.broadcast();
-      // _controllers[key] = controller;
+      // // _controllers[key] = controller;
 
       // _channels[key]!.stream.listen(
       //   (data) {
       //     debugPrint('Received data: $data');
       //     controller.add(data);
+      //     _controllers[key] = controller;
       //   },
       //   onDone: () {
       //     debugPrint('WebSocket closed');
@@ -56,13 +56,13 @@ class WebSocketManager {
   }
 
   Stream<dynamic>? getStream(String key) {
-    _controllers[key]!.stream.listen((data) {
-      debugPrint('Received data: $data');
-    }, onError: (error) {
-      debugPrint('Error: $error');
-    }, onDone: () {
-      debugPrint('Stream closed');
-    });
+    // _controllers[key]!.stream.listen((data) {
+    //   debugPrint('Received data: $data');
+    // }, onError: (error) {
+    //   debugPrint('Error: $error');
+    // }, onDone: () {
+    //   debugPrint('Stream closed');
+    // });
     return _controllers[key]?.stream;
   }
 
@@ -81,11 +81,32 @@ class WebSocketManager {
   }
 
   void joinRoom(String key, dynamic room) {
-    sendSocket(key, 'join-room', room);
+    final channel = _channels[key];
+    if (channel == null || channel.closeCode != null) {
+      debugPrint('Channel not available or already closed');
+      return;
+    }
+
+    Map<String, dynamic> data = {
+      'event': 'join-room',
+      'room': room,
+    };
+    channel.sink.add(jsonEncode(data));
   }
 
   void leaveRoom(String key, dynamic room) {
-    sendSocket(key, 'leave-room', room);
+    // sendSocket(key, 'leave-room', room);
+    final channel = _channels[key];
+    if (channel == null || channel.closeCode != null) {
+      debugPrint('Channel not available or already closed');
+      return;
+    }
+
+    Map<String, dynamic> data = {
+      'event': 'leave-room',
+      'room': room,
+    };
+    channel.sink.add(jsonEncode(data));
   }
 
   void closeChannel(String key) {
